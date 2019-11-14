@@ -388,7 +388,7 @@ export class CreateOrderService {
       this.qrCodeOmiseService.isPaymentOnlineCredit(transaction, 'advancePayment')) {
       data.clearingType = 'MPAY';
       data.qrOrderId = omise.orderId;
-      data.creditCardNo = omise.creditCardNo ? omise.creditCardNo.substring(omise.creditCardNo.length - 16) : '';
+      data.creditCardNo = omise.creditCardNo ? omise.creditCardNo.substring(omise.creditCardNo.length - 16) : '12/30';
       data.cardExpireDate = omise.cardExpireDate;
       data.qrTransId = omise.tranId;
       data.qrAmt = (+this.getGrandTotalAmt(trade, prebooking)).toFixed(2);
@@ -399,7 +399,7 @@ export class CreateOrderService {
       this.qrCodeOmiseService.isPaymentOnlineCredit(transaction, 'advancePayment')) {
       data.clearingType = 'MPAY';
       data.qrOrderId = omise.orderId;
-      data.creditCardNo = omise.creditCardNo ? omise.creditCardNo.substring(omise.creditCardNo.length - 16) : '';
+      data.creditCardNo = omise.creditCardNo ? omise.creditCardNo.substring(omise.creditCardNo.length - 16) : '12/30';
       data.cardExpireDate = omise.cardExpireDate;
 
       // omise for device
@@ -575,6 +575,7 @@ export class CreateOrderService {
   private getPaymentMethod(transaction: Transaction, priceOption: PriceOption): string {
     const payment: Payment = transaction.data.payment;
     const trade: any = priceOption.trade;
+    const advancePayment: any = transaction.data.advancePayment || {};
     let tradePayment: any;
     if ((trade.payment && trade.payment.length > 0)) {
       tradePayment = priceOption.trade.payment[0];
@@ -583,19 +584,56 @@ export class CreateOrderService {
     } else {
       tradePayment = {};
     }
-    if (payment.paymentType === 'QR_CODE') {
-      if (payment.paymentQrCodeType === 'THAI_QR') {
-        return 'PB';
+    if (trade.advancePay.installmentFlag === 'Y' || !payment || !advancePayment.paymentType) {
+      //  tread no pay  จะเข้าอันนี้
+      if (payment.paymentType === 'QR_CODE') {
+        return payment.paymentQrCodeType === 'THAI_QR' ? 'PB' : 'RL';
+      } else if (payment.paymentType === 'CREDIT') {
+        return 'CC';
+      } else if (payment.paymentType === 'DEBIT') {
+        return 'CA';
+      } else if (advancePayment.paymentType === 'QR_CODE') {
+        return advancePayment.paymentQrCodeType === 'THAI_QR' ? 'PB' : 'RL';
       } else {
-        return 'RL';
+        return tradePayment.method;
       }
-    } else if (payment.paymentType === 'CREDIT') {
-      return 'CC';
-    } else if (payment.paymentType === 'DEBIT') {
-      return 'CA';
     } else {
-      return tradePayment.method;
+      let paymentMethod = '';
+      // AWN หรือ WDS จ่ายแยก
+      if (payment.paymentType === 'QR_CODE' || advancePayment.paymentType === 'QR_CODE') {
+
+        if (payment.paymentType === 'QR_CODE') {
+          paymentMethod += payment.paymentQrCodeType === 'THAI_QR' ? 'PB|' : 'RL|';
+        } else {
+          paymentMethod += tradePayment.method && tradePayment.method === 'CC/CA' ? 'CA|' : tradePayment.method + '|';
+        }
+        if (advancePayment.paymentType === 'QR_CODE') {
+          paymentMethod += advancePayment.paymentQrCodeType === 'THAI_QR' ? 'PB' : 'RL';
+        } else {
+          paymentMethod += tradePayment.method && tradePayment.method === 'CC/CA' ? 'CA' : tradePayment.method;
+        }
+
+      } else if (this.qrCodeOmiseService.isPaymentOnlineCredit(transaction, 'payment') ||
+        this.qrCodeOmiseService.isPaymentOnlineCredit(transaction, 'advancePayment')) {
+
+        if (this.qrCodeOmiseService.isPaymentOnlineCredit(transaction, 'payment')) {
+          paymentMethod += 'CC|';
+        } else {
+          paymentMethod += tradePayment.method && tradePayment.method === 'CC/CA' ? 'CA|' : tradePayment.method + '|';
+        }
+        if (this.qrCodeOmiseService.isPaymentOnlineCredit(transaction, 'advancePayment')) {
+          paymentMethod += 'CC';
+        } else {
+          paymentMethod += tradePayment.method && tradePayment.method === 'CC/CA' ? 'CA' : tradePayment.method;
+        }
+
+      } else {
+        paymentMethod += tradePayment.method && tradePayment.method === 'CC/CA' ? 'CA|' : tradePayment.method + '|';
+        paymentMethod += tradePayment.method && tradePayment.method === 'CC/CA' ? 'CA' : tradePayment.method;
+      }
+      return paymentMethod;
     }
+
   }
 
   private getInstallment(transaction: Transaction, priceOption: PriceOption): string {
