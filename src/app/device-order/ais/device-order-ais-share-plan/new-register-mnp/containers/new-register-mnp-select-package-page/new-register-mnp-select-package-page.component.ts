@@ -36,6 +36,7 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
   modalRef: BsModalRef;
   translateSubscription: Subscription;
   promotionData: any;
+  promotionCodes: string;
 
   constructor(
     private router: Router,
@@ -65,6 +66,7 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
 
   onCompleted(promotion: any): void {
     this.transaction.data.mainPackage = promotion;
+    this.callServiceRequestQueryListLov(this.translateService.currentLang);
   }
 
   onBack(): void {
@@ -77,7 +79,11 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_NETWORK_TYPE]);
+    if (this.transaction.data.mainPackage) {
+      if (this.transaction.data.mainPackage.customAttributes.promotionCode) {
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_NETWORK_TYPE]);
+      }
+    }
   }
 
   onHome(): void {
@@ -105,6 +111,70 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
       .then(() => {
         this.pageLoadingService.closeLoading();
       });
+  }
+
+  callServiceRequestQueryListLov(language: string): void {
+    this.pageLoadingService.openLoading();
+    const RequestQueryListLovConfigInfo: any = {
+      lovVal2: this.transaction.data.mainPackage.customAttributes.promotionCode
+    };
+    this.http.post(`/api/salesportal/queryListLovConfigInfo`, RequestQueryListLovConfigInfo).toPromise()
+      .then((promotionCodes: any) => {
+        this.promotionCodes = promotionCodes.data;
+      }).then(() => {
+        const RequestGetPromotionsByCodes: any = {
+          promotionCodes: [this.promotionCodes]
+        };
+        return this.http.post(`/api/customerportal/myChannel/getPromotionsByCodes`, RequestGetPromotionsByCodes).toPromise()
+          .then((res: any) => {
+            console.log('res=>', res);
+
+            const data = res.data.data || [];
+            // mock packageList for subShelve
+            const packageList: any = [{
+              title: 'Member Share MNP',
+              icon: '',
+              promotions: [
+                {
+                  title: '3G Member Share MNP UL SWifi 0 Baht',
+                  items: data
+                }
+              ]
+            }];
+            const promotionShelves: PromotionShelve[] = packageList.map((promotionShelve: any) => {
+              return {
+                title: promotionShelve.title,
+                icon: (promotionShelve.icon || '').replace(/\.jpg$/, '').replace(/_/g, '-'),
+                promotions: (promotionShelve.promotions || []).map((subShelve: any) => {
+                  return {
+                    // subShelve
+                    id: '',
+                    title: subShelve.title,
+                    sanitizedName: '',
+                    items: (subShelve.items || []).map((promotion: any) => {
+                      return {
+                        // item
+                        id: promotion.id,
+                        title: language === 'EN' ? promotion.customAttributes.shortNameEng : promotion.customAttributes.shortNameThai,
+                        detail: language === 'EN' ? promotion.customAttributes.inStatementEng : promotion.customAttributes.inStatementThai,
+                        condition: '',
+                        value: promotion
+                      };
+                    })
+                  };
+                })
+              };
+            });
+            return Promise.resolve(promotionShelves);
+          });
+      }).then((res) => {
+        const mapMemberMainPackage = res[0]['promotions'][0]['items'][0].value || {};
+        this.transaction.data.mainPackage.memberMainPackage = mapMemberMainPackage;
+      })
+      .then(() => {
+        this.pageLoadingService.closeLoading();
+      });
+
   }
 
   checkTranslateLang(lang: any): void {

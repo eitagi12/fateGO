@@ -171,7 +171,6 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
 
   onCameraCompleted(image: string): void {
     this.captureAndSign.imageSmartCard = image;
-    console.log('onCameraCompleted', image);
     this.createCanvas();
     this.onChangeCaptureAndSign();
   }
@@ -201,7 +200,6 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
       return;
     }
     this.aisNativeDeviceService.openSigned(this.apiSigned).subscribe((command: any) => {
-      console.log('command ==>', command);
       this.commandSigned = command;
       if (command.error) {
         return;

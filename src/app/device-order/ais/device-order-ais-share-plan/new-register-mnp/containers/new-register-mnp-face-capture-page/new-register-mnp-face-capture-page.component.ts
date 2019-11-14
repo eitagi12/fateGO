@@ -22,6 +22,7 @@ export class NewRegisterMnpFaceCapturePageComponent implements OnInit, OnDestroy
   openCamera: boolean;
   transaction: Transaction;
   camera: EventEmitter<void> = new EventEmitter<void>();
+  isCaptureSuccess: boolean = false;
 
   constructor(
     private router: Router,
@@ -60,25 +61,11 @@ export class NewRegisterMnpFaceCapturePageComponent implements OnInit, OnDestroy
   }
 
   onCameraCompleted(image: string): void {
-
-    const cropOption = {
-      sizeWidth: 160,
-      sizeHeight: 240,
-      startX: 80,
-      startY: 0,
-      flip: true,
-      quality: 1
+    this.isCaptureSuccess = image ? true : false;
+    this.transaction.data.faceRecognition = {
+      imageFaceUser: image
     };
 
-    new ImageUtils().cropping(image, cropOption).then(res => {
-      this.transaction.data.faceRecognition = {
-        imageFaceUser: res
-      };
-    }).catch(() => {
-      this.transaction.data.faceRecognition = {
-        imageFaceUser: image
-      };
-    });
   }
 
   onCameraError(error: string): void {

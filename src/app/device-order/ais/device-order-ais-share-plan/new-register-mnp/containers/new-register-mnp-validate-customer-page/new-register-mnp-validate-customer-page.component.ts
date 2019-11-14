@@ -133,7 +133,6 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
           }
         );
         this.validateCustomerService.createTransaction(transactionObject).then((response: any) => {
-          console.log('transactionObject', transactionObject);
           this.pageLoadingService.closeLoading();
           if (response.data.isSuccess) {
             this.transaction = transactionObject;
