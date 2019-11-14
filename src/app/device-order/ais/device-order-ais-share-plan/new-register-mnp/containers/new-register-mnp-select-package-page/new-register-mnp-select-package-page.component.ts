@@ -66,6 +66,7 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
 
   onCompleted(promotion: any): void {
     this.transaction.data.mainPackage = promotion;
+    this.callServiceRequestQueryListLov(this.translateService.currentLang);
   }
 
   onBack(): void {
@@ -80,7 +81,6 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
   onNext(): void {
     if (this.transaction.data.mainPackage) {
       if (this.transaction.data.mainPackage.customAttributes.promotionCode) {
-        this.callServiceRequestQueryListLov(this.translateService.currentLang);
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_NETWORK_TYPE]);
       }
     }
@@ -127,6 +127,8 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
         };
         return this.http.post(`/api/customerportal/myChannel/getPromotionsByCodes`, RequestGetPromotionsByCodes).toPromise()
           .then((res: any) => {
+            console.log('res=>', res);
+
             const data = res.data.data || [];
             // mock packageList for subShelve
             const packageList: any = [{
@@ -163,65 +165,16 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
                 })
               };
             });
-            console.log('promotionShelves', promotionShelves);
             return Promise.resolve(promotionShelves);
           });
-      })
-      .then((res) => {
-      // this.transaction.data = {
-      //   ...this.transaction.data,
-      //   mainPackage : {
-      //     memberMainPackage : {
-      //       // title: res.title
-      //     }
-      //   }
-      // }
-        // this.promotionShelves = this.buildPromotionShelveActive(promotionShelves);
+      }).then((res) => {
+        const mapMemberMainPackage = res[0]['promotions'][0]['items'][0].value || '';
+        this.transaction.data.mainPackage.memberMainPackage = mapMemberMainPackage;
       })
       .then(() => {
         this.pageLoadingService.closeLoading();
       });
 
-  }
-
-  buildPromotionShelveActive(promotionShelves: PromotionShelve[]): PromotionShelve[] {
-    const mainPackageMember: any = this.transaction.data.mainPackage.memberMainPackage || {};
-    if (!promotionShelves || promotionShelves.length <= 0) {
-      return;
-    }
-    if (mainPackageMember) {
-      let promotionShelveIndex = 0, promotionShelveGroupIndex = 0;
-      for (let i = 0; i < promotionShelves.length; i++) {
-        const promotions = promotionShelves[i].promotions || [];
-
-        let itemActive = false;
-        for (let ii = 0; ii < promotions.length; ii++) {
-          const active = (promotions[ii].items || []).find((promotionShelveItem: PromotionShelveItem) => {
-            return ('' + promotionShelveItem.id) === ('' + mainPackageMember.itemId);
-          });
-          if (!!active) {
-            itemActive = true;
-            promotionShelveIndex = i;
-            promotionShelveGroupIndex = ii;
-            continue;
-          }
-        }
-
-        if (!itemActive) {
-          promotions[0].active = true;
-        }
-      }
-      promotionShelves[promotionShelveIndex].active = true;
-      promotionShelves[promotionShelveIndex].promotions[promotionShelveGroupIndex].active = true;
-    } else {
-      promotionShelves[0].active = true;
-      promotionShelves.forEach((promotionShelve: PromotionShelve) => {
-        if (promotionShelve.promotions && promotionShelve.promotions.length > 0) {
-          promotionShelve.promotions[0].active = true;
-        }
-      });
-    }
-    return promotionShelves;
   }
 
   checkTranslateLang(lang: any): void {
