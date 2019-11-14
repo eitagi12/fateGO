@@ -32,8 +32,7 @@ export class NewSharePlanMnpValidateCustomerKeyInPageComponent implements OnInit
   }
 
   ngOnInit(): void {
-    this.activatedRoute.queryParams.subscribe((params: Params) => this.params = params);
-
+    this.params = this.activatedRoute.snapshot.queryParams['idCardNo'];
     this.callService();
   }
 

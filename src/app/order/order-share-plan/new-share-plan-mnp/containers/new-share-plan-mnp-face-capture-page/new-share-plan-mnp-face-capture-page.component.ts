@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_ID_CARD_CAPTURE_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_FACE_COMPARE_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE } from '../../constants/route-path.constant';
 import { TranslateService } from '@ngx-translate/core';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
-import { Utils, ImageUtils, AlertService } from 'mychannel-shared-libs';
+import { Utils, AlertService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 
@@ -19,6 +19,7 @@ export class NewSharePlanMnpFaceCapturePageComponent implements OnInit, OnDestro
   camera: EventEmitter<void> = new EventEmitter<void>();
   transaction: Transaction;
   isCaptureSuccess: boolean = false;
+
   constructor(
     private router: Router,
     private translation: TranslateService,
@@ -30,10 +31,6 @@ export class NewSharePlanMnpFaceCapturePageComponent implements OnInit, OnDestro
   }
 
   ngOnInit(): void {
-    // if (this.transaction && this.transaction.data &&
-    //   this.transaction.data.faceRecognition) {
-    //   delete this.transaction.data.faceRecognition.imageFaceUser;
-    // }
   }
 
   onBack(): void {

@@ -7,7 +7,7 @@
   </mc-header>
   <div class="mc-flex-wrap">
     <div class="mb-3 mt-3">
-      <mc-validate-customer-key-in [idCardNo]="params?.idCardNo" [prefixes]="prefixes" [cardTypes]="cardTypes"
+      <mc-validate-customer-key-in [idCardNo]="params" [prefixes]="prefixes" [cardTypes]="cardTypes"
         (completed)="onCompleted($event)" (error)="onError($event)">
       </mc-validate-customer-key-in>
     </div>

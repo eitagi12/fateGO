@@ -262,16 +262,7 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
   }
 
   onBack(): void {
-    if (this.isPackageNetExtreme()) {
-      this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MEMBER_PAGE]);
-      // this.router.navigate([ROUTE_ORDER_NEW_REGISTER_MERGE_BILLING_PAGE]);
-    } else {
-      if (this.transaction.data.onTopPackage) {
-        // this.router.navigate([ROUTE_ORDER_NEW_REGISTER_ON_TOP_PAGE]);
-      } else {
-        this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MEMBER_PAGE]);
-      }
-    }
+    this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MEMBER_PAGE]);
   }
 
   onNext(): void {

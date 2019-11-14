@@ -88,7 +88,8 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
     this.simSerialForm.controls.simSerial.valueChanges.subscribe((value) => {
       this.verifySimSerialByBarcode(value);
     });
-    if (typeof window.aisNative !== 'undefined') {
+
+    if (window.aisNative) {
       this.scanBarcodePC$ = of(true);
       window.onBarcodeCallback = (barcode: any): void => {
         if (barcode && barcode.length > 0) {
@@ -160,7 +161,6 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
 
   checkSimCardStatus(): void {
     const getCardStatus: number = 1000;
-    const showDialog: number = 1003;
     this.cardStatus = this.aisNative.sendIccCommand(this.command, getCardStatus, ''); // Get card status
     if (this.cardStatus === 'Card presented') {
       this.currentStatus = true;
@@ -215,7 +215,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
         this.persoSim = { progress: 20, eventName: 'กรุณารอสักครู่' };
         // $('.custom').animate({ width: 20 + '%' }, this.duration, () => {/**/ });
         // this.getCommandForPersoSim(this.readSimStatus);
-        if (this.statusFixSim === 'WaitingForPerso' && this.serialbarcode && this.orderType !== 'Port - In') {
+        if (this.statusFixSim === 'WaitingForPerso' && this.serialbarcode && this.orderType) {
           if (this.serialbarcode === this.getSerialNo) {
             this.verifySimRegionForPerso(this.getSerialNo);
           } else {
@@ -224,7 +224,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
             this.popupControl('errorSimSerialNotMacth', errMegFixSim);
           }
         } else {
-          if (this.orderType !== 'Port - In') {
+          if (this.orderType) {
             this.verifySimRegionForPerso(this.getSerialNo);
           } else {
             this.getCommandForPersoSim(this.readSimStatus);
@@ -245,7 +245,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
       this.transaction.data.simCard.mobileNo,
       getSerialNo,
       serialNo.split('|||')[indexPosition],
-      'Port - In' === this.orderType ? 'MNP-AWN' : 'Normal'
+      this.orderType === 'Port - In' ? 'MNP-AWN' : 'Normal'
     );
     this.queryPersoDataFn.then((simCommand: any): void => {
       if (simCommand) {
@@ -267,7 +267,6 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
         this.timeoutPersoSim = setTimeout(() => {
           // Progess 40%
           this.persoSim = { progress: 40, eventName: 'กรุณารอสักครู่' };
-          // $('.custom').animate({ width: 40 + '%' }, 0, () => {/**/ });
           this.persoSimCard(simCommand.data.refNo, parameter);
         }, delayTime);
       }
@@ -284,8 +283,6 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
 
   persoSimCard(refNo: string, parameter: string): void {
     const perso: number = 5;
-    const showDialog: number = 1001;
-    const closeDialog: number = 1002;
     if (this.isPC) {
       this.persoSim = this.aisNative.sendIccCommand(this.command, perso, parameter);
       setTimeout(() => {
@@ -295,28 +292,27 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
           this.persoSim = { progress: 60, eventName: 'กรุณารอสักครู่' };
           this.createdPersoSim(refNo);
         } else {
-          if (!this.persoSimCounter) {
-            this.persoSimCounter = true;
-            this.getCommandForPersoSim(this.readSimStatus);
-          } else {
-            this.popupControl('errorSim', '');
-          }
+          this.commandForPersoSim();
         }
       }, 5000);
     } else {
-      const persoSimza = this.aisNative.sendIccCommand(this.command, perso, parameter); // perso Sim+
-      const persoSimStatus: string[] = persoSimza.split('|||');
+      const persoSim = this.aisNative.sendIccCommand(this.command, perso, parameter); // perso Sim+
+      const persoSimStatus: string[] = persoSim.split('|||');
       this.persoSim = { progress: 60, eventName: 'กรุณารอสักครู่' };
       if (persoSimStatus[0].toLowerCase() === 'true') {
         this.createdPersoSim(refNo);
       } else {
-        if (!this.persoSimCounter) {
-          this.persoSimCounter = true;
-          this.getCommandForPersoSim(this.readSimStatus);
-        } else {
-          this.popupControl('errorSim', '');
-        }
+        this.commandForPersoSim();
       }
+    }
+  }
+
+  commandForPersoSim(): void {
+    if (!this.persoSimCounter) {
+      this.persoSimCounter = true;
+      this.getCommandForPersoSim(this.readSimStatus);
+    } else {
+      this.popupControl('errorSim', '');
     }
   }
 
@@ -329,12 +325,12 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
           this.persoSim = { progress: 80, eventName: 'กรุณารอสักครู่' };
           this.checkOrderStatus(refNo);
         } else {
-          const tenSecond: number = 60000;
+          const oneMinutes: number = 60000;
           const loop: number = 3;
           if (this.createTxPersoCounter < loop) {
             this.timeoutCreatePersoSim = setTimeout(() => {
               this.createdPersoSim(refNo);
-            }, tenSecond);
+            }, oneMinutes);
             this.createTxPersoCounter++;
           } else {
             this.popupControl('errorSim', '');
@@ -342,12 +338,12 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
         }
       }
     }).catch(() => {
-      const tenSecond: number = 60000;
+      const oneMinutes: number = 60000;
       const loop: number = 3;
       if (this.createTxPersoCounter < loop) {
         this.timeoutCreatePersoSim = setTimeout(() => {
           this.createdPersoSim(refNo);
-        }, tenSecond);
+        }, oneMinutes);
         this.createTxPersoCounter++;
       } else {
         this.popupControl('errorSim', '');
@@ -364,7 +360,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
     let errorCode: string;
     let returnMessage: string;
     let errMegFixSim: string;
-    if (this.simSerialForm.controls['simSerial'].valid && this.orderType !== 'Port - In') {
+    if (this.simSerialForm.controls['simSerial'].valid && this.orderType) {
       this.checktSimInfoFn = this.getChecktSimInfo(this.mobileNo, barcode);
       this.checktSimInfoFn.then((simInfo: any) => {
         this.pageLoadingService.openLoading();
@@ -447,12 +443,12 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
           setTimeout(() => {
           }, this.duration);
         } else {
-          const tenSecond: number = 60000;
+          const oneMinutes: number = 60000;
           const loop: number = 3;
           if (this.checkOrderCounter < loop) {
             this.timeoutCheckOrderStatus = setTimeout(() => {
               this.checkOrderStatus(refNo);
-            }, tenSecond);
+            }, oneMinutes);
             this.checkOrderCounter++;
           } else if (this.checkOrderCounter === loop) {
             this.popupControl('errorOrder', '');
@@ -464,12 +460,12 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
         }
       }
     }).catch((e: any): void => {
-      const tenSecond: number = 60000;
+      const oneMinutes: number = 60000;
       const loop: number = 3;
       if (this.checkOrderCounter < loop) {
         this.timeoutCheckOrderStatus = setTimeout(() => {
           this.checkOrderStatus(refNo);
-        }, tenSecond);
+        }, oneMinutes);
         this.checkOrderCounter++;
       } else if (this.checkOrderCounter === loop) {
         this.popupControl('errorOrder', '');
@@ -581,8 +577,8 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
         messageSim: ''
       },
       read: {
-        message: 'Port - In' === this.orderType ? 'กรุณารอสักครู่ ระบบกำลังดำเนินการ' : 'กรุณารอสักครู่ ระบบกำลังดำเนินการเปิดเบอร์ใหม่',
-        messageSim: 'Port - In' === this.orderType ? '(ห้ามนำซิมการ์ดออก)' : ''
+        message: 'กรุณารอสักครู่ ระบบกำลังดำเนินการเปิดเบอร์ใหม่',
+        messageSim: ''
       }
     };
     this.stateMessage = state[isState].message;
@@ -608,14 +604,15 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
     clearTimeout(this.timeoutCreatePersoSim);
     clearTimeout(this.timeoutReadSim);
     clearTimeout(this.timeoutPersoSim);
-    if (this.orderType !== 'Port - In') {
+    if (this.orderType) {
       this.simSerialKeyIn = '';
       this.isStateStatus = 'waitingFixSim';
       this.statusFixSim = 'waitingForCheck';
       this.setIntervalSimCard();
-    } else {
-      this.onBack();
     }
+    // else {
+    //   this.onBack();
+    // }
   }
 
   onBackSign(): void {
@@ -657,9 +654,9 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
       this.transaction.data.simCard = Object.assign(this.transaction.data.simCard, {
         simSerial: this.simSerialForm.controls.simSerial.value
       });
-    this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_MNP_PAGE]);
+      this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_MNP_PAGE]);
+    }
   }
-}
 
   onSerialNumberChanged(data?: any): void {
     this.statusFixSim = 'waitingForCheck';
@@ -698,9 +695,6 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
     clearTimeout(this.timeoutCreatePersoSim);
     clearTimeout(this.timeoutReadSim);
     clearTimeout(this.timeoutPersoSim);
-    if (this.isPC) {
-      // this._ws.onclose();
-    }
   }
 
 }

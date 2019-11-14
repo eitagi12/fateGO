@@ -22,6 +22,8 @@ declare var window: any;
 
 export class NewSharePlanMnpResultPageComponent implements OnInit {
 
+  @ViewChild(ResizeImageComponent) resizeImage: ResizeImageComponent;
+  @Input() previewImage: string[] = [];
   wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
   public isSuccess: boolean = true;
   public transaction: Transaction;
@@ -30,13 +32,11 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
   public simSerial: string;
   public simSerialMember: string;
 
-  @ViewChild(ResizeImageComponent) resizeImage: ResizeImageComponent;
   aisNative: any = window.aisNative;
   getEApplicationFn: any;
-  @Input() previewImage: string[] = [];
   images: string[] = [];
   orderNo: any = [];
-  public MSG_ERROR_DEFAULT: string = 'ขออภัยระบบไม่สามารถทำรายการได้';
+  MSG_ERROR_DEFAULT: string = 'ขออภัยระบบไม่สามารถทำรายการได้';
 
   constructor(
     private router: Router,

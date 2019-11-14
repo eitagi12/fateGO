@@ -95,13 +95,8 @@ export class NewSharePlanMnpEbillingAddressPageComponent implements OnInit, OnDe
   onProvinceSelected(params: any): void {
     const province = this.getProvinceByName(params.provinceName);
     const req = {
-      provinceId: province.id,
-      // zipcode: params.zipCode
+      provinceId: province.id
     };
-    // if (!params.zipCode) {
-    //   delete req.zipcode;
-    // }
-
     this.http.get('/api/customerportal/newRegister/queryAmphur', {
       params: req
     }).subscribe((resp: any) => {
@@ -116,12 +111,7 @@ export class NewSharePlanMnpEbillingAddressPageComponent implements OnInit, OnDe
     const req = {
       provinceId: province.id,
       amphurName: params.amphurName,
-      // zipcode: params.zipCode
     };
-    // if (!params.zipCode) {
-    //   delete req.zipcode;
-    // }
-
     this.http.get('/api/customerportal/newRegister/queryTumbol', {
       params: req
     }).subscribe((resp: any) => {

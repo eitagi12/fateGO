@@ -13,7 +13,7 @@ import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/
 })
 export class NewSharePlanMnpValidateCustomerPageComponent implements OnInit, OnDestroy {
 
-  public identityValid: Boolean;
+  identityValid: Boolean;
   identity: string;
   transaction: Transaction;
 
@@ -40,6 +40,10 @@ export class NewSharePlanMnpValidateCustomerPageComponent implements OnInit, OnD
 
   onReadCard(): void {
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
+  }
+
+  onBack(): void {
+    window.location.href = '/sales-portal/dashboard';
   }
 
   onNext(): void {
@@ -117,4 +121,5 @@ export class NewSharePlanMnpValidateCustomerPageComponent implements OnInit, OnD
   ngOnDestroy(): void {
     this.transactionService.save(this.transaction);
   }
+
 }

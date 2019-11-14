@@ -17,6 +17,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 })
 export class NewSharePlanMnpSelectPackageMemberPageComponent implements OnInit, OnDestroy {
 
+  @ViewChild('conditionTemplate') conditionTemplate: any;
   wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
   transaction: Transaction;
   translateSubscribe: Subscription;
@@ -24,7 +25,6 @@ export class NewSharePlanMnpSelectPackageMemberPageComponent implements OnInit, 
   promotionShelves: PromotionShelve[];
   condition: any;
   modalRef: BsModalRef;
-  @ViewChild('conditionTemplate') conditionTemplate: any;
 
   constructor(
     private router: Router,
@@ -120,20 +120,21 @@ export class NewSharePlanMnpSelectPackageMemberPageComponent implements OnInit, 
     if (!promotionShelves || promotionShelves.length <= 0) {
       return;
     }
-    if (mainPackageMember) {
+    // feedItemId = promotionCode
+    if (mainPackageMember && mainPackageMember.feedItemId) {
       let promotionShelveIndex = 0, promotionShelveGroupIndex = 0;
       for (let i = 0; i < promotionShelves.length; i++) {
         const promotions = promotionShelves[i].promotions || [];
 
         let itemActive = false;
-        for (let ii = 0; ii < promotions.length; ii++) {
-          const active = (promotions[ii].items || []).find((promotionShelveItem: PromotionShelveItem) => {
+        for (let j = 0; j < promotions.length; j++) {
+          const active = (promotions[j].items || []).find((promotionShelveItem: PromotionShelveItem) => {
             return ('' + promotionShelveItem.id) === ('' + mainPackageMember.itemId);
           });
           if (!!active) {
             itemActive = true;
             promotionShelveIndex = i;
-            promotionShelveGroupIndex = ii;
+            promotionShelveGroupIndex = j;
             continue;
           }
         }

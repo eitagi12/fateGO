@@ -212,8 +212,7 @@ export class NewSharePlanMnpPersoSimMnpPageComponent implements OnInit, OnDestro
     public fb: FormBuilder,
     private zone: NgZone,
     private pageLoadingService: PageLoadingService,
-    private http: HttpClient,
-    private route: Router
+    private http: HttpClient
   ) {
     this.transaction = this.transactionService.load();
   }

@@ -13,6 +13,8 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class NewSharePlanMnpValidateCustomerIdCardPageComponent implements OnInit, OnDestroy {
 
+  @ViewChild(ValidateCustomerIdCardComponent)
+  validateCustomerIdcard: ValidateCustomerIdCardComponent;
   kioskApi: boolean;
   transaction: Transaction;
   profile: ReadCardProfile;
@@ -20,8 +22,6 @@ export class NewSharePlanMnpValidateCustomerIdCardPageComponent implements OnIni
   readCardValid: boolean;
   progressReadCard: number;
   billDeliveryAddress: Customer;
-  @ViewChild(ValidateCustomerIdCardComponent)
-  validateCustomerIdcard: ValidateCustomerIdCardComponent;
 
   constructor(
     private utils: Utils,

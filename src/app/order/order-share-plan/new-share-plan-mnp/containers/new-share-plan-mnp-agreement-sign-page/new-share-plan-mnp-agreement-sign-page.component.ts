@@ -6,7 +6,6 @@ import { AlertService } from 'mychannel-shared-libs';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { TranslateService } from '@ngx-translate/core';
-import * as Moment from 'moment';
 import { environment } from 'src/environments/environment';
 
 declare let $: any;
@@ -24,8 +23,7 @@ export class NewSharePlanMnpAgreementSignPageComponent implements OnInit, OnDest
   signatureText: string = 'เซ็นลายเซ็น';
   img: any;
   signature: boolean = false;
-  date: any;
-  today: any;
+  currentDate: any;
   imageSignature: string;
   imageSignatureBase64: string;
   isDeviceSale: boolean;
@@ -50,9 +48,8 @@ export class NewSharePlanMnpAgreementSignPageComponent implements OnInit, OnDest
     private translationService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
-    this.date = Moment();
-    // tslint:disable-next-line:radix
-    this.today = this.date.format('DD') + '/' + this.date.format('MM') + '/' + (parseInt(this.date.format('YYYY')) + 543);
+    const date = new Date();
+    this.currentDate = date.toLocaleString('th-TH', { day: 'numeric', month: 'numeric', year: 'numeric' });
   }
 
   ngOnInit(): void {
@@ -86,7 +83,6 @@ export class NewSharePlanMnpAgreementSignPageComponent implements OnInit, OnDest
         });
       }
     };
-
   }
 
   onSignPad(): void {
@@ -97,26 +93,24 @@ export class NewSharePlanMnpAgreementSignPageComponent implements OnInit, OnDest
         _ws.send(message);
       });
 
+      // Web socket get message
       _ws.onmessage = ((evt: any) => {
-        // Web socket get message
         this.signature = true;
         this.onGetMessage(evt.data);
       });
+
+      // websocket is closed.
       _ws.onclose = (() => {
-        // websocket is closed.
       });
 
       _ws.onerror = ((evt: any) => {
         this.alertService.error('ไม่สามารถเซ็นลายเซ็นได้ กรุณาตรวจสอบ AISWebConnect หรือติดต่อ 02-029-6303');
-        // this.alertService.openPopup();
         if (environment.name !== 'prod' && environment.name !== 'sit') {
           window.onSignatureCallback(this.mockSignature);
         }
       });
     } else {
-      // The browser doesn't support WebSocket
       this.alertService.error('ไม่สามารถเซ็นลายเซ็นได้ กรุณาตรวจสอบ AISWebConnect หรือติดต่อ 02-029-6303');
-      // this.alertService.openPopup();
       if (environment.name !== 'prod' && environment.name !== 'sit') {
         window.onSignatureCallback(this.mockSignature);
       }
@@ -155,10 +149,6 @@ export class NewSharePlanMnpAgreementSignPageComponent implements OnInit, OnDest
     }
   }
 
-  ngOnDestroy(): void {
-    this.transactionService.update(this.transaction);
-  }
-
   onBack(): void {
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_SUMMARY_PAGE]);
   }
@@ -173,7 +163,10 @@ export class NewSharePlanMnpAgreementSignPageComponent implements OnInit, OnDest
     } else {
       this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_NEW_PAGE]);
     }
+  }
 
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
   }
 
 }

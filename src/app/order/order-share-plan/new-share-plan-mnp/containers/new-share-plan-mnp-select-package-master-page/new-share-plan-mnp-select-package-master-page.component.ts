@@ -18,8 +18,8 @@ import { ROUTE_NEW_SHARE_PLAN_MNP_NETWORK_TYPE_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_VE
 })
 export class NewSharePlanMnpSelectPackageMasterPageComponent implements OnInit, OnDestroy {
 
-  wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
   @ViewChild('conditionTemplate')
+  wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
   conditionTemplate: any;
   transaction: Transaction;
   promotionShelves: PromotionShelve[];
@@ -141,14 +141,14 @@ export class NewSharePlanMnpSelectPackageMasterPageComponent implements OnInit, 
         const promotions = promotionShelves[i].promotions || [];
 
         let itemActive = false;
-        for (let ii = 0; ii < promotions.length; ii++) {
-          const active = (promotions[ii].items || []).find((promotionShelveItem: PromotionShelveItem) => {
+        for (let j = 0; j < promotions.length; j++) {
+          const active = (promotions[j].items || []).find((promotionShelveItem: PromotionShelveItem) => {
             return ('' + promotionShelveItem.id) === ('' + mainPackage.itemId);
           });
           if (!!active) {
             itemActive = true;
             promotionShelveIndex = i;
-            promotionShelveGroupIndex = ii;
+            promotionShelveGroupIndex = j;
             continue;
           }
         }
