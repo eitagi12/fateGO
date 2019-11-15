@@ -230,7 +230,7 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent imp
       locationReceipt: this.user.locationCode,
       userId: this.user.username,
       cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
-      soChannelType: 'MC_KIOSK',
+      soChannelType: 'CSP',
       soDocumentType: 'RESERVED',
       productList: [product],
 

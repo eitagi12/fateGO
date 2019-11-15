@@ -561,7 +561,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
       locationReceipt: this.user.locationCode,
       userId: this.user.username,
       cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim(),
-      soChannelType: 'MC_KIOSK',
+      soChannelType: 'CSP',
       soDocumentType: 'RESERVED',
       productList: [product],
 
