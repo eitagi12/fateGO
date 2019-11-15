@@ -48,7 +48,7 @@ export class DeviceOrderAisExistingAggregatePageComponent implements OnInit, OnD
       return ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_SUMMARY_PAGE;
     } else if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment') ||
       this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'advancePayment')) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_OMISE_SUMMARY_PAGE]);
+      return ROUTE_DEVICE_ORDER_AIS_EXISTING_OMISE_SUMMARY_PAGE;
     } else {
       return ROUTE_DEVICE_ORDER_AIS_EXISTING_QUEUE_PAGE;
     }
