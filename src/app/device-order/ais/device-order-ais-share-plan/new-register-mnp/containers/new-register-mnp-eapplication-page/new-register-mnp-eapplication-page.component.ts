@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CreateEapplicationService } from 'src/app/shared/services/create-eapplication.service';
-import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Router } from '@angular/router';
 import { HomeService, PageLoadingService, ShoppingCart } from 'mychannel-shared-libs';
@@ -12,6 +11,7 @@ import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE,
   ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_AGGREGATE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PERSO_SIM_MASTER_PAGE,
   ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PERSO_SIM_MEMBER_PAGE } from '../../constants/route-path.constant';
+import { Transaction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
 
 @Component({
   selector: 'app-new-register-mnp-eapplication-page',
@@ -67,7 +67,7 @@ export class NewRegisterMnpEapplicationPageComponent implements OnInit, OnDestro
   }
 
   onNext(): void {
-    if (this.transaction.data.simCard.persoSim) {
+    if (this.transaction.data.sim_card.persoSim) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PERSO_SIM_MASTER_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PERSO_SIM_MEMBER_PAGE]);

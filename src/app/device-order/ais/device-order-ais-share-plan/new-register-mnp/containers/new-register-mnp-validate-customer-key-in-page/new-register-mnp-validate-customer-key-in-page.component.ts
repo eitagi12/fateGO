@@ -1,12 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Params, Router, ActivatedRoute } from '@angular/router';
 import { HomeService, CustomerService, AlertService, Utils, User, TokenService, PageLoadingService } from 'mychannel-shared-libs';
-import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE } from '../../constants/route-path.constant';
-import { Transaction, Order, TransactionType } from 'src/app/shared/models/transaction.model';
+import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_PAGE,
+         ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE } from '../../constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ValidateCustomerService } from 'src/app/shared/services/validate-customer.service';
+import { Transaction, Order, TransactionType } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
 @Component({
   selector: 'app-new-register-mnp-validate-customer-key-in-page',
   templateUrl: './new-register-mnp-validate-customer-key-in-page.component.html',

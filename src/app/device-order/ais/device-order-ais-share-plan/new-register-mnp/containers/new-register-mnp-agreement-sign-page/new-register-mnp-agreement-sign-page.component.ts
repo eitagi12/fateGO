@@ -1,15 +1,26 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, TokenService, ShoppingCart, CaptureAndSign, AlertService, User, ChannelType, AWS_WATERMARK, CaptureSignedWithCard, AisNativeService, Utils } from 'mychannel-shared-libs';
-import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
+import { HomeService,
+         TokenService,
+         ShoppingCart,
+         CaptureAndSign,
+         AlertService,
+         User,
+         ChannelType,
+         AWS_WATERMARK,
+         CaptureSignedWithCard,
+         AisNativeService,
+         Utils } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
-import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CAPTURE_PAGE
-} from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE,
+         ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CAPTURE_PAGE
+       } from '../../constants/route-path.constant';
 import { Subscription } from 'rxjs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { HttpClient } from '@angular/common/http';
+import { Transaction, Customer } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
 declare let window: any;
 @Component({
   selector: 'app-new-register-mnp-agreement-sign-page',

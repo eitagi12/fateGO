@@ -2,9 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } fr
 import { SimSerial, HomeService, AlertService, PageLoadingService, ShoppingCart, SimSerialComponent, AisNativeService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
-import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { environment } from 'src/environments/environment';
@@ -15,6 +13,7 @@ import {
   ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_NUMBER_PAGE
 } from '../../constants/route-path.constant';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { Transaction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
 
 @Component({
   selector: 'app-new-register-mnp-verify-instant-sim-page',
@@ -55,7 +54,7 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
 
   ngOnInit(): void {
     this.createForm();
-    delete this.transaction.data.simCard;
+    delete this.transaction.data.sim_card;
     this.shoppingCart = Object.assign(this.shoppingCartService.getShoppingCartData(), {
       mobileNo: ''
     });
@@ -84,7 +83,7 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
           mobileNo: simSerial.mobileNo,
           simSerial: serial
         };
-        this.transaction.data.simCard = {
+        this.transaction.data.sim_card = {
           mobileNo: this.simSerial.mobileNo,
           simSerial: this.simSerial.simSerial,
           persoSim: false
@@ -131,7 +130,7 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
       };
       console.log('this.simSerial |>', this.simSerial);
 
-      this.transaction.data.simCard = {
+      this.transaction.data.sim_card = {
         mobileNo: this.simSerial.mobileNo,
         simSerial: this.simSerial.simSerial,
         persoSim: false

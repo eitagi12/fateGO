@@ -2,13 +2,13 @@ import { Component, OnInit, EventEmitter, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HomeService, Utils, AlertService, ImageUtils, ShoppingCart } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Transaction } from 'src/app/shared/models/transaction.model';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import {
   ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_AGREEMENT_SIGN_PAGE,
   ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_COMPARE_PAGE
 } from '../../constants/route-path.constant';
+import { Transaction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
 
 @Component({
   selector: 'app-new-register-mnp-face-capture-page',

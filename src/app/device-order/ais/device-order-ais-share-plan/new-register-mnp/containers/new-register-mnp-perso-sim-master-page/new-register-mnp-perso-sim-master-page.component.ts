@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { Subscription, Observable, of } from 'rxjs';
-import { Transaction } from 'src/app/shared/models/transaction.model';
 import { ShoppingCart,
          HomeService,
         //  TokenService,
@@ -21,6 +20,7 @@ import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_EAPPLICATION_PAGE,
 // import { environment } from 'src/environments/environment';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { Validators, FormBuilder } from '@angular/forms';
+import { Transaction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
 
 export interface OptionPersoSim {
   key_sim?: boolean;
@@ -125,7 +125,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
   }
 
   ngOnInit(): void {
-    this.masterSimCard = this.transaction.data.simCard;
+    this.masterSimCard = this.transaction.data.sim_card;
     this.simSerialForm.controls.simSerial.valueChanges.subscribe((value) => {
       this.verifySimSerialByBarcode(value);
     });
@@ -370,7 +370,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
       this.getSerialNo = simStatus[1].slice(cutNoSerialNumber);
       // this.aisNative.sendIccCommand(this.command, closeDialog, ''); //dismiss dialogReadSim
       if (this.getSerialNo) {
-        this.transaction.data.simCard = Object.assign(this.transaction.data.simCard, {
+        this.transaction.data.sim_card = Object.assign(this.transaction.data.sim_card, {
           simSerial: this.getSerialNo
         });
       }
@@ -407,7 +407,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
     let getSerialNo: any = serialNo.split('|||');
     getSerialNo = getSerialNo[1].slice(cutNoSerialNumber);
     this.queryPersoDataFn = this.getPersoDataCommand(
-      this.transaction.data.simCard.mobileNo,
+      this.transaction.data.sim_card.mobileNo,
       getSerialNo,
       serialNo.split('|||')[indexPosition],
       'Port - In' === this.orderType ? 'MNP-AWN' : 'Normal'
@@ -646,8 +646,8 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
   }
 
   onNext(): void {
-    if (!this.transaction.data.simCard.simSerial) {
-      this.transaction.data.simCard = Object.assign(this.transaction.data.simCard, {
+    if (!this.transaction.data.sim_card.simSerial) {
+      this.transaction.data.sim_card = Object.assign(this.transaction.data.sim_card, {
         simSerial: this.simSerialForm.controls.simSerial.value
       });
     }

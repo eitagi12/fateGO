@@ -22,7 +22,7 @@
                                 {{'เลือกแพ็กเกจใหม่' | translate}} <span class="minimum-package">({{'แพ็กเกจเริ่มต้น' | translate}} {{
                   priceOption?.privilege?.minimumPackagePrice }} {{'บาท'| translate}})</span>
                             </div>
-                            <mc-promotion-shelve [selected]="transaction?.data?.mainPackage" [promotionShelves]="promotionShelves" (completed)="onCompleted($event)"></mc-promotion-shelve>
+                            <mc-promotion-shelve [selected]="transaction?.data?.main_package" [promotionShelves]="promotionShelves" (completed)="onCompleted($event)"></mc-promotion-shelve>
                         </div>
                     </div>
                 </div>
@@ -32,7 +32,7 @@
     </div>
     <mc-footer>
         <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-        <button class="btn btn-success" (click)="onNext()" [disabled]="!(!!transaction?.data?.mainPackage)">NEXT</button>
+        <button class="btn btn-success" (click)="onNext()" [disabled]="!(!!transaction?.data?.main_package)">NEXT</button>
     </mc-footer>
 </div>
 

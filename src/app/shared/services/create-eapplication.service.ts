@@ -93,11 +93,11 @@ export class CreateEapplicationService {
 
   getRequestEapplicationSuperKhumSharePlanMnp(transaction: any, language: any): any {
     const customer: any = transaction.data.customer || {};
-    const billingInformation: any = transaction.data.billingInformation || {};
+    const billingInformation: any = transaction.data.billing_information || {};
     const billCycleData: any = billingInformation.billCycleData || {};
     const action: any = transaction.data.action;
-    const mainPackage: any = transaction.data.mainPackage.memberMainPackage || {};
-    const simCard: any = transaction.data.simCard.memberSimCard[0] || {}; // Get simNo of member
+    const mainPackage: any = transaction.data.main_package.memberMainPackage || {};
+    const simCard: any = transaction.data.sim_card.memberSimCard[0] || {}; // Get simNo of member
     const data: any = {
       fullNameTH: language === 'EN' ? `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}` :
         customer.firstName + ' ' + customer.lastName || '',
@@ -151,13 +151,13 @@ export class CreateEapplicationService {
     return data;
   }
 
-  getRequestEapplicationSuperKhumSharePlanNewRegister(transaction: Transaction, language: any): any {
+  getRequestEapplicationSuperKhumSharePlanNewRegister(transaction: any, language: any): any {
     const customer: any = transaction.data.customer || {};
-    const billingInformation: any = transaction.data.billingInformation || {};
+    const billingInformation: any = transaction.data.billing_information || {};
     const billCycleData: any = billingInformation.billCycleData || {};
     const action: any = transaction.data.action;
-    const mainPackage: any = transaction.data.mainPackage || {};
-    const simCard: any = transaction.data.mainPackage.simCard || transaction.data.simCard || {};
+    const mainPackage: any = transaction.data.main_package || {};
+    const simCard: any = transaction.data.sim_card || {};
 
     const data: any = {
       fullNameTH: language === 'EN' ? `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}` :

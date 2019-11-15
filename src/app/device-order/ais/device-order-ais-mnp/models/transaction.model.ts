@@ -57,25 +57,25 @@ export interface Transaction {
 export interface TransactionData {
   transactionType: TransactionType;
   action: TransactionAction;
-  mainPromotion?: MainPromotion;
-  airTime?: AirTime;
+  main_promotion?: MainPromotion;
+  air_time?: AirTime;
   customer?: Customer;
-  simCard?: SimCard;
-  mainPackage?: MainPackage;
+  sim_card?: SimCard;
+  main_package?: MainPackage;
   currentPackage?: CurrentPackage;
   onTopPackage?: OnTopPackage;
   deleteOntopPackage?: DeleteOntopPackage[];
   mainPackageOneLove?: any[];
-  mobileCarePackage?: MobileCarePackage;
+  mobile_care_package?: MobileCarePackage;
   faceRecognition?: FaceRecognition;
   existingMobileCare?: ExistingMobileCare;
   order?: Order;
   reasonCode?: string;
-  billingInformation?: BillingInformation;
+  billing_information?: BillingInformation;
   seller?: Seller;
   payment?: any;
   advancePayment?: Payment;
-  receiptInfo?: ReceiptInfo;
+  receipt?: ReceiptInfo;
   queue?: Queue;
   preBooking?: Prebooking;
   discount?: Discount;
@@ -215,6 +215,7 @@ export interface SimCard {
   privilegeCode?: string;
   nType?: string;
   mobileNoStatus?: 'Active' | 'Suspended';
+  memberSimCard?: Array<any>;
 }
 
 export interface MainPackage {
@@ -232,6 +233,7 @@ export interface MainPackage {
   statementEng?: string;
   parameters?: any;
   [key: string]: any;
+  memberMainPackage?: Array<any>;
 }
 
 export interface CurrentPackage {

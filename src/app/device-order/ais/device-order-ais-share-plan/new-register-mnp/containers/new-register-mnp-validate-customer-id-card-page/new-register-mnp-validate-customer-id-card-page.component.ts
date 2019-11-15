@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
+
 import { ReadCardProfile, HomeService, TokenService, PageLoadingService, User, ValidateCustomerIdCardComponent, Utils, AlertService, KioskControls, ChannelType } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -11,6 +11,7 @@ import { SharedTransactionService } from 'src/app/shared/services/shared-transac
 import { TranslateService } from '@ngx-translate/core';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE } from '../../constants/route-path.constant';
 import { ValidateCustomerService } from 'src/app/shared/services/validate-customer.service';
+import { Transaction, TransactionType, TransactionAction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
 
 @Component({
   selector: 'app-new-register-mnp-validate-customer-id-card-page',
@@ -144,7 +145,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
               .then((resp: any) => {
                 const params: any = resp.data || {};
                 this.toBillingInformation(params).then((billingInfo: any) => {
-                  this.transaction.data.billingInformation = billingInfo || {};
+                  this.transaction.data.billing_information = billingInfo || {};
                 });
                 return this.conditionIdentityValid()
                   .catch((msg: string) => {

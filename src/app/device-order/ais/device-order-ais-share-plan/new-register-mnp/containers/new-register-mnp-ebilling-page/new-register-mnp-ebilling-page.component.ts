@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Transaction } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
 import { HomeService, Ebilling } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CONFIRM_USER_INFORMATION_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
+import { Transaction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
 
 @Component({
   selector: 'app-new-register-mnp-ebilling-page',
@@ -29,14 +29,14 @@ export class NewRegisterMnpEbillingPageComponent implements OnInit, OnDestroy {
   ) {
     this.transaction = this.transactionService.load();
 
-    if (!this.transaction.data.billingInformation) {
-      this.transaction.data.billingInformation = {};
+    if (!this.transaction.data.billing_information) {
+      this.transaction.data.billing_information = {};
     }
   }
 
   ngOnInit(): void {
     const customer: any = this.transaction.data.customer || {};
-    const billingInformation: any = this.transaction.data.billingInformation || {};
+    const billingInformation: any = this.transaction.data.billing_information || {};
     const billCycle = billingInformation.billCycle || {};
 
     this.http.get('/api/customerportal/newRegister/queryBillCycle', {
@@ -76,7 +76,7 @@ export class NewRegisterMnpEbillingPageComponent implements OnInit, OnDestroy {
   }
 
   onNext(): void {
-    this.transaction.data.billingInformation.billCycle = this.billCycle;
+    this.transaction.data.billing_information.billCycle = this.billCycle;
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CONFIRM_USER_INFORMATION_PAGE]);
   }
 

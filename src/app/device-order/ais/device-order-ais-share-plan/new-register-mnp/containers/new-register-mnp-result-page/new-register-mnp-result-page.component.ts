@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Transaction } from 'src/app/shared/models/transaction.model';
 import { environment } from 'src/environments/environment';
+import { Transaction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
 
 @Component({
   selector: 'app-new-register-mnp-result-page',
@@ -23,8 +23,8 @@ export class NewRegisterMnpResultPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const mainSim = this.transaction.data.simCard;
-    const memberSim = this.transaction.data.memberInfo.simCard;
+    const mainSim = this.transaction.data.sim_card;
+    const memberSim = this.transaction.data.sim_card.memberSimCard[0];
 
     this.isSuccess = true;
     this.mobileNo = mainSim.mobileNo;

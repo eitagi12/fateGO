@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { Transaction } from 'src/app/shared/models/transaction.model';
 import { PromotionShelve, ShoppingCart, HomeService, PageLoadingService, BillingSystemType, PromotionShelveItem } from 'mychannel-shared-libs';
 import { BsModalRef } from 'ngx-bootstrap';
 import { Subscription } from 'rxjs';
@@ -17,6 +16,7 @@ import {
   ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_NETWORK_TYPE
 } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
+import { Transaction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
 
 @Component({
   selector: 'app-new-register-mnp-select-package-page',
@@ -65,13 +65,13 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
   }
 
   onCompleted(promotion: any): void {
-    this.transaction.data.mainPackage = promotion;
+    this.transaction.data.main_package = promotion;
     this.callServiceRequestQueryListLov(this.translateService.currentLang);
   }
 
   onBack(): void {
-    delete this.transaction.data.mainPackage;
-    if (this.transaction.data.simCard.simSerial) {
+    delete this.transaction.data.main_package;
+    if (this.transaction.data.sim_card.simSerial) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VERIFY_INSTANT_SIM_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_BY_PATTERN_PAGE]);
@@ -79,8 +79,8 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
   }
 
   onNext(): void {
-    if (this.transaction.data.mainPackage) {
-      if (this.transaction.data.mainPackage.customAttributes.promotionCode) {
+    if (this.transaction.data.main_package) {
+      if (this.transaction.data.main_package.customAttributes.promotionCode) {
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_NETWORK_TYPE]);
       }
     }
@@ -103,7 +103,7 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
       },
       +privilege.minimumPackagePrice, +privilege.maximumPackagePrice)
       .then((promotionShelves: any) => {
-        this.promotionShelves = this.promotionShelveService.defaultBySelected(promotionShelves, this.transaction.data.mainPackage);
+        this.promotionShelves = this.promotionShelveService.defaultBySelected(promotionShelves, this.transaction.data.main_package);
         if (this.promotionShelves) {
           this.checkTranslateLang(this.translateService.currentLang);
         }
@@ -116,7 +116,7 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
   callServiceRequestQueryListLov(language: string): void {
     this.pageLoadingService.openLoading();
     const RequestQueryListLovConfigInfo: any = {
-      lovVal2: this.transaction.data.mainPackage.customAttributes.promotionCode
+      lovVal2: this.transaction.data.main_package.customAttributes.promotionCode
     };
     this.http.post(`/api/salesportal/queryListLovConfigInfo`, RequestQueryListLovConfigInfo).toPromise()
       .then((promotionCodes: any) => {
@@ -169,7 +169,7 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
           });
       }).then((res) => {
         const mapMemberMainPackage = res[0]['promotions'][0]['items'][0].value || {};
-        this.transaction.data.mainPackage.memberMainPackage = mapMemberMainPackage;
+        this.transaction.data.main_package.memberMainPackage = mapMemberMainPackage;
       })
       .then(() => {
         this.pageLoadingService.closeLoading();

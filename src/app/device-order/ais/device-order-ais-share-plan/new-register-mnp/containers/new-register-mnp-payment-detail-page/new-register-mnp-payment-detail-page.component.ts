@@ -6,7 +6,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { ShoppingCart, ReceiptInfo, Utils, HomeService, PaymentDetail, PaymentDetailBank, TokenService, User } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -16,6 +15,7 @@ import {
   ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE
 } from '../../constants/route-path.constant';
 import { BanksPromotionService } from 'src/app/device-order/services/banks-promotion.service';
+import { Transaction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
 
 @Component({
   selector: 'app-new-register-mnp-payment-detail-page',
@@ -64,7 +64,7 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
     const productDetail = this.priceOption.productDetail || {};
     const productStock = this.priceOption.productStock || {};
     const customer: any = this.transaction.data.customer || {};
-    const receiptInfo: any = this.transaction.data.receiptInfo || {};
+    const receiptInfo: any = this.transaction.data.receipt || {};
     const showQRCode: boolean = paymentMethod !== 'CC' && this.user.userType !== 'ASP'
       && this.user.channelType !== 'sff-web' && this.priceOption.productStock.company !== 'AWN';
 
@@ -177,7 +177,7 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
   onNext(): void {
     this.transaction.data.payment = this.paymentDetailTemp.payment;
     this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
-    this.transaction.data.receiptInfo = this.receiptInfoTemp;
+    this.transaction.data.receipt = this.receiptInfoTemp;
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE]);
   }
 

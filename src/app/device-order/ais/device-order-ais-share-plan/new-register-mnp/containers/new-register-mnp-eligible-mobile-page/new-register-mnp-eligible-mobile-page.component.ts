@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { EligibleMobile, HomeService, ShoppingCart, PageLoadingService, AlertService } from 'mychannel-shared-libs';
-import { Transaction, BillingAccount } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -11,6 +10,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { CheckChangeServiceService } from 'src/app/device-order/services/check-change-service.service';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_MOBILE_DETAIL_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
+import { Transaction, BillingAccount } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
 
 @Component({
   selector: 'app-new-register-mnp-eligible-mobile-page',
@@ -78,7 +78,7 @@ export class NewRegisterMnpEligibleMobilePageComponent implements OnInit, OnDest
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo, persoSim: false };
+    this.transaction.data.sim_card = { mobileNo: this.selectMobileNo.mobileNo, persoSim: false };
 
     if (this.selectMobileNo.privilegeCode) {
       this.transaction.data.customer.privilegeCode = this.selectMobileNo.privilegeCode;
@@ -98,7 +98,7 @@ export class NewRegisterMnpEligibleMobilePageComponent implements OnInit, OnDest
       )
       .then((privilegeCode) => {
         this.transaction.data.customer.privilegeCode = privilegeCode;
-        this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo };
+        this.transaction.data.sim_card = { mobileNo: this.selectMobileNo.mobileNo };
       })
       .then(() => this.checkKnoxGuard());
   }

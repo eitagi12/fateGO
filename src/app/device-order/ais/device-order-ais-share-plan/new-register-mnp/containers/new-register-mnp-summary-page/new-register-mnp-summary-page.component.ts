@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { Transaction, Seller } from 'src/app/shared/models/transaction.model';
 import { ShoppingCart, HomeService, Utils, TokenService, PageLoadingService, AlertService } from 'mychannel-shared-libs';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
@@ -14,6 +13,7 @@ import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_MOBILE_CARE_PAGE, RO
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Transaction, Seller } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
 
 @Component({
   selector: 'app-new-register-mnp-summary-page',

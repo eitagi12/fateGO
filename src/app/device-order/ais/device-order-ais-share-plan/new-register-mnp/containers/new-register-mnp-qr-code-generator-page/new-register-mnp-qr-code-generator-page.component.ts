@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HomeService, AlertService, TokenService, PageLoadingService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Transaction } from 'src/app/shared/models/transaction.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { QrCodePageService } from 'src/app/device-order/services/qr-code-page.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
@@ -10,6 +9,7 @@ import { environment } from 'src/environments/environment';
 import { Subscription } from 'rxjs/internal/Subscription';
 import * as moment from 'moment';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_QR_CODE_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_QR_CODE_QUEUE_PAGE } from '../../constants/route-path.constant';
+import { Transaction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
 
 @Component({
   selector: 'app-new-register-mnp-qr-code-generator-page',

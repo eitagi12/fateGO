@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Transaction } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { FormGroup } from '@angular/forms';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { environment } from 'src/environments/environment';
 import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
+import { Transaction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
 
 @Component({
   selector: 'app-new-register-mnp-qr-code-result-page',

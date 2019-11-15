@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Transaction } from 'src/app/shared/models/transaction.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertService, PageLoadingService, REGEX_MOBILE } from 'mychannel-shared-libs';
@@ -10,6 +9,7 @@ import { environment } from 'src/environments/environment';
 
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_REASON_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_PACKAGE_PAGE } from '../../constants/route-path.constant';
+import { Transaction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
 
 @Component({
   selector: 'app-new-register-mnp-network-type-page',
@@ -106,8 +106,8 @@ export class NewRegisterMnpNetworkTypePageComponent implements OnInit, OnDestroy
 
         if (!outbuf || (accountNo && (mobileNoStatus === 'Disconnect - Ported' || mobileNoStatus === 'U' || mobileNoStatus === 'T' ||
           mobileNoStatus === '')) || mobileNoStatus !== 'Active' && !(mobileNoStatus || networkType) || mobileNoStatus === '') {
-          this.transaction.data.simCard = {
-            ...this.transaction.data.simCard,
+          this.transaction.data.sim_card = {
+            ...this.transaction.data.sim_card,
             memberSimCard: [{
               mobileNo: mobileNoMember,
               simSerial: '',
@@ -126,8 +126,8 @@ export class NewRegisterMnpNetworkTypePageComponent implements OnInit, OnDestroy
         }
       }).catch(() => {
         this.pageLoadingService.closeLoading();
-        this.transaction.data.simCard = {
-          ...this.transaction.data.simCard,
+        this.transaction.data.sim_card = {
+          ...this.transaction.data.sim_card,
           memberSimCard: [{
             mobileNo: mobileNoMember,
             simSerial: '',
