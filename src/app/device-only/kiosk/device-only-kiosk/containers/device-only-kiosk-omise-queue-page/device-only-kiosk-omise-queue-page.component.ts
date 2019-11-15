@@ -112,7 +112,7 @@ export class DeviceOnlyKioskOmiseQueuePageComponent implements OnInit, OnDestroy
     this.queueFrom = this.fb.group({
       'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])],
     });
-    this.queueFrom.controls['mobileNo'].setValue(simCard.mobileNo || receiptInfo.telNo);
+    this.queueFrom.controls['mobileNo'].setValue(simCard.mobileNo || receiptInfo.telNo || '');
   }
 
   ngOnDestroy(): void {
