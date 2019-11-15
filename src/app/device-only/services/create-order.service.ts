@@ -172,7 +172,7 @@ export class CreateOrderService {
       locationReceipt: this.user.locationCode,
       userId: this.user.username,
       cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
-      soChannelType: 'MC_KIOSK',
+      soChannelType: 'CSP',
       soDocumentType: 'RESERVED',
       productList: [product],
 
@@ -339,7 +339,7 @@ export class CreateOrderService {
       userId: user.username,
       queueNo: queue.queueNo || '',
       cusNameOrder: `${customer.titleName || ''} ${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
-      soChannelType: 'MC_KIOSK',
+      soChannelType: 'CSP',
       soDocumentType: 'RESERVED',
       productList: [product],
 
@@ -386,6 +386,7 @@ export class CreateOrderService {
     // payment with omise
     if (this.qrCodeOmiseService.isPaymentOnlineCredit(transaction, 'payment') &&
       this.qrCodeOmiseService.isPaymentOnlineCredit(transaction, 'advancePayment')) {
+      data.soChannelType = 'MC_KIOSK';
       data.clearingType = 'MPAY';
       data.qrOrderId = omise.orderId;
       data.creditCardNo = omise.creditCardNo ? omise.creditCardNo.substring(omise.creditCardNo.length - 16) : '';
@@ -397,6 +398,7 @@ export class CreateOrderService {
 
     } else if (this.qrCodeOmiseService.isPaymentOnlineCredit(transaction, 'payment') ||
       this.qrCodeOmiseService.isPaymentOnlineCredit(transaction, 'advancePayment')) {
+      data.soChannelType = 'MC_KIOSK';
       data.clearingType = 'MPAY';
       data.qrOrderId = omise.orderId;
       data.creditCardNo = omise.creditCardNo ? omise.creditCardNo.substring(omise.creditCardNo.length - 16) : '';
