@@ -1,6 +1,6 @@
 {
     "/api": {
-      "target": "http://10.137.16.46:8080",
+      "target": "http://10.137.16.46:8081",
       "secure": false
     }
   }
