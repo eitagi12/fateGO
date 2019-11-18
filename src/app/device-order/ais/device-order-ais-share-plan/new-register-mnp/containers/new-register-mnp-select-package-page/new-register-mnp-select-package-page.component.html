@@ -22,7 +22,7 @@
                                 {{'เลือกแพ็กเกจใหม่' | translate}} <span class="minimum-package">({{'แพ็กเกจเริ่มต้น' | translate}} {{
                   priceOption?.privilege?.minimumPackagePrice }} {{'บาท'| translate}})</span>
                             </div>
-                            <mc-promotion-shelve [selected]="transaction?.data?.main_package" [promotionShelves]="promotionShelves" (completed)="onCompleted($event)"></mc-promotion-shelve>
+                            <mc-promotion-shelve [selected]="transaction?.data?.main_package" [promotionShelves]="promotionShelves" (completed)="onCompleted($event)" (condition)="onTermConditions($event)"></mc-promotion-shelve>
                         </div>
                     </div>
                 </div>

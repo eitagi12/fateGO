@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { PromotionShelve, ShoppingCart, HomeService, PageLoadingService, BillingSystemType, PromotionShelveItem } from 'mychannel-shared-libs';
-import { BsModalRef } from 'ngx-bootstrap';
+import { PromotionShelve, ShoppingCart, HomeService, PageLoadingService, BillingSystemType, PromotionShelveItem, AlertService } from 'mychannel-shared-libs';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -47,7 +47,9 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
     private shoppingCartService: ShoppingCartService,
     private promotionShelveService: PromotionShelveService,
     private http: HttpClient,
-    private translateService: TranslateService
+    private alertService: AlertService,
+    private translateService: TranslateService,
+    private modalService: BsModalService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -212,6 +214,24 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
     } else {
       return Promise.resolve(null);
     }
+  }
+
+  onTermConditions(condition: any): void {
+    if (!condition) {
+      this.alertService.warning(this.translateService.instant('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'));
+      return;
+    }
+    this.pageLoadingService.openLoading();
+    this.http.get('/api/customerportal/newRegister/termAndCondition', {
+      params: { conditionCode: condition }
+    }).toPromise()
+      .then((resp: any) => {
+        this.condition = resp.data || {};
+        this.modalRef = this.modalService.show(this.conditionTemplate, { class: 'modal-lg' });
+      })
+      .then(() => {
+        this.pageLoadingService.closeLoading();
+      });
   }
 
   getTranslateLoader(moduleName: string, lang: string): Promise<any> {
