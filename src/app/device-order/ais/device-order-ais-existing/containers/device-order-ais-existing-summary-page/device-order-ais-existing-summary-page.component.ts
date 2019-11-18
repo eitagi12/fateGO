@@ -15,6 +15,7 @@ import {
 } from 'src/app/device-order/ais/device-order-ais-existing/constants/route-path.constant';
 import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
 import { TranslateService } from '@ngx-translate/core';
+import { QrCodeOmisePageService } from 'src/app/device-order/services/qr-code-omise-page.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-summary-page',
@@ -40,6 +41,7 @@ export class DeviceOrderAisExistingSummaryPageComponent implements OnInit {
     private router: Router,
     private homeService: HomeService,
     private modalService: BsModalService,
+    public qrCodeOmisePageService: QrCodeOmisePageService,
     public summaryPageService: SummaryPageService,
     private priceOptionService: PriceOptionService,
     private transactionService: TransactionService,

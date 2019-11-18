@@ -13,6 +13,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
 import { TranslateService } from '@ngx-translate/core';
+import { QrCodeOmisePageService } from 'src/app/device-order/services/qr-code-omise-page.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-prepaid-hotdeal-summary-page',
@@ -50,6 +51,7 @@ export class DeviceOrderAisExistingPrepaidHotdealSummaryPageComponent implements
     public fb: FormBuilder,
     private alertService: AlertService,
     private modalService: BsModalService,
+    public qrCodeOmisePageService: QrCodeOmisePageService,
     private shoppingCartService: ShoppingCartService,
     public summaryPageService: SummaryPageService,
     private translateService: TranslateService
