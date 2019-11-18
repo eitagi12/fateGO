@@ -18,6 +18,9 @@
           <div class="progress-bar bg-success" role="progressbar" [style.width.%]="persoSim?.progress"
             [attr.aria-valuenow]="persoSim?.progress" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
+        <div class="text-center my-3 text-red" *ngIf="persoSim?.progress !== 100">
+          {{ '(ห้ามนำซิมการ์ดออก)' | translate }}
+        </div>
       </div>
     </div>
   </div>

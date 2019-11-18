@@ -171,7 +171,6 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
     }
 
     if (this.currentStatus && !this.lastStatus) {
-      // this.aisNative.sendIccCommand(this.command, showDialog, ''); //Show dialogReadSim
       // On card inserted
       this.gotCardData = false;
       this.lastStatus = true;
@@ -204,7 +203,6 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
     if (this.readSimStatus) {
       const simStatus: string[] = this.readSimStatus.split('|||');
       this.getSerialNo = simStatus[1].slice(cutNoSerialNumber);
-      // this.aisNative.sendIccCommand(this.command, closeDialog, ''); //dismiss dialogReadSim
       if (this.getSerialNo) {
         this.transaction.data.simCard = Object.assign(this.transaction.data.simCard, {
           simSerial: this.getSerialNo
@@ -213,8 +211,6 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
       if (simStatus[0].toLowerCase() === 'true') {
         // Progess 20%
         this.persoSim = { progress: 20, eventName: 'กรุณารอสักครู่' };
-        // $('.custom').animate({ width: 20 + '%' }, this.duration, () => {/**/ });
-        // this.getCommandForPersoSim(this.readSimStatus);
         if (this.statusFixSim === 'WaitingForPerso' && this.serialbarcode && this.orderType) {
           if (this.serialbarcode === this.getSerialNo) {
             this.verifySimRegionForPerso(this.getSerialNo);
@@ -610,9 +606,6 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
       this.statusFixSim = 'waitingForCheck';
       this.setIntervalSimCard();
     }
-    // else {
-    //   this.onBack();
-    // }
   }
 
   onBackSign(): void {
