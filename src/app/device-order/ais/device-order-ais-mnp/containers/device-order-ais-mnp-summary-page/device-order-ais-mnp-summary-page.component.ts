@@ -12,6 +12,7 @@ import { ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP
 import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { QrCodeOmisePageService } from 'src/app/device-order/services/qr-code-omise-page.service';
 
 @Component({
   selector: 'app-device-order-ais-mnp-summary-page',
@@ -42,6 +43,7 @@ export class DeviceOrderAisMnpSummaryPageComponent implements OnInit, OnDestroy 
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
     private modalService: BsModalService,
+    public qrCodeOmisePageService: QrCodeOmisePageService,
     public summaryPageService: SummaryPageService,
     private utils: Utils,
     private translateService: TranslateService

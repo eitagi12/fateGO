@@ -15,6 +15,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { QrCodeOmisePageService } from 'src/app/device-order/services/qr-code-omise-page.service';
 
 @Component({
   selector: 'app-device-order-ais-new-register-summary-page',
@@ -44,6 +45,7 @@ export class DeviceOrderAisNewRegisterSummaryPageComponent implements OnInit, On
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
     private modalService: BsModalService,
+    public qrCodeOmisePageService: QrCodeOmisePageService,
     public summaryPageService: SummaryPageService,
     private utils: Utils,
     private translateService: TranslateService
