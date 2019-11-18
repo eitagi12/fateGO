@@ -47,7 +47,7 @@
         </div>
       </div>
 
-      <mc-payment-detail [paymentDetail]="payementDetail" [banks]="banks" (completed)="onPaymentCompleted($event)"
+      <mc-payment-detail [paymentDetail]="payementDetail" [banks]="banks"  [omiseBanks]="omiseBanks" (completed)="onPaymentCompleted($event)"
         (error)="onPaymentError($event)">
       </mc-payment-detail>
 

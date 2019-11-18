@@ -106,10 +106,10 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
             //   this.pageLoadingService.closeLoading();
             //   this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CHANGE_PACKAGE_PAGE]);
             // } else {
-              customer.privilegeCode = privligeCode;
-              this.transaction.data.customer = customer;
-              this.transaction.data.simCard = { mobileNo: this.identity };
-              this.checkRoutePath();
+            customer.privilegeCode = privligeCode;
+            this.transaction.data.customer = customer;
+            this.transaction.data.simCard = { mobileNo: this.identity };
+            this.checkRoutePath();
             // }
           }).catch((error: any) => {
             this.alertService.warning(error);
@@ -187,7 +187,8 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
   }
 
   public addDeviceSellingCart(): void {
-    this.http.post('/api/salesportal/add-device-selling-cart',
+    this.http.post(
+      '/api/salesportal/dt/add-cart-list',
       this.getRequestAddDeviceSellingCart()
     ).toPromise()
       .then((resp: any) => {
@@ -216,20 +217,40 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
     const trade = this.priceOption.trade;
     const customer = this.transaction.data.customer;
 
-    return {
-      soCompany: productStock.company ? productStock.company : 'AWN',
-      locationSource: this.user.locationCode,
-      locationReceipt: this.user.locationCode,
+    const product = {
       productType: productStock.productType ? productStock.productType : 'N/A',
+      soCompany: productStock.company ? productStock.company : 'AWN',
       productSubType: productStock.productSubType ? productStock.productSubType : 'GADGET/IOT',
       brand: productDetail.brand || productStock.brand,
       model: productDetail.model || productStock.model,
+      qty: '1',
+
       color: productStock.color || productStock.colorName,
+      matCode: '',
       priceIncAmt: '' + trade.normalPrice,
       priceDiscountAmt: '' + trade.discount.amount,
-      grandTotalAmt: '',
+      matAirTime: '',
+      listMatFreeGoods: [{
+        matCodeFG: '',
+        qtyFG: '' // จำนวนของแถม *กรณีส่งค่า matCodeFreeGoods ค่า qty จะต้องมี
+      }]
+    };
+
+    return {
+      locationSource: this.user.locationCode,
+      locationReceipt: this.user.locationCode,
       userId: this.user.username,
       cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
+      soChannelType: 'CSP',
+      soDocumentType: 'RESERVED',
+      productList: [product],
+
+      grandTotalAmt: '',
+      preBookingNo: '',
+      depositAmt: '',
+      reserveNo: '',
+      subStockDestination: 'BRN',
+      storeName: ''
     };
   }
 
@@ -271,10 +292,9 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
       const promiseAll = [];
       if (transaction && transaction.data) {
         if (transaction.data.order && transaction.data.order.soId) {
-          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
-            location: this.priceOption.productStock.location,
+          const order = this.http.post('/api/salesportal/dt/remove-cart', {
             soId: transaction.data.order.soId,
-            transactionId: transaction.transactionId
+            userId: this.user.username
           }).toPromise().catch(() => Promise.resolve());
           promiseAll.push(order);
         }

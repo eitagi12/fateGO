@@ -26,6 +26,10 @@ import { DeviceOrderAisExistingPrepaidHotdealQrCodeQueueSummaryPageComponent } f
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { DeviceOrderAisExistingPrepaidHotdealQrCodeResultPageComponent } from './containers/device-order-ais-existing-prepaid-hotdeal-qr-code-result-page/device-order-ais-existing-prepaid-hotdeal-qr-code-result-page.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { DeviceOrderAisExistingPrepaidHotdealOmiseSummaryPageComponent } from './containers/device-order-ais-existing-prepaid-hotdeal-omise-summary-page/device-order-ais-existing-prepaid-hotdeal-omise-summary-page.component';
+import { DeviceOrderAisExistingPrepaidHotdealOmiseGeneratorPageComponent } from './containers/device-order-ais-existing-prepaid-hotdeal-omise-generator-page/device-order-ais-existing-prepaid-hotdeal-omise-generator-page.component';
+import { DeviceOrderAisExistingPrepaidHotdealOmiseQueuePageComponent } from './containers/device-order-ais-existing-prepaid-hotdeal-omise-queue-page/device-order-ais-existing-prepaid-hotdeal-omise-queue-page.component';
+import { DeviceOrderAisExistingPrepaidHotdealOmiseResultPageComponent } from './containers/device-order-ais-existing-prepaid-hotdeal-omise-result-page/device-order-ais-existing-prepaid-hotdeal-omise-result-page.component';
 
 @NgModule({
   imports: [
@@ -58,6 +62,10 @@ import { TranslateModule } from '@ngx-translate/core';
     DeviceOrderAisExistingPrepaidHotdealQrCodeGeneratorPageComponent,
     DeviceOrderAisExistingPrepaidHotdealQrCodeQueueSummaryPageComponent,
     DeviceOrderAisExistingPrepaidHotdealQrCodeResultPageComponent,
+    DeviceOrderAisExistingPrepaidHotdealOmiseSummaryPageComponent,
+    DeviceOrderAisExistingPrepaidHotdealOmiseGeneratorPageComponent,
+    DeviceOrderAisExistingPrepaidHotdealOmiseQueuePageComponent,
+    DeviceOrderAisExistingPrepaidHotdealOmiseResultPageComponent,
   ]
 })
 export class DeviceOrderAisExistingPrepaidHotdealModule { }

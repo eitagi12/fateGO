@@ -32,6 +32,10 @@ import { DeviceOrderAisNewRegisterQrCodeQueuePageComponent } from './containers/
 import { DeviceOrderAisNewRegisterEbillingPageComponent } from './containers/device-order-ais-new-register-ebilling-page/device-order-ais-new-register-ebilling-page.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { DeviceOrderAisNewRegisterQrCodeResultPageComponent } from './containers/device-order-ais-new-register-qr-code-result-page/device-order-ais-new-register-qr-code-result-page.component';
+import { DeviceOrderAisNewRegisterOmiseSummaryPageComponent } from './containers/device-order-ais-new-register-omise-summary-page/device-order-ais-new-register-omise-summary-page.component';
+import { DeviceOrderAisNewRegisterOmiseGeneratorPageComponent } from './containers/device-order-ais-new-register-omise-generator-page/device-order-ais-new-register-omise-generator-page.component';
+import { DeviceOrderAisNewRegisterOmiseQueuePageComponent } from './containers/device-order-ais-new-register-omise-queue-page/device-order-ais-new-register-omise-queue-page.component';
+import { DeviceOrderAisNewRegisterOmiseResultPageComponent } from './containers/device-order-ais-new-register-omise-result-page/device-order-ais-new-register-omise-result-page.component';
 
 @NgModule({
   imports: [
@@ -72,6 +76,10 @@ import { DeviceOrderAisNewRegisterQrCodeResultPageComponent } from './containers
     DeviceOrderAisNewRegisterEcontactPageComponent,
     DeviceOrderAisNewRegisterEbillingPageComponent,
     DeviceOrderAisNewRegisterQrCodeResultPageComponent,
+    DeviceOrderAisNewRegisterOmiseSummaryPageComponent,
+    DeviceOrderAisNewRegisterOmiseGeneratorPageComponent,
+    DeviceOrderAisNewRegisterOmiseQueuePageComponent,
+    DeviceOrderAisNewRegisterOmiseResultPageComponent,
   ]
 })
 export class DeviceOrderAisNewRegisterModule { }

@@ -90,6 +90,27 @@ export interface TransactionData {
   // Rom Agent
   romAgent?: RomAgent;
   romTransaction?: RomTransactionData;
+  omise?: Omise;
+}
+export interface Omise {
+  orderId?: string;
+  tranDtm?: string;
+  tranId?: string;
+  amount?: number;
+  qrType?: string;
+  status?: string;
+  locationCode?: string;
+  offerId?: string;
+  startDtm?: string;
+  // QR Code AirTime
+  companyStock?: 'AWN' | 'WDS';
+  omiseStatus?: MPayStatus;
+  qrAirtimeTransId?: string;
+  qrAirtimeAmt?: string;
+  qrOrderId?: string;
+  qrCodeStr?: string;
+  creditCardNo?: string;
+  cardExpireDate?: string;
 }
 
 export interface Condition {
@@ -113,6 +134,7 @@ export interface Payment {
   paymentMethod: any;
   qrCode?: any;
   type?: any;
+  paymentOnlineCredit?: any;
 }
 export interface MainPromotion {
   campaign?: any;

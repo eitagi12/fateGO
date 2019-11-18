@@ -28,7 +28,10 @@ import { DeviceOrderAisMnpEffectiveStartDatePageComponent } from './containers/d
 import { DeviceOrderAisMnpMobileCareAvaliblePageComponent } from './containers/device-order-ais-mnp-mobile-care-avalible-page/device-order-ais-mnp-mobile-care-avalible-page.component';
 import { DeviceOrderAisMnpQrCodeResultPageComponent } from './containers/device-order-ais-mnp-qr-code-result-page/device-order-ais-mnp-qr-code-result-page.component';
 import { DeviceOrderAisMnpSelectPackageOntopPageComponent } from './containers/device-order-ais-mnp-select-package-ontop-page/device-order-ais-mnp-select-package-ontop-page.component';
-
+import { DeviceOrderAisMnpOmiseSummaryPageComponent } from './containers/device-order-ais-mnp-omise-summary-page/device-order-ais-mnp-omise-summary-page.component';
+import { DeviceOrderAisMnpOmiseGeneratorPageComponent } from './containers/device-order-ais-mnp-omise-generator-page/device-order-ais-mnp-omise-generator-page.component';
+import { DeviceOrderAisMnpOmiseQueuePageComponent } from './containers/device-order-ais-mnp-omise-queue-page/device-order-ais-mnp-omise-queue-page.component';
+import { DeviceOrderAisMnpOmiseResultPageComponent } from './containers/device-order-ais-mnp-omise-result-page/device-order-ais-mnp-omise-result-page.component';
 const routes: Routes = [
   { path: 'validate-customer', component: DeviceOrderAisMnpValidateCustomerPageComponent },
   { path: 'validate-customer-key-in', component: DeviceOrderAisMnpValidateCustomerKeyInPageComponent },
@@ -58,6 +61,10 @@ const routes: Routes = [
   { path: 'mobile-detail', component: DeviceOrderAisMnpMobileDetailPageComponent },
   { path: 'effective-start-date', component: DeviceOrderAisMnpEffectiveStartDatePageComponent },
   { path: 'select-package-ontop', component: DeviceOrderAisMnpSelectPackageOntopPageComponent },
+  { path: 'omise-summary', component: DeviceOrderAisMnpOmiseSummaryPageComponent },
+  { path: 'omise-generator', component: DeviceOrderAisMnpOmiseGeneratorPageComponent },
+  { path: 'omise-queue', component: DeviceOrderAisMnpOmiseQueuePageComponent },
+  { path: 'omise-result', component: DeviceOrderAisMnpOmiseResultPageComponent },
 ];
 
 @NgModule({

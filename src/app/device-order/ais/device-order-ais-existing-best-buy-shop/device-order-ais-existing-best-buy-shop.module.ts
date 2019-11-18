@@ -3,6 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { NgModule } from '@angular/core';
 import { TabsModule } from 'ngx-bootstrap';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { DeviceOrderAisExistingBestBuyShopRoutingModule } from './device-order-ais-existing-best-buy-shop-routing.module';
 import { DeviceOrderAisExistingBestBuyShopCheckOutPageComponent } from './containers/device-order-ais-existing-best-buy-shop-check-out-page/device-order-ais-existing-best-buy-shop-check-out-page.component';
@@ -25,6 +26,10 @@ import { DeviceOrderAisExistingBestBuyShopValidateCustomerIdCardPageComponent } 
 import { DeviceOrderAisExistingBestBuyShopValidateCustomerIdCardRepiPageComponent } from './containers/device-order-ais-existing-best-buy-shop-validate-customer-id-card-repi-page/device-order-ais-existing-best-buy-shop-validate-customer-id-card-repi-page.component';
 import { DeviceOrderAisExistingBestBuyShopValidateCustomerPageComponent } from './containers/device-order-ais-existing-best-buy-shop-validate-customer-page/device-order-ais-existing-best-buy-shop-validate-customer-page.component';
 import { DeviceOrderAisExistingBestBuyShopValidateCustomerRepiPageComponent } from './containers/device-order-ais-existing-best-buy-shop-validate-customer-repi-page/device-order-ais-existing-best-buy-shop-validate-customer-repi-page.component';
+import { DeviceOrderAisExistingBestBuyShopOmiseGeneratorPageComponent } from './containers/device-order-ais-existing-best-buy-shop-omise-generator-page/device-order-ais-existing-best-buy-shop-omise-generator-page.component';
+import { DeviceOrderAisExistingBestBuyShopOmiseQueuePageComponent } from './containers/device-order-ais-existing-best-buy-shop-omise-queue-page/device-order-ais-existing-best-buy-shop-omise-queue-page.component';
+import { DeviceOrderAisExistingBestBuyShopOmiseResultPageComponent } from './containers/device-order-ais-existing-best-buy-shop-omise-result-page/device-order-ais-existing-best-buy-shop-omise-result-page.component';
+import { DeviceOrderAisExistingBestBuyShopOmiseSummaryPageComponent } from './containers/device-order-ais-existing-best-buy-shop-omise-summary-page/device-order-ais-existing-best-buy-shop-omise-summary-page.component';
 
 @NgModule({
   imports: [
@@ -33,7 +38,8 @@ import { DeviceOrderAisExistingBestBuyShopValidateCustomerRepiPageComponent } fr
     FormsModule,
     ReactiveFormsModule,
     MyChannelSharedLibsModule,
-    TabsModule.forRoot()
+    TabsModule.forRoot(),
+    TranslateModule
   ],
   declarations: [
     DeviceOrderAisExistingBestBuyShopCheckOutPageComponent,
@@ -55,7 +61,11 @@ import { DeviceOrderAisExistingBestBuyShopValidateCustomerRepiPageComponent } fr
     DeviceOrderAisExistingBestBuyShopValidateCustomerIdCardPageComponent,
     DeviceOrderAisExistingBestBuyShopValidateCustomerIdCardRepiPageComponent,
     DeviceOrderAisExistingBestBuyShopValidateCustomerPageComponent,
-    DeviceOrderAisExistingBestBuyShopValidateCustomerRepiPageComponent
+    DeviceOrderAisExistingBestBuyShopValidateCustomerRepiPageComponent,
+    DeviceOrderAisExistingBestBuyShopOmiseGeneratorPageComponent,
+    DeviceOrderAisExistingBestBuyShopOmiseQueuePageComponent,
+    DeviceOrderAisExistingBestBuyShopOmiseResultPageComponent,
+    DeviceOrderAisExistingBestBuyShopOmiseSummaryPageComponent
   ],
   providers: []
 })

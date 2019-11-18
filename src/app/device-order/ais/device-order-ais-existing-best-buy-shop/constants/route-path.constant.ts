@@ -20,3 +20,7 @@ export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_RESULT_PAGE = '/device-order/a
 export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_QR_CODE_SUMMARY_PAGE = '/device-order/ais/best-buy-shop/qr-code-summary';
 export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_QR_CODE_QUEUE_PAGE = '/device-order/ais/best-buy-shop/qr-code-queue';
 export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_QR_CODE_GENERATOR_PAGE = '/device-order/ais/best-buy-shop/qr-code-generator';
+export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_OMISE_SUMMARY_PAGE = '/device-order/ais/best-buy-shop/omise-summary';
+export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_OMISE_GENERATOR_PAGE = '/device-order/ais/best-buy-shop/omise-generator';
+export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_OMISE_QUEUE_PAGE = '/device-order/ais/best-buy-shop/omise-queue';
+export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_OMISE_RESULT_PAGE = '/device-order/ais/best-buy-shop/omise-result';

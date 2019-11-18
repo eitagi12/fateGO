@@ -5,7 +5,7 @@ import { Transaction, TransactionAction, TransactionType } from 'src/app/shared/
 import { WIZARD_DEVICE_ONLY_AIS } from 'src/app/device-only/constants/wizard.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Product } from 'src/app/device-only/models/product.model';
-import { PaymentDetail, User, HomeService, ApiRequestService, AlertService, TokenService } from 'mychannel-shared-libs';
+import { PaymentDetail, User, HomeService, ApiRequestService, AlertService, TokenService, PaymentDetailBank } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -35,6 +35,7 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
   user: User;
   localtion: any;
   addessValid: boolean;
+  omiseBanks: PaymentDetailBank[];
 
   constructor(
     private router: Router,
@@ -65,18 +66,25 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
     this.paymentDetail = {
       commercialName: commercialName,
       promotionPrice: this.priceOption.trade.priceType === 'NORMAL' ? +(this.priceOption.trade.normalPrice)
-      : +(this.priceOption.trade.promotionPrice),
+        : +(this.priceOption.trade.promotionPrice),
       isFullPayment: this.isFullPayment(),
       installmentFlag: false,
       advancePay: 0,
-      qrCode: true
+      qrCode: true,
+      omisePayment: this.isFullPayment() && this.priceOption.productStock.company !== 'WDS'
     };
+    this.http.get('/api/salesportal/omise/get-bank').toPromise()
+      .then((res: any) => {
+        const data = res.data || [];
+        this.omiseBanks = data;
+      });
+
     if (this.priceOption.trade.banks && this.priceOption.trade.banks.length > 0) {
       // if (this.isFullPayment()) {
       //   this.banks = this.priceOption.trade.banks || [];
       // } else {
-        this.banks = (this.priceOption.trade.banks || []);
-              // .map((b: any) => {
+      this.banks = (this.priceOption.trade.banks || []);
+      // .map((b: any) => {
       //     return b.installmentDatas.map((data: any) => {
       //       return {
       //         ...b,
@@ -88,14 +96,14 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
       //       prev.push(element);
       //     });
       //     return prev;
-        // }, []);
+      // }, []);
       // }
     } else {
       this.localtion = this.tokenService.getUser();
       this.localtion = this.user.locationCode;
       this.http.post('/api/salesportal/banks-promotion', {
         localtion: this.localtion
-      }).toPromise().then((response: any) => this.banks = response.data  || '');
+      }).toPromise().then((response: any) => this.banks = response.data || '');
     }
 
     if (!this.transaction.data) {
@@ -124,7 +132,7 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
     this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
       .then((response: any) => {
         if (response.value === true) {
-          this.createOrderService.cancelOrder(this.transaction).then((isSuccess: any) => {
+          this.createOrderService.cancelOrderDT(this.transaction).then((isSuccess: any) => {
             this.transactionService.remove();
             this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
           });

@@ -1,11 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_QR_CODE_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_QUEUE_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_QR_CODE_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_QUEUE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_OMISE_SUMMARY_PAGE } from '../../constants/route-path.constant';
 import { Payment, Transaction } from 'src/app/shared/models/transaction.model';
 import { DeviceSelling } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { QrCodeOmisePageService } from 'src/app/device-order/services/qr-code-omise-page.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-shop-check-out-page',
@@ -21,6 +22,7 @@ export class DeviceOrderAisExistingBestBuyShopCheckOutPageComponent implements O
   constructor(
     private router: Router,
     private transactionService: TransactionService,
+    private qrCodeOmisePageService: QrCodeOmisePageService,
     private priceOptionService: PriceOptionService
   ) {
     this.transaction = this.transactionService.load();
@@ -38,6 +40,9 @@ export class DeviceOrderAisExistingBestBuyShopCheckOutPageComponent implements O
   onNext(): void {
     if (this.isQrCodePayment()) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_QR_CODE_SUMMARY_PAGE]);
+    } else if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment') ||
+      this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'advancePayment')) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_OMISE_SUMMARY_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_QUEUE_PAGE]);
     }

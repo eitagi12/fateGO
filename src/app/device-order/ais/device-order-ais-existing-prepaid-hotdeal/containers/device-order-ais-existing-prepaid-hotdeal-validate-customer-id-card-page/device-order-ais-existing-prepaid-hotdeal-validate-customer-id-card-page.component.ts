@@ -158,7 +158,7 @@ export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageCompo
           return this.conditionIdentityValid()
             .then(() => {
               return this.http.post(
-                '/api/salesportal/add-device-selling-cart',
+                '/api/salesportal/dt/add-cart-list',
                 this.getRequestAddDeviceSellingCart()
               ).toPromise()
                 .then((resp: any) => resp.data.soId);
@@ -199,23 +199,41 @@ export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageCompo
     const productStock = this.priceOption.productStock;
     const productDetail = this.priceOption.productDetail;
     const customer = this.transaction.data.customer;
-    return {
-      soCompany: productStock.company || 'AWN',
-      locationSource: this.user.locationCode,
-      locationReceipt: this.user.locationCode,
+
+    const product = {
       productType: productDetail.productType || 'DEVICE',
+      soCompany: productStock.company || 'AWN',
       productSubType: productDetail.productSubType || 'HANDSET',
       brand: productStock.brand,
       model: productDetail.model,
+      qty: '1',
+
       color: productStock.color,
+      matCode: '',
       priceIncAmt: '',
       priceDiscountAmt: '',
-      grandTotalAmt: '',
+      matAirTime: '',
+      listMatFreeGoods: [{
+        matCodeFG: '',
+        qtyFG: '' // จำนวนของแถม *กรณีส่งค่า matCodeFreeGoods ค่า qty จะต้องมี
+      }]
+    };
+
+    return {
+      locationSource: this.user.locationCode,
+      locationReceipt: this.user.locationCode,
       userId: this.user.username,
       cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim(),
+      soChannelType: 'MC_KIOSK',
+      soDocumentType: 'RESERVED',
+      productList: [product],
+
+      grandTotalAmt: '',
       preBookingNo: '',
       depositAmt: '',
-      reserveNo: ''
+      reserveNo: '',
+      subStockDestination: 'BRN',
+      storeName: ''
     };
   }
 
@@ -280,10 +298,9 @@ export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageCompo
           promiseAll.push(unlockMobile);
         }
         if (transaction.data.order && transaction.data.order.soId) {
-          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
-            location: this.priceOption.productStock.location,
+          const order = this.http.post('/api/salesportal/dt/remove-cart', {
             soId: transaction.data.order.soId,
-            transactionId: transaction.transactionId
+            userId: this.user.username
           }).toPromise().catch(() => Promise.resolve());
           promiseAll.push(order);
         }

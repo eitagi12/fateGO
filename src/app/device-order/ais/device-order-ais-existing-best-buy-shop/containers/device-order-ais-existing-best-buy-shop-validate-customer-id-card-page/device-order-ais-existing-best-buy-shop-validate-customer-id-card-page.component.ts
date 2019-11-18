@@ -105,7 +105,8 @@ export class DeviceOrderAisExistingBestBuyShopValidateCustomerIdCardPageComponen
             this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_CUSTOMER_INFO_PAGE]);
             return;
           }
-          return this.http.post('/api/salesportal/add-device-selling-cart',
+          return this.http.post(
+            '/api/salesportal/dt/add-cart-list',
             this.getRequestAddDeviceSellingCart()
           ).toPromise().then((resp: any) => {
             this.transaction.data.order = { soId: resp.data.soId };
@@ -115,7 +116,7 @@ export class DeviceOrderAisExistingBestBuyShopValidateCustomerIdCardPageComponen
           });
         });
     }).catch((e) => this.alertService.error(e))
-    .then(() => this.pageLoadingService.closeLoading());
+      .then(() => this.pageLoadingService.closeLoading());
   }
 
   onHome(): void {
@@ -139,25 +140,44 @@ export class DeviceOrderAisExistingBestBuyShopValidateCustomerIdCardPageComponen
     let subStock;
     if (preBooking && preBooking.preBookingNo) {
       subStock = 'PRE';
+    } else {
+      subStock = 'BRN';
     }
-    return {
-      soCompany: productStock.company || 'AWN',
-      locationSource: this.user.locationCode,
-      locationReceipt: this.user.locationCode,
+
+    const product = {
       productType: productDetail.productType || 'DEVICE',
+      soCompany: productStock.company || 'AWN',
       productSubType: productDetail.productSubType || 'HANDSET',
       brand: productDetail.brand || productStock.brand,
       model: productDetail.model || productStock.model,
+      qty: '1',
+
       color: productStock.color || productStock.colorName,
+      matCode: '',
       priceIncAmt: '' + trade.normalPrice,
       priceDiscountAmt: '' + trade.discount.amount,
-      grandTotalAmt: '',
+      matAirTime: '',
+      listMatFreeGoods: [{
+        matCodeFG: '',
+        qtyFG: '' // จำนวนของแถม *กรณีส่งค่า matCodeFreeGoods ค่า qty จะต้องมี
+      }]
+    };
+
+    return {
+      locationSource: this.user.locationCode,
+      locationReceipt: this.user.locationCode,
       userId: this.user.username,
       cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
+      soChannelType: 'MC_KIOSK',
+      soDocumentType: 'RESERVED',
+      productList: [product],
+
+      grandTotalAmt: '',
       preBookingNo: preBooking ? preBooking.preBookingNo : '',
       depositAmt: preBooking ? preBooking.depositAmt : '',
       reserveNo: preBooking ? preBooking.reserveNo : '',
-      subStockDestination: subStock
+      subStockDestination: subStock,
+      storeName: ''
     };
   }
 
