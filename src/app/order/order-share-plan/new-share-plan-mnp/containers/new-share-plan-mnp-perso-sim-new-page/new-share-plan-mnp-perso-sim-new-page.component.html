@@ -17,7 +17,12 @@
           <div class="progress-bar bg-success" role="progressbar" [style.width.%]="persoSim?.progress"
             [attr.aria-valuenow]="persoSim?.progress" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
-        <div class="text-center mt-3 mb-3 text-red" translate>{{ errorMessage }}</div>
+        <div class="text-center my-3 text-red" *ngIf="persoSim?.progress !== 100">
+          {{ '(ห้ามนำซิมการ์ดออก)' | translate }}
+        </div>
+        <div class="text-center my-3" *ngIf="persoSim?.progress === 100">
+          {{ 'กรุณานำซิมออกและเปลี่ยนเป็นซิมสำหรับเบอร์ย้ายค่าย' | translate }}
+        </div>
         <div class="line-behind">
           <span translate>หรือ</span>
         </div>
@@ -46,6 +51,6 @@
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()" [disabled]="disableBack">BACK</button>
-    <button class="btn btn-success" (click)="onNext()">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!(persoSim?.progress === 100)">NEXT</button>
   </mc-footer>
 </div>
