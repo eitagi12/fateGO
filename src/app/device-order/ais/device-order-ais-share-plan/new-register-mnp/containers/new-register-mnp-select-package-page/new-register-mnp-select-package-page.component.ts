@@ -17,6 +17,7 @@ import {
 } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-new-register-mnp-select-package-page',
@@ -37,7 +38,7 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
   translateSubscription: Subscription;
   promotionData: any;
   promotionCodes: string;
-
+  promotionShelveForm: FormGroup;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -48,8 +49,9 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
     private promotionShelveService: PromotionShelveService,
     private http: HttpClient,
     private alertService: AlertService,
+    private modalService: BsModalService,
     private translateService: TranslateService,
-    private modalService: BsModalService
+    private fb: FormBuilder
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -105,7 +107,7 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
       },
       +privilege.minimumPackagePrice, +privilege.maximumPackagePrice)
       .then((promotionShelves: any) => {
-        this.promotionShelves = this.promotionShelveService.defaultBySelected(promotionShelves, this.transaction.data.main_package);
+        this.promotionShelves = this.buildPromotionShelveActive(promotionShelves);
         if (this.promotionShelves) {
           this.checkTranslateLang(this.translateService.currentLang);
         }
@@ -113,6 +115,48 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
       .then(() => {
         this.pageLoadingService.closeLoading();
       });
+  }
+
+  buildPromotionShelveActive(promotionShelves: PromotionShelve[]): PromotionShelve[] {
+    console.log(promotionShelves);
+
+    const main_package: any = this.transaction.data.main_package || {};
+    if (!promotionShelves || promotionShelves.length <= 0) {
+      return;
+    }
+    if (main_package) {
+      let promotionShelveIndex = 0, promotionShelveGroupIndex = 0;
+      for (let i = 0; i < promotionShelves.length; i++) {
+        const promotions = promotionShelves[i].promotions || [];
+
+        let itemActive = false;
+        for (let ii = 0; ii < promotions.length; ii++) {
+          const active = (promotions[ii].items || []).find((promotionShelveItem: PromotionShelveItem) => {
+            return ('' + promotionShelveItem.id) === ('' + main_package.itemId);
+          });
+          if (!!active) {
+            itemActive = true;
+            promotionShelveIndex = i;
+            promotionShelveGroupIndex = ii;
+            continue;
+          }
+        }
+
+        if (!itemActive) {
+          promotions[0].active = true;
+        }
+      }
+      promotionShelves[promotionShelveIndex].active = true;
+      promotionShelves[promotionShelveIndex].promotions[promotionShelveGroupIndex].active = true;
+    } else {
+      promotionShelves[0].active = true;
+      promotionShelves.forEach((promotionShelve: PromotionShelve) => {
+        if (promotionShelve.promotions && promotionShelve.promotions.length > 0) {
+          promotionShelve.promotions[0].active = true;
+        }
+      });
+    }
+    return promotionShelves;
   }
 
   callServiceRequestQueryListLov(language: string): void {
