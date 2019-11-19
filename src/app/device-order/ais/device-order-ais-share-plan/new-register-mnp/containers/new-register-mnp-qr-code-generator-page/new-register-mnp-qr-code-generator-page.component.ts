@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 import { Subscription } from 'rxjs/internal/Subscription';
 import * as moment from 'moment';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_QR_CODE_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_QR_CODE_QUEUE_PAGE } from '../../constants/route-path.constant';
-import { Transaction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 
 @Component({
   selector: 'app-new-register-mnp-qr-code-generator-page',

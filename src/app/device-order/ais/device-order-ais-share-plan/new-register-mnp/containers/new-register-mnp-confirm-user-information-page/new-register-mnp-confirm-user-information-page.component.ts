@@ -18,7 +18,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import * as moment from 'moment';
-import { Transaction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 const Moment = moment;
 
 @Component({
@@ -59,17 +59,17 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
   ) {
     this.transaction = this.transactionService.load();
     // New register profile not found.
-    if (!this.transaction.data.billing_information) {
-      this.transaction.data.billing_information = {};
+    if (!this.transaction.data.billingInformation) {
+      this.transaction.data.billingInformation = {};
     }
   }
 
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    const mainPackage = this.transaction.data.main_package;
+    const mainPackage = this.transaction.data.mainPackage;
     const customer = this.transaction.data.customer;
-    const simCard = this.transaction.data.sim_card;
-    const billingInformation = this.transaction.data.billing_information;
+    const simCard = this.transaction.data.simCard;
+    const billingInformation = this.transaction.data.billingInformation;
     const billCycleData: any = billingInformation.billCycleData || {};
 
     this.eBill = !(mainPackage.billingSystem === BillingSystemType.BOS);
@@ -124,11 +124,11 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
 
   initBillingInfo(): void {
 
-    const billingInformation = this.transaction.data.billing_information || {};
+    const billingInformation = this.transaction.data.billingInformation || {};
     const mergeBilling = billingInformation.mergeBilling;
     const billCycle = billingInformation.billCycle;
     const customer: any = billingInformation.billDeliveryAddress || this.transaction.data.customer;
-    const simCard = this.transaction.data.sim_card;
+    const simCard = this.transaction.data.simCard;
     const customerAddress = this.utils.getCurrentAddress({
       homeNo: customer.homeNo,
       moo: customer.moo,
@@ -152,8 +152,8 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
           //
         },
         onDelete: () => {
-          delete this.transaction.data.billing_information.mergeBilling;
-          delete this.transaction.data.billing_information.billCycleData;
+          delete this.transaction.data.billingInformation.mergeBilling;
+          delete this.transaction.data.billingInformation.billCycleData;
 
           const billCycleData: any = billingInformation.billCycleData || {};
 
@@ -224,7 +224,7 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     if (!mailBillingInfo) {
       return;
     }
-    const billingInformation = this.transaction.data.billing_information;
+    const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData || {};
 
     billCycleData.email = mailBillingInfo.email;
@@ -232,7 +232,7 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     billCycleData.billMedia = mailBillingInfo.billMedia;
     billCycleData.receiveBillMethod = mailBillingInfo.receiveBillMethod;
 
-    this.transaction.data.billing_information.billCycleData = billCycleData;
+    this.transaction.data.billingInformation.billCycleData = billCycleData;
   }
 
   onMailBillingInfoError(valid: boolean): void {
@@ -240,13 +240,13 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
   }
 
   onTelNoBillingCompleted(telNoBilling: any): void {
-    const billingInformation = this.transaction.data.billing_information;
+    const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData || {};
 
     billCycleData.mobileNoContact = telNoBilling.mobileNo;
     billCycleData.phoneNoContact = telNoBilling.phoneNo;
 
-    this.transaction.data.billing_information.billCycleData = billCycleData;
+    this.transaction.data.billingInformation.billCycleData = billCycleData;
   }
 
   onTelNoBillingError(valid: boolean): void {
@@ -267,7 +267,7 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
       this.alertService.warning(this.translateService.instant('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร'));
       return;
     }
-    const billingInformation = this.transaction.data.billing_information;
+    const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData;
     billCycleData.billAddressText = this.billingInfo.billingAddress.text;
     billCycleData.billingMethodText = this.billingInfo.billingMethod.text;
@@ -298,8 +298,8 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
   }
 
   getBillChannel(): any {
-    const mainPackage = this.transaction.data.main_package;
-    const billingInformation = this.transaction.data.billing_information;
+    const mainPackage = this.transaction.data.mainPackage;
+    const billingInformation = this.transaction.data.billingInformation;
     const mergeBilling: any = billingInformation.mergeBilling;
 
     // default ตามรอบบิลที่เลือก
@@ -325,7 +325,7 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
   }
 
   customerValid(): boolean {
-    const billingInformation = this.transaction.data.billing_information || {};
+    const billingInformation = this.transaction.data.billingInformation || {};
     const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
     return !!(customer.homeNo
       && customer.province
@@ -367,12 +367,12 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
 
   isPackageNetExtreme(): boolean {
     const REGEX_NET_EXTREME = /[Nn]et[Ee]xtreme/;
-    const mainPackage = this.transaction.data.main_package;
+    const mainPackage = this.transaction.data.mainPackage;
     return mainPackage && REGEX_NET_EXTREME.test(mainPackage.productPkg);
   }
 
   isMergeBilling(): boolean {
-    const billingInformation = this.transaction.data.billing_information;
+    const billingInformation = this.transaction.data.billingInformation;
     return billingInformation ? (!!billingInformation.mergeBilling) : false;
   }
 

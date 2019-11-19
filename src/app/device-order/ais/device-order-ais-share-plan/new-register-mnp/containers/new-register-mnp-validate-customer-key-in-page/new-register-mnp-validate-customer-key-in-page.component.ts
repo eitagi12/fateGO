@@ -7,7 +7,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ValidateCustomerService } from 'src/app/shared/services/validate-customer.service';
-import { Transaction, Order, TransactionType } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
+import { Transaction, Order, TransactionType } from 'src/app/shared/models/transaction.model';
 @Component({
   selector: 'app-new-register-mnp-validate-customer-key-in-page',
   templateUrl: './new-register-mnp-validate-customer-key-in-page.component.html',

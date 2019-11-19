@@ -11,7 +11,7 @@ import {
   ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_NUMBER_PAGE,
   ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_PACKAGE_PAGE
 } from '../../constants/route-path.constant';
-import { Transaction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 
 @Component({
   selector: 'app-new-register-mnp-by-pattern-page',
@@ -42,12 +42,12 @@ export class NewRegisterMnpByPatternPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (this.transaction.data.sim_card &&
-      this.transaction.data.sim_card.mobileNo) {
-      this.onResereMobileNo(this.transaction.data.sim_card.mobileNo, 'Unlock');
+    if (this.transaction.data.simCard &&
+      this.transaction.data.simCard.mobileNo) {
+      this.onResereMobileNo(this.transaction.data.simCard.mobileNo, 'Unlock');
     }
     // ลบข้อมูลที่เคยเลือก simcard ทิ้ง
-    delete this.transaction.data.sim_card;
+    delete this.transaction.data.simCard;
     // อับเดดข้อมูลตะกร้า
     this.shoppingCart = Object.assign(this.shoppingCartService.getShoppingCartData(), {
       mobileNo: ''
@@ -115,7 +115,7 @@ export class NewRegisterMnpByPatternPageComponent implements OnInit, OnDestroy {
         const data = resp.data || {};
 
         if (data.returnCode === '008') {
-          this.transaction.data.sim_card = {
+          this.transaction.data.simCard = {
             mobileNo: mobileNo,
             persoSim: true
           };
@@ -124,7 +124,7 @@ export class NewRegisterMnpByPatternPageComponent implements OnInit, OnDestroy {
         }
 
         if (data.returnCode === '002') {
-          this.alertService.error('เบอร์ ' + this.transaction.data.sim_card.mobileNo + ' มีลูกค้าท่านอื่นจองไว้แล้ว กรุณาเลือกเบอร์ใหม่');
+          this.alertService.error('เบอร์ ' + this.transaction.data.simCard.mobileNo + ' มีลูกค้าท่านอื่นจองไว้แล้ว กรุณาเลือกเบอร์ใหม่');
         } else {
           this.alertService.error(data.returnCode + ' ' + data.returnMessage);
         }

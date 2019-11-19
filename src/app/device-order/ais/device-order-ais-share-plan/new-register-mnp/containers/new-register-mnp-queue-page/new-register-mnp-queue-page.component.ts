@@ -9,7 +9,8 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { QueuePageService } from 'src/app/device-order/services/queue-page.service';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_AGGREGATE_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_RESULT_PAGE } from '../../constants/route-path.constant';
-import { Transaction, TransactionAction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
+import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
+
 
 @Component({
   selector: 'app-new-register-mnp-queue-page',
@@ -57,6 +58,7 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
 
   onNext(queue: boolean): void {
     this.pageLoadingService.openLoading();
+    let transactionData: any;
     if (queue) {
       this.queuePageService.getQueueQmatic(this.queueFrom.value.mobileNo)
         .then((resp: any) => {
@@ -94,7 +96,7 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
     const user = this.tokenService.getUser();
     const customer = this.transaction.data.customer;
     const faceRecognition = this.transaction.data.faceRecognition;
-    const simCard = this.transaction.data.sim_card;
+    const simCard = this.transaction.data.simCard;
     const action = this.transaction.data.action;
     const channelKyc = this.transaction.data.faceRecognition.kyc;
     let channel = 'MC';
@@ -136,5 +138,4 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }
-
 }

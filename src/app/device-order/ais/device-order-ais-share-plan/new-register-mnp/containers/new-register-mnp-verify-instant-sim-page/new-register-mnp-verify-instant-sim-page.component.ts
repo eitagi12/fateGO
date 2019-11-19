@@ -13,7 +13,7 @@ import {
   ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_NUMBER_PAGE
 } from '../../constants/route-path.constant';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { Transaction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 
 @Component({
   selector: 'app-new-register-mnp-verify-instant-sim-page',
@@ -54,7 +54,7 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
 
   ngOnInit(): void {
     this.createForm();
-    delete this.transaction.data.sim_card;
+    delete this.transaction.data.simCard;
     this.shoppingCart = Object.assign(this.shoppingCartService.getShoppingCartData(), {
       mobileNo: ''
     });
@@ -83,7 +83,7 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
           mobileNo: simSerial.mobileNo,
           simSerial: serial
         };
-        this.transaction.data.sim_card = {
+        this.transaction.data.simCard = {
           mobileNo: this.simSerial.mobileNo,
           simSerial: this.simSerial.simSerial,
           persoSim: false
@@ -130,7 +130,7 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
       };
       console.log('this.simSerial |>', this.simSerial);
 
-      this.transaction.data.sim_card = {
+      this.transaction.data.simCard = {
         mobileNo: this.simSerial.mobileNo,
         simSerial: this.simSerial.simSerial,
         persoSim: false

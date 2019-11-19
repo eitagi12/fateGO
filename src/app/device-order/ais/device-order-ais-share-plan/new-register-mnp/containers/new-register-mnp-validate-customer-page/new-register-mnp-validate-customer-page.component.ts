@@ -12,7 +12,7 @@ import * as moment from 'moment';
 import { ValidateCustomerService } from 'src/app/shared/services/validate-customer.service';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { Utils } from 'mychannel-shared-libs';
-import { Transaction, Order, TransactionType, TransactionAction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
+import { Transaction, Order, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 @Component({
   selector: 'app-new-register-mnp-validate-customer-page',
   templateUrl: './new-register-mnp-validate-customer-page.component.html',
@@ -185,7 +185,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
               .then((resp: any) => {
                 const data: any = resp.data || {};
                 this.toBillingInformation(data).then((billingInfo: any) => {
-                  this.transaction.data.billing_information = billingInfo;
+                  this.transaction.data.billingInformation = billingInfo;
                 });
                 return this.validateCustomerService.getCurrentDate().then((sysdate: any) => {
                   if (sysdate) {

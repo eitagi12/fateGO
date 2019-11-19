@@ -10,7 +10,7 @@ import {
   ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_QUEUE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_COMPARE_PAGE
 } from '../../constants/route-path.constant';
-import { Transaction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 @Component({
   selector: 'app-new-register-mnp-aggregate-page',
   templateUrl: './new-register-mnp-aggregate-page.component.html',

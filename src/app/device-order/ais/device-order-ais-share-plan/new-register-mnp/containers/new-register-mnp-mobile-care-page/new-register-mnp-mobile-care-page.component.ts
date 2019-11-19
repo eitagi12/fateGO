@@ -15,7 +15,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { MOBILE_CARE_PACKAGE_KEY_REF } from 'src/app/device-order/constants/cpc.constant';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
-import { Transaction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 
 @Component({
   selector: 'app-new-register-mnp-mobile-care-page',
@@ -51,7 +51,7 @@ export class NewRegisterMnpMobileCarePageComponent implements OnInit, OnDestroy 
 
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    delete this.transaction.data.mobile_care_package;
+    delete this.transaction.data.mobileCarePackage;
     this.callService();
   }
 
@@ -68,7 +68,7 @@ export class NewRegisterMnpMobileCarePageComponent implements OnInit, OnDestroy 
   }
 
   onCompleted(mobileCare: any): void {
-    this.transaction.data.mobile_care_package = mobileCare;
+    this.transaction.data.mobileCarePackage = mobileCare;
   }
 
   ngOnDestroy(): void {
@@ -80,8 +80,8 @@ export class NewRegisterMnpMobileCarePageComponent implements OnInit, OnDestroy 
 
   callService(): void {
     // tslint:disable-next-line: max-line-length
-    const billingSystem = this.transaction.data.sim_card.billingSystem || this.transaction.data.main_package.customAttributes.billingSystem || BillingSystemType.IRB;
-    const chargeType = this.transaction.data.main_package.customAttributes.chargeType || 'Post-paid';
+    const billingSystem = this.transaction.data.simCard.billingSystem || this.transaction.data.mainPackage.customAttributes.billingSystem || BillingSystemType.IRB;
+    const chargeType = this.transaction.data.mainPackage.customAttributes.chargeType || 'Post-paid';
     const endUserPrice = +this.priceOption.trade.normalPrice;
 
     this.pageLoadingService.openLoading();

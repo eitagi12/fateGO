@@ -11,7 +11,7 @@ import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_EAPPLICATION_PAGE,
        } from '../../constants/route-path.constant';
 import { environment } from 'src/environments/environment';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
-import { Transaction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 
 export interface OptionPersoSim {
   key_sim?: boolean;
@@ -98,7 +98,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
   }
 
   ngOnInit(): void {
-    this.memberSimCard = this.transaction.data.sim_card.memberSimCard[0];
+    this.memberSimCard = this.transaction.data.simCard.memberSimCard[0];
 
     // if (typeof window.aisNative !== 'undefined') {
     //   this.scanBarcodePC$ = of(true);
@@ -186,7 +186,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
       this.getSerialNo = simStatus[1].slice(cutNoSerialNumber);
       // this.aisNative.sendIccCommand(this.command, closeDialog, ''); //dismiss dialogReadSim
       if (this.getSerialNo) {
-        this.transaction.data.sim_card.memberSimCard[0] = Object.assign(this.transaction.data.sim_card.memberSimCard[0], {
+        this.transaction.data.simCard.memberSimCard[0] = Object.assign(this.transaction.data.simCard.memberSimCard[0], {
           simSerialMember: this.getSerialNo
         });
       }

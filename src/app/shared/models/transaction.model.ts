@@ -93,10 +93,6 @@ export interface TransactionData {
   romTransaction?: RomTransactionData;
 }
 
-export interface MemberInfo {
-  simCard?: SimCard;
-  mainPackage?: MainPackage;
-}
 export interface Condition {
   conditionCode: string;
   conditionName?: string;
@@ -215,6 +211,7 @@ export interface SimCard {
   privilegeCode?: string;
   nType?: string;
   mobileNoStatus?: 'Active' | 'Suspended';
+  memberSimCard?: Array<any>;
 }
 
 export interface MainPackage {
@@ -232,6 +229,7 @@ export interface MainPackage {
   statementEng?: string;
   parameters?: any;
   [key: string]: any;
+  memberMainPackage?: Array<any>;
 }
 
 export interface CurrentPackage {

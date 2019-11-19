@@ -10,7 +10,7 @@ import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { debounceTime } from 'rxjs/operators';
 import * as moment from 'moment';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
-import { Transaction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 
 @Component({
   selector: 'app-new-register-mnp-select-package-ontop-page',
@@ -46,15 +46,15 @@ export class NewRegisterMnpSelectPackageOntopPageComponent implements OnInit, On
   }
 
   ngOnInit(): void {
-    const mobileNo = this.transaction.data.sim_card.mobileNo;
+    const mobileNo = this.transaction.data.simCard.mobileNo;
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     delete this.shoppingCart.mobileNo;
     this.callService(mobileNo);
     const mainPackEndDt: any = this.transaction.data
-      && this.transaction.data.main_package
-      && this.transaction.data.main_package.customAttributes
-      && this.transaction.data.main_package.customAttributes.effectiveEndDt
-      ? this.transaction.data.main_package.customAttributes.effectiveEndDt : '-';
+      && this.transaction.data.mainPackage
+      && this.transaction.data.mainPackage.customAttributes
+      && this.transaction.data.mainPackage.customAttributes.effectiveEndDt
+      ? this.transaction.data.mainPackage.customAttributes.effectiveEndDt : '-';
     this.effectiveEndDt = moment(mainPackEndDt).format('DD/MM/YYYY');
   }
 

@@ -15,7 +15,7 @@ import {
   ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE
 } from '../../constants/route-path.constant';
 import { BanksPromotionService } from 'src/app/device-order/services/banks-promotion.service';
-import { Transaction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 
 @Component({
   selector: 'app-new-register-mnp-payment-detail-page',
@@ -64,7 +64,7 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
     const productDetail = this.priceOption.productDetail || {};
     const productStock = this.priceOption.productStock || {};
     const customer: any = this.transaction.data.customer || {};
-    const receiptInfo: any = this.transaction.data.receipt || {};
+    const receiptInfo: any = this.transaction.data.receiptInfo || {};
     const showQRCode: boolean = paymentMethod !== 'CC' && this.user.userType !== 'ASP'
       && this.user.channelType !== 'sff-web' && this.priceOption.productStock.company !== 'AWN';
 
@@ -177,7 +177,7 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
   onNext(): void {
     this.transaction.data.payment = this.paymentDetailTemp.payment;
     this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
-    this.transaction.data.receipt = this.receiptInfoTemp;
+    this.transaction.data.receiptInfo = this.receiptInfoTemp;
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE]);
   }
 

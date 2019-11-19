@@ -23,9 +23,9 @@
           <div>Sim Serial {{ 'เบอร์หลัก' | translate }}: {{ transaction?.data?.simCard?.simSerial | mobileNo }}</div>
         </div>
         <div class="my-3 text-center text-green">
-          <div>{{ 'เบอร์สมาชิก' | translate }} {{ transaction?.data?.memberInfo?.simCard?.mobileNo | mobileNo }}
+          <div>{{ 'เบอร์สมาชิก' | translate }} {{ transaction?.data?.simCard?.memberSimCard[0]?.mobileNo | mobileNo }}
             ทำรายการสำเร็จ</div>
-          <div>Sim Serial {{ 'เบอร์สมาชิก' | translate }} : {{ transaction?.data?.memberInfo.simCard?.simSerial | mobileNo }}</div>
+          <div>Sim Serial {{ 'เบอร์สมาชิก' | translate }} : {{ transaction?.data?.simCard?.memberSimCard[0]?.simSerial | mobileNo }}</div>
         </div>
         <div class="my-3 text-center text-green">
           <div>( ซิมใช้งานได้เมื่อได้รับ SMS ยืนยัน )</div>

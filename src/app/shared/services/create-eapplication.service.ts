@@ -96,8 +96,8 @@ export class CreateEapplicationService {
     const billingInformation: any = transaction.data.billing_information || {};
     const billCycleData: any = billingInformation.billCycleData || {};
     const action: any = transaction.data.action;
-    const mainPackage: any = transaction.data.main_package.memberMainPackage || {};
-    const simCard: any = transaction.data.sim_card.memberSimCard[0] || {}; // Get simNo of member
+    const mainPackage: any = transaction.data.mainPackage.memberMainPackage || {};
+    const simCard: any = transaction.data.simCard.memberSimCard[0] || {}; // Get simNo of member
     const data: any = {
       fullNameTH: language === 'EN' ? `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}` :
         customer.firstName + ' ' + customer.lastName || '',
@@ -156,8 +156,8 @@ export class CreateEapplicationService {
     const billingInformation: any = transaction.data.billing_information || {};
     const billCycleData: any = billingInformation.billCycleData || {};
     const action: any = transaction.data.action;
-    const mainPackage: any = transaction.data.main_package || {};
-    const simCard: any = transaction.data.sim_card || {};
+    const mainPackage: any = transaction.data.mainPackage || {};
+    const simCard: any = transaction.data.simCard || {};
 
     const data: any = {
       fullNameTH: language === 'EN' ? `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}` :

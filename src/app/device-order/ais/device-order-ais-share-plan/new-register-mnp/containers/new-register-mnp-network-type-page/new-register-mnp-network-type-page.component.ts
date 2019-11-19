@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_REASON_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_PACKAGE_PAGE } from '../../constants/route-path.constant';
-import { Transaction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 
 @Component({
   selector: 'app-new-register-mnp-network-type-page',
@@ -106,8 +106,8 @@ export class NewRegisterMnpNetworkTypePageComponent implements OnInit, OnDestroy
 
         if (!outbuf || (accountNo && (mobileNoStatus === 'Disconnect - Ported' || mobileNoStatus === 'U' || mobileNoStatus === 'T' ||
           mobileNoStatus === '')) || mobileNoStatus !== 'Active' && !(mobileNoStatus || networkType) || mobileNoStatus === '') {
-          this.transaction.data.sim_card = {
-            ...this.transaction.data.sim_card,
+          this.transaction.data.simCard = {
+            ...this.transaction.data.simCard,
             memberSimCard: [{
               mobileNo: mobileNoMember,
               simSerial: '',
@@ -126,8 +126,8 @@ export class NewRegisterMnpNetworkTypePageComponent implements OnInit, OnDestroy
         }
       }).catch(() => {
         this.pageLoadingService.closeLoading();
-        this.transaction.data.sim_card = {
-          ...this.transaction.data.sim_card,
+        this.transaction.data.simCard = {
+          ...this.transaction.data.simCard,
           memberSimCard: [{
             mobileNo: mobileNoMember,
             simSerial: '',

@@ -9,7 +9,7 @@ import { QueuePageService } from 'src/app/device-order/services/queue-page.servi
 import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_QR_CODE_RESULT_PAGE } from '../../constants/route-path.constant';
-import { Transaction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 
 @Component({
   selector: 'app-new-register-mnp-qr-code-queue-page',

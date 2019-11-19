@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_REASON_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CONFIRM_USER_INFORMATION_PAGE } from '../../constants/route-path.constant';
-import { Transaction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 
 @Component({
   selector: 'app-new-register-mnp-select-package-member',
@@ -55,7 +55,7 @@ export class NewRegisterMnpSelectPackageMemberComponent implements OnInit, OnDes
   callService(language: string): void {
     this.pageLoadingService.openLoading();
     const RequestQueryListLovConfigInfo: any = {
-      lovVal2: this.transaction.data.main_package.customAttributes.promotionCode
+      lovVal2: this.transaction.data.mainPackage.customAttributes.promotionCode
     };
     this.http.post(`/api/salesportal/queryListLovConfigInfo`, RequestQueryListLovConfigInfo).toPromise()
       .then((promotionCodes: any) => {
@@ -115,7 +115,7 @@ export class NewRegisterMnpSelectPackageMemberComponent implements OnInit, OnDes
   }
 
   buildPromotionShelveActive(promotionShelves: PromotionShelve[]): PromotionShelve[] {
-    const mainPackageMember: any = this.transaction.data.main_package.memberMainPackage || {};
+    const mainPackageMember: any = this.transaction.data.mainPackage.memberMainPackage || {};
     if (!promotionShelves || promotionShelves.length <= 0) {
       return;
     }
@@ -155,7 +155,7 @@ export class NewRegisterMnpSelectPackageMemberComponent implements OnInit, OnDes
   }
 
   onCompleted(promotion: any): void {
-    this.transaction.data.main_package.memberMainPackage = promotion;
+    this.transaction.data.mainPackage.memberMainPackage = promotion;
   }
 
   onTermConditions(condition: string): void {

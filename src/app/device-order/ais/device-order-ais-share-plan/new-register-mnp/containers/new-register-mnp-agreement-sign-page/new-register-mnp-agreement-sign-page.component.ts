@@ -20,7 +20,7 @@ import { Subscription } from 'rxjs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { HttpClient } from '@angular/common/http';
-import { Transaction, Customer } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
+import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 declare let window: any;
 @Component({
   selector: 'app-new-register-mnp-agreement-sign-page',

@@ -6,7 +6,7 @@ import { ChargeType, PageLoadingService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_NETWORK_TYPE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CONFIRM_USER_INFORMATION_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
-import { Transaction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 
 @Component({
   selector: 'app-new-register-mnp-select-reason-page',
@@ -40,7 +40,11 @@ export class NewRegisterMnpSelectReasonPageComponent implements OnInit, OnDestro
   }
 
   onNext(): void {
-    this.transaction.data.reasonCode = this.reasonForm.value.reasonCode;
+    this.transaction.data.simCard.memberSimCard[0] =
+    {
+      ...this.transaction.data.simCard.memberSimCard[0],
+      reasonCode: this.reasonForm.value.reasonCode
+    };
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CONFIRM_USER_INFORMATION_PAGE]);
   }
 

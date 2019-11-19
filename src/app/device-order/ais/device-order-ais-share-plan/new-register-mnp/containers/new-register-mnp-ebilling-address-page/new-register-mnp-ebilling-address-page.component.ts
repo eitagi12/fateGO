@@ -9,7 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { debounceTime } from 'rxjs/operators';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CONFIRM_USER_INFORMATION_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
-import { Transaction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 @Component({
   selector: 'app-new-register-mnp-ebilling-address-page',
   templateUrl: './new-register-mnp-ebilling-address-page.component.html',
@@ -56,7 +56,7 @@ export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDes
   }
 
   callService(): void {
-    const billingInformation = this.transaction.data.billing_information || {};
+    const billingInformation = this.transaction.data.billingInformation || {};
     const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
 
     this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {
@@ -235,10 +235,10 @@ export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDes
   }
 
   onNext(): void {
-    const billingInformation = this.transaction.data.billing_information || {};
+    const billingInformation = this.transaction.data.billingInformation || {};
     const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
     this.transactionService.update(this.transaction);
-    this.transaction.data.billing_information.billDeliveryAddress = Object.assign(
+    this.transaction.data.billingInformation.billDeliveryAddress = Object.assign(
       Object.assign({}, customer),
       this.customerAddressTemp
     );

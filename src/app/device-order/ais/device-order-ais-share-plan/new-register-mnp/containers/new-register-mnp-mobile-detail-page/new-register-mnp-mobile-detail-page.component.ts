@@ -14,7 +14,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subscribable, Subscription } from 'rxjs';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_ELIGIBLE_MOBILE_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
-import { Transaction } from 'src/app/device-order/ais/device-order-ais-mnp/models/transaction.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 
 @Component({
   selector: 'app-new-register-mnp-mobile-detail-page',
@@ -54,7 +54,7 @@ export class NewRegisterMnpMobileDetailPageComponent implements OnInit, OnDestro
 
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    delete this.transaction.data.mobile_care_package;
+    delete this.transaction.data.mobileCarePackage;
     this.getMobileProfile();
   }
 
@@ -71,7 +71,7 @@ export class NewRegisterMnpMobileDetailPageComponent implements OnInit, OnDestro
   }
 
   onCompleted(mobileCare: any): void {
-    this.transaction.data.mobile_care_package = mobileCare;
+    this.transaction.data.mobileCarePackage = mobileCare;
   }
 
   ngOnDestroy(): void {
@@ -83,7 +83,7 @@ export class NewRegisterMnpMobileDetailPageComponent implements OnInit, OnDestro
   getMobileProfile(): void {
     this.pageLoadingService.openLoading();
     const idCardNo = this.transaction.data.customer.idCardNo;
-    const mobileNoCurrent = this.transaction.data.sim_card.mobileNo;
+    const mobileNoCurrent = this.transaction.data.simCard.mobileNo;
 
     this.http.get(`/api/customerportal/mobile-detail/${mobileNoCurrent}`).toPromise().then((response: any) => {
       const mobileDetail = response.data || {};
@@ -97,8 +97,8 @@ export class NewRegisterMnpMobileDetailPageComponent implements OnInit, OnDestro
         mainPackage: this.changeMainPackageLangauge(mobileDetail.package)
       };
 
-      this.transaction.data.sim_card.chargeType = mobileDetail.chargeType;
-      this.transaction.data.sim_card.billingSystem = mobileDetail.billingSystem;
+      this.transaction.data.simCard.chargeType = mobileDetail.chargeType;
+      this.transaction.data.simCard.billingSystem = mobileDetail.billingSystem;
       this.transaction.data.currentPackage = mobileDetail.package;
 
       return this.http.get(`/api/customerportal/newRegister/${idCardNo}/queryBillingAccount`).toPromise();
@@ -115,12 +115,12 @@ export class NewRegisterMnpMobileDetailPageComponent implements OnInit, OnDestro
         const trade = this.priceOption.trade;
         isAirtime = trade.advancePay.amount > 0 ? true : false;
       }
-      const billCycles = this.transaction.data.billing_information.billCycles;
+      const billCycles = this.transaction.data.billingInformation.billCycles;
       const mobileBillAccount = billCycles.map(billcycle => billcycle.mobileNo).find((mobile) => {
         return mobile.includes(mobileNoCurrent);
       });
 
-      this.transaction.data.billing_information.isNewBAFlag = mobileBillAccount.length > 1 ? true : false;
+      this.transaction.data.billingInformation.isNewBAFlag = mobileBillAccount.length > 1 ? true : false;
 
       if (mobileBillAccount && mobileBillAccount.length > 1 && isAirtime) {
         this.alertService.warning(this.translationService.instant('หมายเลขนี้มีการรวมบิล ไม่สามารถทำรายการได้'))
