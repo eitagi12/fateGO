@@ -34,7 +34,7 @@
 
                                     </div>
                                 </div>
-                                <div *ngIf="persoSim?.progress !== 100 && !errorMessage"
+                                <div *ngIf="persoSim?.progress !== 100 && !errorMessage && persoSim?.progress > 0"
                                     class="text-center mt-3 mb-3 text-red">
                                     {{ '(ห้ามนำซิมการ์ดออก)' | translate }}
                                 </div>
