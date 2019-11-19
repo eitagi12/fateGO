@@ -575,8 +575,8 @@ export class CreateOrderService {
   }
 
   private getPaymentMethod(transaction: Transaction): string {
-    const payment: Payment = transaction.data.payment || {};
-    const advancePayment: any = transaction.data.advancePayment || {};
+    const payment: Payment = transaction.data.payment;
+    const advancePayment: any = transaction.data.advancePayment;
 
     let paymentMethod = '';
     if (payment) {

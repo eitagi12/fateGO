@@ -256,8 +256,8 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
   }
 
   private getPaymentMethod(transaction: Transaction): string {
-    const payment: Payment = transaction.data.payment || {};
-    const advancePayment: any = transaction.data.advancePayment || {};
+    const payment: Payment = transaction.data.payment;
+    const advancePayment: any = transaction.data.advancePayment;
 
     let paymentMethod = '';
     if (payment) {
