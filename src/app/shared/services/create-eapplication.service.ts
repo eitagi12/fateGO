@@ -128,7 +128,7 @@ export class CreateEapplicationService {
       fullNameEN: `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}`,
       issueDate: customer.issueDate || '',
       expireDate: customer.expireDate || '',
-      signature: customer.imageSignatureSmartCard || ''
+      signature: customer.imageSignatureSmartCard || customer.imageSignature || ''
     };
     if (language === 'EN') {
       data.billCycle = billCycleData.billCycleTextEng;
@@ -190,7 +190,7 @@ export class CreateEapplicationService {
       fullNameEN: `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}`,
       issueDate: customer.issueDate || '',
       expireDate: customer.expireDate || '',
-      signature: customer.imageSignatureSmartCard || '',
+      signature: customer.imageSignatureSmartCard || customer.imageSignature || ''
     };
     if (language === 'EN') {
       data.billCycle = billCycleData.billCycleTextEng;

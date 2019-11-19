@@ -34,7 +34,7 @@ export class NewRegisterMnpFaceConfirmPageComponent implements OnInit {
 
   createForm(): void {
     this.confirmForm = this.fb.group({
-      password: ['netnapht', [Validators.required]]
+      password: ['', [Validators.required]]
     });
   }
 

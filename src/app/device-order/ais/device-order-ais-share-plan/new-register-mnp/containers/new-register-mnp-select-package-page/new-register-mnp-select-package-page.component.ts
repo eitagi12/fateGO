@@ -50,8 +50,7 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
     private http: HttpClient,
     private alertService: AlertService,
     private modalService: BsModalService,
-    private translateService: TranslateService,
-    private fb: FormBuilder
+    private translateService: TranslateService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();

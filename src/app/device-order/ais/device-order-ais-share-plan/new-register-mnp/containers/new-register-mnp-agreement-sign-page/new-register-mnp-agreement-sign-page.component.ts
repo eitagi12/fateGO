@@ -121,7 +121,7 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
         allowCapture: true,
         imageSmartCard: customer.imageSmartCard,
         imageSignature: customer.imageSignature,
-        imageSignatureWidthCard: null
+        imageSignatureWidthCard: customer.imageSignatureSmartCard
       };
     }
   }
