@@ -128,9 +128,9 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
         this.pageLoadingService.closeLoading();
       } else {
         const transactionObject: any = this.validateCustomerService.buildTransaction({
-            transaction: this.transaction,
-            transactionType: TransactionType.DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN // Share
-          }
+          transaction: this.transaction,
+          transactionType: TransactionType.DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN // Share
+        }
         );
         this.validateCustomerService.createTransaction(transactionObject).then((response: any) => {
           this.pageLoadingService.closeLoading();
@@ -146,7 +146,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
         });
       }
     }).catch((error: any) => {
-      if (error.error && error.error.developerMessage === 'EB0001 : Data Not Found.') {
+      if (error.error.developerMessage === 'EB0001 : Data Not Found.') {
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE], {
           queryParams: {
             idCardNo: this.identity
