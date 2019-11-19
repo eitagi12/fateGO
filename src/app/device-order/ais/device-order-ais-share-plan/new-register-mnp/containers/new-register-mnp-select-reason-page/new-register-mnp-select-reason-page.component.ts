@@ -40,8 +40,7 @@ export class NewRegisterMnpSelectReasonPageComponent implements OnInit, OnDestro
   }
 
   onNext(): void {
-    this.transaction.data.simCard.memberSimCard[0] =
-    {
+    this.transaction.data.simCard.memberSimCard[0] = {
       ...this.transaction.data.simCard.memberSimCard[0],
       reasonCode: this.reasonForm.value.reasonCode
     };

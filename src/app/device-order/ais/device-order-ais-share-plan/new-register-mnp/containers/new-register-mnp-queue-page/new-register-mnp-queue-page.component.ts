@@ -11,7 +11,6 @@ import { QueuePageService } from 'src/app/device-order/services/queue-page.servi
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_AGGREGATE_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_RESULT_PAGE } from '../../constants/route-path.constant';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 
-
 @Component({
   selector: 'app-new-register-mnp-queue-page',
   templateUrl: './new-register-mnp-queue-page.component.html',
@@ -58,7 +57,6 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
 
   onNext(queue: boolean): void {
     this.pageLoadingService.openLoading();
-    let transactionData: any;
     if (queue) {
       this.queuePageService.getQueueQmatic(this.queueFrom.value.mobileNo)
         .then((resp: any) => {
