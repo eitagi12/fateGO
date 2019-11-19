@@ -325,8 +325,8 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
         const signImageHeight = signImage.height > canvas.height ? canvas.height : signImage.height;
         const signImageWidth = signImageHeight * signImageRatio;
 
-        const dxs = ((canvas.width - signImageWidth) / 1);
-        const dys = ((canvas.height - signImageHeight) / 0.5);
+        const dxs = ((canvas.width - signImageWidth) / 2);
+        const dys = ((canvas.height - signImageHeight) / 1.5);
         ctx.globalCompositeOperation = 'multiply';
         ctx.drawImage(signImage, dxs, dys, signImageWidth, signImageHeight);
         if (this.captureAndSign.imageSignature) {
@@ -335,7 +335,7 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
           const watermarkWidth: number = watermarkHeight * watermarkRatio;
           const dxw = (canvas.width - watermarkWidth) / 2;
           const dyw = (canvas.height - watermarkHeight) / 2;
-          ctx.drawImage(watermark, dxw + 220, dyw + 170, watermarkWidth / 2.5, watermarkHeight / 2.5);
+          ctx.drawImage(watermark, dxw + 250, dyw + 170, watermarkWidth / 2.0, watermarkHeight / 2.0);
         }
       }
     }
