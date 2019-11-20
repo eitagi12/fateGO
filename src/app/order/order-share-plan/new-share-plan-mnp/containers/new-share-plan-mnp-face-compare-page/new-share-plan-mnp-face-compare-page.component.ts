@@ -44,18 +44,15 @@ export class NewSharePlanMnpFaceComparePageComponent implements OnInit, OnDestro
       selfieBase64Imgs: faceRecognition.imageFaceUser
     }).toPromise()
       .then((resp: any) => {
-        this.transaction.data.faceRecognition.kyc = !resp.data.match;
-        if (resp.data.match) {
-          this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_SELECT_NUMBER_PAGE]);
-        } else {
-          this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_FACE_CONFIRM_PAGE]);
-        }
+        this.pageLoadingService.closeLoading();
+        const isMatched = resp.data.isMatched;
+        this.transaction.data.faceRecognition.kyc = isMatched;
+        // tslint:disable-next-line: max-line-length
+        isMatched === true ? this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_SELECT_NUMBER_PAGE]) : this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_FACE_CONFIRM_PAGE]);
       }).then(() => {
         this.pageLoadingService.closeLoading();
-      }).catch((error: any) => {
+      }).catch(() => {
         this.pageLoadingService.closeLoading();
-        this.transaction.data.faceRecognition.kyc = true;
-        this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_FACE_CONFIRM_PAGE]);
       });
   }
 

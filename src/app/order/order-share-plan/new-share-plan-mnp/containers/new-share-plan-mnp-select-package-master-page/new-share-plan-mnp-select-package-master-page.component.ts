@@ -135,7 +135,7 @@ export class NewSharePlanMnpSelectPackageMasterPageComponent implements OnInit, 
     if (!promotionShelves || promotionShelves.length <= 0) {
       return;
     }
-    if (mainPackage && mainPackage.packageId) {
+    if (mainPackage && mainPackage.promotionCode) {
       let promotionShelveIndex = 0, promotionShelveGroupIndex = 0;
       for (let i = 0; i < promotionShelves.length; i++) {
         const promotions = promotionShelves[i].promotions || [];

@@ -25,24 +25,22 @@ export class NewSharePlanMnpSelectNumberPageComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  onBack(): void {
+    const kyc = this.transaction.data.faceRecognition.kyc;
+    // tslint:disable-next-line: max-line-length
+    kyc === true ? this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_FACE_COMPARE_PAGE]) : this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_FACE_CONFIRM_PAGE]);
+  }
+
+  onNext(): void {
+    this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_VERIFY_INSTANT_SIM_PAGE]);
+  }
+
   onVerifyInstantSim(): void {
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_VERIFY_INSTANT_SIM_PAGE]);
   }
 
   onByPattern(): void {
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_VERIFY_BY_PATTERN_PAGE]);
-  }
-
-  onBack(): void {
-    if (this.transaction.data.faceRecognition.kyc === false) {
-      this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_FACE_COMPARE_PAGE]);
-    } else {
-      this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_FACE_CONFIRM_PAGE]);
-    }
-  }
-
-  onNext(): void {
-    this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_VERIFY_INSTANT_SIM_PAGE]);
   }
 
 }
