@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_CUSTOMER_INFO_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE } from '../../constants/route-path.constant';
-import { PageLoadingService } from 'mychannel-shared-libs';
+import { PageLoadingService, Utils } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { AbstractControl, ValidationErrors } from '@angular/forms';
 
 @Component({
   selector: 'app-new-share-plan-mnp-validate-customer-page',
@@ -21,7 +22,8 @@ export class NewSharePlanMnpValidateCustomerPageComponent implements OnInit, OnD
     private router: Router,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private http: HttpClient
+    private http: HttpClient,
+    private utils: Utils
   ) {
 
   }
@@ -36,6 +38,24 @@ export class NewSharePlanMnpValidateCustomerPageComponent implements OnInit, OnD
 
   onCompleted(identity: string): void {
     this.identity = identity;
+  }
+
+  validateCustomerIdentity(control: AbstractControl): ValidationErrors | null {
+    const value = control.value;
+    const length: number = control.value.length;
+    if (length === 13) {
+      if (this.utils.isThaiIdCard(value)) {
+        return null;
+      } else {
+        return {
+          message: 'กรุณากรอกเลขบัตรประชาชนให้ถูกต้อง',
+        };
+      }
+    } else {
+      return {
+        message: 'กรุณากรอกรูปแบบให้ถูกต้อง',
+      };
+    }
   }
 
   onReadCard(): void {
