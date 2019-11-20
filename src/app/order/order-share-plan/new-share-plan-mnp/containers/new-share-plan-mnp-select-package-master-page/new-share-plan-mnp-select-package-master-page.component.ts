@@ -18,9 +18,8 @@ import { ROUTE_NEW_SHARE_PLAN_MNP_NETWORK_TYPE_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_VE
 })
 export class NewSharePlanMnpSelectPackageMasterPageComponent implements OnInit, OnDestroy {
 
-  @ViewChild('conditionTemplate')
+  @ViewChild('conditionTemplate') conditionTemplate: any;
   wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
-  conditionTemplate: any;
   transaction: Transaction;
   promotionShelves: PromotionShelve[];
   promotionData: any;
@@ -55,7 +54,8 @@ export class NewSharePlanMnpSelectPackageMasterPageComponent implements OnInit, 
 
   onBack(): void {
     const user = this.tokenService.getUser();
-    if (this.transaction.data.simCard.simSerial) {
+    const simSerial = this.transaction.data.simCard.simSerial;
+    if (simSerial) {
       this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_VERIFY_INSTANT_SIM_PAGE]);
     } else {
       const dataRequest: SelectMobileNumberRandom = {
@@ -102,7 +102,7 @@ export class NewSharePlanMnpSelectPackageMasterPageComponent implements OnInit, 
             promotions: promotionShelve.subShelves
               .map((subShelve: any) => {
                 return {
-                  // group
+                  // subShelve
                   id: subShelve.subShelveId,
                   title: subShelve.title,
                   sanitizedName: subShelve.sanitizedName,
@@ -135,7 +135,7 @@ export class NewSharePlanMnpSelectPackageMasterPageComponent implements OnInit, 
     if (!promotionShelves || promotionShelves.length <= 0) {
       return;
     }
-    if (mainPackage) {
+    if (mainPackage && mainPackage.packageId) {
       let promotionShelveIndex = 0, promotionShelveGroupIndex = 0;
       for (let i = 0; i < promotionShelves.length; i++) {
         const promotions = promotionShelves[i].promotions || [];
