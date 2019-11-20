@@ -10,6 +10,10 @@ import { DeviceOnlyKioskQrCodeGenaratePageComponent } from './containers/device-
 import { DeviceOnlyKioskQrCodeSummaryPageComponent } from './containers/device-only-kiosk-qr-code-summary-page/device-only-kiosk-qr-code-summary-page.component';
 import { DeviceOnlyKioskQueuePageComponent } from './containers/device-only-kiosk-queue-page/device-only-kiosk-queue-page.component';
 import { DeviceOnlyKioskResultQueuePageComponent } from './containers/device-only-kiosk-result-queue-page/device-only-kiosk-result-queue-page.component';
+import { DeviceOnlyKioskOmiseSummaryPageComponent } from './containers/device-only-kiosk-omise-summary-page/device-only-kiosk-omise-summary-page.component';
+import { DeviceOnlyKioskOmiseGeneratorPageComponent } from './containers/device-only-kiosk-omise-generator-page/device-only-kiosk-omise-generator-page.component';
+import { DeviceOnlyKioskOmiseQueuePageComponent } from './containers/device-only-kiosk-omise-queue-page/device-only-kiosk-omise-queue-page.component';
+import { DeviceOnlyKioskOmiseResultPageComponent } from './containers/device-only-kiosk-omise-result-page/device-only-kiosk-omise-result-page.component';
 
 const routes: Routes = [
   {
@@ -51,6 +55,22 @@ const routes: Routes = [
   {
     path: 'result-queue',
     component: DeviceOnlyKioskResultQueuePageComponent
+  },
+  {
+    path: 'omise-summary',
+    component: DeviceOnlyKioskOmiseSummaryPageComponent
+  },
+  {
+    path: 'omise-generator',
+    component: DeviceOnlyKioskOmiseGeneratorPageComponent
+  },
+  {
+    path: 'omise-queue',
+    component: DeviceOnlyKioskOmiseQueuePageComponent
+  },
+  {
+    path: 'omise-result',
+    component: DeviceOnlyKioskOmiseResultPageComponent
   }
 ];
 

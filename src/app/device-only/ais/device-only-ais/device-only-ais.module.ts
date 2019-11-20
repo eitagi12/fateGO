@@ -18,6 +18,7 @@ import { DeviceOnlyAisResultQueuePageComponent } from './containers/device-only-
 import { DeviceOnlyAisSelectMobileCarePageComponent } from './containers/device-only-ais-select-mobile-care-page/device-only-ais-select-mobile-care-page.component';
 import { DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent } from './containers/device-only-ais-select-payment-and-receipt-information-page/device-only-ais-select-payment-and-receipt-information-page.component';
 import { DeviceOnlyAisSummaryPageComponent } from './containers/device-only-ais-summary-page/device-only-ais-summary-page.component';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -40,7 +41,7 @@ import { DeviceOnlyAisSummaryPageComponent } from './containers/device-only-ais-
     DeviceOnlyAisResultQueuePageComponent,
     DeviceOnlyAisSelectMobileCarePageComponent,
     DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent,
-    DeviceOnlyAisSummaryPageComponent
+    DeviceOnlyAisSummaryPageComponent,
   ],
   providers: []
 })

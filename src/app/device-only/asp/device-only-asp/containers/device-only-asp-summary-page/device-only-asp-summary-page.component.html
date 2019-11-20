@@ -1,0 +1,66 @@
+<div class="mc-flex">
+  <mc-header title="ซื้อเครื่องเปล่า">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <app-shopping-cart-detail></app-shopping-cart-detail>
+    <mc-wizard [wizards]="wizards" active="3"></mc-wizard>
+    <div class="mt-3 mb-3">
+      <div class="container-fluid">
+        <!-- สรุปรายการสั่งชื้อสินค้า -->
+        <app-summary-order-detail></app-summary-order-detail>
+
+        <!-- สินค้าและบริการอื่น -->
+        <app-summary-product-and-service></app-summary-product-and-service>
+
+        <!-- รายละเอียดการชำระ -->
+        <app-summary-payment-detail></app-summary-payment-detail>
+        
+        <!-- แสดง Balance เฉพาะเบอร์ Pre-Paid -->
+        <div class="card mb-3" *ngIf="isShowBalance">
+          <div class="card-body">
+            <div *ngIf='enoughBalance'>
+              <img class="icon-pouch" src="assets/images/icon/icon_pouch.png">
+              <span>
+                <b>
+                  {{ 'ยอดเงินคงเหลือ' | translate }} {{ balance | number}}
+                  {{ 'บาท' | translate }}
+                </b>
+              </span>
+            </div>
+            <div *ngIf='!enoughBalance'>
+              <img class="icon-pouch" src="assets/images/icon/icon-red-alert-circle.png">
+              <span class="text-red">
+                <b>
+                  {{ 'ยอดเงินคงเหลือ' | translate }}
+                  {{ balance | number}}
+                  {{ 'บาท' | translate }}
+                  {{ 'กรุณาเติมเงินเพิ่ม' | translate }}
+                  {{ (priceMobileCare - balance) | number }}
+                  {{ 'บาท' | translate }}
+                  {{ 'เพื่อสมัครแพ็กเกจ' | translate }}<br>
+                  {{ '*เมื่อเติมเงินเรียบร้อยแล้ว กรุณากดปุ่มเพื่ออัพเดทยอดเงินคงเหลือ' | translate }}
+                </b>
+              </span>
+              <div>
+                <button class="btn btn-success" (click)="getBalance()">อัพเดตยอดเงิน</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- รหัสผู้ขาย -->
+        <app-summary-seller-code></app-summary-seller-code>
+      </div>
+    </div>
+  </div>
+  <mc-footer>
+    <button class="btn btn-secondary" id="button-back" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" id="button-next" (click)="onNext()" [disabled]="!isNext">NEXT</button>
+  </mc-footer>
+</div>

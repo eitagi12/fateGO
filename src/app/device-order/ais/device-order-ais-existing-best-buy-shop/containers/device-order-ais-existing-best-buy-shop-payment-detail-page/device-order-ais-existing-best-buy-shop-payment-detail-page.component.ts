@@ -28,6 +28,7 @@ export class DeviceOrderAisExistingBestBuyShopPaymentDetailPageComponent impleme
   payementDetail: PaymentDetail;
   banks: PaymentDetailBank[];
   paymentDetailValid: boolean;
+  omiseBanks: PaymentDetailBank[];
 
   receiptInfo: ReceiptInfo;
   receiptInfoValid: boolean;
@@ -86,9 +87,14 @@ export class DeviceOrderAisExistingBestBuyShopPaymentDetailPageComponent impleme
       isFullPayment: this.isFullPayment(),
       installmentFlag: advancePay.installmentFlag === 'N' && +(advancePay.amount || 0) > 0,
       advancePay: +(advancePay.amount || 0),
-      qrCode: showQRCode
+      qrCode: showQRCode,
+      omisePayment: this.isFullPayment() && productStock.company !== 'WDS'
     };
-
+    this.http.get('/api/salesportal/omise/get-bank').toPromise()
+    .then((res: any) => {
+      const data = res.data || [];
+      this.omiseBanks = data;
+    });
     if (trade.banks && trade.banks.length > 0) {
       if (!this.isFullPayment()) {
         this.banks = (this.priceOption.trade.banks || []).map((b: any) => {

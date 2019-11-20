@@ -130,13 +130,13 @@ export class DeviceOrderAisMnpMobileDetailPageComponent implements OnInit, OnDes
         return mobile.includes(mobileNoCurrent);
       });
 
-      this.transaction.data.billingInformation.isNewBAFlag = mobileBillAccount.length > 1 ? true : false;
+      this.transaction.data.billingInformation.isNewBAFlag = mobileBillAccount && mobileBillAccount.length > 1 ? true : false;
 
       if (mobileBillAccount && mobileBillAccount.length > 1 && isAirtime) {
         this.alertService.warning(this.translationService.instant('หมายเลขนี้มีการรวมบิล ไม่สามารถทำรายการได้'))
-        .then(() => {
-          this.onBack();
-        });
+          .then(() => {
+            this.onBack();
+          });
         return;
       }
     });

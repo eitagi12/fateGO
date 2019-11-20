@@ -6,7 +6,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
-import { HomeService, ApiRequestService, AlertService, PaymentDetail, User, TokenService } from 'mychannel-shared-libs';
+import { HomeService, ApiRequestService, AlertService, PaymentDetail, User, TokenService , PaymentDetailBank} from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { WIZARD_DEVICE_ONLY_AIS } from 'src/app/device-only/constants/wizard.constant';
 import { CreateOrderService } from 'src/app/device-only/services/create-order.service';

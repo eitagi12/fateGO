@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors, ValidatorFn, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinct, delay } from 'rxjs/operators';
-import { Utils, CustomerAddress } from 'mychannel-shared-libs';
+import { Utils, CustomerAddress, User, TokenService } from 'mychannel-shared-libs';
 import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
 import { TransactionAction, Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -80,20 +80,25 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   identityValue: string;
   disableIdCard: boolean;
   transaction: Transaction;
+  isDeviceOnlyASP: boolean;
+  user: User;
 
   constructor(
     public fb: FormBuilder,
     private utils: Utils,
     private customerInformationService: CustomerInformationService,
-    private transactionService: TransactionService
+    private transactionService: TransactionService,
+    private tokenService: TokenService,
   ) {
     this.transaction = this.transactionService.load();
+    this.user = this.tokenService.getUser();
   }
 
   ngOnInit(): void {
     this.createForm();
     this.checkProvinceAndAmphur();
     this.checkAction();
+    this.isDeviceOnlyASP = this.user.userType === 'ASP' ? true : false;
   }
 
   checkAction(): void {

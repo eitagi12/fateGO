@@ -22,7 +22,7 @@
       </div>
       <div class="col-12 col-sm-8">
         <p id="text-location">
-        {{transaction?.data?.receiptInfo?.branch}}
+        {{ transaction?.data?.receiptInfo?.branch || transaction?.data?.seller?.locationName }}
         </p>
       </div>
 

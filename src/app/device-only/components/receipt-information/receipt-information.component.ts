@@ -80,8 +80,7 @@ export class ReceiptInformationComponent implements OnInit {
     };
     this.createForm();
     this.createSearchByMobileNoForm();
-    this.billingAddress.getLocationName()
-      .subscribe((resp) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
+    this.billingAddress.getLocationName().then((resp: any) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
     if (this.customerInfoTemp) {
       this.setDataFromCustomerInfoTemp();
     }
@@ -177,7 +176,7 @@ export class ReceiptInformationComponent implements OnInit {
     }
     this.keyInCustomerAddressTemp = customer;
     this.actionType = data.action;
-    this.billingAddress.getLocationName().subscribe((resp) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
+    this.billingAddress.getLocationName().then((resp: any) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
     this.nameText = data.customer.titleName + ' ' + data.customer.firstName + ' ' + data.customer.lastName;
     this.billingAddressText = this.customerInfoService.convertBillingAddressToString(customer);
     if (data.action === TransactionAction.READ_CARD || this.billingAddressText) {

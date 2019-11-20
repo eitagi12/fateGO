@@ -10,7 +10,7 @@
     </mc-header>
     <div class="mc-flex-wrap">
         <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
-        <mc-payment-detail [paymentDetail]="paymentDetail" [banks]="banks" (completed)="onPaymentDetailCompleted($event)" (error)="onPaymentDetailError($event)">
+        <mc-payment-detail [paymentDetail]="paymentDetail" [banks]="banks" [omiseBanks]="omiseBanks" (completed)="onPaymentDetailCompleted($event)" (error)="onPaymentDetailError($event)">
         </mc-payment-detail>
         <div class="my-3">
             <app-receipt-information-device-only (completed)="onComplete($event)" (error)="onError($event)" (action)="checkAction($event)" (errorAddessValid)="onErrorAddessValid($event)" [customerInfoTemp]="customerInfoTemp"></app-receipt-information-device-only>

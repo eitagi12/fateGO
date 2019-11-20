@@ -128,7 +128,9 @@ export class DeviceOrderAisExistingAgreementSignPageComponent implements OnInit,
     if (this.translationSubscribe) {
       this.translationSubscribe.unsubscribe();
     }
-    this.signedSignatureSubscription.unsubscribe();
+    if (this.signedSignatureSubscription) {
+      this.signedSignatureSubscription.unsubscribe();
+    }
     if (this.signedOpenSubscription) {
       this.signedOpenSubscription.unsubscribe();
     }

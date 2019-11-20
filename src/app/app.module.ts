@@ -3,6 +3,7 @@ import { CommonModule, DecimalPipe } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { JwtModule, JWT_OPTIONS } from '@auth0/angular-jwt';
+const { name: name } = require('../../package.json');
 
 import {
   jwtOptionsFactory,
@@ -34,7 +35,8 @@ import { TranslateModule } from '@ngx-translate/core';
       production: environment.production,
       NAME: environment.name,
       WEB_CONNECT_URL: environment.WEB_CONNECT_URL,
-      CAMERA_DEVLICE: ['^USB Camera+', '^HP+']
+      CAMERA_DEVLICE: ['^USB Camera+', '^HP+'],
+      CLIENT_NAME: 'client-smart-digital'
     }),
     JwtModule.forRoot({
       jwtOptionsProvider: {
