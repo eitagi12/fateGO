@@ -51,7 +51,7 @@ export class QueuePageService {
     }).toPromise();
   }
 
-  createDeviceSellingOrderList(transaction: Transaction, priceOption: PriceOption): Promise<any> {
+  createDeviceSellingOrderList(transaction: Transaction, priceOption: PriceOption): Promise<any> { // ตัวที่จะใช้
     return this.http.post('/api/salesportal/dt/create-order-list',
       this.getRequestCreateDeviceSellingOrderList(transaction, priceOption)
     ).toPromise();
