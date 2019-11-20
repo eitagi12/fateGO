@@ -56,7 +56,7 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
   signedSubscription: Subscription;
   isReadCard: boolean;
   signedWidthIdCardImageSubscription: Subscription;
-
+  text: string;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -335,7 +335,7 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
           const watermarkWidth: number = watermarkHeight * watermarkRatio;
           const dxw = (canvas.width - watermarkWidth) / 2;
           const dyw = (canvas.height - watermarkHeight) / 2;
-          ctx.drawImage(watermark, dxw + 250, dyw + 170, watermarkWidth / 2.0, watermarkHeight / 2.0);
+          ctx.drawImage(watermark, dxw + 280, dyw + 190, watermarkWidth / 3.0, watermarkHeight / 3.0);
         }
       }
     }
