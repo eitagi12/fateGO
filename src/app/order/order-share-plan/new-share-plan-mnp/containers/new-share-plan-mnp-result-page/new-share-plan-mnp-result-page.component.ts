@@ -36,6 +36,8 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
   getEApplicationFn: any;
   images: string[] = [];
   orderNo: any = [];
+  orderNoNew: string = '';
+  orderNoMNP: string = '';
   MSG_ERROR_DEFAULT: string = 'ขออภัยระบบไม่สามารถทำรายการได้';
 
   constructor(
@@ -65,6 +67,7 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
           orderNo: data.orderNo,
           orderDate: data.orderDate
         };
+        this.orderNoNew = resp.data.orderNo;
 
         this.transactionService.update(this.transaction);
         if (this.transaction.data.order.orderNo) {
@@ -78,6 +81,7 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
                     ...this.transaction.data.order,
                     orderNoMNP: response.data.orderNo
                   };
+                  this.orderNoMNP = response.data.orderNo;
                   this.transactionService.update(this.transaction);
                   this.orderNo.push(this.transaction.data.order.orderNoMNP);
                   this.pageLoadingService.closeLoading();
