@@ -51,10 +51,10 @@ export class NewRegisterMnpQrCodeQueuePageComponent implements OnInit, OnDestroy
         this.transaction.data.queue = {
           queueNo: queueNo
         };
-        return this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption)
-          .then(() => {
-            return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
-          });
+        // return this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption)
+        //   .then(() => {
+        //     return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
+        //   });
       })
       .then(() => {
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_QR_CODE_RESULT_PAGE]);

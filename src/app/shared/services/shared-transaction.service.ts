@@ -104,7 +104,8 @@ export class SharedTransactionService {
           sellerName: !!data.seller ? data.seller.sellerName : '',
           isAscCode: !this.tokenService.isAisUser(),
           sellerNo: !!data.seller ? data.seller.sellerNo : '',
-          employeeId: data.seller && data.seller.employeeId ? data.seller.employeeId : ''
+          employeeId: data.seller && data.seller.employeeId ? data.seller.employeeId : '',
+          sharedUser: !!data.seller ? data.seller.sharedUser : ''
         },
         status: data.status || {}
       }
@@ -242,8 +243,8 @@ export class SharedTransactionService {
         orderReason: '109',
         userName: 'SFFBATCH',
         action: 'Add',
-        serviceCode: 'P19020073',
-        serviceName: 'CDM-SAMSUNG',
+        serviceCode: priceOption.trade.serviceLockHs,
+        serviceName: 'CDM-' + priceOption.productStock.brand,
         startDate: startDate,
         endDate: endDate,
         duration: priceOption.trade.durationContract

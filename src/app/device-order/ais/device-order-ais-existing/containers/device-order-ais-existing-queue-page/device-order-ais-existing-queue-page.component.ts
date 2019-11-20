@@ -74,7 +74,7 @@ export class DeviceOrderAisExistingQueuePageComponent implements OnInit, OnDestr
   }
 
   callServiceCreateDeviceSellingOrderAndUpdateShareTransaction(): any {
-    return this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption)
+    return this.queuePageService.createDeviceSellingOrderList(this.transaction, this.priceOption)
       .then(() => {
         return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
       });

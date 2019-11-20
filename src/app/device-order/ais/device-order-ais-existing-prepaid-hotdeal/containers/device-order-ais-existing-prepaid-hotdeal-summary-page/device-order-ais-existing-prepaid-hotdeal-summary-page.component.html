@@ -118,7 +118,7 @@
                   ฿ {{ priceOption?.trade?.promotionPrice | number }}
                 </span> <br>
                 <small class="text-muted">
-                  ({{ 'ชำระโดย' | translate}}
+                  ({{ qrCodeOmisePageService?.isPaymentOnlineCredit(transaction, 'payment') ? 'ชำระทันที' : 'ชำระโดย' | translate}}
                   {{ summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) }})
                 </small>
               </p>
@@ -132,7 +132,8 @@
                 </span>
               </p>
               <small class="text-muted" *ngIf="(+priceOption?.trade?.advancePay?.amount) > 0">
-                ({{ 'ชำระโดย' | translate }} {{ summaryPageService.descriptionPayment(transaction?.data?.advancePayment) }})
+                ({{ qrCodeOmisePageService?.isPaymentOnlineCredit(transaction, 'advancePayment') ? 'ชำระทันที' : 'ชำระโดย' | translate }} 
+                {{ summaryPageService.descriptionPayment(transaction?.data?.advancePayment) }})
               </small>
             </ng-container>
 
@@ -150,7 +151,9 @@
                     ]) | number }}</span>
               </p>
               <small class="text-muted">
-                ({{ 'ชำระโดย' | translate }} {{ summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) }})
+                ({{ qrCodeOmisePageService?.isPaymentOnlineCredit(transaction, 'payment') &&
+                qrCodeOmisePageService?.isPaymentOnlineCredit(transaction, 'advancePayment') ? 'ชำระทันที' : 'ชำระโดย' | translate }} 
+                {{ summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) }})
               </small>
             </ng-container>
 

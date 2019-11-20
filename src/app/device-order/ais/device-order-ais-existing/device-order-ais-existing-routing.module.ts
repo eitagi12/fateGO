@@ -26,7 +26,10 @@ import { DeviceOrderAisExistingNonPackagePageComponent } from './containers/devi
 import { DeviceOrderAisExistingAggregatePageComponent } from './containers/device-order-ais-existing-aggregate-page/device-order-ais-existing-aggregate-page.component';
 import { DeviceOrderAisExistingSelectPackageOntopPageComponent } from './containers/device-order-ais-existing-select-package-ontop-page/device-order-ais-existing-select-package-ontop-page.component';
 import { DeviceOrderAisExistingQrCodeResultPageComponent } from './containers/device-order-ais-existing-qr-code-result-page/device-order-ais-existing-qr-code-result-page.component';
-
+import { DeviceOrderAisExistingOmiseSummaryPageComponent } from './containers/device-order-ais-existing-omise-summary-page/device-order-ais-existing-omise-summary-page.component';
+import { DeviceOrderAisExistingOmiseGeneratorPageComponent } from './containers/device-order-ais-existing-omise-generator-page/device-order-ais-existing-omise-generator-page.component';
+import { DeviceOrderAisExistingOmiseQueuePageComponent } from './containers/device-order-ais-existing-omise-queue-page/device-order-ais-existing-omise-queue-page.component';
+import { DeviceOrderAisExistingOmiseResultPageComponent } from './containers/device-order-ais-existing-omise-result-page/device-order-ais-existing-omise-result-page.component';
 const routes: Routes = [
   {
     path: 'validate-customer',
@@ -131,7 +134,23 @@ const routes: Routes = [
   {
     path: 'select-package-ontop',
     component: DeviceOrderAisExistingSelectPackageOntopPageComponent
-  }
+  },
+  {
+    path: 'omise-summary',
+    component: DeviceOrderAisExistingOmiseSummaryPageComponent
+  },
+  {
+    path: 'omise-generator',
+    component: DeviceOrderAisExistingOmiseGeneratorPageComponent
+  },
+  {
+    path: 'omise-queue',
+    component: DeviceOrderAisExistingOmiseQueuePageComponent
+  },
+  {
+    path: 'omise-result',
+    component: DeviceOrderAisExistingOmiseResultPageComponent
+  },
 ];
 
 @NgModule({

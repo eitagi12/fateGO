@@ -2,8 +2,10 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-import { PageLoadingService, HomeService, ReadCardProfile,
-  User, AlertService, ValidateCustomerIdCardComponent, TokenService } from 'mychannel-shared-libs';
+import {
+  PageLoadingService, HomeService, ReadCardProfile,
+  User, AlertService, ValidateCustomerIdCardComponent, TokenService
+} from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
 import { Transaction, Customer, Prebooking } from 'src/app/shared/models/transaction.model';
@@ -107,7 +109,8 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent im
             this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
             return;
           }
-          return this.http.post('/api/salesportal/add-device-selling-cart',
+          return this.http.post(
+            '/api/salesportal/dt/add-cart-list',
             this.getRequestAddDeviceSellingCart()
           ).toPromise().then((resp: any) => {
             this.transaction.data.order = { soId: resp.data.soId };
@@ -117,7 +120,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent im
           });
         });
     }).catch((e) => this.alertService.error(e))
-    .then(() => this.pageLoadingService.closeLoading());
+      .then(() => this.pageLoadingService.closeLoading());
   }
 
   onHome(): void {
@@ -141,25 +144,44 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent im
     let subStock;
     if (preBooking && preBooking.preBookingNo) {
       subStock = 'PRE';
+    } else {
+      subStock = 'BRN';
     }
-    return {
-      soCompany: productStock.company || 'AWN',
-      locationSource: this.user.locationCode,
-      locationReceipt: this.user.locationCode,
+
+    const product = {
       productType: productDetail.productType || 'DEVICE',
+      soCompany: productStock.company || 'AWN',
       productSubType: productDetail.productSubType || 'HANDSET',
-      brand: productDetail.brand || productStock.brand,
-      model: productDetail.model || productStock.model,
-      color: productStock.color || productStock.colorName,
+      brand: productStock.brand,
+      model: productDetail.model,
+      qty: '1',
+
+      color: productStock.color,
+      matCode: '',
       priceIncAmt: '' + trade.normalPrice,
       priceDiscountAmt: '' + trade.discount.amount,
-      grandTotalAmt: '',
+      matAirTime: '',
+      listMatFreeGoods: [{
+        matCodeFG: '',
+        qtyFG: '' // จำนวนของแถม *กรณีส่งค่า matCodeFreeGoods ค่า qty จะต้องมี
+      }]
+    };
+
+    return {
+      locationSource: this.user.locationCode,
+      locationReceipt: this.user.locationCode,
       userId: this.user.username,
       cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
+      soChannelType: 'MC_KIOSK',
+      soDocumentType: 'RESERVED',
+      productList: [product],
+
+      grandTotalAmt: '',
       preBookingNo: preBooking ? preBooking.preBookingNo : '',
       depositAmt: preBooking ? preBooking.depositAmt : '',
       reserveNo: preBooking ? preBooking.reserveNo : '',
-      subStockDestination: subStock
+      subStockDestination: subStock,
+      storeName: ''
     };
   }
 }

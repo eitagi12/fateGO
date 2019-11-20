@@ -167,7 +167,7 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
                 return;
               }
               return this.http.post(
-                '/api/salesportal/add-device-selling-cart',
+                '/api/salesportal/dt/add-cart-list',
                 this.getRequestAddDeviceSellingCart()
               ).toPromise()
                 .then((resp: any) => {
@@ -219,7 +219,7 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
       if (this.utils.isIdCardExpiredDate(expireDate)) {
         return reject(
           `${this.translateService.instant('ไม่สามารถทำรายการได้ เนื่องจาก')} ${idCardType} ${this.translateService.instant('หมดอายุ')}`
-          );
+        );
       }
       resovle(null);
     });
@@ -242,10 +242,9 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
       const promiseAll = [];
       if (transaction.data) {
         if (transaction.data.order && transaction.data.order.soId) {
-          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
-            location: this.priceOption.productStock.location,
+          const order = this.http.post('/api/salesportal/dt/remove-cart', {
             soId: transaction.data.order.soId,
-            transactionId: transaction.transactionId
+            userId: this.user.username
           }).toPromise().catch(() => Promise.resolve());
           promiseAll.push(order);
         }
@@ -258,23 +257,41 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
     const productStock = this.priceOption.productStock;
     const productDetail = this.priceOption.productDetail;
     const customer = this.transaction.data.customer;
-    return {
-      soCompany: productStock.company || 'AWN',
-      locationSource: this.user.locationCode,
-      locationReceipt: this.user.locationCode,
+
+    const product = {
       productType: productDetail.productType || 'DEVICE',
+      soCompany: productStock.company || 'AWN',
       productSubType: productDetail.productSubType || 'HANDSET',
       brand: productStock.brand,
       model: productDetail.model,
+      qty: '1',
+
       color: productStock.color,
+      matCode: '',
       priceIncAmt: '',
       priceDiscountAmt: '',
-      grandTotalAmt: '',
+      matAirTime: '',
+      listMatFreeGoods: [{
+        matCodeFG: '',
+        qtyFG: '' // จำนวนของแถม *กรณีส่งค่า matCodeFreeGoods ค่า qty จะต้องมี
+      }]
+    };
+
+    return {
+      locationSource: this.user.locationCode,
+      locationReceipt: this.user.locationCode,
       userId: this.user.username,
       cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim(),
+      soChannelType: 'CSP',
+      soDocumentType: 'RESERVED',
+      productList: [product],
+
+      grandTotalAmt: '',
       preBookingNo: '',
       depositAmt: '',
-      reserveNo: ''
+      reserveNo: '',
+      subStockDestination: 'BRN',
+      storeName: ''
     };
   }
 

@@ -3,8 +3,12 @@ import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [
   {
-      path: 'ais',
-      loadChildren: 'src/app/device-only/ais/device-only-ais/device-only-ais.module#DeviceOnlyAisModule'
+    path: 'ais',
+    loadChildren: 'src/app/device-only/ais/device-only-ais/device-only-ais.module#DeviceOnlyAisModule'
+  },
+  {
+    path: 'asp',
+    loadChildren: 'src/app/device-only/asp/device-only-asp/device-only-asp.module#DeviceOnlyAspModule'
   },
   {
     path: 'kiosk',

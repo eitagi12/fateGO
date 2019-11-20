@@ -84,7 +84,7 @@ export class DeviceOnlyKioskQueuePageComponent implements OnInit, OnDestroy {
         const queueNo = resp.data.queue;
         this.skipQueue = true;
         this.transaction.data.queue = { queueNo: queueNo };
-        this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).then(() => {
+        this.createOrderService.createDeviceSellingOrderList(this.transaction, this.priceOption).then(() => {
           return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
             this.pageLoadingService.closeLoading();
             this.router.navigate([ROUTE_DEVICE_ONLY_KIOSK_RESULT_QUEUE_PAGE]);
@@ -127,7 +127,7 @@ export class DeviceOnlyKioskQueuePageComponent implements OnInit, OnDestroy {
   }
 
   callServiceCreateDeviceSellingOrderAndUpdateShareTransaction(): any {
-    return this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption)
+    return this.createOrderService.createDeviceSellingOrderList(this.transaction, this.priceOption)
       .then(() => {
         return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
       });

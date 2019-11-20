@@ -91,6 +91,27 @@ export interface TransactionData {
   // Rom Agent
   romAgent?: RomAgent;
   romTransaction?: RomTransactionData;
+  omise?: Omise;
+}
+export interface Omise {
+  orderId?: string;
+  tranDtm?: string;
+  tranId?: string;
+  amount?: number;
+  qrType?: string;
+  status?: string;
+  locationCode?: string;
+  offerId?: string;
+  startDtm?: string;
+  // QR Code AirTime
+  companyStock?: 'AWN' | 'WDS';
+  omiseStatus?: MPayStatus;
+  qrAirtimeTransId?: string;
+  qrAirtimeAmt?: string;
+  qrOrderId?: string;
+  qrCodeStr?: string;
+  creditCardNo?: string;
+  cardExpireDate?: string;
 }
 
 export interface Condition {
@@ -114,6 +135,7 @@ export interface Payment {
   paymentMethod: any;
   qrCode?: any;
   type?: any;
+  paymentOnlineCredit?: any;
 }
 export interface MainPromotion {
   campaign?: any;
@@ -168,6 +190,10 @@ export interface Customer {
   imageSmartCard?: string;
   imageReadSmartCard?: string;
   customerPinCode?: string;
+  provinceName?: any;
+  portalCode?: any;
+  houseNumber?: any;
+
   // passport
   issuingCountry?: string;
   nationality?: string;
@@ -180,9 +206,12 @@ export interface Customer {
   privilegeCode?: string;
   repi?: boolean;
   mobileNo?: string;
+
+  // block chain
   chipID?: string;
   requestNo?: string;
   laserCode?: string;
+  isBlockChain?: boolean;
 }
 
 export interface Recipientinformation {
@@ -210,8 +239,10 @@ export interface SimCard {
   persoSim?: boolean;
   privilegeCode?: string;
   nType?: string;
-  mobileNoStatus?: 'Active' | 'Suspended';
   memberSimCard?: Array<any>;
+  mobileNoStatus?: 'Active' | 'Suspended' | 'Enroll';
+  forceEnrollFlag?: 'Y' | 'N';
+  registerDate?: string;
 }
 
 export interface MainPackage {
@@ -366,7 +397,7 @@ export interface Seller {
   shareUser?: string;
   employeeId?: string;
   ascCode?: string;
-
+  sharedUser?: string;
 }
 export interface ShopLocation {
   id?: string;

@@ -291,7 +291,7 @@ export class MobileCareComponent implements OnInit, OnDestroy {
                           type: 'error',
                           confirmButtonText: 'OK',
                           showConfirmButton: true,
-                          text: 'หมายเลขของคุณไม่สามารถทำรายการได้'
+                          text: 'ไม่สามารถทำรายการได้ในขณะนี้'
                         });
                       }
                     })
@@ -474,6 +474,7 @@ export class MobileCareComponent implements OnInit, OnDestroy {
         }
       })
       .then(() => mobileSegment ? null : this.pageLoadingService.closeLoading());
+      console.log(mobileSegment);
   }
 
   ngOnDestroy(): void {

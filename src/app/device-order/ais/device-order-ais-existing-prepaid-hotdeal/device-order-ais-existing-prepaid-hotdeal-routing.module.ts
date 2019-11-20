@@ -21,7 +21,10 @@ import { DeviceOrderAisExistingPrepaidHotdealQrCodeQueueSummaryPageComponent } f
 import { DeviceOrderAisExistingPrepaidHotdealQrCodeSummaryPageComponent } from './containers/device-order-ais-existing-prepaid-hotdeal-qr-code-summary-page/device-order-ais-existing-prepaid-hotdeal-qr-code-summary-page.component';
 import { DeviceOrderAisExistingPrepaidHotdealQueuePageComponent } from './containers/device-order-ais-existing-prepaid-hotdeal-queue-page/device-order-ais-existing-prepaid-hotdeal-queue-page.component';
 import { DeviceOrderAisExistingPrepaidHotdealQrCodeResultPageComponent } from './containers/device-order-ais-existing-prepaid-hotdeal-qr-code-result-page/device-order-ais-existing-prepaid-hotdeal-qr-code-result-page.component';
-
+import { DeviceOrderAisExistingPrepaidHotdealOmiseSummaryPageComponent } from './containers/device-order-ais-existing-prepaid-hotdeal-omise-summary-page/device-order-ais-existing-prepaid-hotdeal-omise-summary-page.component';
+import { DeviceOrderAisExistingPrepaidHotdealOmiseGeneratorPageComponent } from './containers/device-order-ais-existing-prepaid-hotdeal-omise-generator-page/device-order-ais-existing-prepaid-hotdeal-omise-generator-page.component';
+import { DeviceOrderAisExistingPrepaidHotdealOmiseQueuePageComponent } from './containers/device-order-ais-existing-prepaid-hotdeal-omise-queue-page/device-order-ais-existing-prepaid-hotdeal-omise-queue-page.component';
+import { DeviceOrderAisExistingPrepaidHotdealOmiseResultPageComponent } from './containers/device-order-ais-existing-prepaid-hotdeal-omise-result-page/device-order-ais-existing-prepaid-hotdeal-omise-result-page.component';
 const routes: Routes = [
   {
     path: 'validate-customer',
@@ -106,7 +109,23 @@ const routes: Routes = [
   {
     path: 'queue',
     component: DeviceOrderAisExistingPrepaidHotdealQueuePageComponent
-  }
+  },
+  {
+    path: 'omise-summary',
+    component: DeviceOrderAisExistingPrepaidHotdealOmiseSummaryPageComponent
+  },
+  {
+    path: 'omise-generator',
+    component: DeviceOrderAisExistingPrepaidHotdealOmiseGeneratorPageComponent
+  },
+  {
+    path: 'omise-queue',
+    component: DeviceOrderAisExistingPrepaidHotdealOmiseQueuePageComponent
+  },
+  {
+    path: 'omise-result',
+    component: DeviceOrderAisExistingPrepaidHotdealOmiseResultPageComponent
+  },
 
 ];
 

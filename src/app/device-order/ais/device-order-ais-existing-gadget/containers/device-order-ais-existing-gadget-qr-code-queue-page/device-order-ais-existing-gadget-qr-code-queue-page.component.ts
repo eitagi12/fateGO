@@ -119,7 +119,7 @@ export class DeviceOrderAisExistingGadgetQrCodeQueuePageComponent implements OnI
   }
 
   createOrderAndupdateTransaction(): void {
-    this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
+    this.queuePageService.createDeviceSellingOrderList(this.transaction, this.priceOption).then(() => {
       return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
         this.pageLoadingService.closeLoading();
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QR_CODE_RESULT_PAGE]);

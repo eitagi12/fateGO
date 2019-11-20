@@ -529,77 +529,79 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     }
 
     /* product stock */
-    callService(
-        brand: string, model: string,
-        productType?: string, productSubtype?: string): void {
-        const user: User = this.tokenService.getUser();
+  callService(
+    brand: string, model: string,
+    productType?: string, productSubtype?: string): void {
+    const user: User = this.tokenService.getUser();
 
-        // clear
-        this.hansetBundle = `${productSubtype === PRODUCT_HANDSET_BUNDLE ? '(แถมชิม)' : ''}`;
-        this.productDetail = {};
+    // clear
+    this.hansetBundle = `${productSubtype === PRODUCT_HANDSET_BUNDLE ? '(แถมชิม)' : ''}`;
+    this.productDetail = {};
 
-        this.productDetailService = this.salesService.productDetail({
-            brand: brand,
-            location: user.locationCode,
-            model: model,
-            productType: productType || PRODUCT_TYPE,
-            productSubtype: productSubtype || PRODUCT_SUB_TYPE
-        });
-        this.productDetailService.then((resp: any) => {
-            // เก็บข้อมูลไว้ไปแสดงหน้าอื่นโดยไม่เปลี่ยนแปลงค่าข้างใน
-            this.priceOption.productDetail = resp.data || {};
+    this.productDetailService = this.salesService.productDetail({
+      brand: brand,
+      location: user.locationCode,
+      model: model,
+      productType: productType || PRODUCT_TYPE,
+      productSubtype: productSubtype || PRODUCT_SUB_TYPE
+    });
+    this.productDetailService.then((resp: any) => {
+      // เก็บข้อมูลไว้ไปแสดงหน้าอื่นโดยไม่เปลี่ยนแปลงค่าข้างใน
+      this.priceOption.productDetail = resp.data || {};
 
-            const products: any[] = resp.data.products || [];
-            forkJoin(products.map((product: any) => {
-                return this.salesService.productStock({
-                    locationCodeSource: user.locationCode,
-                    productType: product.productType || PRODUCT_TYPE,
-                    productSubType: product.productSubtype || PRODUCT_SUB_TYPE,
-                    model: model,
-                    color: product.colorName,
-                    subStockDestination: SUB_STOCK_DESTINATION,
-                    listLocationCodeDestination: [user.locationCode]
-                }).then((respStock: any) => respStock.data.listLocationCodeDestinationOut || []);
-            })).subscribe((respStocks: any[]) => {
+      const products: any[] = resp.data.products || [];
+      forkJoin(products.map((product: any) => {
+        return this.http.post('/api/salesportal/query-stock', {
+          locationCodeSource: user.locationCode,
+          productType: product.productType || PRODUCT_TYPE,
+          productSubType: product.productSubtype || PRODUCT_SUB_TYPE,
+          brand: brand,
+          model: model,
+          color: product.colorName,
+          subStockDestination: SUB_STOCK_DESTINATION,
+          listLocationCodeDestination: [user.locationCode]
+        }).toPromise()
+          .then((respStock: any) => respStock.data.listLocationCodeDestinationOut || []);
+      })).subscribe((respStocks: any[]) => {
 
-                this.productDetail = resp.data || {};
-                this.productDetail.products = [];
+        this.productDetail = resp.data || {};
+        this.productDetail.products = [];
 
-                const productStocks: any[] = respStocks.reduce((previousValue: any[], currentValue: any[]) => {
-                    return previousValue.concat(currentValue);
-                }, [])
-                    .map((stock: any) => {
-                        stock.colorCode = (products.find((product: any) => {
-                            return product.colorName === stock.color;
-                        }) || {}).colorCode;
-                        return stock;
-                    });
+        const productStocks: any[] = respStocks.reduce((previousValue: any[], currentValue: any[]) => {
+          return previousValue.concat(currentValue);
+        }, [])
+          .map((stock: any) => {
+            stock.colorCode = (products.find((product: any) => {
+              return product.colorName === stock.color;
+            }) || {}).colorCode;
+            return stock;
+          });
 
-                this.productDetail.products = products.map((product: any) => {
-                    // tslint:disable-next-line:max-line-length
-                    const stock = productStocks.find((productStock: any) => productStock.color === product.colorName) || { qty: 0 };
-                    product.stock = stock;
-                    return product;
-                }).sort((a, b) => a.stock.qty - b.stock.qty);
+        this.productDetail.products = products.map((product: any) => {
+          // tslint:disable-next-line:max-line-length
+          const stock = productStocks.find((productStock: any) => productStock.color === product.colorName) || { qty: 0 };
+          product.stock = stock;
+          return product;
+        }).sort((a, b) => a.stock.qty - b.stock.qty);
 
-                // default selected
-                let defaultProductSelected;
-                if (this.priceOption.productStock && this.priceOption.productStock.colorName) {
-                    defaultProductSelected = this.priceOption.productStock;
-                } else {
-                    defaultProductSelected = this.productDetail.products.find((product: any) => {
-                        return product.stock.qty > 0;
-                    });
-                }
+        // default selected
+        let defaultProductSelected;
+        if (this.priceOption.productStock && this.priceOption.productStock.colorName) {
+          defaultProductSelected = this.priceOption.productStock;
+        } else {
+          defaultProductSelected = this.productDetail.products.find((product: any) => {
+            return product.stock.qty > 0;
+          });
+        }
 
-                if (!defaultProductSelected && products.length > 0) {
-                    defaultProductSelected = products[0];
-                }
+        if (!defaultProductSelected && products.length > 0) {
+          defaultProductSelected = products[0];
+        }
 
-                this.onProductStockSelected(defaultProductSelected);
-            });
-        });
-    }
+        this.onProductStockSelected(defaultProductSelected);
+      });
+    });
+  }
 
     callPriceOptionsService(brand: string, model: string, color: string, productType: string, productSubtype: string): void {
 

@@ -13,6 +13,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { TabsModule } from 'ngx-bootstrap';
+import { MobileCareAspComponent } from '../components/mobile-care-asp/mobile-care-asp.component';
 
 @NgModule({
   imports: [
@@ -27,6 +28,7 @@ import { TabsModule } from 'ngx-bootstrap';
     BillingAddressComponent,
     ReadCardComponent,
     MobileCareComponent,
+    MobileCareAspComponent,
     ReceiptInformationComponent,
     ShoppingCartDetailComponent,
     SummaryOrderDetailComponent,
@@ -38,6 +40,7 @@ import { TabsModule } from 'ngx-bootstrap';
     BillingAddressComponent,
     ReadCardComponent,
     MobileCareComponent,
+    MobileCareAspComponent,
     ReceiptInformationComponent,
     ShoppingCartDetailComponent,
     SummaryOrderDetailComponent,

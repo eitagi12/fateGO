@@ -17,6 +17,10 @@ import { DeviceOnlyKioskSummaryPageComponent } from './containers/device-only-ki
 import { DeviceOnlyKioskQrCodeSummaryPageComponent } from './containers/device-only-kiosk-qr-code-summary-page/device-only-kiosk-qr-code-summary-page.component';
 import { DeviceOnlyKioskQueuePageComponent } from './containers/device-only-kiosk-queue-page/device-only-kiosk-queue-page.component';
 import { DeviceOnlySharedModule } from '../../shared/shared.module';
+import { DeviceOnlyKioskOmiseGeneratorPageComponent } from './containers/device-only-kiosk-omise-generator-page/device-only-kiosk-omise-generator-page.component';
+import { DeviceOnlyKioskOmiseQueuePageComponent } from './containers/device-only-kiosk-omise-queue-page/device-only-kiosk-omise-queue-page.component';
+import { DeviceOnlyKioskOmiseResultPageComponent } from './containers/device-only-kiosk-omise-result-page/device-only-kiosk-omise-result-page.component';
+import { DeviceOnlyKioskOmiseSummaryPageComponent } from './containers/device-only-kiosk-omise-summary-page/device-only-kiosk-omise-summary-page.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -38,7 +42,11 @@ import { DeviceOnlySharedModule } from '../../shared/shared.module';
     DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent,
     DeviceOnlyKioskSummaryPageComponent,
     DeviceOnlyKioskQrCodeSummaryPageComponent,
-    DeviceOnlyKioskQueuePageComponent
+    DeviceOnlyKioskQueuePageComponent,
+    DeviceOnlyKioskOmiseGeneratorPageComponent,
+    DeviceOnlyKioskOmiseQueuePageComponent,
+    DeviceOnlyKioskOmiseResultPageComponent,
+    DeviceOnlyKioskOmiseSummaryPageComponent
   ],
   providers: []
 

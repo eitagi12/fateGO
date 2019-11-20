@@ -5,6 +5,7 @@ import { CreateOrderService } from './create-order.service';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root'
 })
@@ -53,6 +54,8 @@ export class HomeButtonService {
   homeHandler(): any {
     if (this.user.locationCode === '1213') {
       window.location.href = '/smart-digital/main-menu';
+    } else if (this.user.userType === 'ASP') {
+      window.location.href = environment.sffHomeUrl;
     } else {
       window.location.href = '/';
     }

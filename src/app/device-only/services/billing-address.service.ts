@@ -24,13 +24,13 @@ export class BillingAddressService {
     this.isKeyInBillingAddress = value;
   }
 
-  getLocationName(): Observable<any> {
+  getLocationName(): Promise<Object> {
     const locationCode = this.tokenService.getUser().locationCode;
     return this.http.get(API.QUERY_LOCATIONNAME, {
       params: {
         code: locationCode
       }
-    });
+    }).toPromise();
   }
 
   getTitleName(): Promise<Object> {
