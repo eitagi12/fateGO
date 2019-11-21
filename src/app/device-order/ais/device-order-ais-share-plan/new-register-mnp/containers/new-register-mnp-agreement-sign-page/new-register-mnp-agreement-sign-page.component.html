@@ -12,6 +12,11 @@
         <div class="mb-3 mt-3">
             <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
             <div class="container-fluid">
+                <div class="card p-3">
+                    <hr>
+                    <div>{{ conditionText | translate }}</div>
+                    <hr>
+                </div>
                 <div class="card">
                     <h5 class="card-header bg-transparent text-center" *ngIf="!isReadCard">
                         {{'ถ่ายรูปบัตรประชาชน หรือบัตรอื่นๆ' | translate }}
