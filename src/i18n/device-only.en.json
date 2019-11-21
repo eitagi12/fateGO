@@ -379,5 +379,6 @@
     "ชำระทันที": "Online payment",
     "จุดรับสินค้า": "@Pick up point",
     "ชำระเงินออนไลน์ด้วยบัตรเครดิต": "Credit card online payment",
-    "ชำระด้วย บัตรเครดิตออนไลน์": "Pay with credit card online payment"
+    "ชำระด้วย บัตรเครดิตออนไลน์": "Pay with credit card online payment",
+    "ชำระโดย ชำระเงินออนไลน์ด้วยบัตรเครดิต": "Pay by credit card online payment"
 }
