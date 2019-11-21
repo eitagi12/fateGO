@@ -59,10 +59,10 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
   onNext(queue: boolean): void {
     this.pageLoadingService.openLoading();
     if (queue) {
-      this.queuePageService.getQueueQmatic(this.queueFrom.value.mobileNo)
-        .then((resp: any) => {
-          const data = resp.data && resp.data.result ? resp.data.result : {};
-          return data.queueNo;
+      this.queuePageService.autoGetQueue(this.queueFrom.value.mobileNo)
+        .then((queueNo: any) => {
+          const data = queueNo || {};
+          return data;
         })
         .then((queueNo: string) => {
           this.transaction.data.queue = {

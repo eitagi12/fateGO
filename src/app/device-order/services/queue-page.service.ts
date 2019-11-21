@@ -5,6 +5,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { HttpClient } from '@angular/common/http';
 import { CustomerGroup } from 'src/app/buy-product/services/flow.service';
 import { QrCodeOmisePageService } from 'src/app/device-order/services/qr-code-omise-page.service';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -49,6 +50,14 @@ export class QueuePageService {
     return this.http.post('/api/salesportal/device-order/transaction/get-queue-qmatic', {
       mobileNo: mobileNo
     }).toPromise();
+  }
+  autoGetQueue(mobileNo: string): Promise<any> {
+    const intercepterOption = {
+      mobileNo: mobileNo
+    };
+    return this.http.post('/api/salesportal/device-order/transaction/auto-gen-queue', intercepterOption).pipe(
+      map((response: any) => response.data && response.data.data && response.data.data.queueNo || '')
+    ).toPromise();
   }
 
   createDeviceSellingOrderList(transaction: Transaction, priceOption: PriceOption): Promise<any> { // ตัวที่จะใช้
