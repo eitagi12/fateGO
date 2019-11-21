@@ -180,7 +180,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
     }).catch((e) => {
       const mapCustomer = this.validateCustomerService.mapCustomer(this.profile);
       this.transaction.data.customer = mapCustomer;
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE], {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE], {
         queryParams: {
           idCardNo: this.profile.idCardNo
         },
