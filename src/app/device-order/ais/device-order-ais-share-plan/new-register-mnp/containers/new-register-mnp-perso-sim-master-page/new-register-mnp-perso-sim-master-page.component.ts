@@ -265,7 +265,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
           type: 'error',
           text: 'เกิดข้อผิดพลาด กรุณาเปลี่ยน SIM CARD ใหม่',
           confirmButtonText: 'ตกลง',
-          onClose: () => this.setIntervalSimCard.bind(this)
+          onClose: () => this.setIntervalSimCard()
         });
       }break;
       case 'errorCmd' : {
@@ -273,7 +273,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
           type: 'error',
           text: 'กรุณากด Retry เพื่อเรียกข้อมูลใหม่อีกครั้ง',
           confirmButtonText: 'RETRY',
-          onClose: () => this.getCommandForPersoSim.bind(this, this.readSimStatus)
+          onClose: () => this.getCommandForPersoSim(this.readSimStatus)
         });
       }break;
       case 'errPerso' : {
@@ -289,7 +289,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
           type: 'error',
           text: 'กรุณากด Retry เพื่อเรียกข้อมูลใหม่อีกครั้ง',
           confirmButtonText: 'RETRY',
-          onClose: () => this.checkOrderStatus.bind(this, this.referenceNumber)
+          onClose: () => this.checkOrderStatus(this.referenceNumber)
         });
       }break;
       case 'errorSmartCard' : {
@@ -297,7 +297,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
           type: 'error',
           text: 'ขออภัยค่ะ ไม่สามารถทำรายการได้ กรุณาเสียบซิมการ์ด',
           confirmButtonText: 'ตกลง',
-          onClose: () => this.onRefreshPage.bind(this)
+          onClose: () => this.onRefreshPage()
         });
       }break;
       case 'errorSimStatus' : {
@@ -305,7 +305,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
           type: 'error',
           text: 'ซิมใบนี้ถูกใช้ไปแล้ว กรุณาเปลี่ยนซิมใหม่',
           confirmButtonText: 'ตกลง',
-          onClose: () => this.onRefreshPage.bind(this)
+          onClose: () => this.onRefreshPage()
         });
       }break;
       case 'errorFixSim' : {
@@ -313,15 +313,15 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
           type: 'error',
           text: errMsg,
           confirmButtonText: 'ตกลง',
-          onClose: () => this.onRefreshPage.bind(this)
+          onClose: () => this.onRefreshPage()
         });
       }break;
       case 'errorSimSerialNotMacth' : {
         this.alertService.question(errMsg, 'ตกลง', 'ยกเลิก').then((response: any) => {
           if (response.value === true) {
-            this.onConectToPerso.bind(this);
+            this.onConectToPerso();
           } else {
-            this.onRefreshPageToPerso.bind(this);
+            this.onRefreshPageToPerso();
           }
         });
       }break;
