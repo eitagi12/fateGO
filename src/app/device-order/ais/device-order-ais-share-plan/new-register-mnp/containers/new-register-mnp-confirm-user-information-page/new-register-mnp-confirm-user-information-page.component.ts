@@ -45,6 +45,7 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
   detail: string;
 
   templatePopupRef: BsModalRef;
+  title: string;
 
   constructor(
     private router: Router,
