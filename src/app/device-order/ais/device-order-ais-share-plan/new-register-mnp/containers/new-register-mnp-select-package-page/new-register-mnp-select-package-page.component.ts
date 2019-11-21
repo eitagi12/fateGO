@@ -217,7 +217,7 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
           });
       }).then((res) => {
         const mapMemberMainPackage = res[0]['promotions'][0]['items'][0].value || {};
-        this.transaction.data.mainPackage.memberMainPackage = mapMemberMainPackage;
+        this.transaction.data.mainPackage.memberMainPackage[0] = mapMemberMainPackage;
       })
       .then(() => {
         this.pageLoadingService.closeLoading();
