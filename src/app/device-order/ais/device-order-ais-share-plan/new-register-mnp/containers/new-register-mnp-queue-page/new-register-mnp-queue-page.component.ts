@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HomeService, TokenService, PageLoadingService, REGEX_MOBILE } from 'mychannel-shared-libs';
+import { HomeService, TokenService, PageLoadingService, REGEX_MOBILE, AlertService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -32,7 +32,8 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private queuePageService: QueuePageService,
-    private sharedTransactionService: SharedTransactionService
+    private sharedTransactionService: SharedTransactionService,
+    private alertService: AlertService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -72,7 +73,7 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
               return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
             });
         })
-        .then(() => {
+        .then((res) => {
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_RESULT_PAGE]);
         })
         .then(() => this.pageLoadingService.closeLoading());

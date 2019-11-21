@@ -163,8 +163,11 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
     const RequestQueryListLovConfigInfo: any = {
       lovVal2: this.transaction.data.mainPackage.customAttributes.promotionCode
     };
+
+    console.log('RequestQueryListLovConfigInfo', RequestQueryListLovConfigInfo);
     this.http.post(`/api/salesportal/queryListLovConfigInfo`, RequestQueryListLovConfigInfo).toPromise()
       .then((promotionCodes: any) => {
+        console.log('promotionCodes ==>', promotionCodes);
         this.promotionCodes = promotionCodes.data;
       }).then(() => {
         const RequestGetPromotionsByCodes: any = {
