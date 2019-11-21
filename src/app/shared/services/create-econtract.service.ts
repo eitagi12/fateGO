@@ -98,9 +98,9 @@ export class CreateEcontractService {
       return 0;
     }
     if (Array.isArray(advancePayPromotions)) {
-      return advancePayPromotions.length > 0 ? (amount / advancePayPromotions[0].month) : 0;
+      return advancePayPromotions.length > 0 ? +(amount / advancePayPromotions[0].month).toFixed(2) : 0;
     } else {
-      return (amount / advancePayPromotions.month) ? (amount / advancePayPromotions.month) : 0;
+      return (amount / advancePayPromotions.month) ? +(amount / advancePayPromotions.month).toFixed(2) : 0;
     }
   }
 

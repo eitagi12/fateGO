@@ -1,15 +1,15 @@
 <div class="mc-flex">
-  <mc-header title="ซื้อเครื่องเปล่า"></mc-header>
+  <mc-header title="{{'ซื้อเครื่องเปล่า' | translate}}"></mc-header>
   <div class="mc-flex-wrap">
     <div class="m-5">
 
       <div class="card">
         <div class="card-body pt-3 text-center ">
           <img src="assets/images/icon/icon-green-check-circle.png" class="icon" /> <br>
-          <b>{{'หมายเลข'}} <span class="text-green">{{ transaction?.data?.simCard?.mobileNo | mobileNo }}</span></b>
+          <b>{{'หมายเลข'| translate}} <span class="text-green">{{ transaction?.data?.simCard?.mobileNo | mobileNo }}</span></b>
           <br>
-          <b>{{'ชำระค่าสินค้าเรียบร้อยแล้ว'}}</b> <br>
-          <b>{{'หมายเลขอ้างอิง'}} {{ transaction?.data?.omise?.tranId }}</b>
+          <b>{{'ชำระค่าสินค้าเรียบร้อยแล้ว'| translate}}</b> <br>
+          <b>{{'หมายเลขอ้างอิง'| translate}} {{ transaction?.data?.omise?.tranId }}</b>
         </div>
 
         <!-- ชำระ -->
@@ -22,11 +22,11 @@
                   <i class="fa fa-circle mr-3 text-green"></i>
                   {{ priceOption?.productDetail?.name }}
                   <span *ngIf="priceOption?.productStock?.color">
-                    {{ priceOption?.productStock?.color? ('สี') : '' }} {{ priceOption?.productStock?.color
+                    {{ priceOption?.productStock?.color? ('สี'| translate) : '' }} {{ priceOption?.productStock?.color
                     }}
                   </span>
                   <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
-                    ({{'แถมซิม'}})
+                    ({{'แถมซิม'| translate}})
                   </span>
                   <span class="pull-right text-green">
                     ฿ {{ priceOption?.trade?.promotionPrice | number }}
@@ -72,11 +72,11 @@
                     {{ priceOption?.productDetail?.name }}
                   </span>
                   <span class="text-pink" *ngIf="priceOption?.productStock?.color">
-                    {{ priceOption?.productStock?.color? ('สี') : '' }} {{ priceOption?.productStock?.color
+                    {{ priceOption?.productStock?.color? ('สี'| translate) : '' }} {{ priceOption?.productStock?.color
                     }}
                   </span>
                   <span class="text-pink" *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
-                    ({{'แถมซิม' }})
+                    ({{'แถมซิม' | translate}})
                   </span>
                   <span class="pull-right text-pink">
                     ฿ {{ priceOption?.trade?.promotionPrice | number }}
