@@ -10,6 +10,7 @@ import { SharedTransactionService } from 'src/app/shared/services/shared-transac
 import { QueuePageService } from 'src/app/device-order/services/queue-page.service';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_AGGREGATE_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_RESULT_PAGE } from '../../constants/route-path.constant';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { forEach } from '@angular/router/src/utils/collection';
 
 @Component({
   selector: 'app-new-register-mnp-queue-page',
@@ -40,7 +41,7 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // this.saveFaceImage();
+    this.saveFaceImage();
     this.createForm();
   }
 
@@ -95,11 +96,11 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
     this.homeService.goToHome();
   }
 
-  saveFaceImage(): Promise<any> {
+  saveFaceImage(): any {
     const user = this.tokenService.getUser();
     const customer = this.transaction.data.customer;
     const faceRecognition = this.transaction.data.faceRecognition;
-    const simCard = this.transaction.data.simCard;
+    const mobilesNo: any = [];
     const action = this.transaction.data.action;
     const channelKyc = this.transaction.data.faceRecognition.kyc;
     let channel = 'MC';
@@ -119,23 +120,30 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
     } else {
       base64Card = customer.imageSmartCard;
     }
+    mobilesNo.push(this.transaction.data.simCard.mobileNo);
+    this.transaction.data.simCard.memberSimCard.forEach(memberSimCard => {
+      mobilesNo.push(memberSimCard.mobileNo);
+    });
 
-    const param: any = {
-      userId: user.username,
-      locationCode: user.locationCode,
-      idCardType: customer.idCardType === 'บัตรประชาชน' ? 'Thai National ID' : 'OTHER',
-      customerId: customer.idCardNo || '',
-      mobileNo: simCard.mobileNo || '',
-      base64Card: base64Card ? `data:image/jpg;base64,${base64Card}` : '',
-      base64Face: faceRecognition.imageFaceUser ? `data:image/jpg;base64,${faceRecognition.imageFaceUser}` : '',
-      channel: channel,
-      userchannel: 'MyChannel'
-    };
-    return this.http.post('/api/facerecog/save-imagesV2', param).toPromise()
-      .catch(e => {
-        console.log(e);
-        return Promise.resolve(null);
-      });
+    for (let index = 0; index < mobilesNo.length; index++) {
+      const mobileNo = mobilesNo[index];
+      const param: any = {
+        userId: user.username,
+        locationCode: user.locationCode,
+        idCardType: customer.idCardType === 'บัตรประชาชน' ? 'Thai National ID' : 'OTHER',
+        customerId: customer.idCardNo || '',
+        mobileNo: mobileNo || '',
+        base64Card: base64Card ? `data:image/jpg;base64,${base64Card}` : '',
+        base64Face: faceRecognition.imageFaceUser ? `data:image/jpg;base64,${faceRecognition.imageFaceUser}` : '',
+        channel: channel,
+        userchannel: 'MyChannel'
+      };
+      this.http.post('/api/facerecog/save-imagesV2', param).toPromise()
+        .catch(e => {
+          console.log(e);
+          Promise.resolve(null);
+        });
+    }
   }
 
   ngOnDestroy(): void {
