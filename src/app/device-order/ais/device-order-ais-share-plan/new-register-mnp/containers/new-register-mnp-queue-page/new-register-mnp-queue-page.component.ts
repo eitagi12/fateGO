@@ -81,9 +81,13 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
       this.transaction.data.queue = {
         queueNo: this.queueFrom.value.queueNo
       };
-      this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_RESULT_PAGE]);
-      }).then(() => this.pageLoadingService.closeLoading());
+
+      this.queuePageService.createDeviceSellingOrderList(this.transaction, this.priceOption)
+        .then(() => {
+          return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
+            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_RESULT_PAGE]);
+          }).then(() => this.pageLoadingService.closeLoading());
+        });
     }
   }
 
