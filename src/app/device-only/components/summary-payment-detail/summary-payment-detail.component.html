@@ -40,7 +40,7 @@
       *ngIf="transaction?.data?.payment?.paymentForm !== 'INSTALLMENT' && transaction?.data?.payment?.paymentType === 'CREDIT'">
       <span class="text-grey" id="text-credit-summary">
         (
-        {{ 'ชำระโดย เครดิตธนาคาร' | translate }}
+        {{ (transaction?.data?.payment?.paymentOnlineCredit ? 'ชำระโดย ชำระเงินออนไลน์ด้วยบัตรเครดิต' : 'ชำระโดย เครดิตธนาคาร') | translate }}
         {{ transaction?.data?.payment?.paymentMethod?.name }}
         {{ transaction?.data?.payment?.paymentBank?.name}}
         )
