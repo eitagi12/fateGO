@@ -8,8 +8,12 @@
   <div class="mc-flex-wrap">
     <div class="mb-3 mt-3">
       <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
-      <mc-ebilling [billCycle]="billCycle" [billCycles]="billCycles" (completed)="onCompleted($event)"
-        (error)="onError($event)"></mc-ebilling>
+      <mc-ebilling 
+        [billCycle]="billCycle" 
+        [billCycles]="billCycles" 
+        (completed)="onCompleted($event)"
+        (error)="onError($event)">
+      </mc-ebilling>
     </div>
   </div>
   <mc-footer>

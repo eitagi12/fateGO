@@ -51,7 +51,6 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
     private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
-
     // New register profile not found.
     if (!this.transaction.data.billingInformation) {
       this.transaction.data.billingInformation = {};
@@ -69,7 +68,6 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData: any = billingInformation.billCycleData || {};
     this.eBill = !(mainPackage.billingSystem === BillingSystemType.BOS);
-
     this.confirmCustomerInfo = {
       titleName: customer.titleName,
       firstName: customer.firstName,
@@ -95,7 +93,6 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
       phoneNo: billCycleData.phoneNoContact,
     };
     this.initBillingInfo();
-
     this.mapCustomerInfoByLang(this.translation.currentLang);
   }
 
@@ -140,45 +137,43 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
         text: this.isMergeBilling() ? `${billingInformation.mergeBilling.mobileNo[0]}` : null,
         // net extrem แก้ไขไม่ได้, โปรไฟล์ใหม่แก้ไขไม่ได้
         isEdit: !!(customer.caNumber && customer.billCycle && billCycles && billCycles.length > 0),
-        // isEdit: false,
         // net extrem ลบไม่ได้, มีบิลใหม่ลบได้แล้วแสดงบิลเก่า
         isDelete: !!mergeBilling,
-        // isDelete: false,
-        onEdit: () => {
-          // this.router.navigate([ROUTE_ORDER_NEW_REGISTER_MERGE_BILLING_PAGE]);
-        },
-        onDelete: () => {
-          delete this.transaction.data.billingInformation.mergeBilling;
-          // delete this.transaction.data.billingInformation.billCycle;
-          delete this.transaction.data.billingInformation.billCycleData;
-          const simCard = this.transaction.data.simCard;
-          // tslint:disable-next-line:no-shadowed-variable
-          const billingInformation = this.transaction.data.billingInformation;
-          const billCycleData: any = billingInformation.billCycleData || {};
+        // onEdit: () => {
+        //   // this.router.navigate([ROUTE_ORDER_NEW_REGISTER_MERGE_BILLING_PAGE]);
+        // },
+        // onDelete: () => {
+        //   delete this.transaction.data.billingInformation.mergeBilling;
+        //   // delete this.transaction.data.billingInformation.billCycle;
+        //   delete this.transaction.data.billingInformation.billCycleData;
+        //   const simCard = this.transaction.data.simCard;
+        //   // tslint:disable-next-line: no-shadowed-variable
+        //   const billingInformation = this.transaction.data.billingInformation;
+        //   const billCycleData: any = billingInformation.billCycleData || {};
 
-          this.billingInfo.billingMethod.text = null;
-          this.billingInfo.billingMethod.isDelete = false;
+        //   this.billingInfo.billingMethod.text = null;
+        //   this.billingInfo.billingMethod.isDelete = false;
 
-          // enable config
-          this.billingInfo.billingAddress.isEdit = true;
-          this.billingInfo.billingAddress.text = customerAddress;
+        //   // enable config
+        //   this.billingInfo.billingAddress.isEdit = true;
+        //   this.billingInfo.billingAddress.text = customerAddress;
 
-          this.billingInfo.billingCycle.isEdit = true;
-          this.billingInfo.billingCycle.isDelete = false;
+        //   this.billingInfo.billingCycle.isEdit = true;
+        //   this.billingInfo.billingCycle.isDelete = false;
 
-          // this.mailBillingInfo.billChannel = this.getBillChannel();
-          this.mailBillingInfo = {
-            email: billCycleData.email,
-            mobileNo: simCard.mobileNo,
-            address: billCycleData.billAddressText,
-            billChannel: this.getBillChannel()
-          };
-          const bill = billCycle && billCycle.bill ? billCycle.bill : customer.billCycle;
-          this.billingInfo.billingCycle.isDelete = !!(billCycle && billCycle.bill);
-          this.getBllingCycle(bill).then((billCycleText: string) => {
-            this.billingInfo.billingCycle.text = billCycleText;
-          });
-        }
+        //   // this.mailBillingInfo.billChannel = this.getBillChannel();
+        //   this.mailBillingInfo = {
+        //     email: billCycleData.email,
+        //     mobileNo: simCard.mobileNo,
+        //     address: billCycleData.billAddressText,
+        //     billChannel: this.getBillChannel()
+        //   };
+        //   const bill = billCycle && billCycle.bill ? billCycle.bill : customer.billCycle;
+        //   this.billingInfo.billingCycle.isDelete = !!(billCycle && billCycle.bill);
+        //   this.getBllingCycle(bill).then((billCycleText: string) => {
+        //     this.billingInfo.billingCycle.text = billCycleText;
+        //   });
+        // }
       },
       billingAddress: {
         text: (this.isMergeBilling() ? mergeBilling.billingAddr : null) || customerAddress || '-',
@@ -199,7 +194,6 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
         onDelete: () => {
           delete billingInformation.billCycle;
           this.billingInfo.billingCycle.isDelete = false;
-
           this.getBllingCycle(customer.billCycle).then((billCycleText: string) => {
             this.billingInfo.billingCycle.text = billCycleText;
           });
@@ -275,18 +269,11 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
     billCycleData.billAddressText = this.billingInfo.billingAddress.text;
     billCycleData.billingMethodText = this.billingInfo.billingMethod.text;
     billCycleData.billCycleText = this.billingInfo.billingCycle.text;
-
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_SUMMARY_PAGE]);
-
   }
 
   onEditAddress(): void {
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_EBILLING_ADDRESS_PAGE]);
-  }
-
-  ngOnDestroy(): void {
-    this.translationSubscribe.unsubscribe();
-    this.transactionService.save(this.transaction);
   }
 
   getBillChannel(): any {
@@ -329,8 +316,8 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
       && customer.province
       && customer.amphur
       && customer.tumbol
-      && customer.zipCode);
-
+      && customer.zipCode
+    );
   }
 
   getBllingCycle(billCycle: string): Promise<string> {
@@ -372,6 +359,11 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
   isMergeBilling(): boolean {
     const billingInformation = this.transaction.data.billingInformation;
     return billingInformation ? (!!billingInformation.mergeBilling) : false;
+  }
+
+  ngOnDestroy(): void {
+    this.translationSubscribe.unsubscribe();
+    this.transactionService.save(this.transaction);
   }
 
 }

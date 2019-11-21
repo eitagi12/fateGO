@@ -5,7 +5,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { Transaction } from 'src/app/shared/models/transaction.model';
 const Moment = moment;
 export interface BillingInfo {
-  billingMethod: BillingInfoOptions;
+  // billingMethod: BillingInfoOptions;
   billingAddress: BillingInfoOptions;
   billingCycle: BillingInfoOptions;
 }
@@ -25,12 +25,8 @@ export interface BillingInfoOptions {
 })
 export class BillingInfoComponent implements OnInit {
 
-  @Input()
-  billingInfo: BillingInfo;
-
-  @Input()
-  view: boolean;
-
+  @Input() billingInfo: BillingInfo;
+  @Input() view: boolean;
   mobileNoMember: string;
   transaction: Transaction;
 

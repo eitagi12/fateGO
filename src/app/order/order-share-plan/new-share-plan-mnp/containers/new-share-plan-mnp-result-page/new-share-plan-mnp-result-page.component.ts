@@ -25,13 +25,12 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
   @ViewChild(ResizeImageComponent) resizeImage: ResizeImageComponent;
   @Input() previewImage: string[] = [];
   wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
-  public isSuccess: boolean = true;
-  public transaction: Transaction;
-  public mobileNo: string;
-  public mobileNoMember: string;
-  public simSerial: string;
-  public simSerialMember: string;
-
+  isSuccess: boolean = true;
+  transaction: Transaction;
+  mobileNo: string;
+  mobileNoMember: string;
+  simSerial: string;
+  simSerialMember: string;
   aisNative: any = window.aisNative;
   getEApplicationFn: any;
   images: string[] = [];
@@ -138,9 +137,7 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
 
   onMainMenu(): void {
     this.storeService.clear();
-    // bug gotohome จะ unlock เบอร์ ทำให้ออก orderไม่สำเร็จ
     window.location.href = '/sales-portal/dashboard';
-    // this.homeService.goToHome();
   }
 
   nextprint(): void {

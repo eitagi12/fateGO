@@ -83,7 +83,6 @@ export class CreateNewRegisterService {
       const onTopPackage = transaction.data.onTopPackage;
       const simCard = transaction.data.simCard;
       const billDeliveryAddress = transaction.data.billingInformation.billDeliveryAddress;
-
       const billCycleData = billingInformation.billCycleData;
 
       const data: any = {
@@ -111,7 +110,8 @@ export class CreateNewRegisterService {
         baNumber: billingInformation.mergeBilling ? billingInformation.mergeBilling.billAcctNo : '',
         billMedia: billingInformation.mergeBilling ? billingInformation.mergeBilling.billMedia : billCycleData.billMedia, /*required*/
         billName: billingInformation.mergeBilling ? billingInformation.mergeBilling.billingName : '',
-        billCycle: billingInformation.mergeBilling ? billingInformation.mergeBilling.bill : customer.billCycle,
+        // tslint:disable-next-line: max-line-length
+        billCycle: billingInformation.mergeBilling ? billingInformation.mergeBilling.bill : billingInformation.billCycle.bill ? billingInformation.billCycle.bill : customer.billCycle,
         billDeliveryAddress: billingInformation.mergeBilling ? billingInformation.mergeBilling.billingAddr : '',
         billHomeNo: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.homeNo : customer.homeNo || '',
         // tslint:disable-next-line:max-line-length
