@@ -188,6 +188,7 @@ export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDes
     const imageSmartCard = this.transaction.data.customer.imageSmartCard;
     const imageReadSmartCard = this.transaction.data.customer.imageReadSmartCard;
     const gender = this.transaction.data.customer.gender;
+    const expireDate = this.transaction.data.customer.expireDate;
     this.transaction.data = {
       ...this.transaction.data,
       customer: {
@@ -212,7 +213,7 @@ export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDes
         firstNameEn: '',
         lastNameEn: '',
         issueDate: birthdate || '',
-        expireDate: null,
+        expireDate: expireDate || '',
         zipCode: customer.zipCode || '',
         mainMobile: customer.mainMobile || '',
         mainPhone: customer.mainPhone || '',
