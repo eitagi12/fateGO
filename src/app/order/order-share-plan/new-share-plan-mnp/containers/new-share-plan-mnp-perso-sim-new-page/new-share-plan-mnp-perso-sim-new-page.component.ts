@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_MNP_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_AGREEMENT_SIGN_PAGE } from '../../constants/route-path.constant';
-import { PageLoadingService } from 'mychannel-shared-libs';
+import { PageLoadingService, AlertService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { Observable, of } from 'rxjs';
@@ -78,7 +78,8 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
     private fb: FormBuilder,
     private zone: NgZone,
     private pageLoadingService: PageLoadingService,
-    private http: HttpClient
+    private http: HttpClient,
+    private alertService: AlertService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -474,96 +475,74 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
   }
 
   popupControl(isCase: string, errMsg: string): void {
-    const errorCase: object = {
-      errorSim: {
-        customBtn: [
-          {
-            name: 'ตกลง',
-            class: 'mc-button mc-button--green',
-            function: this.setIntervalSimCard.bind(this)
+
+    switch (isCase) {
+      case 'errorSim': {
+        this.alertService.notify({
+          type: 'error',
+          text: 'เกิดข้อผิดพลาด กรุณาเปลี่ยน SIM CARD ใหม่',
+          confirmButtonText: 'ตกลง',
+          onClose: () => this.setIntervalSimCard()
+        });
+      } break;
+      case 'errorCmd': {
+        this.alertService.notify({
+          type: 'error',
+          text: 'กรุณากด Retry เพื่อเรียกข้อมูลใหม่อีกครั้ง',
+          confirmButtonText: 'RETRY',
+          onClose: () => this.getCommandForPersoSim(this.readSimStatus)
+        });
+      } break;
+      case 'errPerso': {
+        this.alertService.notify({
+          type: 'error',
+          text: 'ไม่สามารถทำการ Perso SIM ได้ กรุณาเลือกเบอร์เพื่อทำรายการใหม่อีกครั้ง',
+          confirmButtonText: 'ตกลง',
+          // onClose: () => this.getCommandForPersoSim.bind(this, this.readSimStatus)
+        });
+      } break;
+      case 'errorOrder': {
+        this.alertService.notify({
+          type: 'error',
+          text: 'กรุณากด Retry เพื่อเรียกข้อมูลใหม่อีกครั้ง',
+          confirmButtonText: 'RETRY',
+          onClose: () => this.checkOrderStatus(this.referenceNumber)
+        });
+      } break;
+      case 'errorSmartCard': {
+        this.alertService.notify({
+          type: 'error',
+          text: 'ขออภัยค่ะ ไม่สามารถทำรายการได้ กรุณาเสียบซิมการ์ด',
+          confirmButtonText: 'ตกลง',
+          onClose: () => this.onRefreshPage()
+        });
+      } break;
+      case 'errorSimStatus': {
+        this.alertService.notify({
+          type: 'error',
+          text: 'ซิมใบนี้ถูกใช้ไปแล้ว กรุณาเปลี่ยนซิมใหม่',
+          confirmButtonText: 'ตกลง',
+          onClose: () => this.onRefreshPage()
+        });
+      } break;
+      case 'errorFixSim': {
+        this.alertService.notify({
+          type: 'error',
+          text: errMsg,
+          confirmButtonText: 'ตกลง',
+          onClose: () => this.onRefreshPage()
+        });
+      } break;
+      case 'errorSimSerialNotMacth': {
+        this.alertService.question(errMsg, 'ตกลง', 'ยกเลิก').then((response: any) => {
+          if (response.value === true) {
+            this.onConectToPerso();
+          } else {
+            this.onRefreshPageToPerso();
           }
-        ],
-        message: 'เกิดข้อผิดพลาด กรุณาเปลี่ยน SIM CARD ใหม่'
-      },
-      errorCmd: {
-        customBtn: [{
-          name: 'RETRY',
-          class: 'mc-button mc-button--green',
-          function: this.getCommandForPersoSim.bind(this, this.readSimStatus)
-        }],
-        message: 'กรุณากด Retry เพื่อเรียกข้อมูลใหม่อีกครั้ง'
-      },
-      errPerso: {
-        customBtn: [{
-          name: 'ตกลง',
-          class: 'mc-button mc-button--green',
-          function: this.onBack.bind(this)
-        }],
-        message: 'ไม่สามารถทำการ Perso SIM ได้ กรุณาเลือกเบอร์เพื่อทำรายการใหม่อีกครั้ง'
-      },
-      errorOrder: {
-        customBtn: [{
-          name: 'RETRY',
-          class: 'mc-button mc-button--green',
-          function: this.checkOrderStatus.bind(this, this.referenceNumber)
-        }],
-        message: 'กรุณากด Retry เพื่อเรียกข้อมูลใหม่อีกครั้ง'
-      },
-      errorCanNotGetPrivateKey: {
-        customBtn: [{
-          name: 'ตกลง',
-          class: 'mc-button mc-button--green',
-          function: this.onBackSign.bind(this)
-        }],
-        message: 'ขออภัยค่ะ ไม่สามารถทำรายการได้ เนื่องจากเกิดข้อผิดพลาดจากการอ่านข้อมูลซิมการ์ด (code : 0404CN)'
-      },
-      errorPrivateKeyNotMath: {
-        customBtn: [{
-          name: 'ตกลง',
-          class: 'mc-button mc-button--green',
-          function: this.onBackSign.bind(this)
-        }],
-        message: 'ขออภัยค่ะ ไม่สามารถทำรายการได้ เนื่องจากเกิดข้อผิดพลาดจากการอ่านข้อมูลซิมการ์ด (code : 0510NM)'
-      },
-      errorSmartCard: {
-        customBtn: [{
-          name: 'ตกลง',
-          class: 'mc-button mc-button--green',
-          function: this.onRefreshPage.bind(this)
-        }],
-        message: 'ขออภัยค่ะ ไม่สามารถทำรายการได้ กรุณาเสียบซิมการ์ด'
-      },
-      errorSimStatus: {
-        customBtn: [{
-          name: 'ตกลง',
-          class: 'mc-button mc-button--green',
-          function: this.onRefreshPage.bind(this)
-        }],
-        message: 'ซิมใบนี้ถูกใช้ไปแล้ว กรุณาเปลี่ยนซิมใหม่'
-      },
-      errorFixSim: {
-        customBtn: [{
-          name: 'ตกลง',
-          class: 'mc-button mc-button--green',
-          function: this.onRefreshPage.bind(this)
-        }],
-        message: errMsg
-      },
-      errorSimSerialNotMacth: {
-        customBtn: [
-          {
-            name: 'ยกเลิก',
-            class: 'mc-button mc-button--green',
-            function: this.onRefreshPageToPerso.bind(this)
-          },
-          {
-            name: 'ตกลง',
-            class: 'mc-button mc-button--green',
-            function: this.onConectToPerso.bind(this)
-          }],
-        message: errMsg
-      }
-    };
+        });
+      } break;
+    }
   }
 
   stateMessageControl(isState: string): void {
@@ -649,6 +628,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
       });
       this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_MNP_PAGE]);
     }
+    this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_MNP_PAGE]);
   }
 
   onSerialNumberChanged(data?: any): void {

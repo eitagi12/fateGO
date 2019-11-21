@@ -4,7 +4,7 @@ import { ROUTE_NEW_SHARE_PLAN_MNP_VALIDATE_CUSTOMER_PAGE } from '../../constants
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { CreateNewRegisterService } from 'src/app/shared/services/create-new-register.service';
-import { PageLoadingService } from 'mychannel-shared-libs';
+import { PageLoadingService, AlertService } from 'mychannel-shared-libs';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { HttpClient } from '@angular/common/http';
 import { map, retryWhen, concatMap, delay } from 'rxjs/operators';
@@ -46,7 +46,8 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
     private pageLoadingService: PageLoadingService,
     private http: HttpClient,
     private storeService: StoreService,
-    private createMNPService: CreateMnpService
+    private createMNPService: CreateMnpService,
+    private alertService: AlertService
   ) {
     this.transaction = this.transactionService.load();
 
@@ -90,7 +91,12 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
             // this.pageLoadingService.closeLoading();
           }).catch((err) => {
             this.pageLoadingService.closeLoading();
-
+            this.alertService.notify({
+              type: 'error',
+              text: `ขออภัย ทำรายการไม่สำเร็จ (ORDER : ${this.transaction.data.order.orderNo})`,
+              confirmButtonText: 'MAIN MENU',
+              onClose: () => this.onMainMenu()
+            });
           });
         } else {
           this.isSuccess = false;
@@ -102,7 +108,6 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
         this.pageLoadingService.closeLoading();
       });
 
-    // this.getEApplicationImageForPrint();
   }
 
   checkOrderStatusByOrderNo(orderNo: string): Promise<any> {
@@ -126,7 +131,7 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
         }
       }), retryWhen(errors =>
         errors.pipe(concatMap((e, i) => {
-          if (i >= 12) {
+          if (i >= 16) {
             this.pageLoadingService.closeLoading();
             return throwError(`ขออภัย ทำรายการไม่สำเร็จ (ORDER : ${orderNo})`);
           }
