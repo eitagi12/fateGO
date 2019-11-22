@@ -108,11 +108,8 @@
             <div *ngIf="mobileNoConditions">
               <div *ngFor="let mobileNoCondition of mobileNoConditions; let i = index;">
                 <div class="row pt-1 pr-0 pb-0">
-                  <div *ngFor="let mobileNo of mobileNoCondition?.mobileNo; let j = index;"
-                    class="col-3 pt-2 pb-2 pr-1 pl-1 text-center"
-                    (click)="$event.preventDefault();onSelectMobileNo(mobileNo)">
-                    <div class="border"
-                      [ngClass]="{'bg-green text-white': mobileNo?.mobileNo === transaction?.data?.simCard?.mobileNo}">
+                  <div *ngFor="let mobileNo of mobileNoCondition?.mobileNo; let j = index;" class="col-3 pt-2 pb-2 pr-1 pl-1 text-center" (click)="$event.preventDefault();onSelectMobileNo(mobileNo)">
+                    <div class="border" [ngClass]="{'bg-green text-white': mobileNo?.mobileNo === transaction?.data?.simCard?.mobileNo}">
                       <h5 class="pt-2"><b>{{ mobileNo?.mobileNo | mobileNo}}</b></h5>
                       <p>(<span translate>ผลรวม</span> {{ mobileNo?.summary }})</p>
                     </div>
@@ -133,7 +130,6 @@
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()"
-      [disabled]="!transaction?.data?.simCard?.mobileNo && mobileNoConditions">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!transaction?.data?.simCard?.mobileNo && mobileNoConditions">NEXT</button>
   </mc-footer>
 </div>

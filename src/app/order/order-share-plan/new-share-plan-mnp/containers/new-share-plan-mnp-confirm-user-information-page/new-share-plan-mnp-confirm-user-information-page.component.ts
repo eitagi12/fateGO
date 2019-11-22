@@ -138,47 +138,11 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
         // net extrem แก้ไขไม่ได้, โปรไฟล์ใหม่แก้ไขไม่ได้
         isEdit: !!(customer.caNumber && customer.billCycle && billCycles && billCycles.length > 0),
         // net extrem ลบไม่ได้, มีบิลใหม่ลบได้แล้วแสดงบิลเก่า
-        isDelete: !!mergeBilling,
-        // onEdit: () => {
-        //   // this.router.navigate([ROUTE_ORDER_NEW_REGISTER_MERGE_BILLING_PAGE]);
-        // },
-        // onDelete: () => {
-        //   delete this.transaction.data.billingInformation.mergeBilling;
-        //   // delete this.transaction.data.billingInformation.billCycle;
-        //   delete this.transaction.data.billingInformation.billCycleData;
-        //   const simCard = this.transaction.data.simCard;
-        //   // tslint:disable-next-line: no-shadowed-variable
-        //   const billingInformation = this.transaction.data.billingInformation;
-        //   const billCycleData: any = billingInformation.billCycleData || {};
-
-        //   this.billingInfo.billingMethod.text = null;
-        //   this.billingInfo.billingMethod.isDelete = false;
-
-        //   // enable config
-        //   this.billingInfo.billingAddress.isEdit = true;
-        //   this.billingInfo.billingAddress.text = customerAddress;
-
-        //   this.billingInfo.billingCycle.isEdit = true;
-        //   this.billingInfo.billingCycle.isDelete = false;
-
-        //   // this.mailBillingInfo.billChannel = this.getBillChannel();
-        //   this.mailBillingInfo = {
-        //     email: billCycleData.email,
-        //     mobileNo: simCard.mobileNo,
-        //     address: billCycleData.billAddressText,
-        //     billChannel: this.getBillChannel()
-        //   };
-        //   const bill = billCycle && billCycle.bill ? billCycle.bill : customer.billCycle;
-        //   this.billingInfo.billingCycle.isDelete = !!(billCycle && billCycle.bill);
-        //   this.getBllingCycle(bill).then((billCycleText: string) => {
-        //     this.billingInfo.billingCycle.text = billCycleText;
-        //   });
-        // }
+        isDelete: !!mergeBilling
       },
       billingAddress: {
         text: (this.isMergeBilling() ? mergeBilling.billingAddr : null) || customerAddress || '-',
         isEdit: !(!!mergeBilling),
-        // isEdit: !(isMergeBilling || isPackageNetExtreme),
         onEdit: () => {
           this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_EBILLING_ADDRESS_PAGE]);
         }
@@ -251,7 +215,6 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
   }
 
   isNext(): boolean {
-    // !(isTelNoBillingValid &&(isMailBillingInfoValid || isMergeBilling()))
     return this.isTelNoBillingValid && this.isMailBillingInfoValid;
   }
 
@@ -292,14 +255,10 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
       }
     }
 
-    // ขา back หลังกลับมาจากหน้า summary
     if (billingInformation && billingInformation.billCycleData) {
       return billingInformation.billCycleData.billChannel;
     }
 
-    // เลือกบิลตามแพจเกจ
-
-    // รอ package page
     const billingSystem = mainPackage.billingSystem;
     if (billingSystem && billingSystem === BillingSystemType.BOS) {
       return 'other';

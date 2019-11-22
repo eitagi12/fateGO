@@ -29,7 +29,7 @@ export class NewSharePlanMnpVerifyByPatternPageComponent implements OnInit, OnDe
     private router: Router,
     private transactionService: TransactionService,
     private tokenService: TokenService,
-    public fb: FormBuilder,
+    private fb: FormBuilder,
     private pageLoadingService: PageLoadingService,
     private http: HttpClient,
     private translation: TranslateService,
@@ -41,6 +41,7 @@ export class NewSharePlanMnpVerifyByPatternPageComponent implements OnInit, OnDe
   }
 
   ngOnInit(): void {
+    delete this.transaction.data.simCard;
     this.createForm();
   }
 
@@ -57,7 +58,6 @@ export class NewSharePlanMnpVerifyByPatternPageComponent implements OnInit, OnDe
       notLike0: ['', [Validators.pattern(/\d/)]],
       notLike1: ['', [Validators.pattern(/\d/)]],
       notLike2: ['', [Validators.pattern(/\d/)]],
-      // mobileFormat0: [{ value: 0, disabled: true }],
       mobileFormat1: ['', [Validators.pattern(/\d/)]],
       mobileFormat2: ['', [Validators.pattern(/\d/)]],
       mobileFormat3: ['', [Validators.pattern(/\d/)]],
@@ -99,7 +99,6 @@ export class NewSharePlanMnpVerifyByPatternPageComponent implements OnInit, OnDe
   onSearch(mobileNoCondition: any): void {
     this.pageLoadingService.openLoading();
     delete this.transaction.data.simCard;
-
     this.http.get('/api/salesportal/location-by-code', { params: { code: this.user.locationCode } }).toPromise()
       .then((resp: any) => {
         return this.http.post('/api/customerportal/newRegister/queryMobileNoByConditions', {
@@ -140,8 +139,7 @@ export class NewSharePlanMnpVerifyByPatternPageComponent implements OnInit, OnDe
     // backspace
     if (target.value === 'undefined' || target.value === '') {
       const previousField: any = target.previousElementSibling;
-      // when backspace on keyboard
-      if (keyCode === 8) {
+      if (keyCode === 8) { // when backspace on keyboard
         if (previousField) {
           previousField.focus();
         }

@@ -56,7 +56,7 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
 
   createForm(): void {
     this.serialForm = this.fb.group({
-      serial: ['', [Validators.required, Validators.pattern(/\d{13}/)]]
+      serial: ['', [Validators.minLength(13), Validators.maxLength(13), Validators.pattern('^[0-9]*$')]]
     });
   }
 
@@ -64,12 +64,13 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
     this.simSerialValid = this.storeService.simSerialValid === true ? true : false;
     this.keyInSimSerial = this.storeService.keyInSimSerial === true ? true : false;
     this.keyInSimSerial === true ? this.setValueSerialForm(this.transaction) : this.setValueSerialForm();
-    this.transaction && this.transaction.data.simCard ? this.setSimSerialValid(true) : this.setSimSerialValid(false);
+    // tslint:disable-next-line: max-line-length
+    this.transaction && this.transaction.data.simCard ? this.transaction.data.simCard.persoSim === false ? this.setSimSerialValid(true) : this.setSimSerialValid(false) : this.setSimSerialValid(false);
   }
 
   onChangeSerialForm(): void {
     this.serialForm.valueChanges.subscribe(() => {
-      this.serialForm.valid ? this.setSimSerialValid(true) : delete this.transaction.data.simCard; this.setSimSerialValid(false);
+      this.serialForm.valid ? this.setSimSerialValid(true) : this.setSimSerialValid(false); delete this.transaction.data.simCard;
     });
   }
 
