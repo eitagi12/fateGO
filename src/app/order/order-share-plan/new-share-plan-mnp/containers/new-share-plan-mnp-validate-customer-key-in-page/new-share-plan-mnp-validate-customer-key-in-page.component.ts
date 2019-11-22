@@ -65,7 +65,6 @@ export class NewSharePlanMnpValidateCustomerKeyInPageComponent implements OnInit
   }
 
   mapCustomerInfo(customer: any): void {
-
     const birthdate = customer.birthDay + '/' + customer.birthMonth + '/' + customer.birthYear;
     const expireDate = customer.expireDay + '/' + customer.expireMonth + '/' + customer.expireYear;
 
@@ -81,11 +80,9 @@ export class NewSharePlanMnpValidateCustomerKeyInPageComponent implements OnInit
     };
 
     this.transaction.data.billingInformation = {};
-
   }
 
   checkBusinessLogic(): boolean {
-
     const birthdate = this.transaction.data.customer.birthdate;
     const expireDate = this.transaction.data.customer.expireDate;
     const idCardType = this.transaction.data.customer.idCardType;

@@ -5,7 +5,6 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { Transaction } from 'src/app/shared/models/transaction.model';
 const Moment = moment;
 export interface BillingInfo {
-  // billingMethod: BillingInfoOptions;
   billingAddress: BillingInfoOptions;
   billingCycle: BillingInfoOptions;
 }

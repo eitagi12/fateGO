@@ -13,8 +13,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class NewSharePlanMnpValidateCustomerIdCardPageComponent implements OnInit, OnDestroy {
 
-  @ViewChild(ValidateCustomerIdCardComponent)
-  validateCustomerIdcard: ValidateCustomerIdCardComponent;
+  @ViewChild(ValidateCustomerIdCardComponent) validateCustomerIdcard: ValidateCustomerIdCardComponent;
   kioskApi: boolean;
   transaction: Transaction;
   profile: ReadCardProfile;
@@ -32,7 +31,6 @@ export class NewSharePlanMnpValidateCustomerIdCardPageComponent implements OnIni
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
     private translation: TranslateService
-
   ) {
     this.transaction = this.transactionService.load();
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
@@ -58,9 +56,6 @@ export class NewSharePlanMnpValidateCustomerIdCardPageComponent implements OnIni
 
   onCompleted(profile: ReadCardProfile): void {
     this.profile = profile;
-    console.log('profile ===> ', profile);
-    // auto next
-    // this.onNext();
   }
 
   onProgress(progress: number): void {

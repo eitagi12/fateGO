@@ -24,9 +24,7 @@ export class NewSharePlanMnpValidateCustomerPageComponent implements OnInit, OnD
     private transactionService: TransactionService,
     private http: HttpClient,
     private utils: Utils
-  ) {
-
-  }
+  ) { }
 
   ngOnInit(): void {
     this.createTransaction();

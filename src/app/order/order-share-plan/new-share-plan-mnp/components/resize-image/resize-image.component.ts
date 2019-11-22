@@ -12,10 +12,7 @@ declare var window: any;
 export class ResizeImageComponent implements OnInit {
 
   @Input() previewImage: string[] = [];
-
-  @ViewChild(PrinterComponent)
-  mcprinter: PrinterComponent;
-
+  @ViewChild(PrinterComponent) mcprinter: PrinterComponent;
   aisNative: any = window.aisNative;
   MESSAGE_NOT_SUPPORT_BROWSER: string = 'Could not support browser';
 

@@ -14,7 +14,7 @@ declare let window: any;
 })
 export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDestroy {
 
-  @ViewChild('signImage') signImage: ElementRef;      // ประกาศตัวแปรอ้างอิงจากแท็กบน html (ใช้ภาษา Angular)
+  @ViewChild('signImage') signImage: ElementRef;
   camera: EventEmitter<void> = new EventEmitter<void>();
   wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
   user: User;

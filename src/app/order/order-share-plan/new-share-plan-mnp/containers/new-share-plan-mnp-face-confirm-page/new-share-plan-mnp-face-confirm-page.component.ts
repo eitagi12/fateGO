@@ -17,9 +17,7 @@ export class NewSharePlanMnpFaceConfirmPageComponent implements OnInit {
   constructor(
     private router: Router,
     private fb: FormBuilder
-  ) {
-
-  }
+  ) { }
 
   ngOnInit(): void {
     this.createForm();

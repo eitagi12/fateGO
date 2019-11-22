@@ -15,10 +15,6 @@ export class CreateMnpService {
   ) { }
 
   createMnp(transaction: Transaction): Promise<any> {
-    // return this.http.post(
-    //   '/api/customerportal/newRegister/createOrderPortIn',
-    //   this.getRequestCreateMnp(transaction)
-    // ).toPromise();
     return this.getRequestCreateMnp(transaction).then((data) => {
       return this.http.post(
         '/api/customerportal/newRegister/createOrderPortIn',
@@ -37,8 +33,8 @@ export class CreateMnpService {
     const mainPackageOneLove = transaction.data.mainPackageOneLove;
     const onTopPackage = transaction.data.onTopPackage;
     const billDeliveryAddress = transaction.data.billingInformation.billDeliveryAddress;
-
     const billCycleData = billingInformation.billCycleData;
+    const reasonCode = transaction.data.reasonCode;
 
     const data: any = {
       isNewCa: !!!customer.caNumber, /*required*/
@@ -60,14 +56,15 @@ export class CreateMnpService {
       receiveBillMethod: billCycleData.receiveBillMethod || '',
       billCycleEApp: billCycleData.billCycleText || '',
       orderType: 'Port - In', /*required*/
-      simSerialNo: simCard.simSerialMember || '', /*required*/  // ใช้ simSerial 2 เพราะเป็น flow shared plan
-      mobileNo: simCard.mobileNoMember || '', /*required*/      // ใช้ mobile 2 เพราะเป็น flow shared plan
+      simSerialNo: simCard.simSerialMember || '', /*required*/
+      mobileNo: simCard.mobileNoMember || '', /*required*/
       locationCode: user.locationCode || '', /*required*/
       employeeId: '',
       baNumber: billingInformation.mergeBilling ? billingInformation.mergeBilling.billAcctNo : '',
       billMedia: billingInformation.mergeBilling ? billingInformation.mergeBilling.billMedia : billCycleData.billMedia, /*required*/
       billName: billingInformation.mergeBilling ? billingInformation.mergeBilling.billingName : '',
-      billCycle: billingInformation.mergeBilling ? billingInformation.mergeBilling.bill : customer.billCycle,
+      // tslint:disable-next-line: max-line-length
+      billCycle: billingInformation.mergeBilling ? billingInformation.mergeBilling.bill : billingInformation.billCycle.bill ? billingInformation.billCycle.bill : customer.billCycle,
       billDeliveryAddress: billingInformation.mergeBilling ? billingInformation.mergeBilling.billingAddr : '',
       billHomeNo: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.homeNo : customer.homeNo || '',
       // tslint:disable-next-line:max-line-length
@@ -98,42 +95,22 @@ export class CreateMnpService {
       amphur: customer.amphur || '',
       province: (customer.province || '').replace(/มหานคร$/, ''),
       zipCode: customer.zipCode || '',
-      reasonCode: '1300' || '',
+      reasonCode: reasonCode, /*required*/
       chargeType: 'Post-paid' || '',
       customerPinCode: customer.customerPinCode || '12345678',
       orderChannel: '',
       mainPackage: {
-        packageName: mainPackage.customAttributes.promotionName, /*required*/     // ใช้ package 2 เพราะเป็น flow shared plan
-        shortNameThai: mainPackage.shortNameThai || '',             // ใช้ package 2 เพราะเป็น flow shared plan
-        statementThai: mainPackage.statementThai || '',             // ใช้ package 2 เพราะเป็น flow shared plan
+        packageName: mainPackage.customAttributes.promotionName, /*required*/
+        shortNameThai: mainPackage.shortNameThai || '',
+        statementThai: mainPackage.statementThai || '',
         mainPackageOneLove: [],
         attributeValues: [
           simCard.mobileNo || ''
         ]
       }, /*required*/
       onTopPackages: [],
-      promotionActionStatus1: 'Add', /*When SelectedPackages*/    // ใช้ package 2 เพราะเป็น flow shared plan
+      promotionActionStatus1: 'Add', /*When SelectedPackages*/
     };
-
-    // เช็ค Eng Flag จากจังหวัด
-    if (data.billProvince.match(/[a-z]/i)) {
-      data.engFlag = 'Y';
-    } else {
-      data.engFlag = 'N';
-    }
-
-    if (action === TransactionAction.READ_PASSPORT) {
-      // data.reasonCode = '1164'; // fix reasonCode for passport
-      if (customer.nationality !== 'Thailand') {
-        data.billLanguage = 'English';
-      }
-      data.accountSubCat = 'FOR',
-        data.titleName = customer.titleName,
-        data.citizenship = customer.nationality;
-    } else {
-      data.accountSubCat = 'THA',
-        data.titleName = this.utils.getPrefixName(customer.titleName); /*required*/
-    }
 
     // orderVerify
     if (this.isReadCard(action)) {
@@ -201,27 +178,10 @@ export class CreateMnpService {
         throw new Error(error);
       });
     }
-
-    // if (this.isReadCard(action)) {
-    //   data.imageReadSmartCard = customer.imageReadSmartCard;
-    //   data.firstNameEn = customer.firstNameEn;
-    //   data.lastNameEn = customer.lastNameEn;
-    //   data.issueDate = customer.issueDate;
-    //   data.expireDate = customer.expireDate;
-    //   return Promise.resolve(data);
-    // } else {
-    //   return new ImageUtils().combine([
-    //     customer.imageSmartCard,
-    //     customer.imageSignatureSmartCard,
-    //     AWS_WATERMARK
-    //   ]).then((imageSmatCard) => {
-    //     data.imageTakePhoto = imageSmatCard;
-    //     return Promise.resolve(data);
-    //   });
-    // }
   }
 
   isReadCard(action: TransactionAction): boolean {
     return !!(action === TransactionAction.READ_CARD);
   }
+
 }

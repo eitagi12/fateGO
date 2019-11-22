@@ -58,7 +58,6 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
     this.simSerial = this.transaction.data.simCard.simSerial;
     this.mobileNoMember = this.transaction.data.simCard.mobileNoMember;
     this.simSerialMember = this.transaction.data.simCard.simSerialMember;
-    // this.checkOrderStatus();
     this.pageLoadingService.openLoading();
     this.createNewRegisterService.createNewRegister(this.transaction)
       .then((resp: any) => {
@@ -88,7 +87,6 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
                 }
               });
             }
-            // this.pageLoadingService.closeLoading();
           }).catch((err) => {
             this.pageLoadingService.closeLoading();
             this.alertService.notify({
@@ -149,37 +147,11 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_VALIDATE_CUSTOMER_PAGE]);
   }
 
-  // getEApplicationImageForPrint(): void {
-  //   this.getEApplicationFn = this.getEApplicationFile('R1910000910567');
-  //   this.getEApplicationFn.then((response: any): void => {
-  //     if (response) {
-  //       // this.images = [];
-  //       this.images.push('data:image/jpg;base64,' + response.data.eApplication);
-  //       if (typeof window.aisNative !== 'undefined') {
-  //         this.resizeImage.printToNetworkOrientation();
-  //       } else {
-  //         console.log(this.images);
-
-  //         this.resizeImage.callPrint();
-  //       }
-  //     }
-  //   }).catch((err: any) => {
-  //     // try {
-  //     //   const errorObj: any = err.json();
-  //     //   errorObj.developerMessage = errorObj.developerMessage + ' | ' + JSON.stringify(errorObj.errors);
-  //     //   err._body = JSON.stringify(errorObj);
-  //     // } catch (err) {
-  //       console.log('err: ', err);
-  //     // }
-  //   });
-  // }
-
   getEApplicationImageForPrint(): any {
     const promiseImage: any = [];
 
     this.orderNo.forEach(orderList => {
       promiseImage.push(this.getEApplicationFile(orderList));
-
     });
 
     return Promise.all(promiseImage).then((response: any) => {
@@ -192,8 +164,6 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
         if (typeof window.aisNative !== 'undefined') {
           this.resizeImage.printToNetworkOrientation();
         } else {
-          console.log('this.resizeImage', this.images);
-
           this.resizeImage.callPrint();
         }
       }

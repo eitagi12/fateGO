@@ -26,7 +26,7 @@ export class NewSharePlanMnpSelectNumberPageComponent implements OnInit {
   }
 
   onBack(): void {
-    const kyc = this.transaction.data.faceRecognition.kyc;
+    const kyc: boolean = this.transaction.data.faceRecognition.kyc;
     // tslint:disable-next-line: max-line-length
     kyc === true ? this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_FACE_COMPARE_PAGE]) : this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_FACE_CONFIRM_PAGE]);
   }

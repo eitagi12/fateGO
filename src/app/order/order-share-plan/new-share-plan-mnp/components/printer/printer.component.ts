@@ -7,15 +7,10 @@ import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 })
 export class PrinterComponent implements OnInit {
 
-  @ViewChild('elCanvas')
-  elCanvas: ElementRef;
-
-  @Input()
-  items: string[];
-
+  @ViewChild('elCanvas') elCanvas: ElementRef;
+  @Input() items: string[];
   defaultImage: string[] = [];
   printerImage: string[] = [];
-
   angles: any = {
     '0': 0 * Math.PI,
     '90': 0.5 * Math.PI,
@@ -92,11 +87,7 @@ export class PrinterComponent implements OnInit {
     });
 
     Promise.all(promises).then(values => {
-
         const popupWin = window.open('', 'E-Application', 'resizable=1,top=50,left=50,width=550');
-        // popupWin.document.open();
-
-        // popupWin.document.write(this.elTemplate.nativeElement.innerHTML);
         const html = `
         <html  moznomarginboxes>
           <head>
