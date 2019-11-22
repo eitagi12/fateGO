@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AlertService, PageLoadingService, REGEX_MOBILE } from 'mychannel-shared-libs';
+import { AlertService, PageLoadingService, REGEX_MOBILE, HomeService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import * as moment from 'moment';
@@ -29,7 +29,8 @@ export class NewRegisterMnpNetworkTypePageComponent implements OnInit, OnDestroy
     private http: HttpClient,
     private alertService: AlertService,
     private pageLoadingService: PageLoadingService,
-    private transactionService: TransactionService
+    private transactionService: TransactionService,
+    private homeService: HomeService,
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -144,6 +145,10 @@ export class NewRegisterMnpNetworkTypePageComponent implements OnInit, OnDestroy
       .then(() => {
         this.pageLoadingService.closeLoading();
       });
+  }
+
+  onHome(): void {
+    this.homeService.goToHome();
   }
 
   ngOnDestroy(): void {
