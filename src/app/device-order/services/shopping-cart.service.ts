@@ -45,7 +45,7 @@ export class ShoppingCartService {
     const transaction = this.transactionService.load();
     const priceOption = this.priceOptionService.load();
     const customer = transaction.data.customer;
-    const simCard = transaction.data.mainPackage.simCard;
+    const simCard = transaction.data.simCard;
     const campaign = priceOption.campaign;
     const trade = priceOption.trade || {};
     const productDetail = priceOption.productDetail || {};
@@ -53,8 +53,8 @@ export class ShoppingCartService {
 
     const advancePay = +trade.advancePay.amount || 0;
     let commercialName = productDetail.name;
-    if (productStock.color) {
-      commercialName += ` สี ${productStock.color}`;
+    if (productStock.colorName) {
+      commercialName += ` สี ${productStock.colorName}`;
     }
     const shoppingCartData = {
       fullName: `${customer.titleName || ''} ${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
