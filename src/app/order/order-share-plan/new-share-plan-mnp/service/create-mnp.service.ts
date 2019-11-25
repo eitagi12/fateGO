@@ -64,7 +64,7 @@ export class CreateMnpService {
       billMedia: billingInformation.mergeBilling ? billingInformation.mergeBilling.billMedia : billCycleData.billMedia, /*required*/
       billName: billingInformation.mergeBilling ? billingInformation.mergeBilling.billingName : '',
       // tslint:disable-next-line: max-line-length
-      billCycle: billingInformation.mergeBilling ? billingInformation.mergeBilling.bill : billingInformation.billCycle.bill ? billingInformation.billCycle.bill : customer.billCycle,
+      billCycle: billingInformation.mergeBilling ? billingInformation.mergeBilling.bill : billingInformation.billCycle ? billingInformation.billCycle.bill : customer.billCycle,
       billDeliveryAddress: billingInformation.mergeBilling ? billingInformation.mergeBilling.billingAddr : '',
       billHomeNo: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.homeNo : customer.homeNo || '',
       // tslint:disable-next-line:max-line-length
