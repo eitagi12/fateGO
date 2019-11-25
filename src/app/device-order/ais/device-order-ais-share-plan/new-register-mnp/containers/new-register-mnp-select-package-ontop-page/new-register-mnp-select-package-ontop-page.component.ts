@@ -47,7 +47,7 @@ export class NewRegisterMnpSelectPackageOntopPageComponent implements OnInit, On
 
   ngOnInit(): void {
     const mobileNo = this.transaction.data.simCard.mobileNo;
-    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhum();
     delete this.shoppingCart.mobileNo;
     this.callService(mobileNo);
     const mainPackEndDt: any = this.transaction.data

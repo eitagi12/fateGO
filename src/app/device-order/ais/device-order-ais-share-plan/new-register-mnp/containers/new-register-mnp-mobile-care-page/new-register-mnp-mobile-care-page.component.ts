@@ -50,7 +50,7 @@ export class NewRegisterMnpMobileCarePageComponent implements OnInit, OnDestroy 
   }
 
   ngOnInit(): void {
-    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhum();
     delete this.transaction.data.mobileCarePackage;
     this.callService();
   }

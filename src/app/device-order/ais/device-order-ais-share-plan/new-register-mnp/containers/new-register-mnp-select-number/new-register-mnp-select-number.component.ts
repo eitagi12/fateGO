@@ -31,7 +31,7 @@ export class NewRegisterMnpSelectNumberComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhum();
   }
 
   onVerifyInstantSim(): void {

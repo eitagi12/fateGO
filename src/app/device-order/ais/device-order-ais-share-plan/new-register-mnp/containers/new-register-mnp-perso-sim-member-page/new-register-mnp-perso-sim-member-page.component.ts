@@ -93,7 +93,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
     private translateService: TranslateService
   ) {
     this.option = { scan_sim: true, key_sim: false };
-    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhum();
     this.transaction = this.transactionService.load();
   }
 

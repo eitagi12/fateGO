@@ -53,7 +53,7 @@ export class NewRegisterMnpMobileDetailPageComponent implements OnInit, OnDestro
   }
 
   ngOnInit(): void {
-    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhum();
     delete this.transaction.data.mobileCarePackage;
     this.getMobileProfile();
   }

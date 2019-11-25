@@ -68,7 +68,7 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.pageLoadingService.openLoading();
     const customer = this.transaction.data.customer;
-    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhum();
 
     this.customerAddress = this.utils.getCurrentAddress({
       homeNo: customer.homeNo,

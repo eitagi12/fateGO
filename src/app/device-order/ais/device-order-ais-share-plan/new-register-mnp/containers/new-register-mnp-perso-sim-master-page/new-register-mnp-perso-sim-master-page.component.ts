@@ -121,7 +121,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
     public fb: FormBuilder,
   ) {
     this.option = { scan_sim: true, key_sim: false };
-    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhum();
     this.transaction = this.transactionService.load();
   }
 

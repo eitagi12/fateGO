@@ -36,7 +36,7 @@ export class NewRegisterMnpFaceComparePageComponent implements OnInit, OnDestroy
   ngOnInit(): void {
     const customer: Customer = this.transaction.data.customer;
     console.log(customer.imageReadSmartCard);
-    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhum();
   }
 
   onBack(): void {

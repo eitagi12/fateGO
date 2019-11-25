@@ -55,7 +55,7 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
   ngOnInit(): void {
     this.createForm();
     delete this.transaction.data.simCard;
-    this.shoppingCart = Object.assign(this.shoppingCartService.getShoppingCartData(), {
+    this.shoppingCart = Object.assign(this.shoppingCartService.getShoppingCartDataSuperKhum(), {
       mobileNo: ''
     });
   }
