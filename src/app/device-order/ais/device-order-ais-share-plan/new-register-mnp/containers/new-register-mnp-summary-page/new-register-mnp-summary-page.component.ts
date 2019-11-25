@@ -68,7 +68,7 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.pageLoadingService.openLoading();
     const customer = this.transaction.data && this.transaction.data.billingInformation
-    && this.transaction.data.billingInformation.billDeliveryAddress ?
+      && this.transaction.data.billingInformation.billDeliveryAddress ?
       this.transaction.data.billingInformation.billDeliveryAddress : this.transaction.data.customer;
     this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhum();
 
@@ -103,18 +103,22 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
     const user = this.tokenService.getUser();
     this.pageLoadingService.openLoading();
     const ascCode = this.employeeDetailForm.controls['ascCode'].value || '';
-    this.http.get(`/api/customerportal/checkSeller/${ascCode.trim()}`).toPromise().then((resp: any) => {
-      const checkSeller: any = resp && resp.data ? resp.data : {};
-      if (checkSeller.condition) {
-        this.transaction.data.seller.sellerNo = this.sellerCode || '';
-        this.transaction.data.seller.employeeId = ascCode;
-        this.transaction.data.seller.sellerName = user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username;
-        this.pageLoadingService.closeLoading();
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE]);
-      } else {
-        this.alertService.warning(checkSeller.message);
-      }
-    });
+    if (!ascCode) {
+      this.alertService.error('กรุณาระบุรหัสพนักงานขาย');
+    } else {
+      this.http.get(`/api/customerportal/checkSeller/${ascCode.trim()}`).toPromise().then((resp: any) => {
+        const checkSeller: any = resp && resp.data ? resp.data : {};
+        if (checkSeller.condition) {
+          this.transaction.data.seller.sellerNo = this.sellerCode || '';
+          this.transaction.data.seller.employeeId = ascCode;
+          this.transaction.data.seller.sellerName = user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username;
+          this.pageLoadingService.closeLoading();
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE]);
+        } else {
+          this.alertService.warning(checkSeller.message);
+        }
+      });
+    }
   }
 
   onHome(): void {
