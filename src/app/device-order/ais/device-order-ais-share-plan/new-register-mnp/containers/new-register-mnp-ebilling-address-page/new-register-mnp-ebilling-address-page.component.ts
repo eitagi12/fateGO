@@ -173,7 +173,9 @@ export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDes
   onCompleted(value: any): void {
     console.log('complete eb adr', value);
     this.customerAddressTemp = value;
-    // this.mapCustomerAddress(value);
+    if (this.transaction.data.action === 'KEY_IN') {
+      this.mapCustomerAddress(value);
+    }
   }
 
   mapCustomerAddress(customer: any): void {
