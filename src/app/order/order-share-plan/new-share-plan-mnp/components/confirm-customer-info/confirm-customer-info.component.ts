@@ -23,16 +23,16 @@ export interface ConfirmCustomerInfo {
 })
 export class ConfirmCustomerInfoComponent implements OnInit {
 
+  @Input() confirmCustomerInfo: ConfirmCustomerInfo;
+  @Input() title: string;
   templatePopupPackageMaster: BsModalRef;
   templatePopupPackageMember: BsModalRef;
-  @Input() confirmCustomerInfo: ConfirmCustomerInfo;
 
   constructor(
     private modalService: BsModalService
   ) { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void { }
 
   onShowPopUpPackageMaster(popUpPackageMaster: TemplateRef<any>): void {
     this.templatePopupPackageMaster = this.modalService.show(popUpPackageMaster);
@@ -41,4 +41,5 @@ export class ConfirmCustomerInfoComponent implements OnInit {
   onShowPopUpPackageMember(popUpPackageMember: TemplateRef<any>): void {
     this.templatePopupPackageMember = this.modalService.show(popUpPackageMember);
   }
+
 }

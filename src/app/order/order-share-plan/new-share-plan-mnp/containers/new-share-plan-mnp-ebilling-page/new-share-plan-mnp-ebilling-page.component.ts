@@ -74,4 +74,5 @@ export class NewSharePlanMnpEbillingPageComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }
+
 }

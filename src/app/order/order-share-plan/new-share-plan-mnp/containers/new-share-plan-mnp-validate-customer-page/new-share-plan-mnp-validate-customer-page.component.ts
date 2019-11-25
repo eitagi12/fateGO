@@ -121,10 +121,8 @@ export class NewSharePlanMnpValidateCustomerPageComponent implements OnInit, OnD
           }).then(() => {
             this.pageLoadingService.closeLoading();
           });
-
         }
       });
-
   }
 
   private createTransaction(): void {

@@ -29,8 +29,7 @@
                   <!--โชว์รูปที่ได้-->
                   <div>
                     <canvas #signImage class="captured-image"></canvas>
-                    <img *ngIf="captureAndSign.imageSignature && isDrawingSignature" class="capture-and-sign watermark" alt=""
-                      [src]="'data:image/png;base64,' + watermark" />
+                    <img *ngIf="captureAndSign.imageSignature && isDrawingSignature" class="capture-and-sign watermark" [src]="'data:image/png;base64,' + watermark" />
                   </div>
                 </div>
               </div>
@@ -41,8 +40,7 @@
           </div>
           <div class="card-footer bg-transparent text-center p-0">
             <div class="row">
-              <div class="border-right p-3 col-6"
-                [ngClass]="{ 'd-none': !isAllowCapture(), 'col-6': hasImageSmartCard(),'col-12': !hasImageSmartCard()}">
+              <div class="border-right p-3 col-6" [ngClass]="{ 'd-none': !isAllowCapture(), 'col-6': hasImageSmartCard(),'col-12': !hasImageSmartCard()}">
                 <!-- WEB Step -->
                 <div *ngIf="!isAisNative()">
                   <a href="#" (click)="$event.preventDefault(); camera.next();" class="text-pink"
@@ -66,8 +64,7 @@
                   </a>
                 </div>
               </div>
-              <div class="p-3 col-6"
-                [ngClass]="{ 'col-12': !isAllowCapture(), 'col-6': hasImageSmartCard(),'d-none': !(!isAllowCapture() || hasImageSmartCard())}">
+              <div class="p-3 col-6" [ngClass]="{ 'col-12': !isAllowCapture(), 'col-6': hasImageSmartCard(),'d-none': !(!isAllowCapture() || hasImageSmartCard())}">
                 <!-- WEB Step -->
                 <a href="#" (click)="$event.preventDefault(); onSigned()" class="text-pink">
                   <span *ngIf="!hasImageSignature()">{{ 'เซ็นลายเซ็น' | translate }}</span>

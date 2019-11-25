@@ -61,7 +61,6 @@ export class NewSharePlanMnpSummaryPageComponent implements OnInit, OnDestroy {
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData;
     const simCard = this.transaction.data.simCard;
-
     this.confirmCustomerInfo = {
       titleName: customer.titleName,
       firstName: customer.firstName,
