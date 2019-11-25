@@ -25,6 +25,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { HttpClient } from '@angular/common/http';
 import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { AgreementSignConstant } from 'src/app/device-order/ais/device-order-ais-share-plan/new-register-mnp/constants/agreement-sign.constant';
+import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 declare let window: any;
 @Component({
   selector: 'app-new-register-mnp-agreement-sign-page',
@@ -70,7 +71,8 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
     private http: HttpClient,
     private alertService: AlertService,
     private utils: Utils,
-    private aisNativeDeviceService: AisNativeService
+    private aisNativeDeviceService: AisNativeService,
+    private shoppingCartService: ShoppingCartService
   ) {
 
     this.transaction = this.transactionService.load();
@@ -102,6 +104,7 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
   }
 
   ngOnInit(): void {
+    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhum();
     this.isReadCard = this.transaction.data.action === 'READ_CARD' ? true : false;
     this.checkCaptureAndSign();
     if (this.transaction.data.customer.imageSignatureSmartCard) {
