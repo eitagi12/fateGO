@@ -191,6 +191,7 @@ export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDes
     const imageReadSmartCard = this.transaction.data.customer.imageReadSmartCard;
     const gender = this.transaction.data.customer.gender;
     const expireDate = this.transaction.data.customer.expireDate;
+    const customerPinCode = this.transaction.data.customer.customerPinCode;
     this.transaction.data = {
       ...this.transaction.data,
       customer: {
@@ -225,6 +226,7 @@ export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDes
         imageSignature: imageSignature || '',
         imageSmartCard: imageSmartCard || '',
         imageReadSmartCard: imageReadSmartCard || '',
+        customerPinCode: customerPinCode
       }
     };
   }
