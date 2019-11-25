@@ -6,7 +6,13 @@
     <div class="header-icon-right w-25 text-right"></div>
   </mc-header>
   <div class="mc-flex-wrap bg-white">
-    <mc-validate-customer (completed)="onCompleted($event)" (error)="onError($event)" (readCard)="onReadCard()" placeholder="เลขบัตรประชาชน" [validate]="validateCustomerIdentity"></mc-validate-customer>
+    <mc-validate-customer 
+      (completed)="onCompleted($event)" 
+      (error)="onError($event)" 
+      (readCard)="onReadCard()" 
+      placeholder="เลขบัตรประชาชน" 
+      [validate]="validateCustomerIdentity">
+    </mc-validate-customer>
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>

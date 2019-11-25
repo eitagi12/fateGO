@@ -2,10 +2,6 @@
     max-width: 768px;
     width: 100%;
     margin: 0 auto;
-
-    // img {
-    //     width: 100%;
-    // }
 }
 
 //รูปลายเซ็น
@@ -44,8 +40,6 @@
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
-      // display: block;
-      // object-fit: contain;
     }
 }
 
@@ -56,5 +50,4 @@ canvas.captured-image {
     height: 576px;
     object-fit: contain;  //ปรับขนาดรูปให้เหมาะสมกับขนาดหน้าจอ ซึ่งทำให้ภาพไม่ถูกยืดหรือหดลงขณะย่อหน้าจอ
     text-align: center;
-    // height: 576px !important;
 }

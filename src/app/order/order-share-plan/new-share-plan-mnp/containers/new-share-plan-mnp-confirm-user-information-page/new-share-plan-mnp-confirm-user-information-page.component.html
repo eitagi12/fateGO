@@ -10,8 +10,12 @@
       <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
       <app-confirm-customer-info [confirmCustomerInfo]="confirmCustomerInfo"></app-confirm-customer-info>
       <app-billing-info [billingInfo]="billingInfo" (editAddress)="onEditAddress()"></app-billing-info>
-      <mc-mail-billing-info [eBill]="eBill" [disabled]="isPackageNetExtreme() || isMergeBilling()"
-        [mailBillingInfo]="mailBillingInfo" (completed)="onMailBillingInfoCompleted($event)" (error)="onMailBillingInfoError($event)">
+      <mc-mail-billing-info 
+        [eBill]="eBill"
+        [disabled]="isPackageNetExtreme() || isMergeBilling()"
+        [mailBillingInfo]="mailBillingInfo" 
+        (completed)="onMailBillingInfoCompleted($event)" 
+        (error)="onMailBillingInfoError($event)">
       </mc-mail-billing-info>
       <mc-tel-no-billing-info [telNoBillingInfo]="telNoBillingInfo" (completed)="onTelNoBillingCompleted($event)" (error)="onTelNoBillingError($event)"></mc-tel-no-billing-info>
     </div>
