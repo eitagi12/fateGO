@@ -93,7 +93,7 @@ export class CreateEapplicationService {
 
   getRequestEapplicationSuperKhumSharePlanMnp(transaction: any, language: any): any {
     const customer: any = transaction.data.customer || {};
-    const billingInformation: any = transaction.data.billing_information || {};
+    const billingInformation: any = transaction.data.billingInformation || {};
     const billCycleData: any = billingInformation.billCycleData || {};
     const action: any = transaction.data.action;
     const mainPackage: any = transaction.data.mainPackage.memberMainPackage[0] || {};
@@ -153,7 +153,7 @@ export class CreateEapplicationService {
 
   getRequestEapplicationSuperKhumSharePlanNewRegister(transaction: any, language: any): any {
     const customer: any = transaction.data.customer || {};
-    const billingInformation: any = transaction.data.billing_information || {};
+    const billingInformation: any = transaction.data.billingInformation || {};
     const billCycleData: any = billingInformation.billCycleData || {};
     const action: any = transaction.data.action;
     const mainPackage: any = transaction.data.mainPackage || {};
