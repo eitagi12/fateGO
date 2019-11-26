@@ -70,65 +70,85 @@ export class NewRegisterMnpEcontactPageComponent implements OnInit, OnDestroy {
   onHome(): void {
     this.homeService.goToHome();
   }
+  // callService(): void {
+  //   this.pageLoadingService.openLoading();
+  //   const user = this.tokenService.getUser();
+  //   const campaign: any = this.priceOption.campaign || {};
+  //   const trade: any = this.priceOption.trade || {};
+  //   const queryParams: any = this.priceOption.queryParams || {};
+  //   const productStock: any = this.priceOption.productStock || {};
+  //   const customer: any = this.transaction.data.customer || {};
+  //   const simCard: any = this.transaction.data.simCard || {};
+  //   const mainPackage: any = this.transaction.data.mainPackage || {};
+  //   const currentPackage: any = this.transaction.data.currentPackage || {};
+  //   const advancePay: any = trade.advancePay || {};
+  //   const locationName: any =  this.transaction.data.seller.locationName;
+
+  //   this.http.post('/api/salesportal/promotion-shelves/promotion/condition', {
+  //     conditionCode: campaign.conditionCode,
+  //     location: user.locationCode
+  //   }).toPromise().then((resp: any) => {
+  //     const condition = resp.data ? resp.data.data || {} : {};
+  //     const params = {
+  //       data: {
+  //         campaignName: campaign.campaignName,
+  //         locationName: locationName || '',
+  //         customerType: '',
+  //         idCard: this.idCardPipe.transform(customer.idCardNo), // this.transformIDcard(customer.idCardNo),
+  //         fullName: `${customer.firstName || ''} ${customer.lastName || ''}`,
+  //         mobileNumber: simCard.mobileNo,
+  //         imei: simCard.imei || '',
+  //         brand: queryParams.brand || '',
+  //         model: queryParams.model || '',
+  //         color: productStock.colorName || '',
+  //         priceIncludeVat: this.decimalPipe.transform(trade.normalPrice),
+  //         priceDiscount: this.decimalPipe.transform(trade.discount ? trade.discount.amount : 0),
+  //         netPrice: this.decimalPipe.transform(trade.promotionPrice),
+  //         advancePay: this.decimalPipe.transform(advancePay.amount),
+  //         contract: trade.durationContract,
+  //         packageDetail: mainPackage.detailTH || currentPackage.detail,
+  //         airTimeDiscount: this.getAirTimeDiscount(advancePay.amount, advancePay.promotions),
+  //         airTimeMonth: this.getAirTimeMonth(advancePay.promotions),
+  //         price: this.decimalPipe.transform(+trade.promotionPrice + (+advancePay.amount)),
+  //         signature: '',
+  //         mobileCarePackageTitle: '',
+  //         condition: condition.conditionText,
+  //         language: 'TH'
+  //       },
+  //       docType: 'ECONTRACT',
+  //       location: user.locationCode
+  //     };
+
+  //     if (condition.conditionCode) {
+  //       this.transaction.data.contract = {
+  //         conditionCode: condition.conditionCode
+  //       };
+  //     }
+
+  //     return this.http.post('/api/salesportal/generate-e-document', params).toPromise().then((eDocResp: any) => {
+  //       return eDocResp.data || '';
+  //     });
+
+  //   }).then((eContact: string) => this.eContactSrc = eContact)
+  //     .then(() => this.pageLoadingService.closeLoading());
+  // }
+
   callService(): void {
-    this.pageLoadingService.openLoading();
     const user = this.tokenService.getUser();
     const campaign: any = this.priceOption.campaign || {};
-    const trade: any = this.priceOption.trade || {};
-    const queryParams: any = this.priceOption.queryParams || {};
-    const productStock: any = this.priceOption.productStock || {};
-    const customer: any = this.transaction.data.customer || {};
-    const simCard: any = this.transaction.data.simCard || {};
-    const mainPackage: any = this.transaction.data.mainPackage || {};
-    const currentPackage: any = this.transaction.data.currentPackage || {};
-    const advancePay: any = trade.advancePay || {};
-    const locationName: any =  this.transaction.data.seller.locationName;
-
+    // const trade: any = this.priceOption.trade || {};
+    this.pageLoadingService.openLoading();
     this.http.post('/api/salesportal/promotion-shelves/promotion/condition', {
       conditionCode: campaign.conditionCode,
       location: user.locationCode
     }).toPromise().then((resp: any) => {
       const condition = resp.data ? resp.data.data || {} : {};
-      const params = {
-        data: {
-          campaignName: campaign.campaignName,
-          locationName: locationName || '',
-          customerType: '',
-          idCard: this.idCardPipe.transform(customer.idCardNo), // this.transformIDcard(customer.idCardNo),
-          fullName: `${customer.firstName || ''} ${customer.lastName || ''}`,
-          mobileNumber: simCard.mobileNo,
-          imei: simCard.imei || '',
-          brand: queryParams.brand || '',
-          model: queryParams.model || '',
-          color: productStock.colorName || '',
-          priceIncludeVat: this.decimalPipe.transform(trade.normalPrice),
-          priceDiscount: this.decimalPipe.transform(trade.discount ? trade.discount.amount : 0),
-          netPrice: this.decimalPipe.transform(trade.promotionPrice),
-          advancePay: this.decimalPipe.transform(advancePay.amount),
-          contract: trade.durationContract,
-          packageDetail: mainPackage.detailTH || currentPackage.detail,
-          airTimeDiscount: this.getAirTimeDiscount(advancePay.amount, advancePay.promotions),
-          airTimeMonth: this.getAirTimeMonth(advancePay.promotions),
-          price: this.decimalPipe.transform(+trade.promotionPrice + (+advancePay.amount)),
-          signature: '',
-          mobileCarePackageTitle: '',
-          condition: condition.conditionText
-        },
-        docType: 'ECONTRACT',
-        location: user.locationCode
-      };
-
-      if (condition.conditionCode) {
-        this.transaction.data.contract = {
-          conditionCode: condition.conditionCode
-        };
-      }
-
-      return this.http.post('/api/salesportal/generate-e-document', params).toPromise().then((eDocResp: any) => {
+      return this.createContractService.createEContractV2(this.transaction, this.priceOption, condition, this.currentLang)
+      .then((eDocResp: any) => {
         return eDocResp.data || '';
       });
-
-    }).then((eContact: string) => this.eContactSrc = eContact)
+    })
+      .then((eContact: string) => this.eContactSrc = eContact)
       .then(() => this.pageLoadingService.closeLoading());
   }
 
