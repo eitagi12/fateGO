@@ -125,20 +125,13 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
   }
 
   onNext(): any {
-    console.log('Next', this.profile.idCardNo);
     this.pageLoadingService.openLoading();
     this.createTransaction();
     return this.validateCustomerService.queryCustomerInfo(this.profile.idCardNo).then((res) => {
-      console.log('res', res);
-
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol).then((zipCode: string) => {
-        console.log('ssss', zipCode);
-
         const transactionType = TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS; // New
         return this.validateCustomerService.checkValidateCustomer(this.profile.idCardNo, this.profile.idCardType, transactionType)
           .then((resp: any) => {
-            console.log('===>', resp);
-
             const data = resp.data || {};
             return {
               caNumber: data.caNumber,
@@ -150,8 +143,6 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
             this.transaction.data.customer = Object.assign(this.profile, customer);
             return this.validateCustomerService.queryBillingAccount(this.profile.idCardNo)
               .then((resp: any) => {
-                console.log(resp);
-
                 const params: any = resp.data || {};
                 this.toBillingInformation(params).then((billingInfo: any) => {
                   this.transaction.data.billingInformation = billingInfo || {};
@@ -169,7 +160,6 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                       // tslint:disable-next-line: max-line-length
                       const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: this.transaction.data.customer });
                       return this.validateCustomerService.addDeviceSellingCart(body).then((response: any) => {
-                        console.log('response', response);
                         this.transaction.data = {
                           ...this.transaction.data,
                           order: { soId: response.data.soId }
@@ -193,7 +183,6 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
       const isLowerAge = this.validateCustomerService.checkAgeAndExpireCard(this.transaction);
       if (isLowerAge.false) {
         this.alertService.error(isLowerAge.false);
-        throw new Error(isLowerAge.false);
       } else {
         this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol).then((zipCode: string) => {
           const transactionType = TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS; // New

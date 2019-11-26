@@ -100,7 +100,7 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
     const user = this.tokenService.getUser();
     const customer = this.transaction.data.customer;
     const faceRecognition = this.transaction.data.faceRecognition;
-    const mobilesNo: any = [];
+    const mobileNo = this.transaction.data.simCard.mobileNo;
     const action = this.transaction.data.action;
     const channelKyc = this.transaction.data.faceRecognition.kyc;
     let channel = 'MC';
@@ -120,30 +120,22 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
     } else {
       base64Card = customer.imageSmartCard;
     }
-    mobilesNo.push(this.transaction.data.simCard.mobileNo);
-    this.transaction.data.simCard.memberSimCard.forEach(memberSimCard => {
-      mobilesNo.push(memberSimCard.mobileNo);
-    });
-
-    for (let index = 0; index < mobilesNo.length; index++) {
-      const mobileNo = mobilesNo[index];
-      const param: any = {
-        userId: user.username,
-        locationCode: user.locationCode,
-        idCardType: customer.idCardType === 'บัตรประชาชน' ? 'Thai National ID' : 'OTHER',
-        customerId: customer.idCardNo || '',
-        mobileNo: mobileNo || '',
-        base64Card: base64Card ? `data:image/jpg;base64,${base64Card}` : '',
-        base64Face: faceRecognition.imageFaceUser ? `data:image/jpg;base64,${faceRecognition.imageFaceUser}` : '',
-        channel: channel,
-        userchannel: 'MyChannel'
-      };
-      this.http.post('/api/facerecog/save-imagesV2', param).toPromise()
-        .catch(e => {
-          console.log(e);
-          Promise.resolve(null);
-        });
-    }
+    const param: any = {
+      userId: user.username,
+      locationCode: user.locationCode,
+      idCardType: customer.idCardType === 'บัตรประชาชน' ? 'Thai National ID' : 'OTHER',
+      customerId: customer.idCardNo || '',
+      mobileNo: mobileNo || '',
+      base64Card: base64Card ? `data:image/jpg;base64,${base64Card}` : '',
+      base64Face: faceRecognition.imageFaceUser ? `data:image/jpg;base64,${faceRecognition.imageFaceUser}` : '',
+      channel: channel,
+      userchannel: 'MyChannel'
+    };
+    this.http.post('/api/facerecog/save-imagesV2', param).toPromise()
+      .catch(e => {
+        console.log(e);
+        Promise.resolve(null);
+      });
   }
 
   ngOnDestroy(): void {

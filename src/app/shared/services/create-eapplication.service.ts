@@ -39,7 +39,7 @@ export class CreateEapplicationService {
 
   createEapplicationSuperKhumSharepalnMnp(transaction: any, language: any): Promise<any> {
     return this.http.post(
-      '/api/salesportal/v2/generate-e-document-eapplication',
+      '/api/salesportal/v2/generate-e-document-eapplication-share-plan',
       this.getRequestEapplicationSuperKhumSharePlanMnp(transaction, language)
     ).toPromise();
   }
@@ -104,6 +104,8 @@ export class CreateEapplicationService {
       idCard: this.privateIdcard(customer.idCardNo) || '',
       idCardType: customer.idCardType || '',
       birthDate: customer.birthdate || '',
+      customerPincode: '111111',
+      chargeType: 'Post-paid ',
       customerAddress: this.utils.getCurrentAddress({
         homeNo: customer.homeNo || '',
         moo: customer.moo || '',
