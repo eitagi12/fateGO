@@ -85,11 +85,11 @@ export class CreateEcontractService {
       // check mainPackage กับเบอร์ที่ทำรายการให้ตรงกับ billingSystem ของเบอร์ที่ทำรายการ
       const advancePay = priceOption.trade.advancePay || {};
       const billingSystem = (simCard.billingSystem === 'RTBS')
-      ? BillingSystemType.IRB : simCard.billingSystem || BillingSystemType.IRB;
+        ? BillingSystemType.IRB : simCard.billingSystem || BillingSystemType.IRB;
       if (advancePay.promotions) {
         return advancePay.promotions
-        .find(promotion =>
-          (promotion && promotion.billingSystem) === (mainPackageCustomAttributes || billingSystem));
+          .find(promotion =>
+            (promotion && promotion.billingSystem) === (mainPackageCustomAttributes || billingSystem));
       } else {
         return null;
       }
