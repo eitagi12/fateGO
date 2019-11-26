@@ -177,7 +177,8 @@ export class ValidateCustomerService {
       firstNameEn: '',
       lastNameEn: '',
       issueDate: customer.birthdate || customer.issueDate || '',
-      expireDate: customer.expireDate || customer.expireDay + '/' + customer.expireMonth + '/' + customer.expireYear || '',
+      // tslint:disable-next-line: max-line-length
+      expireDate: customer.expireDate || customer.expireDay ? customer.expireDay + '/' + customer.expireMonth + '/' + customer.expireYear : '',
       zipCode: customer.zipCode || '',
       mainMobile: customer.mainMobile || '',
       mainPhone: customer.mainPhone || '',
