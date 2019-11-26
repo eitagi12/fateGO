@@ -104,6 +104,8 @@ export class CreateEapplicationService {
       idCard: this.privateIdcard(customer.idCardNo) || '',
       idCardType: customer.idCardType || '',
       birthDate: customer.birthdate || '',
+      customerPincode: '111111',
+      chargeType: 'Post-paid ',
       customerAddress: this.utils.getCurrentAddress({
         homeNo: customer.homeNo || '',
         moo: customer.moo || '',
