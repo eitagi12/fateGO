@@ -71,6 +71,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
   mockData: any = [];
   getSerialNo: string;
   simSerialForm: FormGroup;
+  isNext: boolean = false;
 
   constructor(
     private router: Router,
@@ -212,8 +213,10 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
       if (simStatus[0].toLowerCase() === 'true') {
         // Progess 20%
         this.persoSim = { progress: 20, eventName: 'กรุณารอสักครู่' };
-        if (this.statusFixSim === 'WaitingForPerso' && this.serialbarcode && this.orderType) {
+        alert(this.statusFixSim);
+        if (this.serialbarcode && this.orderType) {
           if (this.serialbarcode === this.getSerialNo) {
+            alert(this.getSerialNo);
             this.verifySimRegionForPerso(this.getSerialNo);
           } else {
             errMegFixSim = 'เลขที่ซิมการ์ดใบนี้ ไม่ตรงกับที่ระบุ ('
@@ -350,6 +353,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
 
   verifySimSerialByBarcode(barcode: string): void {
     this.simSerialKeyIn = barcode;
+    this.serialbarcode = barcode;
     this.checkBarcode(this.simSerialKeyIn, false);
   }
 
@@ -377,6 +381,15 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
             + this.mobileNo + ' กรุณาเปลี่ยนซิมใหม่';
           this.popupControl('errorFixSim', errMegFixSim);
         } else if (errorCode === '008') {
+          alert('errorCode' + errorCode);
+          this.simSerialForm.controls.simSerial.valueChanges.subscribe((value) => {
+            if (value === 13) {
+              this.isNext = true;
+            } else {
+              this.isNext = false;
+            }
+          });
+          this.isNext = true;
           this.pageLoadingService.closeLoading();
           this.statusFixSim = 'Success';
         } else if (errorCode === '001' || errorCode === '002' || errorCode === '007') {

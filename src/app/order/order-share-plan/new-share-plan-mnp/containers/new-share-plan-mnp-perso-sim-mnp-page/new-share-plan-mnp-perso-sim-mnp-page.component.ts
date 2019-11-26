@@ -299,8 +299,8 @@ export class NewSharePlanMnpPersoSimMnpPageComponent implements OnInit, OnDestro
         }
       }, 5000);
     } else {
-      const persoSimza = this.aisNative.sendIccCommand(this.command, perso, parameter); // perso Sim+
-      const persoSimStatus: string[] = persoSimza.split('|||');
+      const persoSimsplit = this.aisNative.sendIccCommand(this.command, perso, parameter); // perso Sim+
+      const persoSimStatus: string[] = persoSimsplit.split('|||');
       this.persoSim = { progress: 60, eventName: 'กรุณารอสักครู่' };
       if (persoSimStatus[0].toLowerCase() === 'true') {
         this.createdPersoSim(refNo);
