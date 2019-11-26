@@ -39,7 +39,7 @@ export class CreateEapplicationService {
 
   createEapplicationSuperKhumSharepalnMnp(transaction: any, language: any): Promise<any> {
     return this.http.post(
-      '/api/salesportal/v2/generate-e-document-eapplication',
+      '/api/salesportal/v2/generate-e-document-eapplication-share-plan',
       this.getRequestEapplicationSuperKhumSharePlanMnp(transaction, language)
     ).toPromise();
   }
