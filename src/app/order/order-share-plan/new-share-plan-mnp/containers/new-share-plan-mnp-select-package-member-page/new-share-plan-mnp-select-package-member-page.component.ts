@@ -125,7 +125,6 @@ export class NewSharePlanMnpSelectPackageMemberPageComponent implements OnInit, 
       let promotionShelveIndex = 0, promotionShelveGroupIndex = 0;
       for (let i = 0; i < promotionShelves.length; i++) {
         const promotions = promotionShelves[i].promotions || [];
-
         let itemActive = false;
         for (let j = 0; j < promotions.length; j++) {
           const active = (promotions[j].items || []).find((promotionShelveItem: PromotionShelveItem) => {
@@ -150,6 +149,7 @@ export class NewSharePlanMnpSelectPackageMemberPageComponent implements OnInit, 
       promotionShelves.forEach((promotionShelve: PromotionShelve) => {
         if (promotionShelve.promotions && promotionShelve.promotions.length > 0) {
           promotionShelve.promotions[0].active = true;
+          this.transaction.data.mainPackageMember = promotionShelve.promotions[0].items[0].value;
         }
       });
     }
