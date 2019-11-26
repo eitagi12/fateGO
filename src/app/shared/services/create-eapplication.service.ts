@@ -39,7 +39,7 @@ export class CreateEapplicationService {
 
   createEapplicationSuperKhumSharepalnMnp(transaction: any, language: any): Promise<any> {
     return this.http.post(
-      '/api/salesportal/v2/generate-e-document-eapplication-share-plan',
+      '/api/salesportal/generate-e-document-eapplication-share-plan',
       this.getRequestEapplicationSuperKhumSharePlanMnp(transaction, language)
     ).toPromise();
   }
@@ -97,6 +97,7 @@ export class CreateEapplicationService {
     const billCycleData: any = billingInformation.billCycleData || {};
     const action: any = transaction.data.action;
     const mainPackage: any = transaction.data.mainPackage.memberMainPackage[0] || {};
+    const customAttributes: any = transaction.data.mainPackage.customAttributes;
     const simCard: any = transaction.data.simCard.memberSimCard[0] || {}; // Get simNo of member
     const data: any = {
       fullNameTH: language === 'EN' ? `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}` :
@@ -104,8 +105,8 @@ export class CreateEapplicationService {
       idCard: this.privateIdcard(customer.idCardNo) || '',
       idCardType: customer.idCardType || '',
       birthDate: customer.birthdate || '',
-      customerPincode: '111111',
-      chargeType: 'Post-paid ',
+      customerPincode: simCard.pinCode,
+      chargeType: simCard.chargeType,
       customerAddress: this.utils.getCurrentAddress({
         homeNo: customer.homeNo || '',
         moo: customer.moo || '',
