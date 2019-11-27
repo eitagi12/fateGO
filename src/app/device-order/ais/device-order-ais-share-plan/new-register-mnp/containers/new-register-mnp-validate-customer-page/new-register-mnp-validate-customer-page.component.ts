@@ -120,7 +120,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
           ...this.transaction.data,
           order: soId
         };
-        this.transaction.data.customer = this.validateCustomerService.mapCustomer(data.customer.data);
+        this.transaction.data.customer = this.mapCustomer(data.customer.data);
       }
     }).then(() => {
       if (this.transaction.transactionId) {
@@ -177,7 +177,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   validateCustomer(): any {
     return this.validateCustomerService.queryCustomerInfo(this.identity)
       .then((customerInfo: any) => {
-        const cardType: string = this.validateCustomerService.mapCardType(customerInfo.idCardType);
+        const cardType: string = this.mapCardType(customerInfo.idCardType);
         const transactionType = TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS; // New
         return this.validateCustomerService.checkValidateCustomer(this.identity, cardType, transactionType)
           .then((customer: any) => {
@@ -217,6 +217,62 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
               });
           });
       });
+  }
+
+  mapCardType(idCardType: string): string {
+    idCardType = idCardType ? idCardType : 'ID_CARD';
+    const mapCardType: any = {
+      CERT_FOUND: 'หนังสือจัดตั้งสมาคม / มูลนิธิ',
+      EMB_LET: 'หนังสือออกจากสถานทูต',
+      GOV_LET: 'หนังสือออกจากหน่วยราชการ',
+      HILL_CARD: 'บัตรประจำตัวคนบนที่ราบสูง',
+      ID_CARD: 'บัตรประชาชน',
+      IMM_CARD: 'บัตรประจำตัวคนต่างด้าว',
+      MONK_CERT: 'ใบสุทธิพระ',
+      PASSPORT: 'หนังสือเดินทาง',
+      ROY_LET: 'หนังสือออกจากสำนักพระราชวัง',
+      STA_LET: 'หนังสือออกจากรัฐวิสาหกิจ',
+      TAX_ID: 'เลขที่ประจำตัวผู้เสียภาษีอากร'
+    };
+    return mapCardType[idCardType];
+  }
+
+  mapCustomer(customer: any, transaction?: any): any {
+    return {
+      idCardNo: customer.idCardNo,
+      idCardType: (customer.idCardType === 'บัตรประชาชน') ? 'บัตรประชาชน' : this.mapCardType(customer.idCardType) || '',
+      titleName: customer.prefix || customer.titleName || '',
+      firstName: customer.firstName || '',
+      lastName: customer.lastName || '',
+      birthdate: customer.birthdate || customer.birthDay + '/' + customer.birthMonth + '/' + customer.birthYear || '',
+      gender: customer.gender || '',
+      homeNo: customer.homeNo || '',
+      moo: customer.moo || '',
+      mooBan: customer.mooban || '',
+      buildingName: customer.buildingName || '',
+      floor: customer.floor || '',
+      room: customer.room || '',
+      street: customer.street || '',
+      soi: customer.soi || '',
+      tumbol: customer.tumbol || '',
+      amphur: customer.amphur,
+      province: customer.province || customer.provinceName || '',
+      firstNameEn: '',
+      lastNameEn: '',
+      issueDate: customer.birthdate || customer.issueDate || '',
+      // tslint:disable-next-line: max-line-length
+      expireDate: customer.expireDate || customer.expireDay ? customer.expireDay + '/' + customer.expireMonth + '/' + customer.expireYear : '',
+      zipCode: customer.zipCode || '',
+      mainMobile: customer.mainMobile || '',
+      mainPhone: customer.mainPhone || '',
+      billCycle: customer.billCycle || '',
+      caNumber: customer.caNumber || '',
+      mobileNo: '',
+      imageSignature: '',
+      imageSmartCard: '',
+      imageReadSmartCard: customer.imageReadSmartCard ? customer.imageReadSmartCard : transaction ? transaction.imageReadSmartCard : '',
+      imageSignatureWidthCard: ''
+    };
   }
 
   toBillingInformation(data: any): any {

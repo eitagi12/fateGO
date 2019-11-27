@@ -29,14 +29,11 @@
                                 </div>
                                 <br *ngIf="persoSim?.progress">
                                 <div class="progress mb-5">
-                                    <div class="progress-bar bg-success" role="progressbar"
-                                        [style.width.%]="persoSim?.progress || 0"
-                                        [attr.aria-valuenow]="persoSim?.progress" aria-valuemin="0" aria-valuemax="100">
+                                    <div class="progress-bar bg-success" role="progressbar" [style.width.%]="persoSim?.progress || 0" [attr.aria-valuenow]="persoSim?.progress" aria-valuemin="0" aria-valuemax="100">
 
                                     </div>
                                 </div>
-                                <div *ngIf="persoSim?.progress !== 100 && !errorMessage && persoSim?.progress > 0"
-                                    class="text-center mt-3 mb-3 text-red">
+                                <div *ngIf="persoSim?.progress !== 100 && !errorMessage && persoSim?.progress > 0" class="text-center mt-3 mb-3 text-red">
                                     {{ '(ห้ามนำซิมการ์ดออก)' | translate }}
                                 </div>
                                 <div *ngIf="errorMessage" class="text-center mt-3 mb-3 text-red">
@@ -48,16 +45,11 @@
                                 <div class="line-behind" *ngIf="option?.key_sim">
                                     <span translate>{{'หรือ' | translate}}</span>
                                 </div>
-                                <form [formGroup]="simSerialForm" >
+                                <form [formGroup]="simSerialForm">
                                     <div class="form-group" *ngIf="option?.key_sim">
-                                        <label for="simserial" class="form-text text-center"
-                                            translate>กรอกเลขที่ซิมการ์ด</label>
-                                        <input name="barcodeValue" id="txtRegNumConfirmScanSim" class="form-control text-center" 
-                                            type="tel" maxlength="13"
-                                            placeholder= "{{(scanBarcodePC$ | async)? 'ใส่เลขที่ซิม 13 หลัก' : 'สแกน Barcode หรือ ใส่เลขที่ซิม 13 หลัก'}}" 
-                                            [ngClass]="{'has-error':!simSerialForm.controls['simSerial'].valid}"
-                                            formControlName="simSerial"  [(ngModel)]="simSerialKeyIn" autocomplete="off"
-                                            (ngModelChange)="onSerialNumberChanged($event)" >
+                                        <label for="simserial" class="form-text text-center" translate>กรอกเลขที่ซิมการ์ด</label>
+                                        <input name="barcodeValue" id="txtRegNumConfirmScanSim" class="form-control text-center" type="tel" maxlength="13" placeholder="{{(scanBarcodePC$ | async)? 'ใส่เลขที่ซิม 13 หลัก' : 'สแกน Barcode หรือ ใส่เลขที่ซิม 13 หลัก'}}" [ngClass]="{'has-error':!simSerialForm.controls['simSerial'].valid}"
+                                            formControlName="simSerial" [(ngModel)]="simSerialKeyIn" autocomplete="off" (ngModelChange)="onSerialNumberChanged($event)">
                                         <small class="form-text text-red text-center" [hidden]="simSerialForm.controls['simSerial'].valid" translate>
                                             * {{'เลขที่ซิมต้องเป็นตัวเลข 13 ตัวเท่านั้น'| translate}}
                                         </small>
@@ -72,7 +64,6 @@
     </div>
     <mc-footer>
         <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-        <button class="btn btn-success" (click)="onNext()"
-            [disabled]="!(persoSim?.progress === 100 && !errorMessage)">NEXT</button>
+        <button class="btn btn-success" (click)="onNext()" [disabled]="!(persoSim?.progress === 100 && !errorMessage && !currentStatus)">NEXT</button>
     </mc-footer>
 </div>
