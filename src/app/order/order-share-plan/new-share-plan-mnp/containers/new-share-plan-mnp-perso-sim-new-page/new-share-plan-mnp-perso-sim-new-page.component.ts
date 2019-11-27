@@ -551,6 +551,9 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
           if (response.value === true) {
             this.onConectToPerso();
           } else {
+            this.transaction.data.simCard = Object.assign(this.transaction.data.simCard, {
+              simSerial: ''
+            });
             this.disableBack = false;
             this.onRefreshPage();
           }
