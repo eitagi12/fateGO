@@ -87,7 +87,10 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
   ngOnInit(): void {
     this.createForm();
     this.simSerialForm.controls.simSerial.valueChanges.subscribe((value) => {
-      this.verifySimSerialByBarcode(value);
+      if (value && value.length === 13) {
+        this.verifySimSerialByBarcode(value);
+      }
+
     });
 
     if (window.aisNative) {
@@ -228,6 +231,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
           }
         }
       } else {
+        alert('ere');
         this.popupControl('errorSim', '');
       }
     }
@@ -386,6 +390,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
         }
       }).catch((err: any) => {
         this.pageLoadingService.closeLoading();
+        alert('fvd');
         this.popupControl('errorFixSim', err);
       });
     } else {
