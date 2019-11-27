@@ -97,7 +97,7 @@ export class CreateMnpService {
       zipCode: customer.zipCode || '',
       reasonCode: reasonCode, /*required*/
       chargeType: 'Post-paid' || '',
-      customerPinCode: customer.customerPinCode || '12345678',
+      customerPinCode: customer.customerPinCode || '',
       orderChannel: '',
       mainPackage: {
         packageName: mainPackage.customAttributes.promotionName, /*required*/

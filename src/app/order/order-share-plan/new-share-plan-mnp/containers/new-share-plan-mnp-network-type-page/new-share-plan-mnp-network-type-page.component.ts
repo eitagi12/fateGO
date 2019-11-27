@@ -106,8 +106,11 @@ export class NewSharePlanMnpNetworkTypePageComponent implements OnInit, OnDestro
           mobileNoStatus === '')) || mobileNoStatus !== 'Active' && !(mobileNoStatus || networkType) || mobileNoStatus === '') {
           this.transaction.data.simCard = {
             ...this.transaction.data.simCard,
-            mobileNoMember: mobileNoMember,
-            pinCode: this.mnpForm.value.pinCode
+            mobileNoMember: mobileNoMember
+          };
+          this.transaction.data.customer = {
+            ...this.transaction.data.customer,
+            customerPinCode: this.mnpForm.value.pinCode
           };
           this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_SELECT_REASON_PAGE]);
         } else {
