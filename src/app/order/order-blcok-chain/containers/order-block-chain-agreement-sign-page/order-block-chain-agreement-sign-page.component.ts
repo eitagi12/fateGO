@@ -1,10 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, TokenService, AlertService, ChannelType, User, Utils } from 'mychannel-shared-libs';
+import { HomeService, TokenService, AlertService, User, AisNativeService } from 'mychannel-shared-libs';
 import * as Moment from 'moment';
-import { ROUTE_ORDER_BLOCK_CHAIN_ELIGIBLE_MOBILE_PAGE, ROUTE_ORDER_BLOCK_CHAIN_FACE_CAPTURE_PAGE, ROUTE_ORDER_BLOCK_CHAIN_LOW_PAGE } from 'src/app/order/order-blcok-chain/constants/route-path.constant';
+import { ROUTE_ORDER_BLOCK_CHAIN_FACE_CAPTURE_PAGE, ROUTE_ORDER_BLOCK_CHAIN_LOW_PAGE } from 'src/app/order/order-blcok-chain/constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { AisNativeOrderService } from 'src/app/shared/services/ais-native-order.service';
 import { TranslateService } from '@ngx-translate/core';
 import { WIZARD_ORDER_BLOCK_CHAIN } from 'src/app/order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
@@ -29,7 +28,6 @@ export class OrderBlockChainAgreementSignPageComponent implements OnInit, OnDest
   openSignedCommand: any;
 
   translationSubscribe: Subscription;
-  currentLang: string;
 
   commandSigned: any;
 
@@ -37,12 +35,12 @@ export class OrderBlockChainAgreementSignPageComponent implements OnInit, OnDest
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private aisNativeOrderService: AisNativeOrderService,
+    private aisNativeService: AisNativeService,
     private tokenService: TokenService,
     private alertService: AlertService
   ) {
     this.transaction = this.transactionService.load();
-    this.signedSignatureSubscription = this.aisNativeOrderService.getSigned().subscribe((signature: string) => {
+    this.signedSignatureSubscription = this.aisNativeService.getSigned().subscribe((signature: string) => {
       if (signature) {
         this.transaction.data.customer.imageSignature = signature;
       } else {
@@ -84,9 +82,7 @@ export class OrderBlockChainAgreementSignPageComponent implements OnInit, OnDest
   onSigned(): void {
     delete this.transaction.data.customer.imageSignature;
     const user: User = this.tokenService.getUser();
-    this.signedOpen = this.aisNativeOrderService.openSigned(
-      ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'OnscreenSignpad', `{x:100,y:280,Language: ${this.currentLang}}`
-    ).subscribe();
+    this.signedOpen = this.aisNativeService.openSigned().subscribe();
   }
 
   ngOnDestroy(): void {
