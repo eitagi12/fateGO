@@ -11,10 +11,10 @@ export class SummaryPageService {
     private translateService: TranslateService
   ) { }
 
-   advanpayDescription(value: string): string {
+  advanpayDescription(value: string): string {
     const regex = /^(\W+\s+)(\d+,\d+|\d+)(\W+\w+\W+)(\d,\d+|\d+)(\W+)([0-9]+)(\W+)$/;
     const result = value ? value.replace(regex,
-`${this.translateService.instant('แพ็กเกจค่าบริการรายเดือน')} $2\
+      `${this.translateService.instant('แพ็กเกจค่าบริการรายเดือน')} $2\
  ${this.translateService.instant('บาท (ไม่รวมVAT) รับส่วนลด')} $4\
  ${this.translateService.instant('บาท นาน')}$6\
  ${this.translateService.instant('เดือน')}`) : '';
@@ -30,8 +30,8 @@ export class SummaryPageService {
       const advancePay = trade.advancePay || {};
 
       const price = (((+trade.promotionPrice || 0)
-      + (advancePay.installmentFlag === `Y` ? +advancePay.amount : 0))
-      / (+paymentMethod.month || 1));
+        + (advancePay.installmentFlag === `Y` ? +advancePay.amount : 0))
+        / (+paymentMethod.month || 1));
 
       return `${this.translateService.instant(`บัตรเครดิต`)} ${this.translateService.instant(paymentMethod.name)}
        ${paymentMethod.percentage || 0} %
@@ -53,9 +53,12 @@ export class SummaryPageService {
       case `DEBIT`:
         return `${this.translateService.instant(`เงินสด`)}`;
       case `CREDIT`:
-        return `${this.translateService.instant(`บัตรเครดิต`)}
+        if (payment.paymentOnlineCredit) {
+          return `${this.translateService.instant(`ชำระเงินออนไลน์ด้วยบัตรเครดิต`)}`;
+        } else {
+          return `${this.translateService.instant(`บัตรเครดิต`)}
         \ ${payment.paymentBank && this.translateService.instant(payment.paymentBank.name)}`;
-
+        }
       default:
         break;
     }

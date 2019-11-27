@@ -366,5 +366,9 @@
     "ข้อมูลปัจจุบันของคุณ":	"Customer information",
     "สาขาเซ็นทรัล ภูเก็ต ฟลอเรสต้า" : "Central Phuket Floresta Branch",
     "ไม่พบหมายเลขเติมเงินที่แสดงตนตาม ID No ที่ระบุ": "Not found your prepaid mobile number on prepaid identification data.",
-    "ไม่พบหมายเลขที่สามารถใช้สิทธิ์ตามโครงการ ตามหมายเลขบัตรที่ระบุ": "Not found your prepaid mobile number on identification data."
+    "ไม่พบหมายเลขที่สามารถใช้สิทธิ์ตามโครงการ ตามหมายเลขบัตรที่ระบุ": "Not found your prepaid mobile number on identification data.",
+    "ชำระทันที": "Online payment",
+    "จุดรับสินค้า": "@Pick up point",
+    "ชำระเงินออนไลน์ด้วยบัตรเครดิต": "Credit card online payment",
+    "ชำระด้วย บัตรเครดิตออนไลน์": "Pay with credit card online payment"
 }

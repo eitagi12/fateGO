@@ -39,7 +39,6 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
     private utils: Utils,
     private aisNativeOrderService: AisNativeOrderService,
   ) {
-    this.username = this.tokenService.getUser().username;
   }
 
   ngOnInit(): void {
@@ -61,6 +60,10 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
   }
 
   queryRomList(mobile?: string): void {
+    if (!this.username) {
+      this.alertService.error('ไม่พบชื่อผู้ใช้งาน กรุณา Login ใหม่อีกครั้ง');
+      return;
+    }
     this.pageLoadingService.openLoading();
 
     this.param = {
