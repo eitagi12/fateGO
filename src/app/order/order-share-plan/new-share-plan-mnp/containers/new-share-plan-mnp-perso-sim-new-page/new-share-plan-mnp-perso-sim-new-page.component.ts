@@ -116,7 +116,6 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
     this.mobileNo = this.transaction.data.simCard.mobileNo;
 
     if (typeof this.aisNative !== 'undefined') {
-      this.disableBack = true;
       const disConnectReadIdCard: number = 1;
       this.aisNative.sendIccCommand(this.command, disConnectReadIdCard, ''); // connect sim and disconnect smartCard
       this.setIntervalSimCard();
@@ -204,6 +203,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
     let errMegFixSim: string;
 
     this.readSimStatus = this.aisNative.sendIccCommand(this.command, readSim, '');  // readSim\\
+    this.disableBack = true;
     this.gotCardData = true;
     if (this.readSimStatus) {
       const simStatus: string[] = this.readSimStatus.split('|||');
@@ -551,7 +551,8 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
           if (response.value === true) {
             this.onConectToPerso();
           } else {
-            this.onRefreshPageToPerso();
+            this.disableBack = false;
+            this.onRefreshPage();
           }
         });
       } break;
@@ -610,7 +611,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
   }
 
   onRefreshPage(): void {
-    this.simSerialKeyIn = '';
+    this.simSerialKeyIn = this.simSerialForm.controls.simSerial.value;
     this.statusFixSim = 'waitingForCheck';
     this.isStateStatus = 'waitingFixSim';
     this.setIntervalSimCard();
