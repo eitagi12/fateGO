@@ -33,7 +33,7 @@
 
                                     </div>
                                 </div>
-                                <div *ngIf="persoSim?.progress !== 100 && !errorMessage && persoSim?.progress > 0" class="text-center mt-3 mb-3 text-red">
+                                <div *ngIf="persoSim?.progress !== 100 && !errorMessage && persoSim?.progress > 0" class="text-center mt-3 mb-3">
                                     {{ '(ห้ามนำซิมการ์ดออก)' | translate }}
                                 </div>
                                 <div *ngIf="errorMessage" class="text-center mt-3 mb-3 text-red">
@@ -64,6 +64,6 @@
     </div>
     <mc-footer>
         <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-        <button class="btn btn-success" (click)="onNext()" [disabled]="!(persoSim?.progress === 100 && !errorMessage && !currentStatus)">NEXT</button>
+        <button ngIf="persoSim?.progress === 100" class="btn btn-success" (click)="onNext()" [disabled]="currentStatus && !errorMessage">NEXT</button>
     </mc-footer>
 </div>

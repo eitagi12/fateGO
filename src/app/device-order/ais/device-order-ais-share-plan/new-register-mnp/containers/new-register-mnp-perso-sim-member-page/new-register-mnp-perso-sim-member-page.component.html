@@ -24,7 +24,7 @@
                             <div class="container">
                                 <img src="assets/images/icon/icon-ReadIDCard-01.png" class="icon-read-card" />
                                 <img src="assets/images/icon/icon-input-sim.png" class="icon-perso-sim" />
-                                <div *ngIf="!persoSim?.progress && !errorMessage" class="text-center mt-3 mb-3">
+                                <div *ngIf="!persoSim?.progress && !errorMessage" class="text-center mt-3 mb-3 text-red">
                                     {{ 'กรุณาเสียบ Sim Card' | translate}}
                                 </div>
                                 <br *ngIf="persoSim?.progress">
@@ -37,6 +37,9 @@
                                 <div *ngIf="errorMessage" class="text-center mt-3 mb-3 text-red">
                                     {{ errorMessage | translate }}
                                 </div>
+                                <div *ngIf="persoSim?.progress === 100 && errorMessage && persoSim?.progress > 0" class="text-center mt-3 mb-3">
+                                    {{ '(กรุณานำซิมการ์ดออก)' | translate }}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -45,7 +48,6 @@
         </div>
     </div>
     <mc-footer>
-        <!-- <button class="btn btn-secondary" (click)="onBack()">BACK</button> -->
-        <button class="btn btn-success" (click)="onNext()" [disabled]="!(persoSim?.progress === 100 && !errorMessage)">NEXT</button>
+        <button ngIf="persoSim?.progress === 100" class="btn btn-success" (click)="onNext()" [disabled]="currentStatus && !errorMessage">NEXT</button>
     </mc-footer>
 </div>
