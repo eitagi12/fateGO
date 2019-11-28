@@ -148,7 +148,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                     if (!this.soId) {
                       // tslint:disable-next-line: max-line-length
                       const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: this.transaction.data.customer });
-                      return this.addDeviceSellingCart(body).then((response: any) => {
+                      return this.validateCustomerService.addDeviceSellingCart(body).then((response: any) => {
                         this.transaction.data = {
                           ...this.transaction.data,
                           order: { soId: response.data.soId }
@@ -206,7 +206,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                       if (!this.soId) {
                         // tslint:disable-next-line: max-line-length
                         const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: this.transaction.data.customer });
-                        return this.addDeviceSellingCart(body).then((response: any) => {
+                        return this.validateCustomerService.addDeviceSellingCartSharePlan(body).then((response: any) => {
                           this.transaction.data = {
                             ...this.transaction.data,
                             order: { soId: response.data.soId }
@@ -226,10 +226,6 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
         });
       }
     });
-  }
-
-  addDeviceSellingCart(body: any): Promise<any> {
-    return this.http.post(`/api/salesportal/dt/add-card-list`, body).toPromise();
   }
 
   mapCardType(idCardType: string): string {

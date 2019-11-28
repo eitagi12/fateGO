@@ -101,39 +101,83 @@ export class ValidateCustomerService {
     return this.http.get(`/api/customerportal/customerprofile/${idCardNo}/${username}/app3steps`).toPromise();
   }
 
-  getRequestAddDeviceSellingCart(user: User, transaction: Transaction, priceOption: PriceOption, bodyRequest: any): any {
-    try {
-      const productStock = priceOption.productStock;
-      const productDetail = priceOption.productDetail;
-      const preBooking: Prebooking = transaction.data.preBooking;
-      let subStock;
-      const customer: any = bodyRequest.customer.data || bodyRequest.customer;
-      const trade: any = priceOption.trade;
-      if (preBooking && preBooking.preBookingNo) {
-        subStock = 'PRE';
-      }
-      return {
-        soCompany: productStock.company || 'AWN',
-        locationSource: user.locationCode,
-        locationReceipt: user.locationCode,
-        productType: productDetail.productType || 'DEVICE',
-        productSubType: productDetail.productSubType || 'HANDSET',
-        brand: productDetail.brand || productStock.brand,
-        model: productDetail.model || productStock.model,
-        color: productStock.color || productStock.colorName,
-        priceIncAmt: '' + trade.normalPrice,
-        priceDiscountAmt: '' + trade.discount.amount,
-        grandTotalAmt: '',
-        userId: user.username,
-        cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
-        preBookingNo: preBooking ? preBooking.preBookingNo : '',
-        depositAmt: preBooking ? preBooking.depositAmt : '',
-        reserveNo: preBooking ? preBooking.reserveNo : '',
-        subStockDestination: subStock
-      };
-    } catch (error) {
-      throw error;
-    }
+  // getRequestAddDeviceSellingCart(user: User, transaction: Transaction, priceOption: PriceOption, bodyRequest: any): any {
+  //   try {
+  //     const productStock = priceOption.productStock;
+  //     const productDetail = priceOption.productDetail;
+  //     const preBooking: Prebooking = transaction.data.preBooking;
+  //     let subStock;
+  //     const customer: any = bodyRequest.customer.data || bodyRequest.customer;
+  //     const trade: any = priceOption.trade;
+  //     if (preBooking && preBooking.preBookingNo) {
+  //       subStock = 'PRE';
+  //     }
+  //     return {
+  //       soCompany: productStock.company || 'AWN',
+  //       locationSource: user.locationCode,
+  //       locationReceipt: user.locationCode,
+  //       productType: productDetail.productType || 'DEVICE',
+  //       productSubType: productDetail.productSubType || 'HANDSET',
+  //       brand: productDetail.brand || productStock.brand,
+  //       model: productDetail.model || productStock.model,
+  //       color: productStock.color || productStock.colorName,
+  //       priceIncAmt: '' + trade.normalPrice,
+  //       priceDiscountAmt: '' + trade.discount.amount,
+  //       grandTotalAmt: '',
+  //       userId: user.username,
+  //       cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
+  //       preBookingNo: preBooking ? preBooking.preBookingNo : '',
+  //       depositAmt: preBooking ? preBooking.depositAmt : '',
+  //       reserveNo: preBooking ? preBooking.reserveNo : '',
+  //       subStockDestination: subStock
+  //     };
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
+
+  getRequestAddDeviceSellingCart(user: User, transaction: Transaction, priceOption: PriceOption, bodyRequest?: any): any {
+    const productStock = priceOption.productStock;
+    const productDetail = priceOption.productDetail;
+    // const customer = transaction.data.customer;
+    const customer: any = bodyRequest.customer.data || bodyRequest.customer;
+    const product = {
+      productType: productDetail.productType || 'DEVICE',
+      soCompany: productStock.company || 'AWN',
+      productSubType: productDetail.productSubType || 'HANDSET',
+      brand: productDetail.brand,
+      model: productDetail.model,
+      qty: '1',
+      color: productStock.color || productStock.colorName,
+      matCode: '',
+      priceIncAmt: '',
+      priceDiscountAmt: '',
+      matAirTime: '',
+      listMatFreeGoods: [{
+        matCodeFG: '',
+        qtyFG: '' // จำนวนของแถม *กรณีส่งค่า matCodeFreeGoods ค่า qty จะต้องมี
+      }]
+    };
+
+    return {
+      locationSource: user.locationCode,
+      locationReceipt: user.locationCode,
+      userId: user.username,
+      cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim(),
+      soChannelType: 'CSP',
+      soDocumentType: 'RESERVED',
+      productList: [product],
+      grandTotalAmt: '',
+      preBookingNo: '',
+      depositAmt: '',
+      reserveNo: '',
+      subStockDestination: 'BRN',
+      storeName: ''
+    };
+  }
+
+  addDeviceSellingCartSharePlan(body: any): Promise<any> {
+    return this.http.post(`/api/salesportal/dt/add-cart-list`, body).toPromise();
   }
 
   mapCardType(idCardType: string): string {
