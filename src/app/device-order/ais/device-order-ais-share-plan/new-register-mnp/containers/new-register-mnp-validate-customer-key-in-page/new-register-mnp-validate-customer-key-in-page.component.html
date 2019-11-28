@@ -9,11 +9,156 @@
     </mc-header>
     <div class="mc-flex-wrap">
         <div class="mb-3 mt-3">
-            <mc-validate-customer-key-in [idCardNo]="params?.idCardNo" [prefixes]="prefixes" [cardTypes]="cardTypes" (completed)="onCompleted($event)" (error)="onError($event)"></mc-validate-customer-key-in>
+            <div class="container-fluid">
+                <form [formGroup]="validateCustomerKeyInForm">
+                  <div class="card mb-3">
+                    <div class="card-header bg-pink text-white">{{ 'ระบุบัตรประเภทอื่น' | translate }}</div>
+                    <div class="card-body">
+                      <div class="form-group row">
+                        <div class="col-12 col-sm-12">
+                          <label class="col-form-label">{{ 'ประเภทบัตร' | translate }}
+                            <span class="text-danger">*</span>
+                          </label>
+                        </div>
+                        <div class="col-12 col-sm-12">
+                          <select class="form-control" [ngClass]="{'is-invalid': !validateCustomerKeyInForm.controls['idCardType'].valid && validateCustomerKeyInForm.controls['idCardType'].dirty}"
+                            id="ddlCardType" formControlName="idCardType" >
+                            <option value="" disabled selected>{{ 'เลือกประเภทบัตร' | translate }}</option>
+                            <option *ngFor="let type of cardTypes" [value]="type">{{type}}</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="col-12 col-sm-12">
+                          <label class="col-form-label">{{ 'หมายเลขบัตร' | translate }}</label>
+                        </div>
+                        <div class="col-12 col-sm-12">
+                          <input mcVisualKeyboard type="text" class="form-control" [ngClass]="{'is-invalid': !idCardNoValid}" readonly [value]="idCardNo | idCard" id="txtidCardNo" formControlName="idCardNo">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="col-12 col-sm-12">
+                          <label class="col-form-label">{{ 'วันหมดอายุบัตร' | translate }}
+                            <span class="text-danger">*</span>
+                          </label>
+                        </div>
+                        <div class="col-4 col-sm-4">
+                          <select class="form-control" [ngClass]="{'is-invalid': !validateCustomerKeyInForm.controls['expireDay'].valid && validateCustomerKeyInForm.controls['expireDay'].dirty || !expireDateValid  && validateCustomerKeyInForm.controls['expireDay'].dirty}"
+                            id="ddlexpireDay" formControlName="expireDay" >
+                            <option value="" disabled selected>วัน</option>
+                            <option *ngFor="let day of days" [value]="day">{{day | number: '2.0'}}</option>
+                          </select>
+                        </div>
+                        <div class="col-4 col-sm-4">
+                          <select class="form-control" [ngClass]="{'is-invalid': !validateCustomerKeyInForm.controls['expireMonth'].valid && validateCustomerKeyInForm.controls['expireMonth'].dirty || !expireDateValid && validateCustomerKeyInForm.controls['expireMonth'].dirty}"
+                            id="ddlexpireMonth" formControlName="expireMonth" >
+                            <option value="" disabled selected>{{ 'เดือน' | translate }}</option>
+                            <option *ngFor="let month of months" [value]="month">{{month | number: '2.0'}}</option>
+                          </select>
+                        </div>
+                        <div class="col-4 col-sm-4">
+                          <select class="form-control" [ngClass]="{'is-invalid': !validateCustomerKeyInForm.controls['expireYear'].valid && validateCustomerKeyInForm.controls['expireYear'].dirty || !expireDateValid && validateCustomerKeyInForm.controls['expireYear'].dirty}"
+                            id="ddlexpireYear" formControlName="expireYear" >
+                            <option value="" disabled selected>{{ 'ปี' | translate }}</option>
+                            <option value="9999">{{ 'ตลอดชีพ' | translate }}</option>
+                            <option *ngFor="let year of expireYears" [value]="year">{{year}}</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              
+                  <div class="card mb-3">
+                    <div class="card-header bg-pink text-white">{{ 'ระบุข้อมูลลูกค้า' | translate }}</div>
+                    <div class="card-body">
+                      <div class="form-group row">
+                        <div class="col-12 col-sm-12">
+                          <label class="col-form-label">{{ 'คำนำหน้าชื่อ' | translate }}
+                            <span class="text-danger">*</span>
+                          </label>
+                        </div>
+                        <div class="col-12  col-sm-12">
+                          <select class="form-control" [ngClass]="{'is-invalid': !validateCustomerKeyInForm.controls['prefix'].valid && validateCustomerKeyInForm.controls['prefix'].dirty}"
+                            id="ddlprefix" formControlName="prefix" >
+                            <option value="" disabled selected>{{ 'คำนำหน้าชื่อ' | translate }}</option>
+                            <option *ngFor="let prefix of prefixes" [value]="prefix">{{prefix}}</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="col-12 col-sm-12">
+                          <label class="col-form-label">{{ 'ชื่อ' | translate }}
+                            <span class="text-danger">*</span>
+                          </label>
+                        </div>
+                        <div class="col-12  col-sm-12">
+                          <input mcVisualKeyboard type="text" class="form-control" [ngClass]="{'is-invalid': !validateCustomerKeyInForm.controls['firstName'].valid && validateCustomerKeyInForm.controls['firstName'].dirty}"
+                            id="txtfirstName" formControlName="firstName" maxlength="50" autocomplete="off">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="col-12 col-sm-12">
+                          <label class="col-form-label">{{ 'นามสกุล' | translate }}
+                            <span class="text-danger">*</span>
+                          </label>
+                        </div>
+                        <div class="col-12 col-sm-12">
+                          <input mcVisualKeyboard type="text" class="form-control" [ngClass]="{'is-invalid': !validateCustomerKeyInForm.controls['lastName'].valid && validateCustomerKeyInForm.controls['lastName'].dirty}"
+                            id="txtlastName" formControlName="lastName" maxlength="50" autocomplete="off">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="col-12 col-sm-12">
+                          <label class="col-form-label">{{ 'วันเกิด' | translate }}
+                            <span class="text-danger">*</span>
+                          </label>
+                        </div>
+                        <div class="col-4 col-sm-4">
+                          <select class="form-control" [ngClass]="{'is-invalid': !validateCustomerKeyInForm.controls['birthDay'].valid && validateCustomerKeyInForm.controls['birthDay'].dirty || !birthDateValid  && validateCustomerKeyInForm.controls['birthDay'].dirty}"
+                            id="ddlbirthDay" formControlName="birthDay" >
+                            <option value="" disabled selected>{{ 'วัน' | translate }}</option>
+                            <option *ngFor="let day of days" [value]="day">{{day | number: '2.0'}}</option>
+                          </select>
+                        </div>
+                        <div class="col-4 col-sm-4">
+                          <select class="form-control" [ngClass]="{'is-invalid': !validateCustomerKeyInForm.controls['birthMonth'].valid && validateCustomerKeyInForm.controls['birthMonth'].dirty || !birthDateValid  && validateCustomerKeyInForm.controls['birthMonth'].dirty}"
+                            id="ddlbirthMonth" formControlName="birthMonth" >
+                            <option value="" disabled selected>{{ 'เดือน' | translate }}</option>
+                            <option *ngFor="let month of months" [value]="month">{{month | number: '2.0'}}</option>
+                          </select>
+                        </div>
+                        <div class="col-4 col-sm-4">
+                          <select class="form-control" [ngClass]="{'is-invalid': !validateCustomerKeyInForm.controls['birthYear'].valid && validateCustomerKeyInForm.controls['birthYear'].dirty || !birthDateValid  && validateCustomerKeyInForm.controls['birthYear'].dirty}"
+                            id="ddlbirthYear" formControlName="birthYear" >
+                            <option value="" disabled selected>{{ 'ปี' | translate }}</option>
+                            <option *ngFor="let year of birthYears " [value]="year">{{year}}</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="col-12 col-sm-12">
+                          <label class="col-form-label">{{ 'เพศ' | translate }}
+                            <span class="text-danger">*</span>
+                          </label>
+                        </div>
+                        <div class="col-4 col-sm-4">
+                          <input  type="radio" id="gender_M" name="gender" value="M" formControlName="gender" [checked]="true">
+                          <label for="gender_M">{{ 'ชาย' | translate }}</label>
+                        </div>
+                        <div class="col-4 col-sm-4">
+                          <input type="radio" id="gender_F" name="gender" value="F" formControlName="gender">
+                          <label for="gender_F">{{ 'หญิง' | translate }}</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              
+                </form>
+              </div>
         </div>
     </div>
     <mc-footer>
         <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-        <button class="btn btn-success" (click)="onNext()" [disabled]="!keyInValid">NEXT</button>
+        <button class="btn btn-success" (click)="onNext()" [disabled]="validateCustomerKeyInForm.invalid">NEXT</button>
     </mc-footer>
 </div>

@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { Params, Router, ActivatedRoute } from '@angular/router';
-import { HomeService, CustomerService, AlertService, Utils, User, TokenService, PageLoadingService } from 'mychannel-shared-libs';
+import { HomeService, CustomerService, AlertService, Utils, User, TokenService, PageLoadingService, ValidateCustomerKeyIn } from 'mychannel-shared-libs';
 import {
   ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_PAGE,
   ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE
@@ -10,6 +10,9 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ValidateCustomerService } from 'src/app/shared/services/validate-customer.service';
 import { Transaction, Order, TransactionType } from 'src/app/shared/models/transaction.model';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import * as moment from 'moment';
+const Moment = moment;
 @Component({
   selector: 'app-new-register-mnp-validate-customer-key-in-page',
   templateUrl: './new-register-mnp-validate-customer-key-in-page.component.html',
@@ -27,6 +30,22 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
   user: User;
   order: Order;
   imageReadSmartCard: any;
+  idCardNo: string;
+
+  days: string[] = [];
+  months: string[] = [];
+  expireYears: number[] = [];
+  birthYears: number[] = [];
+
+  expireDateValid: boolean;
+  birthDateValid: boolean;
+  idCardNoValid: boolean;
+
+  validateCustomerKeyInForm: FormGroup;
+
+  completed: EventEmitter<ValidateCustomerKeyIn> = new EventEmitter<ValidateCustomerKeyIn>();
+
+  error: EventEmitter<boolean> = new EventEmitter<boolean>();
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -38,16 +57,21 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
     private tokenService: TokenService,
     private pageLoadingService: PageLoadingService,
     private validateCustomerService: ValidateCustomerService,
-    private utils: Utils
+    private utils: Utils,
+    public fb: FormBuilder
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     this.user = this.tokenService.getUser();
+    this.activatedRoute.queryParams.subscribe((params: Params) => {
+      this.params = params;
+      this.idCardNo = this.params.idCardNo;
+    });
   }
 
   ngOnInit(): void {
     this.callService();
-    this.activatedRoute.queryParams.subscribe((params: Params) => this.params = params);
+    this.createForm();
     this.imageReadSmartCard = this.transaction.data.customer;
   }
 
@@ -62,11 +86,99 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
     });
   }
 
+  createForm(): void {
+    this.expireDateValid = true;
+    this.birthDateValid = true;
+    this.idCardNoValid = true;
+
+    this.validateCustomerKeyInForm = this.fb.group({
+      idCardType: ['', [Validators.required]],
+      idCardNo: ['', [Validators.required]],
+      expireDay: ['', [Validators.required]],
+      expireMonth: ['', [Validators.required]],
+      expireYear: ['', [Validators.required]],
+      prefix: ['', [Validators.required]],
+      firstName: ['', [Validators.required]],
+      lastName: ['', [Validators.required]],
+      birthDay: ['', [Validators.required]],
+      birthMonth: ['', [Validators.required]],
+      birthYear: ['', [Validators.required]],
+      gender: ['M', [Validators.required]]
+    });
+
+    this.validateCustomerKeyInForm.valueChanges.subscribe((value: any) => {
+      const isFormValid: boolean = this.isIDCardValid() && this.isDateValid() && this.validateCustomerKeyInForm.valid;
+      this.onError(isFormValid);
+      if (isFormValid) {
+        this.onCompleted(this.validateCustomerKeyInForm.value);
+      }
+    });
+    this.setFormDefaultData();
+  }
+  setFormDefaultData(): void {
+    this.validateCustomerKeyInForm.patchValue({ idCardNo: this.idCardNo });
+    const today: Date = new Date();
+    const todatFormatted: Date = this.dateBuddhistEraFormat(today);
+    const days: number = 31;
+    const months: number = 12;
+    const expYears: number = -1;
+    const birthYears: number = -101;
+    const ten: number = 10;
+    for (let i: number = 1; i <= days; i++) {
+      this.days.push(i < ten ? '0' + i : '' + i);
+    }
+    for (let i: number = 1; i <= months; i++) {
+      this.months.push(i < ten ? '0' + i : '' + i);
+    }
+    for (let i: number = 10; i > expYears; i--) {
+      this.expireYears.push(todatFormatted.getFullYear() + i);
+    }
+    for (let i: number = -5; i > birthYears; i--) {
+      this.birthYears.push(todatFormatted.getFullYear() + i);
+    }
+  }
+
+  dateBuddhistEraFormat(date: Date): Date {
+    const diffValue: number = 543;
+    date.setFullYear(date.getFullYear() + diffValue);
+    return date;
+  }
+
+  isDateValid(): boolean {
+    const formValue = this.validateCustomerKeyInForm.value;
+    const expireDate: string = formValue.expireYear + ' ' + formValue.expireMonth + ' ' + formValue.expireDay;
+    if (formValue.expireYear && formValue.expireMonth && formValue.expireDay) {
+      this.expireDateValid = Moment(expireDate, 'YYYY MM DD').isValid();
+    }
+    const birthDate: string = formValue.birthYear + ' ' + formValue.birthMonth + ' ' + formValue.birthDay;
+    if (formValue.birthYear && formValue.birthMonth && formValue.birthDay) {
+      this.birthDateValid = Moment(birthDate, 'YYYY MM DD').isValid();
+      console.log(this.birthDateValid);
+    }
+    return this.expireDateValid && this.birthDateValid;
+  }
+
+  isIDCardValid(): any {
+    const formValue = this.validateCustomerKeyInForm.value;
+
+    if (formValue.idCardType === 'บัตรประชาชน' && formValue.idCardNo) {
+      this.idCardNoValid = this.utils.isThaiIdCard(formValue.idCardNo);
+    } else if (formValue.idCardType === 'หนังสือเดินทาง' && formValue.idCardNo) {
+      this.idCardNoValid = this.utils.isPassportIdCard(formValue.idCardNo);
+    } else if (formValue.idCardType === 'บัตรประจำตัวคนต่างด้าว' && formValue.idCardNo) {
+      this.idCardNoValid = this.utils.isImmIdCard(formValue.idCardNo);
+    } else {
+      this.idCardNoValid = true;
+    }
+    return this.idCardNoValid;
+  }
+
   onError(valid: boolean): void {
     this.keyInValid = valid;
   }
 
   onCompleted(value: any): void {
+    console.log('customer: ', value);
     this.customerKeyinInfo = value;
     this.transaction.data.customer = this.validateCustomerService.mapCustomer(this.customerKeyinInfo, this.imageReadSmartCard);
   }
@@ -89,9 +201,9 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
     if (checkAgeAndExpire.true) {
       const cardType = this.transaction.data.customer.idCardType;
       const transactionType = TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS; // New
-      this.validateCustomerService.checkValidateCustomer(this.identity, cardType, transactionType)
+       this.validateCustomerService.checkValidateCustomer(this.identity, cardType, transactionType)
         .then((customer: any) => {
-          return this.validateCustomerService.getCurrentDate().then((sysdate: any) => {
+           return this.validateCustomerService.getCurrentDate().then((sysdate: any) => {
             if (sysdate) {
               const expireDate = this.transaction.data.customer.expireDate;
               if (this.utils.isIdCardExpiredDate(expireDate)) {
@@ -100,7 +212,6 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
                 const isLowerAge: boolean = this.validateCustomerService.isLowerAge(this.transaction.data.customer.birthdate, sysdate);
                 if (!isLowerAge) {
                   this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
-                  throw new Error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
                 } else {
                   if (this.order) {
                     this.pageLoadingService.closeLoading();
