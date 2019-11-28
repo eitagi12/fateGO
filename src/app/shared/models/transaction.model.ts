@@ -195,6 +195,8 @@ export interface Customer {
   imageSmartCard?: string;
   imageReadSmartCard?: string;
   customerPinCode?: string;
+  provinceName?: string;
+  portalCode?: string;
   // passport
   issuingCountry?: string;
   nationality?: string;
@@ -416,7 +418,7 @@ export interface Seller {
   shareUser?: string;
   employeeId?: string;
   ascCode?: string;
-
+  sharedUser?: string;
 }
 export interface ShopLocation {
   id?: string;
