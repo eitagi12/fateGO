@@ -323,7 +323,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
       data: {
         transactionType: TransactionType.DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN, // Share
         action: TransactionAction.KEY_IN,
-        order: this.order || {}
+        order: this.order
       },
       transactionId: this.transaction.transactionId
     };
