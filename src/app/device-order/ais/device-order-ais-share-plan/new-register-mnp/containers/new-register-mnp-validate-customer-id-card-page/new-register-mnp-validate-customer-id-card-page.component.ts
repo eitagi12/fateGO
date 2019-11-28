@@ -148,7 +148,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                     if (!this.soId) {
                       // tslint:disable-next-line: max-line-length
                       const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: this.transaction.data.customer });
-                      return this.validateCustomerService.addDeviceSellingCart(body).then((response: any) => {
+                      return this.addDeviceSellingCart(body).then((response: any) => {
                         this.transaction.data = {
                           ...this.transaction.data,
                           order: { soId: response.data.soId }
@@ -206,8 +206,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                       if (!this.soId) {
                         // tslint:disable-next-line: max-line-length
                         const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: this.transaction.data.customer });
-                        return this.validateCustomerService.addDeviceSellingCart(body).then((response: any) => {
-                          console.log('response', response);
+                        return this.addDeviceSellingCart(body).then((response: any) => {
                           this.transaction.data = {
                             ...this.transaction.data,
                             order: { soId: response.data.soId }
@@ -227,6 +226,10 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
         });
       }
     });
+  }
+
+  addDeviceSellingCart(body: any): Promise<any> {
+    return this.http.post(`/api/salesportal/dt/add-card-list`, body).toPromise();
   }
 
   mapCardType(idCardType: string): string {
@@ -373,13 +376,21 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
           promiseAll.push(unlockMobile);
         }
         if (transaction.data.order && transaction.data.order.soId) {
-          const order = this.validateCustomerService.clearTempStock(this.priceOption, transaction)
+          const order = this.clearTempStock(this.priceOption, transaction)
             .catch(() => Promise.resolve());
           promiseAll.push(order);
         }
       }
       Promise.all(promiseAll).then(() => resolve());
     });
+  }
+
+  clearTempStock(priceOption: PriceOption, transaction: Transaction): Promise<any> {
+    return this.http.post('/api/salesportal/dt/remove-card', {
+      location: priceOption.productStock.location,
+      soId: transaction.data.order.soId,
+      transactionId: transaction.transactionId
+    }).toPromise();
   }
 
   isDevelopMode(): boolean {
