@@ -8,11 +8,12 @@ import {
   ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE,
   ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE
 } from '../../constants/route-path.constant';
-import * as moment from 'moment';
 import { ValidateCustomerService } from 'src/app/shared/services/validate-customer.service';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { Utils } from 'mychannel-shared-libs';
 import { Transaction, Order, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { HttpClient } from '@angular/common/http';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
 @Component({
   selector: 'app-new-register-mnp-validate-customer-page',
   templateUrl: './new-register-mnp-validate-customer-page.component.html',
@@ -38,7 +39,8 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     private priceOptionService: PriceOptionService,
     private alertService: AlertService,
     private validateCustomerService: ValidateCustomerService,
-    private utils: Utils
+    private utils: Utils,
+    private http: HttpClient
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load() ? this.priceOptionService.load() : this.priceOptionMock;
@@ -53,7 +55,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
           }
         });
     };
-    localStorage.setItem('priceOption', JSON.stringify(this.priceOptionMock));
+    // localStorage.setItem('priceOption', JSON.stringify(this.priceOptionMock));
   }
 
   ngOnInit(): void {
@@ -90,7 +92,20 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+        .then((response: any) => {
+          if (response.value === true) {
+            this.returnStock().then(() => {
+              this.transactionService.remove();
+              window.location.href = '/';
+            });
+          }
+        });
+    } else {
+      this.transactionService.remove();
+      window.location.href = '/';
+    }
   }
 
   onBack(): void {
@@ -166,12 +181,20 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
       const promiseAll = [];
       if (transaction.data) {
         if (transaction.data.order && transaction.data.order.soId) {
-          const order = this.validateCustomerService.clearTempStock(this.priceOption, transaction).catch(() => Promise.resolve());
+          const order = this.clearTempStock(this.priceOption, transaction).catch(() => Promise.resolve());
           promiseAll.push(order);
         }
       }
       Promise.all(promiseAll).then(() => resolve());
     });
+  }
+
+  clearTempStock(priceOption: PriceOption, transaction: Transaction): Promise<any> {
+    return this.http.post('/api/salesportal/dt/remove-card', {
+      location: priceOption.productStock.location,
+      soId: transaction.data.order.soId,
+      transactionId: transaction.transactionId
+    }).toPromise();
   }
 
   validateCustomer(): any {
@@ -203,7 +226,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
                       } else {
                         // tslint:disable-next-line: max-line-length
                         const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: customer });
-                        return this.validateCustomerService.addDeviceSellingCart(body).then((order: Order) => {
+                        return this.addDeviceSellingCart(body).then((order: Order) => {
                           return {
                             order,
                             customer,
@@ -217,6 +240,10 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
               });
           });
       });
+  }
+
+  addDeviceSellingCart(body: any): Promise<any> {
+    return this.http.post(`/api/salesportal/dt/add-card-list`, body).toPromise();
   }
 
   mapCardType(idCardType: string): string {

@@ -63,7 +63,7 @@
         </div>
     </div>
     <mc-footer>
-        <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-        <button ngIf="persoSim?.progress === 100" class="btn btn-success" (click)="onNext()" [disabled]="currentStatus && !errorMessage">NEXT</button>
+        <button class="btn btn-secondary" (click)="onBack()" [disabled]="persoSim?.progress === 100">BACK</button>
+        <button *ngIf="persoSim?.progress == 100" class="btn btn-success" (click)="onNext()" [disabled]="currentStatus && !errorMessage">NEXT</button>
     </mc-footer>
 </div>
