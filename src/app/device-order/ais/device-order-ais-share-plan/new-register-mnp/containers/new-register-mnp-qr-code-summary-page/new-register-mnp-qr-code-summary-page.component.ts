@@ -7,6 +7,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_AGGREGATE_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_QR_CODE_GENERATOR_PAGE } from '../../constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
+import { RemoveCartService } from '../../services/remove-cart.service';
 
 @Component({
   selector: 'app-new-register-mnp-qr-code-summary-page',
@@ -23,7 +24,8 @@ export class NewRegisterMnpQrCodeSummaryPageComponent implements OnInit, OnDestr
     private homeService: HomeService,
     public summaryPageService: SummaryPageService,
     private transactionService: TransactionService,
-    private priceOptionService: PriceOptionService
+    private priceOptionService: PriceOptionService,
+    private removeCartService: RemoveCartService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -90,7 +92,7 @@ export class NewRegisterMnpQrCodeSummaryPageComponent implements OnInit, OnDestr
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    this.removeCartService.backToReturnStock('/', this.transaction);
   }
 
   summary(amount: number[]): number {

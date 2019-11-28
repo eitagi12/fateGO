@@ -16,6 +16,7 @@ import { HttpClient } from '@angular/common/http';
 import { MOBILE_CARE_PACKAGE_KEY_REF } from 'src/app/device-order/constants/cpc.constant';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
+import { RemoveCartService } from '../../services/remove-cart.service';
 
 @Component({
   selector: 'app-new-register-mnp-mobile-care-page',
@@ -40,7 +41,8 @@ export class NewRegisterMnpMobileCarePageComponent implements OnInit, OnDestroy 
     private shoppingCartService: ShoppingCartService,
     private mobileCareService: MobileCareService,
     private translateService: TranslateService,
-    private http: HttpClient
+    private http: HttpClient,
+    private removeCartService: RemoveCartService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -64,7 +66,7 @@ export class NewRegisterMnpMobileCarePageComponent implements OnInit, OnDestroy 
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    this.removeCartService.backToReturnStock('/', this.transaction);
   }
 
   onCompleted(mobileCare: any): void {

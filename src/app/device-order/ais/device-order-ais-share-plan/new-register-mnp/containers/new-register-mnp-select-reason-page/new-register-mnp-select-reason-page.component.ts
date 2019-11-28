@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_NETWORK_TYPE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CONFIRM_USER_INFORMATION_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
+import { RemoveCartService } from '../../services/remove-cart.service';
 
 @Component({
   selector: 'app-new-register-mnp-select-reason-page',
@@ -27,6 +28,7 @@ export class NewRegisterMnpSelectReasonPageComponent implements OnInit, OnDestro
     private pageLoadingService: PageLoadingService,
     private http: HttpClient,
     private homeService: HomeService,
+    private removeCartService: RemoveCartService
   ) {
     this.transaction = this.transactionService.load();
     console.log();
@@ -80,7 +82,7 @@ export class NewRegisterMnpSelectReasonPageComponent implements OnInit, OnDestro
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    this.removeCartService.backToReturnStock('/', this.transaction);
   }
 
   ngOnDestroy(): void {

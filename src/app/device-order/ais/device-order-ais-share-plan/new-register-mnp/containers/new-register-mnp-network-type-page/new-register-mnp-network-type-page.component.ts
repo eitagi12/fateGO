@@ -10,6 +10,7 @@ import { environment } from 'src/environments/environment';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_REASON_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_PACKAGE_PAGE } from '../../constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
+import { RemoveCartService } from '../../services/remove-cart.service';
 
 @Component({
   selector: 'app-new-register-mnp-network-type-page',
@@ -31,6 +32,7 @@ export class NewRegisterMnpNetworkTypePageComponent implements OnInit, OnDestroy
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private homeService: HomeService,
+    private removeCartService: RemoveCartService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -148,7 +150,7 @@ export class NewRegisterMnpNetworkTypePageComponent implements OnInit, OnDestroy
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    this.removeCartService.backToReturnStock('/', this.transaction);
   }
 
   ngOnDestroy(): void {

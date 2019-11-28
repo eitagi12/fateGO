@@ -10,6 +10,7 @@ import { debounceTime } from 'rxjs/operators';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CONFIRM_USER_INFORMATION_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
+import { RemoveCartService } from '../../services/remove-cart.service';
 @Component({
   selector: 'app-new-register-mnp-ebilling-address-page',
   templateUrl: './new-register-mnp-ebilling-address-page.component.html',
@@ -37,7 +38,8 @@ export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDes
     private transactionService: TransactionService,
     private http: HttpClient,
     private translation: TranslateService,
-    private pageLoadingService: PageLoadingService
+    private pageLoadingService: PageLoadingService,
+    private removeCartService: RemoveCartService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -251,7 +253,7 @@ export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDes
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    this.removeCartService.backToReturnStock('/', this.transaction);
   }
 
   ngOnDestroy(): void {

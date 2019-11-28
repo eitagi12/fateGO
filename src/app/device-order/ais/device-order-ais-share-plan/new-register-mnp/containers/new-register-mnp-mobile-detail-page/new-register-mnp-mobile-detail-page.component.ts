@@ -15,6 +15,7 @@ import { Subscribable, Subscription } from 'rxjs';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_ELIGIBLE_MOBILE_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
+import { RemoveCartService } from '../../services/remove-cart.service';
 
 @Component({
   selector: 'app-new-register-mnp-mobile-detail-page',
@@ -41,7 +42,8 @@ export class NewRegisterMnpMobileDetailPageComponent implements OnInit, OnDestro
     private mobileCareService: MobileCareService,
     private alertService: AlertService,
     private http: HttpClient,
-    private translationService: TranslateService) {
+    private translationService: TranslateService,
+    private removeCartService: RemoveCartService) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
 
@@ -67,7 +69,7 @@ export class NewRegisterMnpMobileDetailPageComponent implements OnInit, OnDestro
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    this.removeCartService.backToReturnStock('/', this.transaction);
   }
 
   onCompleted(mobileCare: any): void {

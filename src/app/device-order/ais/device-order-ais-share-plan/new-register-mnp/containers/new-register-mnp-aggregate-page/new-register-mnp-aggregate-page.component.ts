@@ -11,6 +11,7 @@ import {
   ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_COMPARE_PAGE
 } from '../../constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
+import { RemoveCartService } from '../../services/remove-cart.service';
 @Component({
   selector: 'app-new-register-mnp-aggregate-page',
   templateUrl: './new-register-mnp-aggregate-page.component.html',
@@ -25,7 +26,8 @@ export class NewRegisterMnpAggregatePageComponent implements OnInit {
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private priceOptionService: PriceOptionService
+    private priceOptionService: PriceOptionService,
+    private removeCartService: RemoveCartService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -49,7 +51,7 @@ export class NewRegisterMnpAggregatePageComponent implements OnInit {
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    this.removeCartService.backToReturnStock('/', this.transaction);
   }
 
   getThumbnail(): string {

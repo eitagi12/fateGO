@@ -6,6 +6,9 @@ import { HttpClient } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_COMPARE_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_AGREEMENT_SIGN_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_EAPPLICATION_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
+import { RemoveCartService } from '../../services/remove-cart.service';
+import { Transaction } from 'src/app/shared/models/transaction.model';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
 
 @Component({
   selector: 'app-new-register-mnp-face-confirm-page',
@@ -16,6 +19,7 @@ export class NewRegisterMnpFaceConfirmPageComponent implements OnInit {
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN;
   confirmForm: FormGroup;
   shoppingCart: ShoppingCart;
+  transaction: Transaction;
 
   constructor(
     private router: Router,
@@ -24,8 +28,11 @@ export class NewRegisterMnpFaceConfirmPageComponent implements OnInit {
     private http: HttpClient,
     private pageLoadingService: PageLoadingService,
     private alertService: AlertService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private removeCartService: RemoveCartService,
+    private transactionService: TransactionService
   ) {
+    this.transaction = this.transactionService.load();
   }
 
   ngOnInit(): void {
@@ -61,6 +68,6 @@ export class NewRegisterMnpFaceConfirmPageComponent implements OnInit {
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    this.removeCartService.backToReturnStock('/', this.transaction);
   }
 }
