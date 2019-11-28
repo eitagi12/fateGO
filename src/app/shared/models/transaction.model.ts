@@ -92,6 +92,29 @@ export interface TransactionData {
   // Rom Agent
   romAgent?: RomAgent;
   romTransaction?: RomTransactionData;
+  // Omise
+  omise?: Omise;
+}
+
+export interface Omise {
+  orderId?: string;
+  tranDtm?: string;
+  tranId?: string;
+  amount?: number;
+  qrType?: string;
+  status?: string;
+  locationCode?: string;
+  offerId?: string;
+  startDtm?: string;
+  // QR Code AirTime
+  companyStock?: 'AWN' | 'WDS';
+  omiseStatus?: MPayStatus;
+  qrAirtimeTransId?: string;
+  qrAirtimeAmt?: string;
+  qrOrderId?: string;
+  qrCodeStr?: string;
+  creditCardNo?: string;
+  cardExpireDate?: string;
 }
 
 export interface Condition {
@@ -115,7 +138,9 @@ export interface Payment {
   paymentMethod: any;
   qrCode?: any;
   type?: any;
+  paymentOnlineCredit?: any;
 }
+
 export interface MainPromotion {
   campaign?: any;
   privilege?: any;
@@ -126,6 +151,7 @@ export interface MainPromotion {
 export interface AirTime {
   [key: string]: any;
 }
+
 export interface Receipt {
   taxId: string;
   branch: string;
@@ -134,6 +160,7 @@ export interface Receipt {
   telNo: string;
   locationName: string;
 }
+
 export interface Customer {
   idCardNo: string;
   idCardType: string;
@@ -168,6 +195,8 @@ export interface Customer {
   imageSmartCard?: string;
   imageReadSmartCard?: string;
   customerPinCode?: string;
+  provinceName?: string;
+  portalCode?: string;
   // passport
   issuingCountry?: string;
   nationality?: string;
@@ -180,9 +209,12 @@ export interface Customer {
   privilegeCode?: string;
   repi?: boolean;
   mobileNo?: string;
+
+  // block chain
   chipID?: string;
   requestNo?: string;
   laserCode?: string;
+  isBlockChain?: boolean;
 }
 
 export interface Recipientinformation {
@@ -212,8 +244,9 @@ export interface SimCard {
   persoSim?: boolean;
   privilegeCode?: string;
   nType?: string;
-  mobileNoStatus?: 'Active' | 'Suspended';
-  pinCode?: string;
+  mobileNoStatus?: 'Active' | 'Suspended' | 'Enroll';
+  forceEnrollFlag?: 'Y' | 'N';
+  registerDate?: string;
 }
 
 export interface MainPackage {
@@ -385,7 +418,7 @@ export interface Seller {
   shareUser?: string;
   employeeId?: string;
   ascCode?: string;
-
+  sharedUser?: string;
 }
 export interface ShopLocation {
   id?: string;
