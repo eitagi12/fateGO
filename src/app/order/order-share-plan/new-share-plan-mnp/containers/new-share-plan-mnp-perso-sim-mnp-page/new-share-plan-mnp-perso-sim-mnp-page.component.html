@@ -1,0 +1,35 @@
+<div class="mc-flex">
+  <mc-header title="{{ 'ย้ายค่ายเบอร์เดิม' | translate }}"></mc-header>
+  <div class="mc-flex-wrap">
+    <div class="mb-3 mt-3">
+      <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
+    </div>
+    <div class="card-header bg-light-blue text-white">
+      <img src="assets/images/icon/icon-circle-ais-post-logo.png" class="icon-ais mr-2" />
+      {{ 'Post Paid' | translate }}
+    </div>
+    <div class="card-body bg-white">
+      <div class="container py-3">
+        <p>2. {{ mobileNo | mobileNo }} (เบอร์โทรสมาชิก- เบอร์ย้ายค่าย)</p>
+        <img src="assets/images/icon/icon-ReadIDCard-01.png" class="icon-read-card" />
+        <img src="assets/images/icon/icon-input-sim.png" class="icon-perso-sim" />
+        <!-- <div class="text-center mt-3 mb-3" translate>{{ title }}</div> -->
+        <div class="progress mt-3 mb-5">
+          <div class="progress-bar bg-success" role="progressbar" [style.width.%]="persoSim?.progress"
+            [attr.aria-valuenow]="persoSim?.progress" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        <div>
+          <div class="text-center my-3" *ngIf="!persoSim?.progress">
+            {{ 'กรุณาเสียบซิมการ์ด' | translate }}
+          </div>
+          <div class="text-center my-3 text-red" *ngIf="persoSim?.progress && persoSim?.progress !== 100">
+            {{ '(ห้ามนำซิมการ์ดออก)' | translate }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <mc-footer>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!(persoSim?.progress === 100)">NEXT</button>
+  </mc-footer>
+</div>

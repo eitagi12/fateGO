@@ -17,6 +17,7 @@ export enum TransactionType {
   ORDER_MNP = 'Port-In',
   ORDER_EXISTING = 'Existing',
   RESERVE_WITH_DEPOSIT = 'ReserveWithDeposit',
+  ORDER_NEW_SHARE_PLAN_MNP = 'NewSharePlanMNP',
 
   // device only
   DEVICE_ONLY_AIS = 'DeviceOnlyAIS',
@@ -61,6 +62,7 @@ export interface TransactionData {
   customer?: Customer;
   simCard?: SimCard;
   mainPackage?: MainPackage;
+  mainPackageMember?: MainPackageMember;
   currentPackage?: CurrentPackage;
   onTopPackage?: OnTopPackage;
   deleteOntopPackage?: DeleteOntopPackage[];
@@ -90,8 +92,10 @@ export interface TransactionData {
   // Rom Agent
   romAgent?: RomAgent;
   romTransaction?: RomTransactionData;
+  // Omise
   omise?: Omise;
 }
+
 export interface Omise {
   orderId?: string;
   tranDtm?: string;
@@ -136,6 +140,7 @@ export interface Payment {
   type?: any;
   paymentOnlineCredit?: any;
 }
+
 export interface MainPromotion {
   campaign?: any;
   privilege?: any;
@@ -146,6 +151,7 @@ export interface MainPromotion {
 export interface AirTime {
   [key: string]: any;
 }
+
 export interface Receipt {
   taxId: string;
   branch: string;
@@ -154,6 +160,7 @@ export interface Receipt {
   telNo: string;
   locationName: string;
 }
+
 export interface Customer {
   idCardNo: string;
   idCardType: string;
@@ -188,10 +195,6 @@ export interface Customer {
   imageSmartCard?: string;
   imageReadSmartCard?: string;
   customerPinCode?: string;
-  provinceName?: any;
-  portalCode?: any;
-  houseNumber?: any;
-
   // passport
   issuingCountry?: string;
   nationality?: string;
@@ -229,7 +232,9 @@ export interface SelectedLocation {
 
 export interface SimCard {
   mobileNo: string;
+  mobileNoMember?: string;
   simSerial?: string;
+  simSerialMember?: string;
   imei?: string;
   billingSystem?: string;
   moblieNoTypeA?: string;
@@ -243,6 +248,23 @@ export interface SimCard {
 }
 
 export interface MainPackage {
+  billingSystem?: string;
+  duration?: string;
+  itemId: string;
+  itemsPriority?: string;
+  numberOfMobile?: string;
+  packageType?: string;
+  productPkg?: string;
+  promotionPackage?: string;
+  shortNameThai: string;
+  statementThai?: string;
+  shortNameEng?: string;
+  statementEng?: string;
+  parameters?: any;
+  [key: string]: any;
+}
+
+export interface MainPackageMember {
   billingSystem?: string;
   duration?: string;
   itemId: string;
@@ -288,6 +310,7 @@ export interface FaceRecognition {
 }
 
 export interface Order {
+  orderNoMNP?: string;
   orderNo?: string;
   orderDate?: string;
   soId?: string;
@@ -393,7 +416,7 @@ export interface Seller {
   shareUser?: string;
   employeeId?: string;
   ascCode?: string;
-  sharedUser?: string;
+
 }
 export interface ShopLocation {
   id?: string;
