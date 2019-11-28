@@ -42,7 +42,7 @@
                 {{ 'หมายเลขโทรศัพท์' | translate }} : {{ transaction?.data?.simCard?.mobileNo | mobileNo }} <br>
                 {{ 'เลขที่ซิม' | translate }} : {{ transaction?.data?.simCard?.simSerial }}
               </p>
-              <button type="button" class="btn btn-light-blue px-5 py-3 text-white" (click)="onOpenScanBarcode()">
+              <button type="button" class="btn btn-light-blue text-center text-white py-3" (click)="onOpenScanBarcode()">
                 {{ !keyInSimSerial && (transaction?.data?.simCard?.mobileNo && transaction?.data?.simCard?.simSerial) ? 'สแกน Barcode อีกครั้ง' : 'สแกน Barcode' }}
               </button>
             </div>

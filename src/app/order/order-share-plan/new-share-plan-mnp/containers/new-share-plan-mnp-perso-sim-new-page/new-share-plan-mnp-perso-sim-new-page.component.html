@@ -35,24 +35,32 @@
           <form [formGroup]="simSerialForm">
             <div class="form-group">
               <label for="simserial" class="form-text text-center" translate>กรอกเลขที่ซิมการ์ด</label>
-              <input name="barcodeValue" id="txtRegNumConfirmScanSim" class="form-control text-center" type="tel"
+              <input 
+                name="barcodeValue" 
+                id="txtRegNumConfirmScanSim"
+                class="form-control text-center w-50 m-auto py-3" 
+                type="tel" 
                 maxlength="13"
                 placeholder="{{(scanBarcodePC$ | async)? 'ใส่เลขที่ซิม 13 หลัก' : 'สแกน Barcode หรือ ใส่เลขที่ซิม 13 หลัก'}}"
-                [ngClass]="{'is-invalid':!simSerialForm.controls['simSerial'].valid}" formControlName="simSerial"
-                [(ngModel)]="simSerialKeyIn" autocomplete="off" (ngModelChange)="onSerialNumberChanged($event)">
-              <small class="form-text text-red text-center" [hidden]="simSerialForm.controls['simSerial'].valid"
-                translate>
+                [ngClass]="{'is-invalid':!simSerialForm.controls['simSerial'].valid}" 
+                formControlName="simSerial"
+                [(ngModel)]="simSerialKeyIn" 
+                autocomplete="off" 
+                (ngModelChange)="onSerialNumberChanged($event)">
+              <small class="form-text text-red text-center" [hidden]="simSerialForm.controls['simSerial'].valid" translate>
                 * เลขที่ซิมต้องเป็นตัวเลข 13 ตัวเท่านั้น
               </small>
             </div>
           </form>
+          <div class="text-center">
+            <button type="button" class="btn btn-light-blue text-white py-3 w-50" (click)="onOpenScanBarcode()">สแกน Barcode</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()" [disabled]="disableBack">BACK</button>
-    <button class="btn btn-success" (click)="onNext()"
-      [disabled]="!(persoSim?.progress === 100) && !isNext">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!(persoSim?.progress === 100) && !isNext">NEXT</button>
   </mc-footer>
 </div>

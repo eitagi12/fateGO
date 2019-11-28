@@ -91,7 +91,6 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
       if (value && value.length === 13) {
         this.verifySimSerialByBarcode(value);
       }
-
     });
 
     if (window.aisNative) {
@@ -130,6 +129,23 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
         Validators.pattern('^[0-9]*$')
       ]]
     });
+  }
+
+  onOpenScanBarcode(): void {
+    window.aisNative.scanBarcode();
+    this.getBarcode = '';
+    window.onBarcodeCallback = (barcode: any): void => {
+      if (barcode && barcode.length > 0) {
+        this.zone.run(() => {
+          const parser: any = new DOMParser();
+          barcode = '<data>' + barcode + '</data>';
+          const xmlDoc = parser.parseFromString(barcode, 'text/xml');
+          this.getBarcode = xmlDoc.getElementsByTagName('barcode')[0].firstChild.nodeValue;
+          this.simSerialForm.controls.simSerial.setValue(this.getBarcode);
+          this.verifySimSerialByBarcode(this.getBarcode);
+        });
+      }
+    };
   }
 
   onGetMessage(body: any): void {
