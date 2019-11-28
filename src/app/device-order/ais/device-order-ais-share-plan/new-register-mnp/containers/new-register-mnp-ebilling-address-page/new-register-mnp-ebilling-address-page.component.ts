@@ -173,9 +173,6 @@ export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDes
   onCompleted(value: any): void {
     console.log('complete eb adr', value);
     this.customerAddressTemp = value;
-    if (!this.transaction.data.customer.caNumber) {
-      this.mapCustomerAddress(value);
-    }
   }
 
   mapCustomerAddress(customer: any): void {
@@ -240,6 +237,9 @@ export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDes
   }
 
   onNext(): void {
+    if (!this.transaction.data.customer.caNumber) {
+      this.mapCustomerAddress(this.customerAddressTemp);
+    }
     const billingInformation = this.transaction.data.billingInformation || {};
     const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
     this.transactionService.update(this.transaction);

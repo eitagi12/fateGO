@@ -92,7 +92,20 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+        .then((response: any) => {
+          if (response.value === true) {
+            this.returnStock().then(() => {
+              this.transactionService.remove();
+              window.location.href = '/';
+            });
+          }
+        });
+    } else {
+      this.transactionService.remove();
+      window.location.href = '/';
+    }
   }
 
   onBack(): void {
