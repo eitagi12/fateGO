@@ -55,7 +55,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
           }
         });
     };
-    localStorage.setItem('priceOption', JSON.stringify(this.priceOptionMock));
+    // localStorage.setItem('priceOption', JSON.stringify(this.priceOptionMock));
   }
 
   ngOnInit(): void {
