@@ -165,15 +165,16 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     }).catch((error: any) => {
       console.log('err mess', error);
       if (error.error.developerMessage === 'EB0001 : Data Not Found.') {
+        this.pageLoadingService.closeLoading();
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE], {
           queryParams: {
             idCardNo: this.identity
           }
         });
       } else {
+        this.pageLoadingService.closeLoading();
         this.alertService.error('คุณไม่สามารถทำรายการเปิดเบอร์ใหม่ได้ Sorry this ID Card is Expired');
       }
-      this.pageLoadingService.closeLoading();
     });
   }
 
