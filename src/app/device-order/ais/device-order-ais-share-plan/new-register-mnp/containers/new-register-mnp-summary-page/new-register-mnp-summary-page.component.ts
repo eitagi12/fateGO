@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, TemplateRef } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ShoppingCart, HomeService, Utils, TokenService, PageLoadingService, AlertService } from 'mychannel-shared-libs';
@@ -38,8 +38,9 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
   seller$: Seller;
   employeeDetailForm: FormGroup;
   sellerCode: string;
-
   currentLang: string;
+
+  templatePopupRef: BsModalRef;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -125,9 +126,10 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
     this.homeService.goToHome();
   }
 
-  onOpenDetail(detail: any): void {
+  onShowPackagePopup(templatePopup: TemplateRef<any>, detail: string): void {
+    // tslint:disable-next-line: max-line-length
     this.detail = detail;
-    this.modalRef = this.modalService.show(this.detailTemplate);
+    this.templatePopupRef = this.modalService.show(templatePopup);
   }
 
   mainPackageTitle(detail: any): string {
