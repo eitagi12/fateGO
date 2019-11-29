@@ -206,7 +206,7 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
       const cardType = this.transaction.data.customer.idCardType;
       const transactionType = TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS; // New
       this.validateCustomerService.checkValidateCustomer(this.identity, cardType, transactionType)
-        .then((customer: any) => {
+        .then(() => {
           const expireDate = this.transaction.data.customer.expireDate;
           if (this.utils.isIdCardExpiredDate(expireDate)) {
             this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากบัตรประชาชนหมดอายุ');
@@ -220,7 +220,7 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
                 this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
               } else {
                 // tslint:disable-next-line: max-line-length
-                const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: customer });
+                const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: this.transaction.data.customer });
                 this.validateCustomerService.addDeviceSellingCartSharePlan(body).then((order: any) => {
                   if (order.data && order.data.soId) {
                     this.transaction.data = {
