@@ -157,33 +157,28 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
                 this.toBillingInformation(data).then((billingInfo: any) => {
                   this.transaction.data.billingInformation = billingInfo;
                 });
-                return this.validateCustomerService.getCurrentDate().then((sysdate: any) => {
-                  if (sysdate) {
-                    const isLowerAge: boolean = this.validateCustomerService.isLowerAge(customer.data.birthdate, sysdate);
-                    if (!isLowerAge) {
-                      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
-                      throw new Error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
-                    } else {
-                      if (this.order) {
-                        return {
-                          order: this.order,
-                          customer,
-                          customerInfo
-                        };
-                      } else {
-                        // tslint:disable-next-line: max-line-length
-                        const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: customer });
-                        return this.validateCustomerService.addDeviceSellingCartSharePlan(body).then((order: Order) => {
-                          return {
-                            order,
-                            customer,
-                            customerInfo,
-                          };
-                        });
-                      }
-                    }
+                const birthdate = customer.data.birthdate;
+                if (this.utils.isLowerAge17Year(birthdate)) {
+                  this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
+                } else {
+                  if (this.order) {
+                    return {
+                      order: this.order,
+                      customer,
+                      customerInfo
+                    };
+                  } else {
+                    // tslint:disable-next-line: max-line-length
+                    const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: customer });
+                    return this.validateCustomerService.addDeviceSellingCartSharePlan(body).then((order: Order) => {
+                      return {
+                        order,
+                        customer,
+                        customerInfo,
+                      };
+                    });
                   }
-                });
+                }
               });
           });
       });
