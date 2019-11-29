@@ -26,6 +26,7 @@ import { HttpClient } from '@angular/common/http';
 import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { AgreementSignConstant } from 'src/app/device-order/ais/device-order-ais-share-plan/new-register-mnp/constants/agreement-sign.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
+import { RemoveCartService } from '../../services/remove-cart.service';
 declare let window: any;
 @Component({
   selector: 'app-new-register-mnp-agreement-sign-page',
@@ -72,7 +73,8 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
     private alertService: AlertService,
     private utils: Utils,
     private aisNativeDeviceService: AisNativeService,
-    private shoppingCartService: ShoppingCartService
+    private shoppingCartService: ShoppingCartService,
+    private removeCartService: RemoveCartService
   ) {
 
     this.transaction = this.transactionService.load();
@@ -157,7 +159,7 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    this.removeCartService.backToReturnStock('/', this.transaction);
   }
 
   ngOnDestroy(): void {

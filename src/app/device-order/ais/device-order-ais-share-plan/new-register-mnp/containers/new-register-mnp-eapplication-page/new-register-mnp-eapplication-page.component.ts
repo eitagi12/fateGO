@@ -12,6 +12,7 @@ import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE,
   ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PERSO_SIM_MASTER_PAGE,
   ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PERSO_SIM_MEMBER_PAGE } from '../../constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
+import { RemoveCartService } from '../../services/remove-cart.service';
 
 @Component({
   selector: 'app-new-register-mnp-eapplication-page',
@@ -33,7 +34,8 @@ export class NewRegisterMnpEapplicationPageComponent implements OnInit, OnDestro
     private homeService: HomeService,
     private pageLoadingService: PageLoadingService,
     private translateService: TranslateService,
-    private shoppingCartService: ShoppingCartService) {
+    private shoppingCartService: ShoppingCartService,
+    private removeCartService: RemoveCartService) {
     this.transaction = this.transactionService.load();
   }
 
@@ -75,7 +77,7 @@ export class NewRegisterMnpEapplicationPageComponent implements OnInit, OnDestro
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    this.removeCartService.backToReturnStock('/', this.transaction);
   }
 
   ngOnDestroy(): void {

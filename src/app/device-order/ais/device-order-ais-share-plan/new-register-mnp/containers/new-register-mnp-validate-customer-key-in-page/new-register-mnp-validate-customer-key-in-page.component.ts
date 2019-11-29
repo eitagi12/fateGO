@@ -12,6 +12,7 @@ import { ValidateCustomerService } from 'src/app/shared/services/validate-custom
 import { Transaction, Order, TransactionType } from 'src/app/shared/models/transaction.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import * as moment from 'moment';
+import { RemoveCartService } from '../../services/remove-cart.service';
 const Moment = moment;
 @Component({
   selector: 'app-new-register-mnp-validate-customer-key-in-page',
@@ -58,7 +59,8 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
     private pageLoadingService: PageLoadingService,
     private validateCustomerService: ValidateCustomerService,
     private utils: Utils,
-    public fb: FormBuilder
+    public fb: FormBuilder,
+    private removeCartService: RemoveCartService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -187,7 +189,7 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    this.removeCartService.backToReturnStock('/', this.transaction);
   }
 
   onBack(): void {

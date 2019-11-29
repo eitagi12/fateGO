@@ -7,6 +7,7 @@ import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CONFIRM_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CAPTURE_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_EAPPLICATION_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction, Customer, FaceRecognition, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { RemoveCartService } from '../../services/remove-cart.service';
 @Component({
   selector: 'app-new-register-mnp-face-compare-page',
   templateUrl: './new-register-mnp-face-compare-page.component.html',
@@ -29,6 +30,7 @@ export class NewRegisterMnpFaceComparePageComponent implements OnInit, OnDestroy
     private http: HttpClient,
     private pageLoadingService: PageLoadingService,
     private shoppingCartService: ShoppingCartService,
+    private removeCartService: RemoveCartService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -64,7 +66,7 @@ export class NewRegisterMnpFaceComparePageComponent implements OnInit, OnDestroy
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    this.removeCartService.backToReturnStock('/', this.transaction);
   }
 
   isReadCard(): boolean {

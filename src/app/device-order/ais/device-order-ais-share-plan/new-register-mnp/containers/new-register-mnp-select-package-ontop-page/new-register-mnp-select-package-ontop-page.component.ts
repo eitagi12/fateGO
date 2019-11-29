@@ -11,6 +11,7 @@ import { debounceTime } from 'rxjs/operators';
 import * as moment from 'moment';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
+import { RemoveCartService } from '../../services/remove-cart.service';
 
 @Component({
   selector: 'app-new-register-mnp-select-package-ontop-page',
@@ -39,7 +40,8 @@ export class NewRegisterMnpSelectPackageOntopPageComponent implements OnInit, On
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private modalService: BsModalService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private removeCartService: RemoveCartService
   ) {
     this.transaction = this.transactionService.load();
     this.createForm();
@@ -123,7 +125,7 @@ export class NewRegisterMnpSelectPackageOntopPageComponent implements OnInit, On
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    this.removeCartService.backToReturnStock('/', this.transaction);
   }
 
   packageTitle(value: any = {}): string {

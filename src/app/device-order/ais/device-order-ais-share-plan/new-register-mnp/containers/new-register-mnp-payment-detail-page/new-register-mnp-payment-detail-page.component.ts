@@ -16,6 +16,7 @@ import {
 } from '../../constants/route-path.constant';
 import { BanksPromotionService } from 'src/app/device-order/services/banks-promotion.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
+import { RemoveCartService } from '../../services/remove-cart.service';
 
 @Component({
   selector: 'app-new-register-mnp-payment-detail-page',
@@ -51,7 +52,8 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
     private shoppingCartService: ShoppingCartService,
     private priceOptionService: PriceOptionService,
     private translateService: TranslateService,
-    private banksPromotionService: BanksPromotionService
+    private banksPromotionService: BanksPromotionService,
+    private removeCartService: RemoveCartService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -182,7 +184,7 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    this.removeCartService.backToReturnStock('/', this.transaction);
   }
 
   ngOnDestroy(): void {

@@ -14,6 +14,7 @@ import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Transaction, Seller } from 'src/app/shared/models/transaction.model';
+import { RemoveCartService } from '../../services/remove-cart.service';
 
 @Component({
   selector: 'app-new-register-mnp-summary-page',
@@ -55,7 +56,8 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
     private tokenService: TokenService,
     private http: HttpClient,
     private alertService: AlertService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private removeCartService: RemoveCartService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -123,7 +125,7 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    this.removeCartService.backToReturnStock('/', this.transaction);
   }
 
   onShowPackagePopup(templatePopup: TemplateRef<any>, detail: string): void {

@@ -19,6 +19,7 @@ import { Subscription } from 'rxjs';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import * as moment from 'moment';
 import { Transaction } from 'src/app/shared/models/transaction.model';
+import { RemoveCartService } from '../../services/remove-cart.service';
 const Moment = moment;
 
 @Component({
@@ -56,7 +57,8 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     private http: HttpClient,
     private shoppingCartService: ShoppingCartService,
     private translateService: TranslateService,
-    private modalService: BsModalService
+    private modalService: BsModalService,
+    private removeCartService: RemoveCartService
   ) {
     this.transaction = this.transactionService.load();
     // New register profile not found.
@@ -282,7 +284,7 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    this.removeCartService.backToReturnStock('/', this.transaction);
   }
 
   onShowPackagePopup(templatePopup: TemplateRef<any>, owner: string): void {
