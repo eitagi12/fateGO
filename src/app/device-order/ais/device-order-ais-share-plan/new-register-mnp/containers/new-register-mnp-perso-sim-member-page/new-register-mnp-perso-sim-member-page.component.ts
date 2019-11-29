@@ -298,8 +298,8 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
         }, delayTime);
       }
     }).catch((e: any): void => {
-      const errObj: any = e.json();
-      console.log('checkstatus errmes', errObj);
+      // const errObj: any = e.json();
+      // console.log('checkstatus errmes', errObj);
       if (!this.getCommandCounter) {
         this.popupControl('errorCmd', '');
         this.getCommandCounter = true;
@@ -356,10 +356,10 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
         }
       }
     }).catch((e: any): void => {
-      const errObj: any = e.json();
-      console.log('full error :', errObj);
-      console.log('error :', errObj.errors);
-      console.log('data :', errObj.errors.data);
+      // const errObj: any = e.json();
+      // console.log('full error :', errObj);
+      // console.log('error :', errObj.errors);
+      // console.log('data :', errObj.errors.data);
       const tenSecond: number = 60000;
       const loop: number = 3;
       if (this.createTxPersoCounter < loop) {
@@ -487,80 +487,6 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
         });
       }break;
     }
-
-    const errorCase: object = {
-      // errorSim: {
-      //   customBtn: [
-      //     {
-      //       name: 'ตกลง',
-      //       class: 'mc-button mc-button--green',
-      //       function: this.setIntervalSimCard.bind(this)
-      //     }
-      //   ],
-      //   message: 'เกิดข้อผิดพลาด กรุณาเปลี่ยน SIM CARD ใหม่'
-      // },
-      // errorCmd: {
-      //   customBtn: [{
-      //     name: 'RETRY',
-      //     class: 'mc-button mc-button--green',
-      //     function: this.getCommandForPersoSim.bind(this, this.readSimStatus)
-      //   }],
-      //   message: 'กรุณากด Retry เพื่อเรียกข้อมูลใหม่อีกครั้ง'
-      // },
-      // errPerso: {
-      //   customBtn: [{
-      //     name: 'ตกลง',
-      //     class: 'mc-button mc-button--green',
-      //   }],
-      //   message: 'ไม่สามารถทำการ Perso SIM ได้ กรุณาเลือกเบอร์เพื่อทำรายการใหม่อีกครั้ง'
-      // },
-      // errorOrder: {
-      //   customBtn: [{
-      //     name: 'RETRY',
-      //     class: 'mc-button mc-button--green',
-      //     function: this.checkOrderStatus.bind(this, this.referenceNumber)
-      //   }],
-      //   message: 'กรุณากด Retry เพื่อเรียกข้อมูลใหม่อีกครั้ง'
-      // },
-      // errorSmartCard: {
-      //   customBtn: [{
-      //     name: 'ตกลง',
-      //     class: 'mc-button mc-button--green',
-      //     function: this.onRefreshPage.bind(this)
-      //   }],
-      //   message: 'ขออภัยค่ะ ไม่สามารถทำรายการได้ กรุณาเสียบซิมการ์ด'
-      // },
-      // errorSimStatus: {
-      //   customBtn: [{
-      //     name: 'ตกลง',
-      //     class: 'mc-button mc-button--green',
-      //     function: this.onRefreshPage.bind(this)
-      //   }],
-      //   message: 'ซิมใบนี้ถูกใช้ไปแล้ว กรุณาเปลี่ยนซิมใหม่'
-      // },
-      // errorFixSim: {
-      //   customBtn: [{
-      //     name: 'ตกลง',
-      //     class: 'mc-button mc-button--green',
-      //     function: this.onRefreshPage.bind(this)
-      //   }],
-      //   message: errMsg
-      // },
-      // errorSimSerialNotMacth: {
-      //   customBtn: [
-      //     {
-      //       name: 'ยกเลิก',
-      //       class: 'mc-button mc-button--green',
-      //       function: this.onRefreshPageToPerso.bind(this)
-      //     },
-      //     {
-      //       name: 'ตกลง',
-      //       class: 'mc-button mc-button--green',
-      //       function: this.onConectToPerso.bind(this)
-      //     }],
-      //   message: errMsg
-      // }
-    };
 
   }
 
