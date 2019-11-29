@@ -26,8 +26,6 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   identityValid: boolean = false;
   identity: string;
   user: User;
-  // tslint:disable-next-line: max-line-length
-  priceOptionMock: any = require('src/app/device-order/ais/device-order-ais-share-plan/new-register-mnp/containers/new-register-mnp-validate-customer-page/priceOption.json');
   order: Order;
   transactionId: string;
 
@@ -44,9 +42,8 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     private removeCartService: RemoveCartService
   ) {
     this.transaction = this.transactionService.load();
-    this.priceOption = this.priceOptionService.load() ? this.priceOptionService.load() : this.priceOptionMock;
+    this.priceOption = this.priceOptionService.load();
     this.user = this.tokenService.getUser();
-    localStorage.setItem('priceOption', JSON.stringify(this.priceOptionMock));
   }
 
   ngOnInit(): void {
