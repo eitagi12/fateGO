@@ -139,7 +139,6 @@ export class ValidateCustomerService {
   getRequestAddDeviceSellingCart(user: User, transaction: Transaction, priceOption: PriceOption, bodyRequest?: any): any {
     const productStock = priceOption.productStock;
     const productDetail = priceOption.productDetail;
-    // const customer = transaction.data.customer;
     const customer: any = bodyRequest.customer.data || bodyRequest.customer;
     const product = {
       productType: productDetail.productType || 'DEVICE',
