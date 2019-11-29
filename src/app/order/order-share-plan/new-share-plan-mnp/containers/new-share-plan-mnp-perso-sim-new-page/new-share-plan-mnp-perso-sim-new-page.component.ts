@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_MNP_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_AGREEMENT_SIGN_PAGE } from '../../constants/route-path.constant';
-import { PageLoadingService, AlertService } from 'mychannel-shared-libs';
+import { PageLoadingService, AlertService, Utils } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { Observable, of } from 'rxjs';
@@ -80,7 +80,8 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
     private zone: NgZone,
     private pageLoadingService: PageLoadingService,
     private http: HttpClient,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private utils: Utils
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -129,6 +130,10 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
         Validators.pattern('^[0-9]*$')
       ]]
     });
+  }
+
+  isAisNative(): boolean {
+    return this.utils.isAisNative();
   }
 
   onOpenScanBarcode(): void {

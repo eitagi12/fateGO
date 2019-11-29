@@ -111,8 +111,10 @@ export class NewSharePlanMnpSelectPackageMemberPageComponent implements OnInit, 
       })
       .then(() => {
         this.pageLoadingService.closeLoading();
+      })
+      .catch(() => {
+        this.pageLoadingService.closeLoading();
       });
-
   }
 
   buildPromotionShelveActive(promotionShelves: PromotionShelve[]): PromotionShelve[] {
