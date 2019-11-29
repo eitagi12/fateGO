@@ -183,7 +183,6 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
   }
 
   onCompleted(value: any): void {
-    console.log('customer: ', value);
     this.customerKeyinInfo = value;
     this.transaction.data.customer = this.validateCustomerService.mapCustomer(this.customerKeyinInfo, this.imageReadSmartCard);
   }
