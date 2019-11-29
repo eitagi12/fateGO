@@ -222,7 +222,7 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
               } else {
                 // tslint:disable-next-line: max-line-length
                 const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: customer });
-                this.validateCustomerService.addDeviceSellingCart(body).then((order: any) => {
+                this.validateCustomerService.addDeviceSellingCartSharePlan(body).then((order: any) => {
                   if (order.data && order.data.soId) {
                     this.transaction.data = {
                       ...this.transaction.data,

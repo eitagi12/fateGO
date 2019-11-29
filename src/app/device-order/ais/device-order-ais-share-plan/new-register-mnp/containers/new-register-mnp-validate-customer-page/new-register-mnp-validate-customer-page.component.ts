@@ -95,8 +95,6 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   onNext(): void {
     this.pageLoadingService.openLoading();
     this.validateCustomer().then((data: any) => {
-      console.log('=====<', data);
-
       if (data) {
         const soId: any = data.order.data || data.order;
         this.transaction.data = {
@@ -129,7 +127,6 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
         });
       }
     }).catch((error: any) => {
-      console.log('err mess', error);
       if (error.error.developerMessage === 'EB0001 : Data Not Found.') {
         this.pageLoadingService.closeLoading();
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE], {
@@ -203,8 +200,6 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   }
 
   mapCustomer(customer: any, transaction?: any): any {
-    console.log('===>', customer);
-
     return {
       idCardNo: customer.idCardNo,
       idCardType: (customer.idCardType === 'บัตรประชาชน') ? 'บัตรประชาชน' : this.mapCardType(customer.idCardType) || '',
