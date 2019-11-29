@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, PageLoadingService, TokenService, AlertService, User } from 'mychannel-shared-libs';
+import { PageLoadingService, TokenService, AlertService, User } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import {
@@ -14,6 +14,7 @@ import { Utils } from 'mychannel-shared-libs';
 import { Transaction, Order, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { HttpClient } from '@angular/common/http';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { RemoveCartService } from '../../services/remove-cart.service';
 @Component({
   selector: 'app-new-register-mnp-validate-customer-page',
   templateUrl: './new-register-mnp-validate-customer-page.component.html',
@@ -32,7 +33,6 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
 
   constructor(
     private router: Router,
-    private homeService: HomeService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private tokenService: TokenService,
@@ -40,21 +40,12 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     private alertService: AlertService,
     private validateCustomerService: ValidateCustomerService,
     private utils: Utils,
-    private http: HttpClient
+    private http: HttpClient,
+    private removeCartService: RemoveCartService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load() ? this.priceOptionService.load() : this.priceOptionMock;
     this.user = this.tokenService.getUser();
-    this.homeService.callback = () => {
-      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
-        .then((response: any) => {
-          if (response.value === true) {
-            this.returnStock().then(() => {
-              window.location.href = '/sales-portal/main-menu';
-            });
-          }
-        });
-    };
     localStorage.setItem('priceOption', JSON.stringify(this.priceOptionMock));
   }
 
@@ -92,38 +83,13 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   }
 
   onHome(): void {
-    if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
-      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
-        .then((response: any) => {
-          if (response.value === true) {
-            this.returnStock().then(() => {
-              this.transactionService.remove();
-              window.location.href = '/';
-            });
-          }
-        });
-    } else {
-      this.transactionService.remove();
-      window.location.href = '/';
-    }
+    this.removeCartService.backToReturnStock('/', this.transaction);
   }
 
   onBack(): void {
     const queryParam = this.priceOption.queryParams;
-    if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
-      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
-        .then((response: any) => {
-          if (response.value === true) {
-            this.returnStock().then(() => {
-              this.transactionService.remove();
-              window.location.href = `/sales-portal/buy-product/brand/${queryParam.brand}/${queryParam.model}`;
-            });
-          }
-        });
-    } else {
-      this.transactionService.remove();
-      window.location.href = `/sales-portal/buy-product/brand/${queryParam.brand}/${queryParam.model}`;
-    }
+    const url = `/sales-portal/buy-product/brand/${queryParam.brand}/${queryParam.model}`;
+    this.removeCartService.backToReturnStock(url, this.transaction);
   }
 
   onNext(): void {
@@ -165,39 +131,17 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     }).catch((error: any) => {
       console.log('err mess', error);
       if (error.error.developerMessage === 'EB0001 : Data Not Found.') {
+        this.pageLoadingService.closeLoading();
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE], {
           queryParams: {
             idCardNo: this.identity
           }
         });
       } else {
+        this.pageLoadingService.closeLoading();
         this.alertService.error('คุณไม่สามารถทำรายการเปิดเบอร์ใหม่ได้ Sorry this ID Card is Expired');
       }
-      this.pageLoadingService.closeLoading();
     });
-  }
-
-  returnStock(): Promise<void> {
-    return new Promise(resolve => {
-      const transaction = this.transactionService.load();
-
-      const promiseAll = [];
-      if (transaction.data) {
-        if (transaction.data.order && transaction.data.order.soId) {
-          const order = this.clearTempStock(this.priceOption, transaction).catch(() => Promise.resolve());
-          promiseAll.push(order);
-        }
-      }
-      Promise.all(promiseAll).then(() => resolve());
-    });
-  }
-
-  clearTempStock(priceOption: PriceOption, transaction: Transaction): Promise<any> {
-    return this.http.post('/api/salesportal/dt/remove-card', {
-      location: priceOption.productStock.location,
-      soId: transaction.data.order.soId,
-      transactionId: transaction.transactionId
-    }).toPromise();
   }
 
   validateCustomer(): any {
@@ -213,33 +157,28 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
                 this.toBillingInformation(data).then((billingInfo: any) => {
                   this.transaction.data.billingInformation = billingInfo;
                 });
-                return this.validateCustomerService.getCurrentDate().then((sysdate: any) => {
-                  if (sysdate) {
-                    const isLowerAge: boolean = this.validateCustomerService.isLowerAge(customer.data.birthdate, sysdate);
-                    if (!isLowerAge) {
-                      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
-                      throw new Error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
-                    } else {
-                      if (this.order) {
-                        return {
-                          order: this.order,
-                          customer,
-                          customerInfo
-                        };
-                      } else {
-                        // tslint:disable-next-line: max-line-length
-                        const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: customer });
-                        return this.validateCustomerService.addDeviceSellingCartSharePlan(body).then((order: Order) => {
-                          return {
-                            order,
-                            customer,
-                            customerInfo,
-                          };
-                        });
-                      }
-                    }
+                const birthdate = customer.data.birthdate;
+                if (this.utils.isLowerAge17Year(birthdate)) {
+                  this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
+                } else {
+                  if (this.order) {
+                    return {
+                      order: this.order,
+                      customer,
+                      customerInfo
+                    };
+                  } else {
+                    // tslint:disable-next-line: max-line-length
+                    const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: customer });
+                    return this.validateCustomerService.addDeviceSellingCartSharePlan(body).then((order: Order) => {
+                      return {
+                        order,
+                        customer,
+                        customerInfo,
+                      };
+                    });
                   }
-                });
+                }
               });
           });
       });

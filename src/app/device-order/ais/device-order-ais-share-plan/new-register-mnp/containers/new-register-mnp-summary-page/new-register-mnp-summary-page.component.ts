@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, TemplateRef } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ShoppingCart, HomeService, Utils, TokenService, PageLoadingService, AlertService } from 'mychannel-shared-libs';
@@ -14,6 +14,7 @@ import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Transaction, Seller } from 'src/app/shared/models/transaction.model';
+import { RemoveCartService } from '../../services/remove-cart.service';
 
 @Component({
   selector: 'app-new-register-mnp-summary-page',
@@ -38,8 +39,9 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
   seller$: Seller;
   employeeDetailForm: FormGroup;
   sellerCode: string;
-
   currentLang: string;
+
+  templatePopupRef: BsModalRef;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -54,7 +56,8 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
     private tokenService: TokenService,
     private http: HttpClient,
     private alertService: AlertService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private removeCartService: RemoveCartService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -122,12 +125,13 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    this.removeCartService.backToReturnStock('/', this.transaction);
   }
 
-  onOpenDetail(detail: any): void {
+  onShowPackagePopup(templatePopup: TemplateRef<any>, detail: string): void {
+    // tslint:disable-next-line: max-line-length
     this.detail = detail;
-    this.modalRef = this.modalService.show(this.detailTemplate);
+    this.templatePopupRef = this.modalService.show(templatePopup);
   }
 
   mainPackageTitle(detail: any): string {

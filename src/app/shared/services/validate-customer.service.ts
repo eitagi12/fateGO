@@ -263,15 +263,32 @@ export class ValidateCustomerService {
     return { true: true };
   }
 
-  isLowerAge(birthdate: string, currentDate?: Date): boolean {
-    const b: moment.Moment = moment(birthdate, 'DD/MM/YYYY');
-    const c: moment.Moment = moment(currentDate).add(543, 'years');
-    if (b.isValid()) {
-      const age: any = c.diff(b, 'years');
-      const isLegal: any = (age >= 17);
-      return isLegal;
-    } else {
-      throw new Error('กรอกวันเกิดไม่ถูกต้อง กรุณากรอกใหม่อีกครั้ง');
-    }
-  }
+  // isLowerAge(birthdate: string, currentDate?: Date): boolean {
+  //   const b: moment.Moment = moment(birthdate, 'DD/MM/YYYY');
+  //   const c: moment.Moment = moment(currentDate).add(543, 'years');
+  //   if (b.isValid()) {
+  //     const age: any = c.diff(b, 'years');
+  //     const isLegal: any = (age >= 17);
+  //     return isLegal;
+  //   } else {
+  //     throw new Error('กรอกวันเกิดไม่ถูกต้อง กรุณากรอกใหม่อีกครั้ง');
+  //   }
+  // }
+
+  // isLowerAgeEra(birthdate: string, currentDate?: Date): boolean {
+  //   const radix: number = 10;
+  //   const buddhistEra: number = 543;
+  //   const birthd: any = birthdate.split('/');
+  //   const year: number = parseInt(birthd[2], radix) - buddhistEra;
+  //   birthdate = birthd[0] + '/' + birthd[1] + '/' + year;
+  //   const b: moment.Moment = moment(birthdate, 'DD/MM/YYYY');
+  //   const c: moment.Moment = moment(currentDate);
+  //   if (b.isValid()) {
+  //     const age: any = c.diff(b, 'years');
+  //     const isLegal: any = (age >= 17);
+  //     return isLegal;
+  //   } else {
+  //     throw new Error('กรอกวันเกิดไม่ถูกต้อง กรุณากรอกใหม่อีกครั้ง');
+  //   }
+  // }
 }

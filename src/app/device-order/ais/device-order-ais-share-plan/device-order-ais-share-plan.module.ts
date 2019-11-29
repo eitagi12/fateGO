@@ -3,6 +3,7 @@ import { DeviceOrderAisSharePlanComponent } from './device-order-ais-share-plan.
 import { DeviceOrderAisSharePlanRoutingModule } from './device-order-ais-share-plan-routing.module';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { RemoveCartService } from './new-register-mnp/services/remove-cart.service';
 @NgModule({
   imports: [
     CommonModule,
@@ -11,6 +12,9 @@ import { TranslateModule } from '@ngx-translate/core';
   ],
   declarations: [
     DeviceOrderAisSharePlanComponent
+  ],
+  providers: [
+    RemoveCartService
   ]
 })
 export class DeviceOrderAisSharePlanModule { }

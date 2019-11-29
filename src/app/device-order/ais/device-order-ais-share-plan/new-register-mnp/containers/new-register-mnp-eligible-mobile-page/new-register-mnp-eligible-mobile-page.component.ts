@@ -11,6 +11,7 @@ import { CheckChangeServiceService } from 'src/app/device-order/services/check-c
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_MOBILE_DETAIL_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction, BillingAccount } from 'src/app/shared/models/transaction.model';
+import { RemoveCartService } from '../../services/remove-cart.service';
 
 @Component({
   selector: 'app-new-register-mnp-eligible-mobile-page',
@@ -36,7 +37,8 @@ export class NewRegisterMnpEligibleMobilePageComponent implements OnInit, OnDest
     private shoppingCartService: ShoppingCartService,
     private pageLoadingService: PageLoadingService,
     private alertService: AlertService,
-    private checkChangeService: CheckChangeServiceService) {
+    private checkChangeService: CheckChangeServiceService,
+    private removeCartService: RemoveCartService) {
     this.transaction = this.transactionService.load();
     console.log(this.transaction);
 
@@ -119,7 +121,7 @@ export class NewRegisterMnpEligibleMobilePageComponent implements OnInit, OnDest
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    this.removeCartService.backToReturnStock('/', this.transaction);
   }
 
   ngOnDestroy(): void {

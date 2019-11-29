@@ -11,6 +11,7 @@ import { QueuePageService } from 'src/app/device-order/services/queue-page.servi
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_AGGREGATE_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_RESULT_PAGE } from '../../constants/route-path.constant';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { forEach } from '@angular/router/src/utils/collection';
+import { RemoveCartService } from '../../services/remove-cart.service';
 
 @Component({
   selector: 'app-new-register-mnp-queue-page',
@@ -34,7 +35,8 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
     private priceOptionService: PriceOptionService,
     private queuePageService: QueuePageService,
     private sharedTransactionService: SharedTransactionService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private removeCartService: RemoveCartService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -93,7 +95,7 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    this.removeCartService.backToReturnStock('/', this.transaction);
   }
 
   saveFaceImage(): any {

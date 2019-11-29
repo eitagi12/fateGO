@@ -12,6 +12,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE} from '../../constants/route-path.constant';
 import { ValidateCustomerService } from 'src/app/shared/services/validate-customer.service';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { RemoveCartService } from '../../services/remove-cart.service';
 
 @Component({
   selector: 'app-new-register-mnp-validate-customer-id-card-page',
@@ -40,7 +41,8 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
     private tokenService: TokenService,
     private utils: Utils,
     private alertService: AlertService,
-    private validateCustomerService: ValidateCustomerService
+    private validateCustomerService: ValidateCustomerService,
+    private removeCartService: RemoveCartService
   ) {
     this.transaction = this.transactionService.load();
     this.user = this.tokenService.getUser();
@@ -90,7 +92,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    this.removeCartService.backToReturnStock('/', this.transaction);
   }
 
   onBack(): void {

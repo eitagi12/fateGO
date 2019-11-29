@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import * as moment from 'moment';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_QR_CODE_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_QR_CODE_QUEUE_PAGE } from '../../constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
+import { RemoveCartService } from '../../services/remove-cart.service';
 
 @Component({
   selector: 'app-new-register-mnp-qr-code-generator-page',
@@ -36,7 +37,8 @@ export class NewRegisterMnpQrCodeGeneratorPageComponent implements OnInit, OnDes
     private pageLoadingService: PageLoadingService,
     private alertService: AlertService,
     private tokenService: TokenService,
-    private qrCodePageService: QrCodePageService
+    private qrCodePageService: QrCodePageService,
+    private removeCartService: RemoveCartService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -278,7 +280,7 @@ export class NewRegisterMnpQrCodeGeneratorPageComponent implements OnInit, OnDes
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    this.removeCartService.backToReturnStock('/', this.transaction);
   }
 
   ngOnDestroy(): void {

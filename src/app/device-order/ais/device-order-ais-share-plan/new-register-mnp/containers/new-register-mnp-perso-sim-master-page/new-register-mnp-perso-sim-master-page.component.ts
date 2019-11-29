@@ -22,6 +22,7 @@ import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_EAPPLICATION_PAGE,
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { Validators, FormBuilder } from '@angular/forms';
 import { Transaction } from 'src/app/shared/models/transaction.model';
+import { RemoveCartService } from '../../services/remove-cart.service';
 
 export interface OptionPersoSim {
   key_sim?: boolean;
@@ -119,6 +120,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
     private zone: NgZone,
     private pageLoadingService: PageLoadingService,
     public fb: FormBuilder,
+    private removeCartService: RemoveCartService
   ) {
     this.option = { scan_sim: true, key_sim: false };
     this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhum();
@@ -724,7 +726,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    this.removeCartService.backToReturnStock('/', this.transaction);
   }
 
   ngOnDestroy(): void {

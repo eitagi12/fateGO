@@ -13,6 +13,8 @@ import {
 } from '../../constants/route-path.constant';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Transaction } from 'src/app/shared/models/transaction.model';
+import { RemoveCartService } from '../../services/remove-cart.service';
+
 @Component({
   selector: 'app-new-register-mnp-verify-instant-sim-page',
   templateUrl: './new-register-mnp-verify-instant-sim-page.component.html',
@@ -39,7 +41,8 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
     private shoppingCartService: ShoppingCartService,
     private translationService: TranslateService,
     private fb: FormBuilder,
-    private aisNativeService: AisNativeService) {
+    private aisNativeService: AisNativeService,
+    private removeCartService: RemoveCartService) {
     this.transaction = this.transactionService.load();
   }
 
@@ -117,7 +120,7 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    this.removeCartService.backToReturnStock('/', this.transaction);
   }
 
   ngAfterViewInit(): void {

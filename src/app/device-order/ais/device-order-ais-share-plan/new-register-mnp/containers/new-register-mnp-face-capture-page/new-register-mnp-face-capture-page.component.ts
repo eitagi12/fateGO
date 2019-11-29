@@ -9,6 +9,7 @@ import {
   ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_COMPARE_PAGE
 } from '../../constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
+import { RemoveCartService } from '../../services/remove-cart.service';
 
 @Component({
   selector: 'app-new-register-mnp-face-capture-page',
@@ -31,6 +32,7 @@ export class NewRegisterMnpFaceCapturePageComponent implements OnInit, OnDestroy
     private alertService: AlertService,
     private utils: Utils,
     private shoppingCartService: ShoppingCartService,
+    private removeCartService: RemoveCartService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -53,7 +55,7 @@ export class NewRegisterMnpFaceCapturePageComponent implements OnInit, OnDestroy
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    this.removeCartService.backToReturnStock('/', this.transaction);
   }
 
   onOpenCamera(): void {

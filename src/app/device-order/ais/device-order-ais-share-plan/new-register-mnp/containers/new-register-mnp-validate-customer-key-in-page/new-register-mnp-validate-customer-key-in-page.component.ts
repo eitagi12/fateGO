@@ -12,6 +12,7 @@ import { ValidateCustomerService } from 'src/app/shared/services/validate-custom
 import { Transaction, Order, TransactionType } from 'src/app/shared/models/transaction.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import * as moment from 'moment';
+import { RemoveCartService } from '../../services/remove-cart.service';
 const Moment = moment;
 @Component({
   selector: 'app-new-register-mnp-validate-customer-key-in-page',
@@ -58,7 +59,8 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
     private pageLoadingService: PageLoadingService,
     private validateCustomerService: ValidateCustomerService,
     private utils: Utils,
-    public fb: FormBuilder
+    public fb: FormBuilder,
+    private removeCartService: RemoveCartService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -146,14 +148,17 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
 
   isDateValid(): boolean {
     const formValue = this.validateCustomerKeyInForm.value;
-    const expireDate: string = formValue.expireYear + ' ' + formValue.expireMonth + ' ' + formValue.expireDay;
+    const radix: number = 10;
+    const buddhistEra: number = 543;
+    const expireDate: string = (parseInt(formValue.expireYear, radix) - buddhistEra) + ' ' +
+      formValue.expireMonth + ' ' + formValue.expireDay;
     if (formValue.expireYear && formValue.expireMonth && formValue.expireDay) {
       this.expireDateValid = Moment(expireDate, 'YYYY MM DD').isValid();
     }
-    const birthDate: string = formValue.birthYear + ' ' + formValue.birthMonth + ' ' + formValue.birthDay;
+    const birthDate: string = (parseInt(formValue.birthYear, radix) - buddhistEra) + ' ' +
+      formValue.birthMonth + ' ' + formValue.birthDay;
     if (formValue.birthYear && formValue.birthMonth && formValue.birthDay) {
       this.birthDateValid = Moment(birthDate, 'YYYY MM DD').isValid();
-      console.log(this.birthDateValid);
     }
     return this.expireDateValid && this.birthDateValid;
   }
@@ -184,7 +189,7 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    this.removeCartService.backToReturnStock('/', this.transaction);
   }
 
   onBack(): void {
@@ -201,46 +206,37 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
     if (checkAgeAndExpire.true) {
       const cardType = this.transaction.data.customer.idCardType;
       const transactionType = TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS; // New
-       this.validateCustomerService.checkValidateCustomer(this.identity, cardType, transactionType)
+      this.validateCustomerService.checkValidateCustomer(this.identity, cardType, transactionType)
         .then((customer: any) => {
-           return this.validateCustomerService.getCurrentDate().then((sysdate: any) => {
-            if (sysdate) {
-              const expireDate = this.transaction.data.customer.expireDate;
-              if (this.utils.isIdCardExpiredDate(expireDate)) {
-                this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากบัตรประชาชนหมดอายุ');
+          const expireDate = this.transaction.data.customer.expireDate;
+          if (this.utils.isIdCardExpiredDate(expireDate)) {
+            this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากบัตรประชาชนหมดอายุ');
+          } else {
+            const birthdate = this.transaction.data.customer.birthdate;
+            if (this.utils.isLowerAge17Year(birthdate)) {
+              this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
+            } else {
+              if (this.order) {
+                this.pageLoadingService.closeLoading();
+                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
               } else {
-                const isLowerAge: boolean = this.validateCustomerService.isLowerAge(this.transaction.data.customer.birthdate, sysdate);
-                if (!isLowerAge) {
-                  this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
-                } else {
-                  if (this.order) {
-                    this.pageLoadingService.closeLoading();
-                    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
-                  } else {
-                    // tslint:disable-next-line: max-line-length
-                    const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: customer });
-                    this.validateCustomerService.addDeviceSellingCart(body).then((order: any) => {
-                      if (order.data && order.data.soId) {
-                        this.transaction.data = {
-                          ...this.transaction.data,
-                          order: { soId: order.data.soId },
-                        };
-                        const transactionObject: any = this.validateCustomerService.buildTransaction({
-                          transaction: this.transaction,
-                          transactionType: TransactionType.DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN
-                        });
-                        this.validateCustomerService.createTransaction(transactionObject).then((resp: any) => {
-                          this.pageLoadingService.closeLoading();
-                          if (resp.data.isSuccess) {
-                            this.transactionService.update(transactionObject);
-                            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
-                          } else {
-                            this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
-                          }
-                        }).catch((error: any) => {
-                          this.pageLoadingService.closeLoading();
-                          this.alertService.error(error);
-                        });
+                // tslint:disable-next-line: max-line-length
+                const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: customer });
+                this.validateCustomerService.addDeviceSellingCart(body).then((order: any) => {
+                  if (order.data && order.data.soId) {
+                    this.transaction.data = {
+                      ...this.transaction.data,
+                      order: { soId: order.data.soId },
+                    };
+                    const transactionObject: any = this.validateCustomerService.buildTransaction({
+                      transaction: this.transaction,
+                      transactionType: TransactionType.DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN
+                    });
+                    this.validateCustomerService.createTransaction(transactionObject).then((resp: any) => {
+                      this.pageLoadingService.closeLoading();
+                      if (resp.data.isSuccess) {
+                        this.transactionService.update(transactionObject);
+                        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
                       } else {
                         this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
                       }
@@ -248,11 +244,16 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
                       this.pageLoadingService.closeLoading();
                       this.alertService.error(error);
                     });
+                  } else {
+                    this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
                   }
-                }
+                }).catch((error: any) => {
+                  this.pageLoadingService.closeLoading();
+                  this.alertService.error(error);
+                });
               }
             }
-          });
+          }
         }).catch((error: any) => {
           this.pageLoadingService.closeLoading();
           this.alertService.error(error);

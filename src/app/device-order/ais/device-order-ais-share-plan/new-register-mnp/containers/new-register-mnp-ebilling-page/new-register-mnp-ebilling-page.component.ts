@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CONFIRM_USER_INFORMATION_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
+import { RemoveCartService } from '../../services/remove-cart.service';
 
 @Component({
   selector: 'app-new-register-mnp-ebilling-page',
@@ -26,6 +27,7 @@ export class NewRegisterMnpEbillingPageComponent implements OnInit, OnDestroy {
     private homeService: HomeService,
     private http: HttpClient,
     private transactionService: TransactionService,
+    private removeCartService: RemoveCartService
   ) {
     this.transaction = this.transactionService.load();
 
@@ -81,7 +83,7 @@ export class NewRegisterMnpEbillingPageComponent implements OnInit, OnDestroy {
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    this.removeCartService.backToReturnStock('/', this.transaction);
   }
 
   onCompleted(billCycle: any): void {

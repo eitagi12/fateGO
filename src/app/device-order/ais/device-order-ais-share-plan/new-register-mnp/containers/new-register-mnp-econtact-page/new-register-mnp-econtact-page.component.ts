@@ -15,6 +15,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_AGREEMENT_SIGN_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
+import { RemoveCartService } from '../../services/remove-cart.service';
 
 @Component({
   selector: 'app-new-register-mnp-econtact-page',
@@ -44,7 +45,8 @@ export class NewRegisterMnpEcontactPageComponent implements OnInit, OnDestroy {
     private createContractService: CreateEcontractService,
     private translationService: TranslateService,
     private idCardPipe: IdCardPipe,
-    private decimalPipe: DecimalPipe) {
+    private decimalPipe: DecimalPipe,
+    private removeCartService: RemoveCartService) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
     this.currentLang = this.translationService.currentLang || 'TH';
@@ -68,7 +70,7 @@ export class NewRegisterMnpEcontactPageComponent implements OnInit, OnDestroy {
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    this.removeCartService.backToReturnStock('/', this.transaction);
   }
   callService(): void {
     this.pageLoadingService.openLoading();
