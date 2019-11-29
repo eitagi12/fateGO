@@ -146,14 +146,17 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
 
   isDateValid(): boolean {
     const formValue = this.validateCustomerKeyInForm.value;
-    const expireDate: string = formValue.expireYear + ' ' + formValue.expireMonth + ' ' + formValue.expireDay;
+    const radix: number = 10;
+    const buddhistEra: number = 543;
+    const expireDate: string = (parseInt(formValue.expireYear, radix) - buddhistEra) + ' ' +
+      formValue.expireMonth + ' ' + formValue.expireDay;
     if (formValue.expireYear && formValue.expireMonth && formValue.expireDay) {
       this.expireDateValid = Moment(expireDate, 'YYYY MM DD').isValid();
     }
-    const birthDate: string = formValue.birthYear + ' ' + formValue.birthMonth + ' ' + formValue.birthDay;
+    const birthDate: string = (parseInt(formValue.birthYear, radix) - buddhistEra) + ' ' +
+      formValue.birthMonth + ' ' + formValue.birthDay;
     if (formValue.birthYear && formValue.birthMonth && formValue.birthDay) {
       this.birthDateValid = Moment(birthDate, 'YYYY MM DD').isValid();
-      console.log(this.birthDateValid);
     }
     return this.expireDateValid && this.birthDateValid;
   }
@@ -201,9 +204,9 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
     if (checkAgeAndExpire.true) {
       const cardType = this.transaction.data.customer.idCardType;
       const transactionType = TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS; // New
-       this.validateCustomerService.checkValidateCustomer(this.identity, cardType, transactionType)
+      this.validateCustomerService.checkValidateCustomer(this.identity, cardType, transactionType)
         .then((customer: any) => {
-           return this.validateCustomerService.getCurrentDate().then((sysdate: any) => {
+          return this.validateCustomerService.getCurrentDate().then((sysdate: any) => {
             if (sysdate) {
               const expireDate = this.transaction.data.customer.expireDate;
               if (this.utils.isIdCardExpiredDate(expireDate)) {
