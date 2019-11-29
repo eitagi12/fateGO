@@ -34,11 +34,7 @@ export class NewRegisterMnpResultPageComponent implements OnInit {
   }
 
   onMainMenu(): void {
-    if (environment.name === 'LOCAL') {
-      window.location.href = '/main-menu';
-    } else {
-      window.location.href = '/smart-digital/main-menu';
-    }
+    window.location.href = '/';
   }
 
 }

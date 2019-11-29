@@ -32,7 +32,7 @@ export class CreateEapplicationService {
 
   createEapplicationSuperKhumSharepalnNewRegister(transaction: any, language: any): Promise<any> {
     return this.http.post(
-      '/api/salesportal/v2/generate-e-document-eapplication',
+      '/api/salesportal/generate-e-document-eapplication-share-plan',
       this.getRequestEapplicationSuperKhumSharePlanNewRegister(transaction, language)
     ).toPromise();
   }
@@ -55,6 +55,8 @@ export class CreateEapplicationService {
       fullNameTH: customer.firstName + ' ' + customer.lastName || '',
       idCard: customer.idCardNo || '',
       birthDate: customer.birthdate || '',
+      customerPincode: '',
+      chargeType: '',
       customerAddress: this.utils.getCurrentAddress({
         homeNo: customer.homeNo || '',
         moo: customer.moo || '',
@@ -103,8 +105,8 @@ export class CreateEapplicationService {
       fullNameTH: language === 'EN' ? `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}` :
         customer.firstName + ' ' + customer.lastName || '',
       idCard: this.privateIdcard(customer.idCardNo) || '',
-      idCardType: customer.idCardType || '',
       birthDate: customer.birthdate || '',
+      idCardType: customer.idCardType || '',
       customerPincode: simCard.pinCode,
       chargeType: simCard.chargeType,
       customerAddress: this.utils.getCurrentAddress({
