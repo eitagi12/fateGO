@@ -1,23 +1,26 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { Subscription, Observable, of } from 'rxjs';
-import { ShoppingCart,
-         HomeService,
-        //  TokenService,
-        //  AlertService,
-        //  PersoSimService,
-        //  ChannelType,
-        //  KioskControlsPersoSim,
-        //  PersoSimError,
-         PageLoadingService,
-         AlertService} from 'mychannel-shared-libs';
+import {
+  ShoppingCart,
+  HomeService,
+  //  TokenService,
+  //  AlertService,
+  //  PersoSimService,
+  //  ChannelType,
+  //  KioskControlsPersoSim,
+  //  PersoSimError,
+  PageLoadingService,
+  AlertService
+} from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 // import { TranslateService } from '@ngx-translate/core';
-import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_EAPPLICATION_PAGE,
-         ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PERSO_SIM_MEMBER_PAGE
-       } from '../../constants/route-path.constant';
+import {
+  ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_EAPPLICATION_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PERSO_SIM_MEMBER_PAGE
+} from '../../constants/route-path.constant';
 // import { environment } from 'src/environments/environment';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { Validators, FormBuilder } from '@angular/forms';
@@ -259,66 +262,86 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
     }
   }
 
+  checkStatusSimCard(): void {
+    clearInterval(this.persoSimInterval);
+    const intervalTime: number = 3000;
+    this.persoSimInterval = setInterval(() => {
+      this.checkSimStatus();
+    }, intervalTime); // Timer
+  }
+
+  checkSimStatus(): void {
+    const getCardStatus: number = 1000;
+    this.cardStatus = this.aisNative.sendIccCommand(this.command, getCardStatus, ''); // Get card status
+    if (this.cardStatus === 'Card presented') {
+      this.currentStatus = true;
+    } else {
+      this.currentStatus = false;
+      clearInterval(this.persoSimInterval);
+    }
+  }
+
+
   popupControl(isCase: string, errMsg: string): void {
 
     switch (isCase) {
-      case 'errorSim' : {
+      case 'errorSim': {
         this.alertService.notify({
           type: 'error',
           text: 'เกิดข้อผิดพลาด กรุณาเปลี่ยน SIM CARD ใหม่',
           confirmButtonText: 'ตกลง',
           onClose: () => this.setIntervalSimCard()
         });
-      }break;
-      case 'errorCmd' : {
+      } break;
+      case 'errorCmd': {
         this.alertService.notify({
           type: 'error',
           text: 'กรุณากด Retry เพื่อเรียกข้อมูลใหม่อีกครั้ง',
           confirmButtonText: 'RETRY',
           onClose: () => this.getCommandForPersoSim(this.readSimStatus)
         });
-      }break;
-      case 'errPerso' : {
+      } break;
+      case 'errPerso': {
         this.alertService.notify({
           type: 'error',
           text: 'ไม่สามารถทำการ Perso SIM ได้ กรุณาเลือกเบอร์เพื่อทำรายการใหม่อีกครั้ง',
           confirmButtonText: 'ตกลง',
           // onClose: () => this.getCommandForPersoSim.bind(this, this.readSimStatus)
         });
-      }break;
-      case 'errorOrder' : {
+      } break;
+      case 'errorOrder': {
         this.alertService.notify({
           type: 'error',
           text: 'กรุณากด Retry เพื่อเรียกข้อมูลใหม่อีกครั้ง',
           confirmButtonText: 'RETRY',
           onClose: () => this.checkOrderStatus(this.referenceNumber)
         });
-      }break;
-      case 'errorSmartCard' : {
+      } break;
+      case 'errorSmartCard': {
         this.alertService.notify({
           type: 'error',
           text: 'ขออภัยค่ะ ไม่สามารถทำรายการได้ กรุณาเสียบซิมการ์ด',
           confirmButtonText: 'ตกลง',
           onClose: () => this.onRefreshPage()
         });
-      }break;
-      case 'errorSimStatus' : {
+      } break;
+      case 'errorSimStatus': {
         this.alertService.notify({
           type: 'error',
           text: 'ซิมใบนี้ถูกใช้ไปแล้ว กรุณาเปลี่ยนซิมใหม่',
           confirmButtonText: 'ตกลง',
           onClose: () => this.onRefreshPage()
         });
-      }break;
-      case 'errorFixSim' : {
+      } break;
+      case 'errorFixSim': {
         this.alertService.notify({
           type: 'error',
           text: errMsg,
           confirmButtonText: 'ตกลง',
           onClose: () => this.onRefreshPage()
         });
-      }break;
-      case 'errorSimSerialNotMacth' : {
+      } break;
+      case 'errorSimSerialNotMacth': {
         this.alertService.question(errMsg, 'ตกลง', 'ยกเลิก').then((response: any) => {
           if (response.value === true) {
             this.onConectToPerso();
@@ -326,7 +349,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
             this.onRefreshPageToPerso();
           }
         });
-      }break;
+      } break;
     }
 
     // const errorCase: object = {
@@ -533,6 +556,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
           // $('.custom').animate({ width: 100 + '%' }, this.duration, () => {/**/ });
           setTimeout(() => {
           }, this.duration);
+          this.checkStatusSimCard();
         } else {
           const tenSecond: number = 60000;
           const loop: number = 3;

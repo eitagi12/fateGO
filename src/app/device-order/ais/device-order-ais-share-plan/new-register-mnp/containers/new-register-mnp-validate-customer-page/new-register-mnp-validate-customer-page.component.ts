@@ -15,6 +15,7 @@ import { Transaction, Order, TransactionType, TransactionAction } from 'src/app/
 import { HttpClient } from '@angular/common/http';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { RemoveCartService } from '../../services/remove-cart.service';
+
 @Component({
   selector: 'app-new-register-mnp-validate-customer-page',
   templateUrl: './new-register-mnp-validate-customer-page.component.html',
@@ -28,7 +29,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   user: User;
   order: Order;
   transactionId: string;
-
+  // priceOptionMock: any = require('../new-register-mnp-validate-customer-page/priceOption-Mock.json');
   constructor(
     private router: Router,
     private pageLoadingService: PageLoadingService,
@@ -47,6 +48,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   }
 
   ngOnInit(): void {
+    // localStorage.setItem('priceOption', JSON.stringify(this.priceOptionMock));
     this.createTransaction();
   }
   onError(valid: boolean): void {
