@@ -281,7 +281,6 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
     }
   }
 
-
   popupControl(isCase: string, errMsg: string): void {
 
     switch (isCase) {
