@@ -303,9 +303,9 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
       case 'errPerso': {
         this.alertService.notify({
           type: 'error',
-          text: 'ไม่สามารถทำการ Perso SIM ได้ กรุณาเลือกเบอร์เพื่อทำรายการใหม่อีกครั้ง',
+          text: 'ไม่สามารถทำการ Perso SIM ได้ กรุณาทำรายการใหม่อีกครั้ง',
           confirmButtonText: 'ตกลง',
-          // onClose: () => this.getCommandForPersoSim.bind(this, this.readSimStatus)
+          onClose: () => this.onHome()
         });
       } break;
       case 'errorOrder': {
@@ -531,8 +531,8 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
         }, delayTime);
       }
     }).catch((e: any): void => {
-      const errObj: any = e.json();
-      console.log('checkstatus errmes', errObj);
+      // const errObj: any = e.json();
+      // console.log('checkstatus errmes', errObj);
       if (!this.getCommandCounter) {
         this.popupControl('errorCmd', '');
         this.getCommandCounter = true;
@@ -697,10 +697,10 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
         }
       }
     }).catch((e: any): void => {
-      const errObj: any = e.json();
-      console.log('full error :', errObj);
-      console.log('error :', errObj.errors);
-      console.log('data :', errObj.errors.data);
+      // const errObj: any = e.json();
+      // console.log('full error :', errObj);
+      // console.log('error :', errObj.errors);
+      // console.log('data :', errObj.errors.data);
       const tenSecond: number = 60000;
       const loop: number = 3;
       if (this.createTxPersoCounter < loop) {
