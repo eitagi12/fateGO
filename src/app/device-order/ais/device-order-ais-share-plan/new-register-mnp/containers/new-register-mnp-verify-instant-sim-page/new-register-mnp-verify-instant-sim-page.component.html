@@ -56,7 +56,7 @@
                             </p>
                         </div>
                         <div id="btn-content-scan-barcode">
-                            <button type="button" class="btn btn-scan-barcode" (click)="onOpenScanBarcode()" onclick="document.getElementById('serial').value = ''">{{keyinSimSerial === true ? 'สแกน Barcode อีกครั้ง' : 'สแกน Barcode'}}
+                            <button type="button" class="btn btn-scan-barcode" (click)="onOpenScanBarcode()" onclick="document.getElementById('serial').value = ''">{{keyinSimSerial === true ||  scanBarCode === true ? 'สแกน Barcode อีกครั้ง' : 'สแกน Barcode'}}
                         </button>
                         </div>
                     </div>
