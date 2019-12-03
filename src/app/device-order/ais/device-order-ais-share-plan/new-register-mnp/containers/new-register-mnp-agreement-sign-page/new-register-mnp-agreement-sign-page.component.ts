@@ -353,4 +353,9 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
 
     this.isDrawing = true;
   }
+
+  // tslint:disable-next-line: use-life-cycle-interface
+  ngAfterViewInit(): void {
+    this.signImage.nativeElement.focus();
+  }
 }
