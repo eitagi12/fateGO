@@ -62,6 +62,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
   xmlDoc: any;
   getBarcode: any;
   checkOrderCounter: number = 0;
+  check: number = 0;
   getCommandCounter: boolean = false;
 
   scanBarcodePC$: Observable<boolean> = of(true);
@@ -350,98 +351,6 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
         });
       } break;
     }
-
-    // const errorCase: object = {
-    //   errorSim: {
-    //     customBtn: [
-    //       {
-    //         name: 'ตกลง',
-    //         class: 'mc-button mc-button--green',
-    //         function: this.setIntervalSimCard.bind(this)
-    //       }
-    //     ],
-    //     message: 'เกิดข้อผิดพลาด กรุณาเปลี่ยน SIM CARD ใหม่'
-    //   },
-    //   errorCmd: {
-    //     customBtn: [{
-    //       name: 'RETRY',
-    //       class: 'mc-button mc-button--green',
-    //       function: this.getCommandForPersoSim.bind(this, this.readSimStatus)
-    //     }],
-    //     message: 'กรุณากด Retry เพื่อเรียกข้อมูลใหม่อีกครั้ง'
-    //   },
-    //   errPerso: {
-    //     customBtn: [{
-    //       name: 'ตกลง',
-    //       class: 'mc-button mc-button--green',
-    //       function: this.onBack.bind(this)
-    //     }],
-    //     message: 'ไม่สามารถทำการ Perso SIM ได้ กรุณาเลือกเบอร์เพื่อทำรายการใหม่อีกครั้ง'
-    //   },
-    //   errorOrder: {
-    //     customBtn: [{
-    //       name: 'RETRY',
-    //       class: 'mc-button mc-button--green',
-    //       function: this.checkOrderStatus.bind(this, this.referenceNumber)
-    //     }],
-    //     message: 'กรุณากด Retry เพื่อเรียกข้อมูลใหม่อีกครั้ง'
-    //   },
-    //   errorCanNotGetPrivateKey: {
-    //     customBtn: [{
-    //       name: 'ตกลง',
-    //       class: 'mc-button mc-button--green',
-    //       function: this.onBackSign.bind(this)
-    //     }],
-    //     message: 'ขออภัยค่ะ ไม่สามารถทำรายการได้ เนื่องจากเกิดข้อผิดพลาดจากการอ่านข้อมูลซิมการ์ด (code : 0404CN)'
-    //   },
-    //   errorPrivateKeyNotMath: {
-    //     customBtn: [{
-    //       name: 'ตกลง',
-    //       class: 'mc-button mc-button--green',
-    //       function: this.onBackSign.bind(this)
-    //     }],
-    //     message: 'ขออภัยค่ะ ไม่สามารถทำรายการได้ เนื่องจากเกิดข้อผิดพลาดจากการอ่านข้อมูลซิมการ์ด (code : 0510NM)'
-    //   },
-    //   errorSmartCard: {
-    //     customBtn: [{
-    //       name: 'ตกลง',
-    //       class: 'mc-button mc-button--green',
-    //       function: this.onRefreshPage.bind(this)
-    //     }],
-    //     message: 'ขออภัยค่ะ ไม่สามารถทำรายการได้ กรุณาเสียบซิมการ์ด'
-    //   },
-    //   errorSimStatus: {
-    //     customBtn: [{
-    //       name: 'ตกลง',
-    //       class: 'mc-button mc-button--green',
-    //       function: this.onRefreshPage.bind(this)
-    //     }],
-    //     message: 'ซิมใบนี้ถูกใช้ไปแล้ว กรุณาเปลี่ยนซิมใหม่'
-    //   },
-    //   errorFixSim: {
-    //     customBtn: [{
-    //       name: 'ตกลง',
-    //       class: 'mc-button mc-button--green',
-    //       function: this.onRefreshPage.bind(this)
-    //     }],
-    //     message: errMsg
-    //   },
-    //   errorSimSerialNotMacth: {
-    //     customBtn: [
-    //       {
-    //         name: 'ยกเลิก',
-    //         class: 'mc-button mc-button--green',
-    //         function: this.onRefreshPageToPerso.bind(this)
-    //       },
-    //       {
-    //         name: 'ตกลง',
-    //         class: 'mc-button mc-button--green',
-    //         function: this.onConectToPerso.bind(this)
-    //       }],
-    //     message: errMsg
-    //   }
-    // };
-
   }
 
   onRefreshPageToPerso(): void {
@@ -533,14 +442,21 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
     }).catch((e: any): void => {
       // const errObj: any = e.json();
       // console.log('checkstatus errmes', errObj);
-      if (!this.getCommandCounter) {
-        this.popupControl('errorCmd', '');
-        this.getCommandCounter = true;
-        // console.log(this.popupControl('errorCmd', ''));
+      if (this.check < 3) {
+        if (!this.getCommandCounter) {
+          this.popupControl('errorCmd', '');
+          this.getCommandCounter = true;
+          // console.log(this.popupControl('errorCmd', ''));
+        } else {
+          this.popupControl('errorSim', '');
+          this.getCommandCounter = false;
+          this.check++;
+          // console.log(this.popupControl('errorSim', ''));
+        }
       } else {
-        this.popupControl('errorSim', '');
+        this.popupControl('errPerso', '');
         this.getCommandCounter = false;
-        // console.log(this.popupControl('errorSim', ''));
+        this.check = 0;
       }
     });
   }
@@ -559,34 +475,46 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
         } else {
           const tenSecond: number = 60000;
           const loop: number = 3;
-          if (this.checkOrderCounter < loop) {
+          if (this.checkOrderCounter < loop && this.check < loop) {
             this.timeoutCheckOrderStatus = setTimeout(() => {
               this.checkOrderStatus(refNo);
             }, tenSecond);
             this.checkOrderCounter++;
-          } else if (this.checkOrderCounter === loop) {
+          } else if (this.checkOrderCounter === loop && this.check < loop) {
             this.popupControl('errorOrder', '');
+            this.check++;
             this.checkOrderCounter++;
-          } else {
+          } else if (this.check < loop) {
             this.popupControl('errorSim', '');
+            this.check++;
             this.checkOrderCounter = 0;
+          } else {
+            this.popupControl('errPerso', '');
+            this.checkOrderCounter = 0;
+            this.check = 0;
           }
         }
       }
     }).catch((e: any): void => {
       const tenSecond: number = 60000;
       const loop: number = 3;
-      if (this.checkOrderCounter < loop) {
+      if (this.checkOrderCounter < loop && this.check < loop) {
         this.timeoutCheckOrderStatus = setTimeout(() => {
           this.checkOrderStatus(refNo);
         }, tenSecond);
         this.checkOrderCounter++;
-      } else if (this.checkOrderCounter === loop) {
+      } else if (this.checkOrderCounter === loop && this.check < loop) {
         this.popupControl('errorOrder', '');
+        this.check++;
         this.checkOrderCounter++;
-      } else {
+      } else if (this.check < loop) {
         this.popupControl('errorSim', '');
+        this.check++;
         this.checkOrderCounter = 0;
+      } else {
+        this.popupControl('errPerso', '');
+        this.checkOrderCounter = 0;
+        this.check = 0;
       }
     });
   }
