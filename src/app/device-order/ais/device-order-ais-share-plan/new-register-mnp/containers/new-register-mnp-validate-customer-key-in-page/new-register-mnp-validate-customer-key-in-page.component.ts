@@ -78,7 +78,9 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
   }
 
   callService(): void {
-    this.order = this.transaction.data.order;
+    if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      this.order = this.transaction.data.order;
+    }
     this.customerService.queryCardType().then((resp: any) => {
       this.cardTypes = (resp.data.cardTypes || []).map((cardType: any) => cardType.name);
     });
@@ -207,16 +209,8 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
       const transactionType = TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS; // New
       this.validateCustomerService.checkValidateCustomer(this.identity, cardType, transactionType)
         .then(() => {
-          const expireDate = this.transaction.data.customer.expireDate;
-          if (this.utils.isIdCardExpiredDate(expireDate)) {
-            this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากบัตรประชาชนหมดอายุ');
-          } else {
-            const birthdate = this.transaction.data.customer.birthdate;
-            if (this.utils.isLowerAge17Year(birthdate)) {
-              this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
-            } else {
               if (this.order) {
-                this.pageLoadingService.closeLoading();
+                this.setTransaction();
                 this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
               } else {
                 // tslint:disable-next-line: max-line-length
@@ -227,24 +221,7 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
                       ...this.transaction.data,
                       order: { soId: order.data.soId },
                     };
-                    const transactionObject: any = this.validateCustomerService.buildTransaction({
-                      transaction: this.transaction,
-                      transactionType: TransactionType.DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN
-                    });
-
-                    console.log('==>', transactionObject);
-                    this.validateCustomerService.createTransaction(transactionObject).then((resp: any) => {
-                      this.pageLoadingService.closeLoading();
-                      if (resp.data.isSuccess) {
-                        this.transactionService.update(transactionObject);
-                        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
-                      } else {
-                        this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
-                      }
-                    }).catch((error: any) => {
-                      this.pageLoadingService.closeLoading();
-                      this.alertService.error(error);
-                    });
+                    this.setTransaction();
                   } else {
                     this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
                   }
@@ -253,8 +230,6 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
                   this.alertService.error(error);
                 });
               }
-            }
-          }
         }).catch((error: any) => {
           this.pageLoadingService.closeLoading();
           this.alertService.error(error);
@@ -262,6 +237,31 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
     } else {
       this.pageLoadingService.closeLoading();
       this.alertService.error(checkAgeAndExpire.false);
+    }
+  }
+
+  setTransaction(): void {
+    if (this.transaction.transactionId) {
+      this.pageLoadingService.closeLoading();
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
+    } else {
+      const transactionObject: any = this.validateCustomerService.buildTransaction({
+        transaction: this.transaction,
+        transactionType: TransactionType.DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN
+      });
+      console.log('==>', transactionObject);
+      this.validateCustomerService.createTransaction(transactionObject).then((resp: any) => {
+        this.pageLoadingService.closeLoading();
+        if (resp.data.isSuccess) {
+          this.transaction = transactionObject;
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
+        } else {
+          this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+        }
+      }).catch((error: any) => {
+        this.pageLoadingService.closeLoading();
+        this.alertService.error(error);
+      });
     }
   }
 
