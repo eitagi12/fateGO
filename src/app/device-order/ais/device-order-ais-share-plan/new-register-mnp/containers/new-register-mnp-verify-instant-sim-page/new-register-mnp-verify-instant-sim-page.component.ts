@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit} from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { SimSerial, HomeService, AlertService, PageLoadingService, ShoppingCart, AisNativeService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -29,8 +29,10 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
   shoppingCart: ShoppingCart;
   translationSubscribe: Subscription;
   keyinSimSerial: boolean;
-  @ViewChild('serial')
-  serialField: ElementRef;
+  scanBarCode: boolean;
+  simSerialByBarCode: any;
+  // @ViewChild('serial')
+  // serialField: ElementRef;
 
   constructor(private router: Router,
     private homeService: HomeService,
@@ -56,9 +58,12 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
 
   public checkSimSerial(): void {
     this.keyinSimSerial = true;
+    this.scanBarCode = false;
     const serial = this.serialForm.controls['serial'].value;
     this.getMobileNoBySim(serial);
-  }  private getMobileNoBySim(serial: any): void {
+  }
+
+  private getMobileNoBySim(serial: any): void {
     this.pageLoadingService.openLoading();
     this.http.get(`/api/customerportal/validate-verify-instant-sim?serialNo=${serial}`).toPromise()
       .then((resp: any) => {
@@ -92,7 +97,7 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
     this.serialForm.patchValue({
       serial: ''
     });
-    this.serialField.nativeElement.focus();
+    // this.serialField.nativeElement.focus();
   }
 
   private createForm(): void {
@@ -103,12 +108,43 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
 
   onOpenScanBarcode(): void {
     this.aisNativeService.scanBarcode();
-    this.keyinSimSerial = false;
+
     this.aisNativeService.getBarcode().subscribe((imeiFromBarcode) => {
-      this.serialForm.patchValue({
-        serial: imeiFromBarcode
-      });
+      this.getMobileNoByScanImei(imeiFromBarcode);
     });
+  }
+  private getMobileNoByScanImei(serial: any): void {
+    this.pageLoadingService.openLoading();
+    this.http.get(`/api/customerportal/validate-verify-instant-sim?serialNo=${serial}`).toPromise()
+      .then((resp: any) => {
+        const simSerial = resp.data || [];
+        if (simSerial) {
+          this.scanBarCode = true;
+          this.keyinSimSerial = false;
+          this.simSerialValid = true;
+        }
+        this.onSubmit();
+        this.simSerialByBarCode = {
+          mobileNo: simSerial.mobileNo,
+          simSerial: serial
+        };
+        this.transaction.data.simCard = {
+          mobileNo: this.simSerialByBarCode.mobileNo,
+          simSerial: this.simSerialByBarCode.simSerial,
+          persoSim: false
+        };
+        this.pageLoadingService.closeLoading();
+      }).catch((resp: any) => {
+        this.simSerialValid = false;
+        this.simSerial = undefined;
+        const error = resp.error || [];
+        this.pageLoadingService.closeLoading();
+        this.alertService.notify({
+          type: 'error',
+          html: this.translationService.instant(error.resultDescription.replace(/<br>/, ' '))
+        });
+        this.onSubmit();
+      });
   }
 
   onBack(): void {
@@ -124,7 +160,7 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
   }
 
   ngAfterViewInit(): void {
-    this.serialField.nativeElement.focus();
+    // this.serialField.nativeElement.focus();
   }
 
   ngOnDestroy(): void {

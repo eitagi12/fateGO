@@ -49,6 +49,12 @@
                         {{ 'SCAN SIM' | translate }}
                     </div>
                     <div class="card-body">
+                        <div class="text-center" *ngIf="simSerialByBarCode?.simSerial && simSerialByBarCode?.mobileNo">
+                            <p class="text-grey" *ngIf="scanBarCode">
+                                <label>{{ 'หมายเลขโทรศัพท์' | translate }} : {{ simSerialByBarCode?.mobileNo | mobileNo }}</label>
+                                <br> {{ 'เลขที่ซิม' | translate }} : {{ simSerialByBarCode?.simSerial }}
+                            </p>
+                        </div>
                         <div id="btn-content-scan-barcode">
                             <button type="button" class="btn btn-scan-barcode" (click)="onOpenScanBarcode()" onclick="document.getElementById('serial').value = ''">{{keyinSimSerial === true ? 'สแกน Barcode อีกครั้ง' : 'สแกน Barcode'}}
                         </button>
