@@ -109,12 +109,6 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
     this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhum();
     this.isReadCard = this.transaction.data.action === 'READ_CARD' ? true : false;
     this.checkCaptureAndSign();
-    if (this.transaction.data.customer.imageSignatureSmartCard) {
-      this.setDefaultCanvas();
-    } else {
-      this.createCanvas();
-    }
-    this.onChangeCaptureAndSign();
   }
 
   checkCaptureAndSign(): void {
@@ -352,5 +346,15 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
     this.captureAndSign.imageSignatureWidthCard = canvas.toDataURL('image/jpeg').replace(/^data:image\/jpeg;base64,/, '');
 
     this.isDrawing = true;
+  }
+
+  // tslint:disable-next-line: use-life-cycle-interface
+  ngAfterViewInit(): void {
+    if (this.transaction.data.customer.imageSignatureSmartCard) {
+      this.setDefaultCanvas();
+    } else {
+      this.createCanvas();
+    }
+    this.onChangeCaptureAndSign();
   }
 }

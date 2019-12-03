@@ -50,6 +50,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
 
   mobileNo: string;
   checkOrderCounter: number = 0;
+  check: number = 0;
   getCommandCounter: boolean = false;
   public disableBack: any = false;
   command: number = 2;
@@ -337,14 +338,21 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
     }).catch((e: any): void => {
       // const errObj: any = e.json();
       // console.log('checkstatus errmes', errObj);
-      if (!this.getCommandCounter) {
-        this.popupControl('errorCmd', '');
-        this.getCommandCounter = true;
-        // console.log(this.popupControl('errorCmd', ''));
+      if (this.check < 3) {
+        if (!this.getCommandCounter) {
+          this.popupControl('errorCmd', '');
+          this.getCommandCounter = true;
+          // console.log(this.popupControl('errorCmd', ''));
+        } else {
+          this.popupControl('errorSim', '');
+          this.getCommandCounter = false;
+          this.check++;
+          // console.log(this.popupControl('errorSim', ''));
+        }
       } else {
-        this.popupControl('errorSim', '');
+        this.popupControl('errPerso', '');
         this.getCommandCounter = false;
-        // console.log(this.popupControl('errorSim', ''));
+        this.check = 0;
       }
     });
   }
@@ -424,34 +432,46 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
         } else {
           const tenSecond: number = 60000;
           const loop: number = 3;
-          if (this.checkOrderCounter < loop) {
+          if (this.checkOrderCounter < loop && this.check < loop) {
             this.timeoutCheckOrderStatus = setTimeout(() => {
               this.checkOrderStatus(refNo);
             }, tenSecond);
             this.checkOrderCounter++;
-          } else if (this.checkOrderCounter === loop) {
+          } else if (this.checkOrderCounter === loop && this.check < loop) {
             this.popupControl('errorOrder', '');
+            this.check++;
             this.checkOrderCounter++;
-          } else {
+          } else if (this.check < loop) {
             this.popupControl('errorSim', '');
+            this.check++;
             this.checkOrderCounter = 0;
+          } else {
+            this.popupControl('errPerso', '');
+            this.checkOrderCounter = 0;
+            this.check = 0;
           }
         }
       }
     }).catch((e: any): void => {
       const tenSecond: number = 60000;
       const loop: number = 3;
-      if (this.checkOrderCounter < loop) {
+      if (this.checkOrderCounter < loop && this.check < loop) {
         this.timeoutCheckOrderStatus = setTimeout(() => {
           this.checkOrderStatus(refNo);
         }, tenSecond);
         this.checkOrderCounter++;
-      } else if (this.checkOrderCounter === loop) {
+      } else if (this.checkOrderCounter === loop && this.check < loop) {
         this.popupControl('errorOrder', '');
+        this.check++;
         this.checkOrderCounter++;
-      } else {
+      } else if (this.check < loop) {
         this.popupControl('errorSim', '');
+        this.check++;
         this.checkOrderCounter = 0;
+      } else {
+        this.popupControl('errPerso', '');
+        this.checkOrderCounter = 0;
+        this.check = 0;
       }
     });
   }
@@ -478,9 +498,9 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
       case 'errPerso': {
         this.alertService.notify({
           type: 'error',
-          text: 'ไม่สามารถทำการ Perso SIM ได้ กรุณาเลือกเบอร์เพื่อทำรายการใหม่อีกครั้ง',
+          text: 'ไม่สามารถทำการ Perso SIM ได้ กรุณาทำรายการใหม่อีกครั้ง',
           confirmButtonText: 'ตกลง',
-          // onClose: () => this.testfn()
+          onClose: () => this.onNext()
         });
       } break;
       case 'errorOrder': {
