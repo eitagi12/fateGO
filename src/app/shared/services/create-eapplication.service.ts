@@ -94,6 +94,7 @@ export class CreateEapplicationService {
   }
 
   getRequestEapplicationSuperKhumSharePlanMnp(transaction: any, language: any): any {
+
     const customer: any = transaction.data.customer || {};
     const billingInformation: any = transaction.data.billingInformation || {};
     const billCycleData: any = billingInformation.billCycleData || {};
@@ -102,6 +103,7 @@ export class CreateEapplicationService {
     const customAttributes: any = transaction.data.mainPackage.customAttributes;
     const simCard: any = transaction.data.simCard.memberSimCard[0] || {}; // Get simNo of member
     const data: any = {
+      channel: 'MNP',
       fullNameTH: language === 'EN' ? `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}` :
         customer.firstName + ' ' + customer.lastName || '',
       idCard: this.privateIdcard(customer.idCardNo) || '',
@@ -165,6 +167,7 @@ export class CreateEapplicationService {
     const simCard: any = transaction.data.simCard || {};
 
     const data: any = {
+      channel: 'NewRegister',
       fullNameTH: language === 'EN' ? `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}` :
         customer.firstName + ' ' + customer.lastName || '',
       idCard: this.privateIdcard(customer.idCardNo) || '',

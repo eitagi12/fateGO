@@ -28,7 +28,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   order: Order;
   transactionId: string;
   idCardNoValid: boolean;
-  // priceOptionMock: any = require('../new-register-mnp-validate-customer-page/priceOption-Mock.json');
+  priceOptionMock: any = require('../new-register-mnp-validate-customer-page/priceOption-Mock.json');
   constructor(
     private router: Router,
     private pageLoadingService: PageLoadingService,
@@ -46,7 +46,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   }
 
   ngOnInit(): void {
-   // localStorage.setItem('priceOption', JSON.stringify(this.priceOptionMock));
+  //  localStorage.setItem('priceOption', JSON.stringify(this.priceOptionMock));
     this.createTransaction();
   }
   onError(valid: boolean): void {
@@ -134,7 +134,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
                   this.pageLoadingService.closeLoading();
                   this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
                 } else {
-                  if (this.order) {
+                  if (this.order) { 
                     this.setTransaction(customer);
                   } else {
                     const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(

@@ -9,7 +9,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { environment } from 'src/environments/environment';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { TranslateService } from '@ngx-translate/core';
-import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_PAGE } from '../../constants/route-path.constant';
 import { ValidateCustomerService } from 'src/app/shared/services/validate-customer.service';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { RemoveCartService } from '../../services/remove-cart.service';
@@ -98,23 +98,23 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
   }
 
   onBack(): void {
-    const queryParams = this.priceOption.queryParams;
-    this.alertService.question(this.translateService.instant('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่'))
-      .then((data: any) => {
-        if (!data.value) {
-          return false;
-        }
-        if (this.validateCustomerIdcard.koiskApiFn) {
-          this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
-        }
-        return this.returnStock().then(() => true);
-      })
-      .then((isNext: boolean) => {
-        if (isNext) {
-          this.transactionService.remove();
-          window.location.href = `/sales-portal/buy-product/brand/${queryParams.brand}/${queryParams.model}`;
-        }
-      });
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_PAGE]);
+    // const queryParams = this.priceOption.queryParams;
+    // this.alertService.question(this.translateService.instant('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่'))
+    //   .then((data: any) => {
+    //     if (!data.value) {
+    //       return false;
+    //     }
+    //     if (this.validateCustomerIdcard.koiskApiFn) {
+    //       this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+    //     }
+    //     return this.returnStock().then(() => true);
+    //   })
+    //   .then((isNext: boolean) => {
+    //     if (isNext) {
+    //       this.transactionService.remove();
+    //     }
+    //   });
   }
 
   onNext(): any {
@@ -152,7 +152,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                     if (!this.soId) {
                       // tslint:disable-next-line: max-line-length
                       const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: this.transaction.data.customer });
-                      return this.validateCustomerService.addDeviceSellingCart(body).then((response: any) => {
+                      return this.validateCustomerService.addDeviceSellingCartSharePlan(body).then((response: any) => {
                         this.transaction.data = {
                           ...this.transaction.data,
                           order: { soId: response.data }
