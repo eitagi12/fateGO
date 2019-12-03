@@ -8,7 +8,7 @@
         </div>
     </mc-header>
     <div class="mc-flex-wrap bg-white">
-        <mc-validate-customer (completed)="onCompleted($event)" (error)="onError($event)" (readCard)="onReadCard()" placeholder="เลขบัตรประชาชน" [validate]="validateCustomerIdentity" placeholderHeadder="กรอกเอกสารแสดงตน" placeholder="(เลขบัตรประชน)"></mc-validate-customer>
+        <mc-validate-customer (completed)="onCompleted($event)" (error)="onError($event)" (readCard)="onReadCard()" placeholder="(เลขบัตรประชาชน)" [validate]="validateCustomerIdentity" placeholderHeadder="กรอกเอกสารแสดงตน"></mc-validate-customer>
         <div class="container btn-validate-customer">
             <div class="row">
                 <div class="col-12"> <button class="btn btn-success" (click)="onNext()" [disabled]="!identityValid">NEXT</button></div>
