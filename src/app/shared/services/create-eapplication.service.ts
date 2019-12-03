@@ -103,7 +103,7 @@ export class CreateEapplicationService {
     const customAttributes: any = transaction.data.mainPackage.customAttributes;
     const simCard: any = transaction.data.simCard.memberSimCard[0] || {}; // Get simNo of member
     const data: any = {
-      channel: 'MNP',
+      channelType: 'MNP',
       fullNameTH: language === 'EN' ? `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}` :
         customer.firstName + ' ' + customer.lastName || '',
       idCard: this.privateIdcard(customer.idCardNo) || '',
@@ -167,9 +167,9 @@ export class CreateEapplicationService {
     const simCard: any = transaction.data.simCard || {};
 
     const data: any = {
-      channel: 'NewRegister',
+      channelType: 'NewRegister',
       fullNameTH: language === 'EN' ? `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}` :
-        customer.firstName + ' ' + customer.lastName || '',
+      customer.firstName + ' ' + customer.lastName || '',
       idCard: this.privateIdcard(customer.idCardNo) || '',
       idCardType: customer.idCardType || '',
       birthDate: customer.birthdate || '',
