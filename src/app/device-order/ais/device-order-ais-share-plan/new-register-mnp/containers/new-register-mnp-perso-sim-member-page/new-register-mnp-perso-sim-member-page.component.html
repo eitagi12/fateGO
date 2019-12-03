@@ -37,7 +37,7 @@
                                 <div *ngIf="errorMessage" class="text-center mt-3 mb-3 text-red">
                                     {{ errorMessage | translate }}
                                 </div>
-                                <div *ngIf="persoSim?.progress == 100 && errorMessage && persoSim?.progress > 0" class="text-center mt-3 mb-3">
+                                <div *ngIf="persoSim?.progress === 100" class="text-center mt-3 mb-3">
                                     {{ '(กรุณานำซิมการ์ดออก)' | translate }}
                                 </div>
                             </div>

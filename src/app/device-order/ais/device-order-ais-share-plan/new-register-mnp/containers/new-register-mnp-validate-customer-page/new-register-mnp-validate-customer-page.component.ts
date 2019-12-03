@@ -29,7 +29,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   user: User;
   order: Order;
   transactionId: string;
-  // priceOptionMock: any = require('../new-register-mnp-validate-customer-page/priceOption-Mock.json');
+  priceOptionMock: any = require('../new-register-mnp-validate-customer-page/priceOption-Mock.json');
   constructor(
     private router: Router,
     private pageLoadingService: PageLoadingService,
@@ -48,7 +48,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   }
 
   ngOnInit(): void {
-    // localStorage.setItem('priceOption', JSON.stringify(this.priceOptionMock));
+    localStorage.setItem('priceOption', JSON.stringify(this.priceOptionMock));
     this.createTransaction();
   }
   onError(valid: boolean): void {

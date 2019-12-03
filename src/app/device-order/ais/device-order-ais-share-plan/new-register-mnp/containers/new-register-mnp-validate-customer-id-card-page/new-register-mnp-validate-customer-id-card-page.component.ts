@@ -69,7 +69,9 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
   }
 
   ngOnInit(): void {
-    this.soId = this.transaction.data.order.soId;
+    if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      this.soId = this.transaction.data.order.soId;
+    }
   }
 
   onProgress(progress: number): void {
@@ -153,7 +155,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                       return this.validateCustomerService.addDeviceSellingCart(body).then((response: any) => {
                         this.transaction.data = {
                           ...this.transaction.data,
-                          order: { soId: response.data}
+                          order: { soId: response.data }
                         };
                         return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
                       });
@@ -175,59 +177,59 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
       // if (isLowerAge.false) {
       //   this.alertService.error(isLowerAge.false);
       // } else {
-        this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol).then((zipCode: string) => {
-          const transactionType = TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS; // New
-          return this.validateCustomerService.checkValidateCustomer(this.profile.idCardNo, this.profile.idCardType, transactionType)
-            .then((res) => {
-              const data = res.data || {};
-              return {
-                caNumber: data.caNumber,
-                mainMobile: data.mainMobile,
-                billCycle: data.billCycle,
-                zipCode: zipCode
-              };
-            }).then((customer) => {
-              this.transaction.data.customer = Object.assign(this.profile, customer);
-              return this.validateCustomerService.queryBillingAccount(this.profile.idCardNo)
-                .then((resp: any) => {
-                  const params: any = resp.data || {};
-                  this.toBillingInformation(params).then((billingInfo: any) => {
-                    this.transaction.data.billingInformation = billingInfo || {};
-                  });
-                  return this.conditionIdentityValid()
-                    .catch((msg: string) => {
-                      return this.alertService.error(this.translateService.instant(msg)).then(() => true);
-                    })
-                    .then((isError: boolean) => {
-                      if (isError) {
-                        this.onBack();
-                        return;
-                      }
-                      if (!this.soId) {
-                        // tslint:disable-next-line: max-line-length
-                        const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: this.transaction.data.customer });
-                        return this.validateCustomerService.addDeviceSellingCartSharePlan(body).then((response: any) => {
-                          this.transaction.data = {
-                            ...this.transaction.data,
-                            order: { soId: response.data }
-                          };
-                          return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-                        }).then(() => {
-                          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
-                          this.pageLoadingService.closeLoading();
-                        });
-                      } else {
+      this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol).then((zipCode: string) => {
+        const transactionType = TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS; // New
+        return this.validateCustomerService.checkValidateCustomer(this.profile.idCardNo, this.profile.idCardType, transactionType)
+          .then((res) => {
+            const data = res.data || {};
+            return {
+              caNumber: data.caNumber,
+              mainMobile: data.mainMobile,
+              billCycle: data.billCycle,
+              zipCode: zipCode
+            };
+          }).then((customer) => {
+            this.transaction.data.customer = Object.assign(this.profile, customer);
+            return this.validateCustomerService.queryBillingAccount(this.profile.idCardNo)
+              .then((resp: any) => {
+                const params: any = resp.data || {};
+                this.toBillingInformation(params).then((billingInfo: any) => {
+                  this.transaction.data.billingInformation = billingInfo || {};
+                });
+                return this.conditionIdentityValid()
+                  .catch((msg: string) => {
+                    return this.alertService.error(this.translateService.instant(msg)).then(() => true);
+                  })
+                  .then((isError: boolean) => {
+                    if (isError) {
+                      this.onBack();
+                      return;
+                    }
+                    if (!this.soId) {
+                      // tslint:disable-next-line: max-line-length
+                      const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: this.transaction.data.customer });
+                      return this.validateCustomerService.addDeviceSellingCartSharePlan(body).then((response: any) => {
                         this.transaction.data = {
                           ...this.transaction.data,
-                          order: { soId: this.soId }
+                          order: { soId: response.data }
                         };
+                        return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+                      }).then(() => {
                         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
                         this.pageLoadingService.closeLoading();
-                      }
-                    });
-                });
-            });
-        });
+                      });
+                    } else {
+                      this.transaction.data = {
+                        ...this.transaction.data,
+                        order: { soId: this.soId }
+                      };
+                      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
+                      this.pageLoadingService.closeLoading();
+                    }
+                  });
+              });
+          });
+      });
       // }
     });
   }

@@ -231,6 +231,8 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
                       transaction: this.transaction,
                       transactionType: TransactionType.DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN
                     });
+
+                    console.log('==>', transactionObject);
                     this.validateCustomerService.createTransaction(transactionObject).then((resp: any) => {
                       this.pageLoadingService.closeLoading();
                       if (resp.data.isSuccess) {
