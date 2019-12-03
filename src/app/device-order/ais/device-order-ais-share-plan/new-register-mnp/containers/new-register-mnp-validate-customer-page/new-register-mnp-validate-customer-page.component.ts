@@ -46,7 +46,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   }
 
   ngOnInit(): void {
-  //  localStorage.setItem('priceOption', JSON.stringify(this.priceOptionMock));
+    //  localStorage.setItem('priceOption', JSON.stringify(this.priceOptionMock));
     this.createTransaction();
   }
   onError(valid: boolean): void {
@@ -99,19 +99,19 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-      this.validateCustomer().catch((error: any) => {
-        if (error.error.developerMessage === 'EB0001 : Data Not Found.') {
-          this.pageLoadingService.closeLoading();
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE], {
-            queryParams: {
-              idCardNo: this.identity
-            }
-          });
-        } else {
-          this.pageLoadingService.closeLoading();
-          this.alertService.error(error);
-        }
-      });
+    this.validateCustomer().catch((error: any) => {
+      if (error.error.developerMessage === 'EB0001 : Data Not Found.') {
+        this.pageLoadingService.closeLoading();
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE], {
+          queryParams: {
+            idCardNo: this.identity
+          }
+        });
+      } else {
+        this.pageLoadingService.closeLoading();
+        this.alertService.error(error);
+      }
+    });
   }
 
   validateCustomer(): any {
@@ -121,43 +121,43 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
         const cardType = this.mapCardType(customerInfo.data.idCardType);
         if (cardType === 'บัตรประชาชน') {
           return this.validateCustomerService.checkValidateCustomer(this.identity, cardType, transactionType)
-          .then((customer: any) => {
-            console.log(customer);
-            return this.validateCustomerService.queryBillingAccount(this.identity)
-              .then((resp: any) => {
-                const data: any = resp.data || {};
-                this.toBillingInformation(data).then((billingInfo: any) => {
-                  this.transaction.data.billingInformation = billingInfo;
-                });
-                const birthdate = customer.data.birthdate;
-                if (this.utils.isLowerAge17Year(birthdate)) {
-                  this.pageLoadingService.closeLoading();
-                  this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
-                } else {
-                  if (this.order) { 
-                    this.setTransaction(customer);
+            .then((customer: any) => {
+              console.log(customer);
+              return this.validateCustomerService.queryBillingAccount(this.identity)
+                .then((resp: any) => {
+                  const data: any = resp.data || {};
+                  this.toBillingInformation(data).then((billingInfo: any) => {
+                    this.transaction.data.billingInformation = billingInfo;
+                  });
+                  const birthdate = customer.data.birthdate;
+                  if (this.utils.isLowerAge17Year(birthdate)) {
+                    this.pageLoadingService.closeLoading();
+                    this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
                   } else {
-                    const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(
-                      this.user,
-                      this.transaction,
-                      this.priceOption,
-                      { customer: customer }
-                    );
-                    return this.validateCustomerService.addDeviceSellingCartSharePlan(body).then((order: any) => {
-                      if (order.data && order.data.soId) {
-                        this.transaction.data = {
-                          ...this.transaction.data,
-                          order: { soId: order.data.soId },
-                        };
-                        this.setTransaction(customer);
-                      } else {
-                        this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
-                      }
-                    });
+                    if (this.order) {
+                      this.setTransaction(customer);
+                    } else {
+                      const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(
+                        this.user,
+                        this.transaction,
+                        this.priceOption,
+                        { customer: customer }
+                      );
+                      return this.validateCustomerService.addDeviceSellingCartSharePlan(body).then((order: any) => {
+                        if (order.data && order.data.soId) {
+                          this.transaction.data = {
+                            ...this.transaction.data,
+                            order: { soId: order.data.soId },
+                          };
+                          this.setTransaction(customer);
+                        } else {
+                          this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+                        }
+                      });
+                    }
                   }
-                }
-              });
-          });
+                });
+            });
         } else {
           this.alertService.error('ระบบไม่อนุญาตให้กรอกเลขบัตรประจำตัวคนต่างด้าว');
         }
