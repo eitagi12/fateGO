@@ -12,8 +12,6 @@ import { ValidateCustomerService } from 'src/app/shared/services/validate-custom
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { Utils } from 'mychannel-shared-libs';
 import { Transaction, Order, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
-import { HttpClient } from '@angular/common/http';
-import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { RemoveCartService } from '../../services/remove-cart.service';
 
 @Component({
@@ -29,7 +27,8 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   user: User;
   order: Order;
   transactionId: string;
-  priceOptionMock: any = require('../new-register-mnp-validate-customer-page/priceOption-Mock.json');
+  idCardNoValid: boolean;
+  // priceOptionMock: any = require('../new-register-mnp-validate-customer-page/priceOption-Mock.json');
   constructor(
     private router: Router,
     private pageLoadingService: PageLoadingService,
@@ -39,7 +38,6 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     private alertService: AlertService,
     private validateCustomerService: ValidateCustomerService,
     private utils: Utils,
-    private http: HttpClient,
     private removeCartService: RemoveCartService
   ) {
     this.transaction = this.transactionService.load();
@@ -62,12 +60,20 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   validateCustomerIdentity(control: AbstractControl): ValidationErrors | null {
     const value = control.value;
     const length: number = control.value.length;
+    // tslint:disable-next-line: no-construct
+    const firstNum = new String(value).charAt(0);
     if (length === 13) {
-      if (this.utils.isThaiIdCard(value)) {
-        return null;
+      if (firstNum !== '0') {
+        if (this.utils.isThaiIdCard(value)) {
+          return null;
+        } else {
+          return {
+            message: 'กรุณากรอกเลขบัตรประชาชนให้ถูกต้อง',
+          };
+        }
       } else {
         return {
-          message: 'กรุณากรอกเลขบัตรประชาชนให้ถูกต้อง',
+          message: 'ระบบไม่อนุญาตให้กรอกเลขบัตรประจำตัวคนต่างด้าว'
         };
       }
     } else {
@@ -93,29 +99,30 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    this.validateCustomer().catch((error: any) => {
-      console.log(error);
-      if (error.error.developerMessage === 'EB0001 : Data Not Found.') {
-        this.pageLoadingService.closeLoading();
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE], {
-          queryParams: {
-            idCardNo: this.identity
-          }
-        });
-      } else {
-        this.pageLoadingService.closeLoading();
-        this.alertService.error(error);
-      }
-    });
+      this.validateCustomer().catch((error: any) => {
+        if (error.error.developerMessage === 'EB0001 : Data Not Found.') {
+          this.pageLoadingService.closeLoading();
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE], {
+            queryParams: {
+              idCardNo: this.identity
+            }
+          });
+        } else {
+          this.pageLoadingService.closeLoading();
+          this.alertService.error(error);
+        }
+      });
   }
 
   validateCustomer(): any {
     return this.validateCustomerService.queryCustomerInfo(this.identity)
       .then((customerInfo: any) => {
-        const cardType: string = this.mapCardType(customerInfo.idCardType);
         const transactionType = TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS; // New
-        return this.validateCustomerService.checkValidateCustomer(this.identity, cardType, transactionType)
+        const cardType = this.mapCardType(customerInfo.data.idCardType);
+        if (cardType === 'บัตรประชาชน') {
+          return this.validateCustomerService.checkValidateCustomer(this.identity, cardType, transactionType)
           .then((customer: any) => {
+            console.log(customer);
             return this.validateCustomerService.queryBillingAccount(this.identity)
               .then((resp: any) => {
                 const data: any = resp.data || {};
@@ -151,6 +158,9 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
                 }
               });
           });
+        } else {
+          this.alertService.error('ระบบไม่อนุญาตให้กรอกเลขบัตรประจำตัวคนต่างด้าว');
+        }
       });
   }
 
@@ -220,8 +230,8 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
       firstNameEn: '',
       lastNameEn: '',
       issueDate: customer.birthdate || customer.issueDate || '',
-      // tslint:disable-next-line: max-line-length
-      expireDate: customer.expireDate || customer.expireDay ? customer.expireDay + '/' + customer.expireMonth + '/' + customer.expireYear : '',
+      expireDate:
+        customer.expireDate || customer.expireDay ? customer.expireDay + '/' + customer.expireMonth + '/' + customer.expireYear : '',
       zipCode: customer.zipCode || '',
       mainMobile: customer.mainMobile || '',
       mainPhone: customer.mainPhone || '',
