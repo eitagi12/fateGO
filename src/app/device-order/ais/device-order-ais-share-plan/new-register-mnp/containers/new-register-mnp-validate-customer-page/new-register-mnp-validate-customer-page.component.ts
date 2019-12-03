@@ -93,39 +93,8 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    this.validateCustomer().then((data: any) => {
-      if (data) {
-        const soId: any = data.order.data || data.order;
-        this.transaction.data = {
-          ...this.transaction.data,
-          order: soId
-        };
-        this.transaction.data.customer = this.mapCustomer(data.customer.data);
-      }
-    }).then(() => {
-      if (this.transaction.transactionId) {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
-        this.pageLoadingService.closeLoading();
-      } else {
-        const transactionObject: any = this.validateCustomerService.buildTransaction({
-          transaction: this.transaction,
-          transactionType: TransactionType.DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN // Share
-        }
-        );
-        this.validateCustomerService.createTransaction(transactionObject).then((response: any) => {
-          this.pageLoadingService.closeLoading();
-          if (response.data.isSuccess) {
-            this.transaction = transactionObject;
-            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
-          } else {
-            this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
-          }
-        }).catch((error: any) => {
-          this.pageLoadingService.closeLoading();
-          this.alertService.error(error);
-        });
-      }
-    }).catch((error: any) => {
+    this.validateCustomer().catch((error: any) => {
+      console.log(error);
       if (error.error.developerMessage === 'EB0001 : Data Not Found.') {
         this.pageLoadingService.closeLoading();
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE], {
@@ -135,7 +104,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
         });
       } else {
         this.pageLoadingService.closeLoading();
-        this.alertService.error('คุณไม่สามารถทำรายการเปิดเบอร์ใหม่ได้ Sorry this ID Card is Expired');
+        this.alertService.error(error);
       }
     });
   }
@@ -155,29 +124,56 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
                 });
                 const birthdate = customer.data.birthdate;
                 if (this.utils.isLowerAge17Year(birthdate)) {
+                  this.pageLoadingService.closeLoading();
                   this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
                 } else {
                   if (this.order) {
-                    return {
-                      order: this.order,
-                      customer,
-                      customerInfo
-                    };
+                    this.setTransaction(this.order, customer);
                   } else {
-                    // tslint:disable-next-line: max-line-length
-                    const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: customer });
+                    const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(
+                      this.user,
+                      this.transaction,
+                      this.priceOption,
+                      { customer: customer }
+                    );
                     return this.validateCustomerService.addDeviceSellingCartSharePlan(body).then((order: Order) => {
-                      return {
-                        order,
-                        customer,
-                        customerInfo,
-                      };
+                      this.setTransaction(order, customer);
                     });
                   }
                 }
               });
           });
       });
+  }
+
+  setTransaction(order: any, customer: any): void {
+    const soId: any = order;
+    this.transaction.data = {
+      ...this.transaction.data,
+      order: soId
+    };
+    this.transaction.data.customer = this.mapCustomer(customer.data);
+    if (this.transaction.transactionId) {
+      this.pageLoadingService.closeLoading();
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
+    } else {
+      const transactionObject: any = this.validateCustomerService.buildTransaction({
+        transaction: this.transaction,
+        transactionType: TransactionType.DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN // Share
+      });
+      this.validateCustomerService.createTransaction(transactionObject).then((response: any) => {
+        this.pageLoadingService.closeLoading();
+        if (response.data.isSuccess) {
+          this.transaction = transactionObject;
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
+        } else {
+          this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+        }
+      }).catch((error: any) => {
+        this.pageLoadingService.closeLoading();
+        this.alertService.error(error);
+      });
+    }
   }
 
   mapCardType(idCardType: string): string {
