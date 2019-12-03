@@ -46,7 +46,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   }
 
   ngOnInit(): void {
-    //  localStorage.setItem('priceOption', JSON.stringify(this.priceOptionMock));
+     localStorage.setItem('priceOption', JSON.stringify(this.priceOptionMock));
     this.createTransaction();
   }
   onError(valid: boolean): void {
