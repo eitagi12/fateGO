@@ -91,7 +91,7 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
             this.pageLoadingService.closeLoading();
             this.alertService.notify({
               type: 'error',
-              text: `ขออภัย ทำรายการไม่สำเร็จ ให้ทำรายการใหม่อีกครั้ง (ORDER : ${this.transaction.data.order.orderNo})`,
+              html: `ขออภัย ทำรายการไม่สำเร็จ ให้ทำรายการใหม่อีกครั้ง <br> (ORDER : ${this.transaction.data.order.orderNo})`,
               confirmButtonText: 'MAIN MENU',
               onClose: () => this.onMainMenu()
             });
@@ -131,7 +131,10 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
         errors.pipe(concatMap((e, i) => {
           if (i >= 16) {
             this.pageLoadingService.closeLoading();
-            return throwError(`ขออภัย ทำรายการไม่สำเร็จ ให้ทำรายการใหม่อีกครั้ง (ORDER : ${orderNo})`);
+            return this.alertService.notify({
+              type: 'error',
+              html: `ขออภัย ทำรายการไม่สำเร็จ ให้ทำรายการใหม่อีกครั้ง <br> (ORDER : ${this.transaction.data.order.orderNo})`,
+            });
           }
           return of(e).pipe(delay(15000));
         }))
