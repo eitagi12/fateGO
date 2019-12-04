@@ -134,6 +134,8 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
             return this.alertService.notify({
               type: 'error',
               html: `ขออภัย ทำรายการไม่สำเร็จ ให้ทำรายการใหม่อีกครั้ง <br> (ORDER : ${this.transaction.data.order.orderNo})`,
+              confirmButtonText: 'MAIN MENU',
+              onClose: () => this.onMainMenu()
             });
           }
           return of(e).pipe(delay(15000));
