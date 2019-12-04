@@ -355,6 +355,6 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
     } else {
       this.createCanvas();
     }
-    this.onChangeCaptureAndSign();
+    // this.onChangeCaptureAndSign();
   }
 }
