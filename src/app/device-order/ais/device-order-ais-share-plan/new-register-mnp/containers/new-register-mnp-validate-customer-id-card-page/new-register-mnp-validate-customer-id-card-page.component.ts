@@ -90,7 +90,11 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
   }
 
   onCompleted(profile: ReadCardProfile): void {
-    this.profile = profile;
+    if (profile.idCardType === 'บัตรประชาชน' || profile.idCardType === 'ID_CARD') {
+      this.profile = profile;
+    } else {
+      this.alertService.error('ระบบไม่อนุญาตให้กรอกเลขบัตรประจำตัวคนต่างด้าว');
+    }
   }
 
   onHome(): void {
@@ -123,6 +127,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
     return this.validateCustomerService.queryCustomerInfo(this.profile.idCardNo).then((res) => {
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol).then((zipCode: string) => {
         const transactionType = TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS; // New
+        // if (this.profile.idCardType === 'บัตรประชาชน' || this.profile.idCardType === 'ID_CARD') {
         return this.validateCustomerService.checkValidateCustomer(this.profile.idCardNo, this.profile.idCardType, transactionType)
           .then((resp: any) => {
             const data = resp.data || {};
@@ -150,8 +155,12 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                       return;
                     }
                     if (!this.soId) {
-                      // tslint:disable-next-line: max-line-length
-                      const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: this.transaction.data.customer });
+                      const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(
+                        this.user,
+                        this.transaction,
+                        this.priceOption,
+                        { customer: this.transaction.data.customer }
+                      );
                       return this.validateCustomerService.addDeviceSellingCartSharePlan(body).then((response: any) => {
                         this.transaction.data = {
                           ...this.transaction.data,
@@ -169,14 +178,13 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                   .then(() => this.pageLoadingService.closeLoading());
               });
           });
+        // } else {
+        //   this.alertService.error('ระบบไม่อนุญาตให้กรอกเลขบัตรประจำตัวคนต่างด้าว');
+        // }
       });
     }).catch((e) => {
       const mapCustomer = this.mapCustomer(this.profile);
       this.transaction.data.customer = mapCustomer;
-      // const isLowerAge = this.validateCustomerService.checkAgeAndExpireCard(this.transaction);
-      // if (isLowerAge.false) {
-      //   this.alertService.error(isLowerAge.false);
-      // } else {
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol).then((zipCode: string) => {
         const transactionType = TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS; // New
         return this.validateCustomerService.checkValidateCustomer(this.profile.idCardNo, this.profile.idCardType, transactionType)
