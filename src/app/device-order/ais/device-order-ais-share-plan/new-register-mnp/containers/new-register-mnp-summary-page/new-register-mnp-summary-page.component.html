@@ -49,7 +49,7 @@
                 <div class="card mb-3">
                     <div class="card-header bg-lime text-white">{{ 'แพ็กเกจใช้บริการ' | translate }}</div>
                     <div class="card-body">
-                        <div class="text-green mb-3">{{ 'แพ็กเกจเบอร์หลัก' | translate }}</div>
+                        <div class="text-green mb-3">{{ 'แพ็กเกจเบอร์หลัก (เบอร์ใหม่)' | translate }}</div>
                         <p class="ml-3">
                             <i class="fa fa-circle mr-3 text-green"></i>
                             {{mainPackageTitle(transaction?.data?.mainPackage?.customAttributes)}}
@@ -58,7 +58,7 @@
                                 <img src="assets/images/icon/icon-page.png" class="icon" />
                             </span>
                         </p>
-                        <div class="text-green mb-3">{{ 'แพ็กเกจเบอร์สมาชิก' | translate }}</div>
+                        <div class="text-green mb-3">{{ 'แพ็กเกจเบอร์สมาชิก (เบอร์ย้ายค่าย)' | translate }}</div>
                         <p class="ml-3">
                             <i class="fa fa-circle mr-3 text-green"></i>
                             {{memberMainPackageTitle(transaction?.data?.mainPackage?.memberMainPackage[0])}}
