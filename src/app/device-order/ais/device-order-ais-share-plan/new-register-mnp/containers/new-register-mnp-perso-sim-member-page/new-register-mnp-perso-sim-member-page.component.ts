@@ -50,7 +50,6 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
 
   mobileNo: string;
   checkOrderCounter: number = 0;
-  check: number = 0;
   getCommandCounter: boolean = false;
   public disableBack: any = false;
   command: number = 2;
@@ -338,21 +337,14 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
     }).catch((e: any): void => {
       // const errObj: any = e.json();
       // console.log('checkstatus errmes', errObj);
-      if (this.check < 3) {
-        if (!this.getCommandCounter) {
-          this.popupControl('errorCmd', '');
-          this.getCommandCounter = true;
-          // console.log(this.popupControl('errorCmd', ''));
-        } else {
-          this.popupControl('errorSim', '');
-          this.getCommandCounter = false;
-          this.check++;
-          // console.log(this.popupControl('errorSim', ''));
-        }
+      if (!this.getCommandCounter) {
+        this.popupControl('errorCmd', '');
+        this.getCommandCounter = true;
+        // console.log(this.popupControl('errorCmd', ''));
       } else {
-        this.popupControl('errPerso', '');
+        this.popupControl('errorSim', '');
         this.getCommandCounter = false;
-        this.check = 0;
+        // console.log(this.popupControl('errorSim', ''));
       }
     });
   }
@@ -433,46 +425,27 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
         } else {
           const tenSecond: number = 60000;
           const loop: number = 3;
-          if (this.checkOrderCounter < loop && this.check < loop) {
-            this.timeoutCheckOrderStatus = setTimeout(() => {
-              this.checkOrderStatus(refNo);
+          if (this.createTxPersoCounter < loop) {
+            this.timeoutCreatePersoSim = setTimeout(() => {
+              this.createdPersoSim(refNo);
             }, tenSecond);
-            this.checkOrderCounter++;
-          } else if (this.checkOrderCounter === loop && this.check < loop) {
-            this.popupControl('errorOrder', '');
-            this.check++;
-            this.checkOrderCounter++;
-          } else if (this.check < loop) {
-            this.popupControl('errorSim', '');
-            this.check++;
-            this.checkOrderCounter = 0;
+            this.createTxPersoCounter++;
           } else {
-            this.popupControl('errPerso', '');
-            this.checkOrderCounter = 0;
-            this.check = 0;
+            this.popupControl('errorSim', '');
           }
+
         }
       }
     }).catch((e: any): void => {
       const tenSecond: number = 60000;
       const loop: number = 3;
-      if (this.checkOrderCounter < loop && this.check < loop) {
-        this.timeoutCheckOrderStatus = setTimeout(() => {
-          this.checkOrderStatus(refNo);
+      if (this.createTxPersoCounter < loop) {
+        this.timeoutCreatePersoSim = setTimeout(() => {
+          this.createdPersoSim(refNo);
         }, tenSecond);
-        this.checkOrderCounter++;
-      } else if (this.checkOrderCounter === loop && this.check < loop) {
-        this.popupControl('errorOrder', '');
-        this.check++;
-        this.checkOrderCounter++;
-      } else if (this.check < loop) {
-        this.popupControl('errorSim', '');
-        this.check++;
-        this.checkOrderCounter = 0;
+        this.createTxPersoCounter++;
       } else {
-        this.popupControl('errPerso', '');
-        this.checkOrderCounter = 0;
-        this.check = 0;
+        this.popupControl('errorSim', '');
       }
     });
   }
