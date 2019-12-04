@@ -15,7 +15,7 @@
                 <div class="card mb-3">
                     <div class="card-header bg-light-blue text-white">
                         <div class="row">
-                            <div class="col-6">{{ 'Post Paid' | translate }}</div>
+                            <div class="col-6">{{ 'เบอร์สมาชิก (เบอร์ย้ายค่าย)' | translate }}</div>
                             <div class="col-6 text-right">{{ memberSimCard?.mobileNo }}</div>
                         </div>
                     </div>
@@ -49,6 +49,6 @@
     </div>
     <mc-footer>
         <button class="btn btn-secondary" (click)="onBack()" [disabled]="persoSim?.progress === 100">BACK</button>
-        <button *ngIf="persoSim?.progress === 100" class="btn btn-success" (click)="onNext()" [disabled]="currentStatus">NEXT</button>
+        <!-- <button *ngIf="persoSim?.progress === 100" class="btn btn-success" (click)="onNext()" [disabled]="currentStatus">NEXT</button> -->
     </mc-footer>
 </div>

@@ -194,24 +194,24 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
     }
   }
 
-  checkStatusSimCard(): void {
-    clearInterval(this.persoSimInterval);
-    const intervalTime: number = 3000;
-    this.persoSimInterval = setInterval(() => {
-      this.checkSimStatus();
-    }, intervalTime); // Timer
-  }
+  // checkStatusSimCard(): void {
+  //   clearInterval(this.persoSimInterval);
+  //   const intervalTime: number = 3000;
+  //   this.persoSimInterval = setInterval(() => {
+  //     this.checkSimStatus();
+  //   }, intervalTime); // Timer
+  // }
 
-  checkSimStatus(): void {
-    const getCardStatus: number = 1000;
-    this.cardStatus = this.aisNative.sendIccCommand(this.command, getCardStatus, ''); // Get card status
-    if (this.cardStatus === 'Card presented') {
-      this.currentStatus = true;
-    } else {
-      this.currentStatus = false;
-      clearInterval(this.persoSimInterval);
-    }
-  }
+  // checkSimStatus(): void {
+  //   const getCardStatus: number = 1000;
+  //   this.cardStatus = this.aisNative.sendIccCommand(this.command, getCardStatus, ''); // Get card status
+  //   if (this.cardStatus === 'Card presented') {
+  //     this.currentStatus = true;
+  //   } else {
+  //     this.currentStatus = false;
+  //     clearInterval(this.persoSimInterval);
+  //   }
+  // }
 
   readSimForPerso(): void {
     // const closeDialog: number = 1004;
@@ -426,9 +426,10 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
           // Progess 100%
           this.persoSim = { progress: 100, eventName: 'กรุณารอสักครู่' };
           // $('.custom').animate({ width: 100 + '%' }, this.duration, () => {/**/ });
-          setTimeout(() => {
-          }, this.duration);
-          this.checkStatusSimCard();
+          // setTimeout(() => {
+          // }, this.duration);
+          // this.checkStatusSimCard();
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_AGGREGATE_PAGE]);
         } else {
           const tenSecond: number = 60000;
           const loop: number = 3;
