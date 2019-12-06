@@ -28,7 +28,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   order: Order;
   transactionId: string;
   idCardNoValid: boolean;
-  // priceOptionMock: any = require('../new-register-mnp-validate-customer-page/priceOption-Mock.json');
+  priceOptionMock: any = require('../new-register-mnp-validate-customer-page/priceOption-Mock.json');
   constructor(
     private router: Router,
     private pageLoadingService: PageLoadingService,
@@ -46,7 +46,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   }
 
   ngOnInit(): void {
-    //  localStorage.setItem('priceOption', JSON.stringify(this.priceOptionMock));
+    localStorage.setItem('priceOption', JSON.stringify(this.priceOptionMock));
     this.createTransaction();
   }
   onError(valid: boolean): void {
@@ -157,12 +157,15 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
               });
           }).catch((err) => {
             this.pageLoadingService.closeLoading();
-            if (JSON.parse(JSON.stringify(err.error.resultCode)) === 'MYCHN00150006') {
-              this.alertService.error('ขออภัย ท่านมียอดค้างชำระ รบกวนชำระยอดก่อนทำรายการ');
+            if (err.error.resultCode === 'MYCHN00150006') {
+              if (err.error.errors.length === 2) {
+                this.alertService.error('ขออภัย ท่านมียอดค้างชำระ รบกวนชำระยอดก่อนทำรายการ');
+              } else {
+                this.alertService.error('มีสัญญาใช้บริการในระบบ AIS ครบตามจำนวนที่กำหนดไว้');
+              }
             } else {
               this.alertService.error(JSON.parse(JSON.stringify(err.error.errors[0])));
             }
-            // this.alertService.error(err.errors[0]);
           });
       });
   }

@@ -232,12 +232,15 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
               }
         }).catch((err: any) => {
           this.pageLoadingService.closeLoading();
-          if (JSON.parse(JSON.stringify(err.error.resultCode)) === 'MYCHN00150006') {
-            this.alertService.error('ขออภัย ท่านมียอดค้างชำระ รบกวนชำระยอดก่อนทำรายการ');
-          } else {
-            this.alertService.error(JSON.parse(JSON.stringify(err.error.errors[0])));
-          }
-          // this.alertService.error(error);
+            if (err.error.resultCode === 'MYCHN00150006') {
+              if (err.error.errors.length === 2) {
+                this.alertService.error('ขออภัย ท่านมียอดค้างชำระ รบกวนชำระยอดก่อนทำรายการ');
+              } else {
+                this.alertService.error('มีสัญญาใช้บริการในระบบ AIS ครบตามจำนวนที่กำหนดไว้');
+              }
+            } else {
+              this.alertService.error(JSON.parse(JSON.stringify(err.error.errors[0])));
+            }
         });
     } else {
       this.pageLoadingService.closeLoading();
