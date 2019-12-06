@@ -263,6 +263,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
       this.transactionId = this.transaction.transactionId;
       this.order = this.transaction.data.order;
+      this.transaction.data.action = TransactionAction.KEY_IN;
     } else {
       this.transaction = {
         data: {
