@@ -7,8 +7,8 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { TranslateService } from '@ngx-translate/core';
 import {
-  ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_EAPPLICATION_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_AGGREGATE_PAGE
+  ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_AGGREGATE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PERSO_SIM_MASTER_PAGE
 } from '../../constants/route-path.constant';
 import { environment } from 'src/environments/environment';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
@@ -559,7 +559,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_EAPPLICATION_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PERSO_SIM_MASTER_PAGE]);
   }
 
   onNext(): void {
