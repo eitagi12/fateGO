@@ -40,4 +40,31 @@ export class ShoppingCartService {
     this.translateService.stream(campaign.campaignName).subscribe(campaignName => shoppingCartData.campaignName = campaignName);
     return shoppingCartData;
   }
+
+  getShoppingCartDataSuperKhum(): any {
+    const transaction = this.transactionService.load();
+    const priceOption = this.priceOptionService.load();
+    const customer = transaction.data.customer;
+    const simCard = transaction.data.simCard;
+    const campaign = priceOption.campaign;
+    const trade = priceOption.trade || {};
+    const productDetail = priceOption.productDetail || {};
+    const productStock = priceOption.productStock || {};
+
+    const advancePay = +trade.advancePay.amount || 0;
+    let commercialName = productDetail.name;
+    if (productStock.colorName) {
+      commercialName += ` สี ${productStock.colorName}`;
+    }
+    const shoppingCartData = {
+      fullName: `${customer.titleName || ''} ${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
+      mobileNo: simCard && simCard.mobileNo ? simCard.mobileNo : '',
+      campaignName: campaign.campaignName,
+      commercialName: commercialName,
+      qty: 1,
+      price: +trade.promotionPrice + advancePay
+    };
+    this.translateService.stream(campaign.campaignName).subscribe(campaignName => shoppingCartData.campaignName = campaignName);
+    return shoppingCartData;
+  }
 }

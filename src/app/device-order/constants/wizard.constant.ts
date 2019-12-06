@@ -10,3 +10,7 @@ export const WIZARD_DEVICE_ORDER_AIS = [
 export const WIZARD_DEVICE_ODER_AIS_DEVICE = [
     'ข้อมูลชำระเงิน', 'สินค้าและบริการอื่น', 'สรุปรายการ'
 ];
+
+export const WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN = [
+    'ข้อมูลชำระเงิน', 'เปิดเบอร์ใหม่', 'ระบุข้อมูลย้ายค่าย', 'สินค้าและบริการอื่น', 'สรุปรายการ'
+];

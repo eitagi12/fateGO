@@ -34,6 +34,8 @@ import { QrCodeOmisePageService } from 'src/app/device-order/services/qr-code-om
     DecimalPipe,
     QrCodeOmisePageService
   ],
-  declarations: [DeviceOrderComponent]
+  declarations: [
+    DeviceOrderComponent
+  ]
 })
 export class DeviceOrderModule { }

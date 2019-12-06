@@ -1,0 +1,44 @@
+<div class="mc-flex">
+    <mc-header title="{{ 'รายการสินค้า' | translate }}">
+        <div class="header-icon-left">
+            <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+        </div>
+        <div class="header-icon-right">
+            <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+        </div>
+    </mc-header>
+    <div class="mc-flex-wrap">
+        <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
+        <div class="my-3">
+            <mc-wizard [wizards]="wizards" active="5"></mc-wizard>
+            <div class="container">
+                <div class="tab">
+                    <button id="middle-inline" [ngClass]="{'active': (selectedTab == 'hotdeal-superkhum-new-register') }" (click)="selectEapplication('hotdeal-superkhum-new-register')">NEW</button>
+                    <button [ngClass]="{'active': (selectedTab == 'hotdeal-superkhum-mnp') }" (click)="selectEapplication('hotdeal-superkhum-mnp')">MNP</button>
+                    <div *ngIf="!isSelect">
+                        <div class="card" *ngIf="eApplicationSuperKhumNew">
+                            <div class="card-header bg-transparent text-center">{{ 'คำขอใช้บริการโทรศัพท์เคลื่อนที่' | translate }}</div>
+                            <div class="card-body img-eapplication">
+                                <img [src]="'data:image/jpeg;base64,'+eApplicationSuperKhumNew" class="img-fluid mx-auto d-block" />
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="isSelect">
+                        <div class="card" *ngIf="eApplicationSuperKhumMnp">
+                            <div class="card-header bg-transparent text-center">{{ 'คำขอใช้บริการโทรศัพท์เคลื่อนที่' | translate }}</div>
+                            <div class="card-body img-eapplication">
+                                <img [src]="'data:image/jpeg;base64,'+eApplicationSuperKhumMnp" class="img-fluid mx-auto d-block" />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <mc-footer>
+        <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+        <button class="btn btn-success" (click)="onNext()">NEXT</button>
+    </mc-footer>
+</div>
