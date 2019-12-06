@@ -473,7 +473,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
           }, this.duration);
           this.checkStatusSimCard();
         } else {
-          const tenSecond: number = 60000;
+          const tenSecond: number = 90000;
           const loop: number = 3;
           if (this.checkOrderCounter < loop && this.check < loop) {
             this.timeoutCheckOrderStatus = setTimeout(() => {
@@ -496,7 +496,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
         }
       }
     }).catch((e: any): void => {
-      const tenSecond: number = 60000;
+      const tenSecond: number = 90000;
       const loop: number = 3;
       if (this.checkOrderCounter < loop && this.check < loop) {
         this.timeoutCheckOrderStatus = setTimeout(() => {
