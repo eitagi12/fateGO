@@ -230,9 +230,14 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
                   this.alertService.error(error);
                 });
               }
-        }).catch((error: any) => {
+        }).catch((err: any) => {
           this.pageLoadingService.closeLoading();
-          this.alertService.error(error);
+          if (JSON.parse(JSON.stringify(err.error.resultCode)) === 'MYCHN00150006') {
+            this.alertService.error('ขออภัย ท่านมียอดค้างชำระ รบกวนชำระยอดก่อนทำรายการ');
+          } else {
+            this.alertService.error(JSON.parse(JSON.stringify(err.error.errors[0])));
+          }
+          // this.alertService.error(error);
         });
     } else {
       this.pageLoadingService.closeLoading();

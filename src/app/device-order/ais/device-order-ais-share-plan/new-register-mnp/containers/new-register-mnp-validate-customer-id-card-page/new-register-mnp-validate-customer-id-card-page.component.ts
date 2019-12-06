@@ -177,6 +177,14 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                   }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]))
                   .then(() => this.pageLoadingService.closeLoading());
               });
+          }).catch((err) => {
+            this.pageLoadingService.closeLoading();
+            if (JSON.parse(JSON.stringify(err.error.resultCode)) === 'MYCHN00150006') {
+              this.alertService.error('ขออภัย ท่านมียอดค้างชำระ รบกวนชำระยอดก่อนทำรายการ');
+            } else {
+              this.alertService.error(JSON.parse(JSON.stringify(err.error.errors[0])));
+            }
+            // this.alertService.error(err.errors[0]);
           });
         // } else {
         //   this.alertService.error('ระบบไม่อนุญาตให้กรอกเลขบัตรประจำตัวคนต่างด้าว');
