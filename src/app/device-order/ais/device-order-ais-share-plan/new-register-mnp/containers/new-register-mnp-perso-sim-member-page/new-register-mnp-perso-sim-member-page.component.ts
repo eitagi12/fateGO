@@ -427,7 +427,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
           const loop: number = 3;
           if (this.createTxPersoCounter < loop) {
             this.timeoutCreatePersoSim = setTimeout(() => {
-              this.createdPersoSim(refNo);
+              this.checkOrderStatus(refNo);
             }, tenSecond);
             this.createTxPersoCounter++;
           } else {
@@ -441,7 +441,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
       const loop: number = 3;
       if (this.createTxPersoCounter < loop) {
         this.timeoutCreatePersoSim = setTimeout(() => {
-          this.createdPersoSim(refNo);
+          this.checkOrderStatus(refNo);
         }, tenSecond);
         this.createTxPersoCounter++;
       } else {
