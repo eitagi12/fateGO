@@ -164,7 +164,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                       return this.validateCustomerService.addDeviceSellingCartSharePlan(body).then((response: any) => {
                         this.transaction.data = {
                           ...this.transaction.data,
-                          order: { soId: response.data }
+                          order: { soId: response.data.soId }
                         };
                         return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
                       });
