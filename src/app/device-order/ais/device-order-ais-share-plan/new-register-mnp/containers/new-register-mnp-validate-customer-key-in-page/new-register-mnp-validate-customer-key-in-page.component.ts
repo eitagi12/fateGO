@@ -237,7 +237,7 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
           } else {
             this.alertService.error(JSON.parse(JSON.stringify(err.error.errors[0])));
           }
-          // this.alertService.error(err.errors[0]);
+          // this.alertService.error(error);
         });
     } else {
       this.pageLoadingService.closeLoading();
