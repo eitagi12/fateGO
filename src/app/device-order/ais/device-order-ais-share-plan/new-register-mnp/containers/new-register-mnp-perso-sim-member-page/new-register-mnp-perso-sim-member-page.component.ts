@@ -226,7 +226,8 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
       // this.aisNative.sendIccCommand(this.command, closeDialog, ''); //dismiss dialogReadSim
       if (this.getSerialNo) {
         this.transaction.data.simCard.memberSimCard[0] = Object.assign(this.transaction.data.simCard.memberSimCard[0], {
-          simSerial: this.getSerialNo
+          simSerial: this.getSerialNo,
+          persoSim: true
         });
       }
       if (simStatus[0].toLowerCase() === 'true') {
