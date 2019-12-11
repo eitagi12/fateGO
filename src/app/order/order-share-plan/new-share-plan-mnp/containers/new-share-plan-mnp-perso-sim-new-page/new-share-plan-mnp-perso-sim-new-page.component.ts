@@ -640,7 +640,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
   }
 
   onRefreshPageToPerso(): void {
-    this.simSerialKeyIn = '';
+    // this.simSerialKeyIn = '';
     this.isStateStatus = 'read';
     this.setIntervalSimCard();
   }
