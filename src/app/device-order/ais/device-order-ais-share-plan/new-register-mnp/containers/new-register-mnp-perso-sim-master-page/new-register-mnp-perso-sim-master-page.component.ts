@@ -373,7 +373,8 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
       // this.aisNative.sendIccCommand(this.command, closeDialog, ''); //dismiss dialogReadSim
       if (this.getSerialNo) {
         this.transaction.data.simCard = Object.assign(this.transaction.data.simCard, {
-          simSerial: this.getSerialNo
+          simSerial: this.getSerialNo,
+          persoSim: true
         });
       }
       if (simStatus[0].toLowerCase() === 'true') {
@@ -670,7 +671,8 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
   onNext(): void {
     if (!this.transaction.data.simCard.simSerial) {
       this.transaction.data.simCard = Object.assign(this.transaction.data.simCard, {
-        simSerial: this.simSerialForm.controls.simSerial.value
+        simSerial: this.simSerialForm.controls.simSerial.value,
+        persoSim: true
       });
     }
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PERSO_SIM_MEMBER_PAGE]);
