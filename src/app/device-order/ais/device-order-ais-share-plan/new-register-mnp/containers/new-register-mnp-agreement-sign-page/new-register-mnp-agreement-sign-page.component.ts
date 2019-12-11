@@ -243,6 +243,10 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
       this.camera.next();
     }
 
+    this.setValid();
+  }
+
+  setValid(): void {
     let valid = false;
     if (this.isAllowCapture()) {
       valid = !!(this.captureAndSign.imageSmartCard && this.captureAndSign.imageSignature);
@@ -267,6 +271,7 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
     const imageSignatureWidthCard = new Image();
 
     imageSignatureWidthCard.src = 'data:image/png;base64,' + this.transaction.data.customer.imageSignatureSmartCard;
+
     imageSignatureWidthCard.onload = () => {
       if (new RegExp('data:image/png;base64,').test(imageSignatureWidthCard.src)) {
         canvas.width = imageSignatureWidthCard.width;
@@ -356,5 +361,6 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
       this.createCanvas();
     }
     // this.onChangeCaptureAndSign();
+    this.setValid();
   }
 }
