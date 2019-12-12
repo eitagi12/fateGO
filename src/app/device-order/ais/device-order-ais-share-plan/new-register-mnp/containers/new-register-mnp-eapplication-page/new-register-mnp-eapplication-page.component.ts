@@ -54,10 +54,10 @@ export class NewRegisterMnpEapplicationPageComponent implements OnInit, OnDestro
   callGenerateEappService(transaction: Transaction, language: string): void {
     this.createEapplicationService.createEapplicationSuperKhumSharepalnNewRegister(transaction, language)
       .then((res: any) => {  // Generate Eapp for new ca
-        this.eApplicationSuperKhumNew = res.data;
+        this.eApplicationSuperKhumNew = res.data.imageBase64;
       }).then(() => {// Generate Eapp for new mnp
         this.createEapplicationService.createEapplicationSuperKhumSharepalnMnp(transaction, language).then((res) => {
-          this.eApplicationSuperKhumMnp = res.data;
+          this.eApplicationSuperKhumMnp = res.data.imageBase64;
         });
       }).then(() => {
         this.pageLoadingService.closeLoading();
