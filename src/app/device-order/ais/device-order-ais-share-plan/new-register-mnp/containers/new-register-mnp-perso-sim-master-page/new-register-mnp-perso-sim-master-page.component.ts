@@ -221,13 +221,12 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
             + this.mobileNo + ' กรุณาเปลี่ยนซิมใหม่';
           this.popupControl('errorFixSim', errMegFixSim);
         } else if (errorCode === '008') {
-          this.simSerialForm.controls.simSerial.valueChanges.subscribe((value) => {
-            if (value === 13) {
-              this.isNext = true;
-            } else {
-              this.isNext = false;
-            }
-          });
+          const simSerial: string = this.simSerialForm.controls.simSerial.value;
+          if (simSerial.length === 13) {
+            this.isNext = true;
+          } else {
+            this.isNext = false;
+          }
           this.isNext = true;
           this.checkStatusSimCard();
           this.pageLoadingService.closeLoading();
@@ -288,8 +287,10 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
     const getCardStatus: number = 1000;
     this.cardStatus = this.aisNative.sendIccCommand(this.command, getCardStatus, ''); // Get card status
     if (this.cardStatus === 'Card presented') {
+      this.isNext = false;
       this.currentStatus = true;
     } else {
+      this.isNext = true;
       this.currentStatus = false;
       clearInterval(this.persoSimInterval);
     }
