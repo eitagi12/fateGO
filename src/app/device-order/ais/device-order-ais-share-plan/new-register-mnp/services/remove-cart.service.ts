@@ -43,6 +43,7 @@ export class RemoveCartService {
       this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
         .then((response: any) => {
           if (response.value === true) {
+            this.onUnlockMobileNo(transaction.data.simCard.mobileNo);
             this.returnStock( transaction).then(() => {
               this.transactionService.remove();
               window.location.href = url;
@@ -53,5 +54,13 @@ export class RemoveCartService {
       this.transactionService.remove();
       window.location.href = url;
     }
+  }
+
+  onUnlockMobileNo(mobileNo: string): Promise<any> {
+    return this.http.post('/api/customerportal/newRegister/selectMobileNumberRandom', {
+      userId: this.user.username,
+      mobileNo: mobileNo,
+      action: 'Unlock'
+    }).toPromise();
   }
 }

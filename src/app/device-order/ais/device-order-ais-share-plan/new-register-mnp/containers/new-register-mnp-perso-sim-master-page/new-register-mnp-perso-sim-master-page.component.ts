@@ -102,6 +102,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
   checkCreatedPersoSimFn: any;
   createTxPersoCounter: number = 0;
   minLength: number = 13;
+  isNext: boolean = false;
 
   public simSerialForm: any = this.fb.group({
     simSerial: ['', [
@@ -133,8 +134,11 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
 
   ngOnInit(): void {
     this.masterSimCard = this.transaction.data.simCard;
+    this.createForm();
     this.simSerialForm.controls.simSerial.valueChanges.subscribe((value) => {
-      this.verifySimSerialByBarcode(value);
+      if (value && value.length === 13) {
+        this.verifySimSerialByBarcode(value);
+      }
     });
     if (typeof window.aisNative !== 'undefined') {
       this.scanBarcodePC$ = of(true);
@@ -217,6 +221,16 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
             + this.mobileNo + ' กรุณาเปลี่ยนซิมใหม่';
           this.popupControl('errorFixSim', errMegFixSim);
         } else if (errorCode === '008') {
+          alert('123');
+          this.simSerialForm.controls.simSerial.valueChanges.subscribe((value) => {
+            if (value === 13) {
+              this.isNext = true;
+            } else {
+              this.isNext = false;
+            }
+          });
+          this.isNext = true;
+          this.checkStatusSimCard();
           this.pageLoadingService.closeLoading();
           this.statusFixSim = 'Success';
         } else if (errorCode === '001' || errorCode === '002' || errorCode === '007') {
@@ -520,6 +534,16 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
     });
   }
 
+  createForm(): void {
+    this.simSerialForm = this.fb.group({
+      simSerial: ['', [
+        Validators.minLength(13),
+        Validators.maxLength(13),
+        Validators.pattern('^[0-9]*$')
+      ]]
+    });
+  }
+
   onBackSign(): void {
     clearInterval(this.persoSimInterval);
     clearTimeout(this.timeoutCheckOrderStatus);
@@ -570,6 +594,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
         this.persoSim.progress = 100;
         // $('.custom').animate({ width: 100 + '%' }, this.duration, () => {/**/ });
         this.pageLoadingService.closeLoading();
+        this.checkStatusSimCard();
         this.statusFixSim = 'Success';
       } else if (errorCode === '001' || errorCode === '002' || errorCode === '007') {
         this.pageLoadingService.closeLoading();
@@ -689,6 +714,27 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
     clearTimeout(this.timeoutCreatePersoSim);
     clearTimeout(this.timeoutReadSim);
     clearTimeout(this.timeoutPersoSim);
+  }
+
+  onOpenScanBarcode(): void {
+    window.aisNative.scanBarcode();
+    this.getBarcode = '';
+    window.onBarcodeCallback = (barcode: any): void => {
+      if (barcode && barcode.length > 0) {
+        this.zone.run(() => {
+          const parser: any = new DOMParser();
+          barcode = '<data>' + barcode + '</data>';
+          const xmlDoc = parser.parseFromString(barcode, 'text/xml');
+          this.getBarcode = xmlDoc.getElementsByTagName('barcode')[0].firstChild.nodeValue;
+          this.simSerialForm.controls.simSerial.setValue(this.getBarcode);
+          this.verifySimSerialByBarcode(this.getBarcode);
+        });
+      }
+    };
+  }
+
+  onSerialNumberChanged(data?: any): void {
+    this.statusFixSim = 'waitingForCheck';
   }
 
   // persoSimKoisk(): void {
