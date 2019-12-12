@@ -28,7 +28,7 @@
                             <div *ngIf="transaction.data.simCard.persoSim" class="container">
                                 <img src="assets/images/icon/icon-ReadIDCard-01.png" class="icon-read-card" />
                                 <img src="assets/images/icon/icon-input-sim.png" class="icon-perso-sim" />
-                                <div *ngIf="!persoSim?.progress && !errorMessage" class="text-center mt-3 mb-3">
+                                <div *ngIf="!persoSim?.progress && !errorMessage" class="text-center mt-3 mb-3 text-red">
                                     {{ 'กรุณาเสียบ Sim Card' | translate}}
                                 </div>
                                 <br *ngIf="persoSim?.progress">
@@ -36,7 +36,7 @@
                                     <div class="progress-bar bg-success" role="progressbar" [style.width.%]="persoSim?.progress || 0" [attr.aria-valuenow]="persoSim?.progress" aria-valuemin="0" aria-valuemax="100">
                                     </div>
                                 </div>
-                                <div *ngIf="persoSim?.progress !== 100 && !errorMessage && persoSim?.progress > 0" class="text-center mt-3 mb-3">
+                                <div *ngIf="persoSim?.progress !== 100 && !errorMessage && persoSim?.progress > 0" class="text-center mt-3 mb-3 text-red">
                                     {{ '(ห้ามนำซิมการ์ดออก)' | translate }}
                                 </div>
                                 <div *ngIf="errorMessage" class="text-center mt-3 mb-3 text-red">
