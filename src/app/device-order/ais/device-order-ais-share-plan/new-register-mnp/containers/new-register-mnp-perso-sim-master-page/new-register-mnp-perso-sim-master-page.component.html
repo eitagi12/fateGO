@@ -29,7 +29,7 @@
                                 <img src="assets/images/icon/icon-ReadIDCard-01.png" class="icon-read-card" />
                                 <img src="assets/images/icon/icon-input-sim.png" class="icon-perso-sim" />
                                 <div *ngIf="!persoSim?.progress && !errorMessage" class="text-center mt-3 mb-3">
-                                    {{ 'กรุณาเสียบ Sim Card' | translate}}
+                                    {{ 'กรุณาเสียบซิมการ์ด' | translate}}
                                 </div>
                                 <br *ngIf="persoSim?.progress">
                                 <div class="progress mb-5">
@@ -74,7 +74,7 @@
     </div>
     <mc-footer>
         <button class="btn btn-secondary" (click)="onBack()" [disabled]="persoSim?.progress === 100">BACK</button>
-        <button *ngIf="persoSim?.progress === 100" class="btn btn-success" (click)="onNext()" [disabled]="currentStatus || !isNext">NEXT</button>
+        <button *ngIf="persoSim?.progress === 100 || isNext" class="btn btn-success" (click)="onNext()" [disabled]="currentStatus || !isNext">NEXT</button>
         <button *ngIf="!transaction.data.simCard.persoSim" class="btn btn-success" (click)="onNext()">NEXT</button>
     </mc-footer>
 </div>
