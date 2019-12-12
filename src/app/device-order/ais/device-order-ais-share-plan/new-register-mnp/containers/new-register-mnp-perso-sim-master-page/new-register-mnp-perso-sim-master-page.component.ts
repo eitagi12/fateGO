@@ -594,6 +594,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
         this.persoSim.progress = 100;
         // $('.custom').animate({ width: 100 + '%' }, this.duration, () => {/**/ });
         this.pageLoadingService.closeLoading();
+        this.isNext = true;
         this.checkStatusSimCard();
         this.statusFixSim = 'Success';
       } else if (errorCode === '001' || errorCode === '002' || errorCode === '007') {
