@@ -221,7 +221,6 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
             + this.mobileNo + ' กรุณาเปลี่ยนซิมใหม่';
           this.popupControl('errorFixSim', errMegFixSim);
         } else if (errorCode === '008') {
-          alert('123');
           this.simSerialForm.controls.simSerial.valueChanges.subscribe((value) => {
             if (value === 13) {
               this.isNext = true;
