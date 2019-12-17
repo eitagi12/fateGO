@@ -41,9 +41,9 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
     private priceOptionService: PriceOptionService,
     private translateService: TranslateService
   ) {
-      this.priceOption = this.priceOptionService.load();
-      this.transaction = this.transactionService.load();
-   }
+    this.priceOption = this.priceOptionService.load();
+    this.transaction = this.transactionService.load();
+  }
 
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
@@ -56,9 +56,9 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
     const mobileNo = this.transaction.data.simCard.mobileNo;
 
     this.http.get(`/api/customerportal/mobile-detail/${mobileNo}`).toPromise()
-    .then(this.mappingMobileDetailAndCallQueryBillingAccountService(mobileNo, idCardNo))
-    .then(this.mappingMobileBillAccountAndIsAirtimeAndCheckWarning(mobileNo))
-    .catch(this.ErrorMessage());
+      .then(this.mappingMobileDetailAndCallQueryBillingAccountService(mobileNo, idCardNo))
+      .then(this.mappingMobileBillAccountAndIsAirtimeAndCheckWarning(mobileNo))
+      .catch(this.ErrorMessage());
   }
 
   ErrorMessage(): (reason: any) => void | PromiseLike<void> {
@@ -68,6 +68,10 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
   }
 
   mappingMobileBillAccountAndIsAirtimeAndCheckWarning(mobileNo: string): (value: Object) => void | PromiseLike<void> {
+
+    const trade: any = this.priceOption.trade || {};
+    const advancePay: any = trade.advancePay || {};
+
     return (resp: any) => {
       this.pageLoadingService.closeLoading();
       const { mobileBillAccount, isAirtime }: {
@@ -75,13 +79,13 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
         isAirtime: boolean;
       } = this.mappingMobileBillAccountAndIsAirtime(resp, mobileNo);
 
-      this.transaction.data.billingInformation.isNewBAFlag = !!(mobileBillAccount.length > 1);
+      this.transaction.data.billingInformation.isNewBAFlag = !!(mobileBillAccount.length > 1) && !!(+advancePay.amount > 0);
       this.checkWarningBillingAccountMessage(mobileBillAccount, isAirtime);
     };
   }
 
   mappingMobileDetailAndCallQueryBillingAccountService(mobileNo: string, idCardNo: string)
-  : (value: Object) => Object | PromiseLike<Object> {
+    : (value: Object) => Object | PromiseLike<Object> {
     return (response: any) => {
       this.mappingMobileDetail(response, mobileNo);
       return this.http.get(`/api/customerportal/newRegister/${idCardNo}/queryBillingAccount`).toPromise();
@@ -98,7 +102,7 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
     this.transaction.data.currentPackage = mobileDetail.package;
 
     this.translateSubscription = this.translateService.onLangChange
-    .subscribe(() => this.mobileInfo = this.mappingMobileInfo(mobileNo, mobileDetail, serviceYear));
+      .subscribe(() => this.mobileInfo = this.mappingMobileInfo(mobileNo, mobileDetail, serviceYear));
   }
 
   mappingMobileInfo(mobileNo: string, mobileDetail: any, serviceYear: any): any {
@@ -134,7 +138,7 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
     const mobileNoList: any = [];
 
     data.billingAccountList.forEach((list: any) => billingAccountList.push(list));
-    billingAccountList.forEach((billings: {mobileNo: any; }) => mobileNoList.push(billings.mobileNo));
+    billingAccountList.forEach((billings: { mobileNo: any; }) => mobileNoList.push(billings.mobileNo));
 
     let isAirtime: boolean = false;
     if (this.priceOption.trade) {
@@ -154,7 +158,7 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
   checkWarningBillingAccountMessage(mobileBillAccount: string[], isAirtime: boolean): void {
     if (mobileBillAccount && mobileBillAccount.length > 1 && isAirtime) {
       this.alertService.warning(this.translateService.instant('หมายเลขนี้มีการรวมบิล ไม่สามารถทำรายการได้'))
-      .then(() => this.onBack());
+        .then(() => this.onBack());
     }
   }
 
