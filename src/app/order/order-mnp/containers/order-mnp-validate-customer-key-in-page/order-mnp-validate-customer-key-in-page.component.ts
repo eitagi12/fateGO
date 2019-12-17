@@ -109,5 +109,4 @@ export class OrderMnpValidateCustomerKeyInPageComponent implements OnInit, OnDes
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }
-
 }

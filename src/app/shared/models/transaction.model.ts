@@ -11,12 +11,14 @@ export enum TransactionType {
   DEVICE_ORDER_EXISTING_ASP = 'ExistingASP',
   DEVICE_ORDER_EXISTING_GADGET_AIS = 'ExistingGadgetAIS',
   DEVICE_ORDER_PREPAID_HOTDEAL_AIS = 'PrepaidHotDealAIS',
+  DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN = 'NewRegisterMNPAIS',
   // pure
   ORDER_NEW_REGISTER = 'NewRegister',
   ORDER_PRE_TO_POST = 'ConvertPreToPost',
   ORDER_MNP = 'Port-In',
   ORDER_EXISTING = 'Existing',
   RESERVE_WITH_DEPOSIT = 'ReserveWithDeposit',
+  ORDER_NEW_SHARE_PLAN_MNP = 'NewSharePlanMNP',
 
   // device only
   DEVICE_ONLY_AIS = 'DeviceOnlyAIS',
@@ -61,6 +63,7 @@ export interface TransactionData {
   customer?: Customer;
   simCard?: SimCard;
   mainPackage?: MainPackage;
+  mainPackageMember?: MainPackageMember;
   currentPackage?: CurrentPackage;
   onTopPackage?: OnTopPackage;
   deleteOntopPackage?: DeleteOntopPackage[];
@@ -90,8 +93,10 @@ export interface TransactionData {
   // Rom Agent
   romAgent?: RomAgent;
   romTransaction?: RomTransactionData;
+  // Omise
   omise?: Omise;
 }
+
 export interface Omise {
   orderId?: string;
   tranDtm?: string;
@@ -136,6 +141,7 @@ export interface Payment {
   type?: any;
   paymentOnlineCredit?: any;
 }
+
 export interface MainPromotion {
   campaign?: any;
   privilege?: any;
@@ -146,6 +152,7 @@ export interface MainPromotion {
 export interface AirTime {
   [key: string]: any;
 }
+
 export interface Receipt {
   taxId: string;
   branch: string;
@@ -154,6 +161,7 @@ export interface Receipt {
   telNo: string;
   locationName: string;
 }
+
 export interface Customer {
   idCardNo: string;
   idCardType: string;
@@ -185,13 +193,12 @@ export interface Customer {
   caNumber?: string;
   imageSignature?: string; // Contract signature
   imageSignatureSmartCard?: string;
+  imageSignatureWithWaterMark?: string;
   imageSmartCard?: string;
   imageReadSmartCard?: string;
   customerPinCode?: string;
-  provinceName?: any;
-  portalCode?: any;
-  houseNumber?: any;
-
+  provinceName?: string;
+  portalCode?: string;
   // passport
   issuingCountry?: string;
   nationality?: string;
@@ -229,7 +236,9 @@ export interface SelectedLocation {
 
 export interface SimCard {
   mobileNo: string;
+  mobileNoMember?: string;
   simSerial?: string;
+  simSerialMember?: string;
   imei?: string;
   billingSystem?: string;
   moblieNoTypeA?: string;
@@ -237,12 +246,31 @@ export interface SimCard {
   persoSim?: boolean;
   privilegeCode?: string;
   nType?: string;
+  memberSimCard?: Array<any>;
   mobileNoStatus?: 'Active' | 'Suspended' | 'Enroll';
   forceEnrollFlag?: 'Y' | 'N';
   registerDate?: string;
 }
 
 export interface MainPackage {
+  billingSystem?: string;
+  duration?: string;
+  itemId: string;
+  itemsPriority?: string;
+  numberOfMobile?: string;
+  packageType?: string;
+  productPkg?: string;
+  promotionPackage?: string;
+  shortNameThai: string;
+  statementThai?: string;
+  shortNameEng?: string;
+  statementEng?: string;
+  parameters?: any;
+  [key: string]: any;
+  memberMainPackage?: Array<any>;
+}
+
+export interface MainPackageMember {
   billingSystem?: string;
   duration?: string;
   itemId: string;
@@ -288,6 +316,7 @@ export interface FaceRecognition {
 }
 
 export interface Order {
+  orderNoMNP?: string;
   orderNo?: string;
   orderDate?: string;
   soId?: string;
@@ -617,4 +646,9 @@ export interface RomData {
   username?: string;
   time?: string;
   _id?: string;
+}
+
+export class SignatureAndImageSmartCard {
+  dataSignature?: string;
+  dataImageSmartCard?: string;
 }

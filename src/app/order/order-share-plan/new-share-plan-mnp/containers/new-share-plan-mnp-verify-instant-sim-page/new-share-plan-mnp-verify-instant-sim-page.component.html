@@ -1,0 +1,58 @@
+<div class="mc-flex">
+  <mc-header title="{{ 'เปิดเบอร์ใหม่' | translate }}">
+    <div class="header-icon-left w-25">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right w-25 text-right"></div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <div class="mt-3 mb-3">
+      <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
+      <div class="container-fluid">
+        <div class="card mb-3">
+          <div class="card-header bg-pink text-white shadow-sm">{{ 'ระบุเลขที่ซิม' | translate }}</div>
+          <div class="card-body">
+            <form [formGroup]="serialForm">
+              <p class="text-grey text-center" *ngIf="keyInSimSerial && (transaction?.data?.simCard?.mobileNo && transaction?.data?.simCard?.simSerial)">
+                {{ 'หมายเลขโทรศัพท์' | translate }} : {{ transaction?.data?.simCard?.mobileNo | mobileNo }} <br>
+                {{ 'เลขที่ซิม' | translate }} : {{ transaction?.data?.simCard?.simSerial }}
+              </p>
+              <div class="form-row">
+                <div class="col-9 col-sm-10">
+                  <input type="tel" class="form-control" id="serial" placeholder="{{ 'ใส่เลขที่ซิม 13 หลัก' | translate }}" formControlName="serial" autocomplete="off" maxlength="13" [ngClass]="{'is-invalid':!serialForm.controls['serial'].valid}">
+                </div>
+                <div class="col-3 col-sm-2">
+                  <button class="btn btn-light-blue text-white btn-block" [disabled]="!serialForm.valid" type="submit" (click)="onCheckSimSerial()">
+                    {{ 'ตรวจสอบ' | translate }}
+                  </button>
+                </div>
+                <small class="form-text text-red text-center" [hidden]="serialForm.controls['serial'].valid" translate>
+                  * เลขที่ซิมต้องเป็นตัวเลข 13 ตัวเท่านั้น
+                </small>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div *ngIf="isAisNative()">
+          <p class="text-center my-5">{{ 'หรือ' | translate }} </p>
+          <div class="card mb-3">
+            <div class="card-header bg-pink text-white">SCAN SIM</div>
+            <div class="card-body m-auto">
+              <p class="text-grey text-center" *ngIf="!keyInSimSerial && (transaction?.data?.simCard?.mobileNo && transaction?.data?.simCard?.simSerial)">
+                {{ 'หมายเลขโทรศัพท์' | translate }} : {{ transaction?.data?.simCard?.mobileNo | mobileNo }} <br>
+                {{ 'เลขที่ซิม' | translate }} : {{ transaction?.data?.simCard?.simSerial }}
+              </p>
+              <button type="button" class="btn btn-light-blue text-center text-white py-3" (click)="onOpenScanBarcode()">
+                {{ !keyInSimSerial && (transaction?.data?.simCard?.mobileNo && transaction?.data?.simCard?.simSerial) ? 'สแกน Barcode อีกครั้ง' : 'สแกน Barcode' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!simSerialValid">NEXT</button>
+  </mc-footer>
+</div>

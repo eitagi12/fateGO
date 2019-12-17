@@ -19,6 +19,10 @@ const routes: Routes = [
   {
     path: 'block-chain',
     loadChildren: 'src/app/order/order-blcok-chain/order-blcok-chain.module#OrderBlockChainModule',
+  },
+  {
+    path: 'share-plan',
+    loadChildren: 'src/app/order/order-share-plan/order-share-plan.module#OrderSharePlanModule'
   }
 ];
 
