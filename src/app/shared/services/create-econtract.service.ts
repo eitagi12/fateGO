@@ -35,9 +35,12 @@ export class CreateEcontractService {
     const advancePay: any = trade.advancePay || {};
     const promotionByMainPackage = this.findPromotionByMainPackage(mainPackage.customAttributes, simCard, priceOption);
 
+    const seller: any = transaction.data.seller || {};
+    const locationFromSeller = (seller && seller.locationName) ? seller.locationName : productStock.locationName;
+
     const data: any = {
       campaignName: campaign.campaignName,
-      locationName: this.translateService.instant(productStock.locationName) || '',
+      locationName: this.translateService.instant(locationFromSeller) || '',
       customerType: '',
       idCard: this.transformIDcard(customer.idCardNo), // this.transformIDcard(customer.idCardNo),
       fullName: `${customer.firstName || ''} ${customer.lastName || ''}`,
@@ -82,11 +85,11 @@ export class CreateEcontractService {
       // check mainPackage กับเบอร์ที่ทำรายการให้ตรงกับ billingSystem ของเบอร์ที่ทำรายการ
       const advancePay = priceOption.trade.advancePay || {};
       const billingSystem = (simCard.billingSystem === 'RTBS')
-      ? BillingSystemType.IRB : simCard.billingSystem || BillingSystemType.IRB;
+        ? BillingSystemType.IRB : simCard.billingSystem || BillingSystemType.IRB;
       if (advancePay.promotions) {
         return advancePay.promotions
-        .find(promotion =>
-          (promotion && promotion.billingSystem) === (mainPackageCustomAttributes || billingSystem));
+          .find(promotion =>
+            (promotion && promotion.billingSystem) === (mainPackageCustomAttributes || billingSystem));
       } else {
         return null;
       }

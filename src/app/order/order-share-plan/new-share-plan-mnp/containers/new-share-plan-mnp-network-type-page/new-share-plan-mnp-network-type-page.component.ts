@@ -122,6 +122,10 @@ export class NewSharePlanMnpNetworkTypePageComponent implements OnInit, OnDestro
           ...this.transaction.data.simCard,
           mobileNoMember: mobileNoMember
         };
+        this.transaction.data.customer = {
+          ...this.transaction.data.customer,
+          customerPinCode: this.mnpForm.value.pinCode
+        };
       })
       .then(() => {
         this.pageLoadingService.closeLoading();

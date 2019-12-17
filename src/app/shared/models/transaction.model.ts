@@ -11,6 +11,7 @@ export enum TransactionType {
   DEVICE_ORDER_EXISTING_ASP = 'ExistingASP',
   DEVICE_ORDER_EXISTING_GADGET_AIS = 'ExistingGadgetAIS',
   DEVICE_ORDER_PREPAID_HOTDEAL_AIS = 'PrepaidHotDealAIS',
+  DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN = 'NewRegisterMNPAIS',
   // pure
   ORDER_NEW_REGISTER = 'NewRegister',
   ORDER_PRE_TO_POST = 'ConvertPreToPost',
@@ -192,6 +193,7 @@ export interface Customer {
   caNumber?: string;
   imageSignature?: string; // Contract signature
   imageSignatureSmartCard?: string;
+  imageSignatureWithWaterMark?: string;
   imageSmartCard?: string;
   imageReadSmartCard?: string;
   customerPinCode?: string;
@@ -244,6 +246,7 @@ export interface SimCard {
   persoSim?: boolean;
   privilegeCode?: string;
   nType?: string;
+  memberSimCard?: Array<any>;
   mobileNoStatus?: 'Active' | 'Suspended' | 'Enroll';
   forceEnrollFlag?: 'Y' | 'N';
   registerDate?: string;
@@ -264,6 +267,7 @@ export interface MainPackage {
   statementEng?: string;
   parameters?: any;
   [key: string]: any;
+  memberMainPackage?: Array<any>;
 }
 
 export interface MainPackageMember {
@@ -642,4 +646,9 @@ export interface RomData {
   username?: string;
   time?: string;
   _id?: string;
+}
+
+export class SignatureAndImageSmartCard {
+  dataSignature?: string;
+  dataImageSmartCard?: string;
 }

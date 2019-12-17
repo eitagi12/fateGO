@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_MNP_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_AGREEMENT_SIGN_PAGE } from '../../constants/route-path.constant';
-import { PageLoadingService, AlertService } from 'mychannel-shared-libs';
+import { PageLoadingService, AlertService, Utils } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { Observable, of } from 'rxjs';
@@ -67,7 +67,6 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
   orderType: string = 'New Registation';
   mobileNo: string;
   checktSimInfoFn: any;
-  serialbarcode: string;
   mockData: any = [];
   getSerialNo: string;
   simSerialForm: FormGroup;
@@ -80,7 +79,8 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
     private zone: NgZone,
     private pageLoadingService: PageLoadingService,
     private http: HttpClient,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private utils: Utils
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -129,6 +129,10 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
         Validators.pattern('^[0-9]*$')
       ]]
     });
+  }
+
+  isAisNative(): boolean {
+    return this.utils.isAisNative();
   }
 
   onOpenScanBarcode(): void {
@@ -232,12 +236,12 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
       if (simStatus[0].toLowerCase() === 'true') {
         // Progess 20%
         this.persoSim = { progress: 20, eventName: 'กรุณารอสักครู่' };
-        if (this.serialbarcode && this.orderType) {
-          if (this.serialbarcode === this.getSerialNo) {
+        if (this.simSerialKeyIn && this.orderType) {
+          if (this.simSerialKeyIn === this.getSerialNo) {
             this.verifySimRegionForPerso(this.getSerialNo);
           } else {
             errMegFixSim = 'เลขที่ซิมการ์ดใบนี้ ไม่ตรงกับที่ระบุ ('
-              + this.serialbarcode + ') ยืนยันใช้ซิมใบนี้หรือไม่ (' + this.getSerialNo + ')';
+              + this.simSerialKeyIn + ') ยืนยันใช้ซิมใบนี้หรือไม่ (' + this.getSerialNo + ')';
             this.popupControl('errorSimSerialNotMacth', errMegFixSim);
           }
         } else {
@@ -370,7 +374,6 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
 
   verifySimSerialByBarcode(barcode: string): void {
     this.simSerialKeyIn = barcode;
-    this.serialbarcode = barcode;
     this.checkBarcode(this.simSerialKeyIn, false);
   }
 
@@ -390,7 +393,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
         } else if (errorCode === '004') {
           this.pageLoadingService.closeLoading();
           this.statusFixSim = 'WaitingForPerso';
-          this.serialbarcode = barcode;
+          this.simSerialKeyIn = barcode;
           this.onRefreshPageToPerso();
         } else if (errorCode === '006') {
           this.pageLoadingService.closeLoading();
@@ -637,7 +640,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
   }
 
   onRefreshPageToPerso(): void {
-    this.simSerialKeyIn = '';
+    // this.simSerialKeyIn = '';
     this.isStateStatus = 'read';
     this.setIntervalSimCard();
   }

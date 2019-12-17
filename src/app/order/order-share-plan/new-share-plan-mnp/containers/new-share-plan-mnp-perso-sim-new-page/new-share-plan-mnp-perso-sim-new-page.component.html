@@ -38,7 +38,7 @@
               <input 
                 name="barcodeValue" 
                 id="txtRegNumConfirmScanSim"
-                class="form-control text-center w-50 m-auto py-3" 
+                class="form-control text-center w-50 m-auto" 
                 type="tel" 
                 maxlength="13"
                 placeholder="{{(scanBarcodePC$ | async)? 'ใส่เลขที่ซิม 13 หลัก' : 'สแกน Barcode หรือ ใส่เลขที่ซิม 13 หลัก'}}"
@@ -52,7 +52,7 @@
               </small>
             </div>
           </form>
-          <div class="text-center">
+          <div *ngIf="isAisNative()" class="text-center">
             <button type="button" class="btn btn-light-blue text-white py-3 w-50" (click)="onOpenScanBarcode()">สแกน Barcode</button>
           </div>
         </div>

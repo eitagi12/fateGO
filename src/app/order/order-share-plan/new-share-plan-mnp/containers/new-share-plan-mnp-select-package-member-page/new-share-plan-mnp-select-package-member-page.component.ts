@@ -55,10 +55,10 @@ export class NewSharePlanMnpSelectPackageMemberPageComponent implements OnInit, 
 
   callService(language: string): void {
     this.pageLoadingService.openLoading();
-    const RequestQueryListLovConfigInfo: any = {
+    const RequestQueryListLovConfigDuoSim: any = {
       lovVal2: this.transaction.data.mainPackage.promotionCode
     };
-    this.http.post(`/api/salesportal/queryListLovConfigInfo`, RequestQueryListLovConfigInfo).toPromise()
+    this.http.post(`/api/salesportal/queryListLovConfigDuoSim`, RequestQueryListLovConfigDuoSim).toPromise()
       .then((promotionCodes: any) => {
         this.promotionCodes = promotionCodes.data;
       }).then(() => {
@@ -111,8 +111,10 @@ export class NewSharePlanMnpSelectPackageMemberPageComponent implements OnInit, 
       })
       .then(() => {
         this.pageLoadingService.closeLoading();
+      })
+      .catch(() => {
+        this.pageLoadingService.closeLoading();
       });
-
   }
 
   buildPromotionShelveActive(promotionShelves: PromotionShelve[]): PromotionShelve[] {
