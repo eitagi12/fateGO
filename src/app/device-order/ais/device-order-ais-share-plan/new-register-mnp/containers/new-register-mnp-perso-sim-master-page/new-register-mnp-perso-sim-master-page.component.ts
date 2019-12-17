@@ -319,7 +319,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
         this.alertService.notify({
           type: 'error',
           text: 'ไม่สามารถทำการ Perso SIM ได้ กรุณาทำรายการใหม่อีกครั้ง',
-          confirmButtonText: 'ตกลง',
+          confirmButtonText: 'MAIN MENU',
           onClose: () => this.onHome()
         });
       } break;
