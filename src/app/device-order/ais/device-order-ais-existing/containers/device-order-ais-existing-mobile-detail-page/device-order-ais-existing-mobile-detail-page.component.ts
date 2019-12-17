@@ -68,10 +68,6 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
   }
 
   mappingMobileBillAccountAndIsAirtimeAndCheckWarning(mobileNo: string): (value: Object) => void | PromiseLike<void> {
-
-    const trade: any = this.priceOption.trade || {};
-    const advancePay: any = trade.advancePay || {};
-
     return (resp: any) => {
       this.pageLoadingService.closeLoading();
       const { mobileBillAccount, isAirtime }: {
@@ -79,7 +75,7 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
         isAirtime: boolean;
       } = this.mappingMobileBillAccountAndIsAirtime(resp, mobileNo);
 
-      this.transaction.data.billingInformation.isNewBAFlag = !!(mobileBillAccount.length > 1) && !!(+advancePay.amount > 0);
+      this.transaction.data.billingInformation.isNewBAFlag = !!(mobileBillAccount.length > 1) && isAirtime;
       this.checkWarningBillingAccountMessage(mobileBillAccount, isAirtime);
     };
   }
