@@ -47,25 +47,6 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
     this.transaction = this.transactionService.load();
     this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
-    this.homeService.callback = () => {
-      const url = this.router.url;
-      if (url.indexOf('result') !== -1) {
-        this.homeHandler();
-      } else {
-        this.alertService.question(this.translateService.instant('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่'))
-          .then((data: any) => {
-            if (!data.value) {
-              return false;
-            }
-            return this.returnStock().then(() => true);
-          })
-          .then((isNext: boolean) => {
-            if (isNext) {
-              this.homeHandler();
-            }
-          });
-      }
-    };
   }
 
   ngOnInit(): void {
