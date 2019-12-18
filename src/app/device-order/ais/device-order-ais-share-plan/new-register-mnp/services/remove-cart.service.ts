@@ -43,7 +43,9 @@ export class RemoveCartService {
       this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
         .then((response: any) => {
           if (response.value === true) {
-            this.onUnlockMobileNo(transaction.data.simCard.mobileNo);
+            if (transaction.data.simCard.mobileNo) {
+              this.onUnlockMobileNo(transaction.data.simCard.mobileNo);
+            }
             this.returnStock( transaction).then(() => {
               this.transactionService.remove();
               window.location.href = url;
