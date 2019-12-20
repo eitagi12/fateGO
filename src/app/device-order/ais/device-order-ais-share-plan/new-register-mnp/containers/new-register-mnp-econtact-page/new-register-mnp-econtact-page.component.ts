@@ -135,14 +135,16 @@ export class NewRegisterMnpEcontactPageComponent implements OnInit, OnDestroy {
   }
 
   getAirTimeDiscount(amount: number, advancePayPromotions: any): number {
+    let resultAirTimeDiscount;
     if (!advancePayPromotions) {
       return 0;
     }
-
     if (Array.isArray(advancePayPromotions)) {
-      return (advancePayPromotions.length > 0 ? (+amount / +(advancePayPromotions[0].month || 1)) : 0);
+      resultAirTimeDiscount = (advancePayPromotions.length > 0 ? (+amount / +(12 || 1)) : 0);
+      return resultAirTimeDiscount.toFixed(2);
     } else {
-      return (+amount / +(advancePayPromotions.month || 1)) || 0;
+      resultAirTimeDiscount = (+amount / +(12 || 1)) || 0;
+      return resultAirTimeDiscount.toFixed(2);
     }
   }
 
