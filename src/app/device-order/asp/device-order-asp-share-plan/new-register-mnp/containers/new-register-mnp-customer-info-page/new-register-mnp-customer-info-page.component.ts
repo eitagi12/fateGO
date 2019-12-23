@@ -5,7 +5,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_ASP } from 'src/app/device-order/constants/wizard.constant';
+import { WIZARD_DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import {
          ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_NUMBER_PAGE,
          ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE
@@ -20,7 +20,7 @@ import { RemoveCartService } from '../../services/remove-cart.service';
 })
 export class NewRegisterMnpCustomerInfoPageComponent implements OnInit, OnDestroy {
 
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_ASP;
+  wizards: string[] = WIZARD_DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN;
 
   transaction: Transaction;
   customerInfo: CustomerInfo;

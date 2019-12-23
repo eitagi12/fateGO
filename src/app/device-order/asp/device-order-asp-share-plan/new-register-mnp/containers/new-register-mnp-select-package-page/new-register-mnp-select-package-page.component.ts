@@ -11,7 +11,7 @@ import { PromotionShelveService } from 'src/app/device-order/services/promotion-
 import { HttpClient } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_VERIFY_INSTANT_SIM_PAGE, ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_BY_PATTERN_PAGE, ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_NETWORK_TYPE } from '../../constants/route-path.constant';
-import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_ASP } from 'src/app/device-order/constants/wizard.constant';
+import { WIZARD_DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { RemoveCartService } from '../../services/remove-cart.service';
@@ -23,7 +23,7 @@ import { RemoveCartService } from '../../services/remove-cart.service';
 })
 export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestroy {
 
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_ASP;
+  wizards: string[] = WIZARD_DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN;
 
   @ViewChild('conditionTemplate')
   conditionTemplate: any;

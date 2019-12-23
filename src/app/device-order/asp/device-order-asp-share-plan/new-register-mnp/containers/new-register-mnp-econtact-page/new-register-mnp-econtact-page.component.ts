@@ -10,7 +10,7 @@ import { DecimalPipe } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_AGREEMENT_SIGN_PAGE } from '../../constants/route-path.constant';
-import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_ASP } from 'src/app/device-order/constants/wizard.constant';
+import { WIZARD_DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { RemoveCartService } from '../../services/remove-cart.service';
 @Component({
@@ -19,7 +19,7 @@ import { RemoveCartService } from '../../services/remove-cart.service';
   styleUrls: ['./new-register-mnp-econtact-page.component.scss']
 })
 export class NewRegisterMnpEcontactPageComponent implements OnInit, OnDestroy {
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_ASP;
+  wizards: string[] = WIZARD_DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN;
 
   priceOption: PriceOption;
   transaction: Transaction;
