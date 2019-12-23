@@ -153,11 +153,13 @@ export class NewRegisterMnpEcontactPageComponent implements OnInit, OnDestroy {
       return 0;
     }
 
-    if (Array.isArray(advancePayPromotions) && advancePayPromotions.length > 0) {
-      return advancePayPromotions[0].month || 0;
+    if (Array.isArray(advancePayPromotions)) {
+      return advancePayPromotions.length > 0 ? advancePayPromotions[0].month : 0;
+    } else {
+      return advancePayPromotions.month;
     }
-    return 0;
   }
+
   ngOnDestroy(): void {
     if (this.translationSubcription) {
       this.translationSubcription.unsubscribe();
