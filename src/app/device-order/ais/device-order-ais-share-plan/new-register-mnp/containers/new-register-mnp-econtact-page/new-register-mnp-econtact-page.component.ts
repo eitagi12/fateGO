@@ -156,7 +156,7 @@ export class NewRegisterMnpEcontactPageComponent implements OnInit, OnDestroy {
     if (Array.isArray(advancePayPromotions)) {
       return advancePayPromotions.length > 0 ? advancePayPromotions[0].month : 0;
     } else {
-      return advancePayPromotions.month;
+      return advancePayPromotions.month || 0;
     }
   }
 
