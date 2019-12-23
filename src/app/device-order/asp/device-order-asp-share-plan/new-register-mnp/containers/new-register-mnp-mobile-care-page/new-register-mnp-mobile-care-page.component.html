@@ -1,3 +1,22 @@
-<p>
-  new-register-mnp-mobile-care-page works!
-</p>
+<div class="mc-flex">
+  <mc-header title="{{ 'รายการสินค้า' | translate }}">
+      <div class="header-icon-left">
+          <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+      </div>
+      <div class="header-icon-right">
+          <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+      </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+      <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
+      <div class="mt-3 mb-3">
+          <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
+
+          <mc-mobile-care [mobileCare]="mobileCare" [normalPrice]="priceOption?.trade?.normalPrice" (completed)="onCompleted($event)"></mc-mobile-care>
+      </div>
+  </div>
+  <mc-footer>
+      <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+      <button class="btn btn-success" (click)="onNext()" [disabled]="!transaction?.data?.mobileCarePackage">NEXT</button>
+  </mc-footer>
+</div>
