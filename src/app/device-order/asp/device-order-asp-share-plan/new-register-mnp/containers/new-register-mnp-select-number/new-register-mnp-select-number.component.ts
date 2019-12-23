@@ -8,7 +8,7 @@ import {
   ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_BY_PATTERN_PAGE,
   ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE
 } from '../../constants/route-path.constant';
-import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN, WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_ASP } from 'src/app/device-order/constants/wizard.constant';
+import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN, WIZARD_DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { RemoveCartService } from '../../services/remove-cart.service';
 
@@ -19,7 +19,7 @@ import { RemoveCartService } from '../../services/remove-cart.service';
 })
 export class NewRegisterMnpSelectNumberComponent implements OnInit {
 
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_ASP;
+  wizards: string[] = WIZARD_DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN;
   transaction: Transaction;
   shoppingCart: ShoppingCart;
 

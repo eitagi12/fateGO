@@ -9,7 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { RemoveCartService } from '../../services/remove-cart.service';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
-import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_ASP } from 'src/app/device-order/constants/wizard.constant';
+import { WIZARD_DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { MOBILE_CARE_PACKAGE_KEY_REF } from 'src/app/device-order/constants/cpc.constant';
 import { MobileCareService } from 'src/app/device-only/services/mobile-care.service';
 import {
@@ -23,7 +23,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
   styleUrls: ['./new-register-mnp-mobile-care-page.component.scss']
 })
 export class NewRegisterMnpMobileCarePageComponent implements OnInit, OnDestroy {
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_ASP;
+  wizards: string[] = WIZARD_DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN;
 
   priceOption: PriceOption;
   transaction: Transaction;
