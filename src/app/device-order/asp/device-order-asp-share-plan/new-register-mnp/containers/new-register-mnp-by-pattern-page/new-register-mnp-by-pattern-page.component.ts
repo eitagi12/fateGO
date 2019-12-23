@@ -19,7 +19,7 @@ import { RemoveCartService } from '../../services/remove-cart.service';
   templateUrl: './new-register-mnp-by-pattern-page.component.html',
   styleUrls: ['./new-register-mnp-by-pattern-page.component.scss']
 })
-export class NewRegisterMnpByPatternPageComponent implements OnInit, OnInit, OnDestroy{
+export class NewRegisterMnpByPatternPageComponent implements OnInit, OnInit, OnDestroy {
 
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_ASP;
 
