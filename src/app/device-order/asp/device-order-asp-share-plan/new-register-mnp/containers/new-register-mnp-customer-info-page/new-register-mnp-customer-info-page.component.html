@@ -1,3 +1,21 @@
-<p>
-  new-register-mnp-customer-info-page works!
-</p>
+<div class="mc-flex">
+    <mc-header title="{{'ซื้อเครื่องพร้อมเปิดเบอร์ใหม่'| translate}}">
+        <div class="header-icon-left">
+            <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+        </div>
+        <div class="header-icon-right">
+            <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+        </div>
+    </mc-header>
+    <div class="mc-flex-wrap">
+        <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
+        <div class="mb-3 mt-3">
+            <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
+            <mc-customer-info [customerInfo]="customerInfo"></mc-customer-info>
+        </div>
+    </div>
+    <mc-footer>
+        <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+        <button class="btn btn-success" (click)="onNext()">NEXT</button>
+    </mc-footer>
+</div>
