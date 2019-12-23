@@ -1,6 +1,6 @@
 import { Component, OnInit, EventEmitter, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { Utils, AlertService, ShoppingCart } from 'mychannel-shared-libs';
+import { HomeService, Utils, AlertService, ImageUtils, ShoppingCart } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { WIZARD_DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
@@ -17,6 +17,7 @@ import { RemoveCartService } from '../../services/remove-cart.service';
   styleUrls: ['./new-register-mnp-face-capture-page.component.scss']
 })
 export class NewRegisterMnpFaceCapturePageComponent implements OnInit, OnDestroy {
+
   wizards: string[] = WIZARD_DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN;
   shoppingCart: ShoppingCart;
   openCamera: boolean;
@@ -26,6 +27,7 @@ export class NewRegisterMnpFaceCapturePageComponent implements OnInit, OnDestroy
 
   constructor(
     private router: Router,
+    private homeService: HomeService,
     private transactionService: TransactionService,
     private alertService: AlertService,
     private utils: Utils,
@@ -85,5 +87,4 @@ export class NewRegisterMnpFaceCapturePageComponent implements OnInit, OnDestroy
       this.transactionService.update(this.transaction);
     }
   }
-
 }

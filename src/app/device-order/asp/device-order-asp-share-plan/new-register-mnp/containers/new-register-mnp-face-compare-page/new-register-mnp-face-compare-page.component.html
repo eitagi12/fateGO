@@ -1,43 +1,43 @@
 <div class="mc-flex">
-  <mc-header title="{{ 'เครื่องพร้อมเปิดเบอร์ใหม่' | translate }}">
-      <div class="header-icon-left">
-          <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
-      </div>
-      <div class="header-icon-right">
-          <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
-      </div>
-  </mc-header>
-  <div class="mc-flex-wrap">
-      <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
-      <div class="mb-3 mt-3">
-          <mc-wizard [wizards]="wizards" active="5"></mc-wizard>
+    <mc-header title="{{ 'เครื่องพร้อมเปิดเบอร์ใหม่' | translate }}">
+        <div class="header-icon-left">
+            <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+        </div>
+        <div class="header-icon-right">
+            <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+        </div>
+    </mc-header>
+    <div class="mc-flex-wrap">
+        <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
+        <div class="mb-3 mt-3">
+            <mc-wizard [wizards]="wizards" active="5"></mc-wizard>
 
-          <div class="container-fluid">
-              <div class="row">
-                  <div class="col-xs-12 col-sm-12">
-                      <div class="card">
-                          <div class="card-header text-center" translate style="background-color: transparent; border-color: transparent;">
-                              ข้อมูลใบหน้าจากบัตรประชาชน
-                          </div>
-                          <div class="card-body">
-                              <img [src]="'data:image/png;base64,' + transaction?.data?.customer?.imageReadSmartCard" *ngIf="isReadCard()">
-                              <img [src]="'data:image/png;base64,' + transaction?.data?.customer?.imageSmartCard" *ngIf="!isReadCard()">
-                          </div>
-                          <hr style="width: 90%; margin: auto;">
-                          <div class="card-header text-center" translate style="background-color: transparent; border-color: transparent;">
-                              ข้อมูลใบหน้าจากรูปถ่าย
-                          </div>
-                          <div class="card-body">
-                              <img [src]="'data:image/png;base64,' + transaction?.data?.faceRecognition?.imageFaceUser">
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </div>
-  <mc-footer>
-      <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-      <button class="btn btn-success" (click)="onNext()">NEXT</button>
-  </mc-footer>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12">
+                        <div class="card">
+                            <div class="card-header text-center" translate style="background-color: transparent; border-color: transparent;">
+                                ข้อมูลใบหน้าจากบัตรประชาชน
+                            </div>
+                            <div class="card-body">
+                                <img [src]="'data:image/png;base64,' + transaction?.data?.customer?.imageReadSmartCard" *ngIf="isReadCard()">
+                                <img [src]="'data:image/png;base64,' + transaction?.data?.customer?.imageSmartCard" *ngIf="!isReadCard()">
+                            </div>
+                            <hr style="width: 90%; margin: auto;">
+                            <div class="card-header text-center" translate style="background-color: transparent; border-color: transparent;">
+                                ข้อมูลใบหน้าจากรูปถ่าย
+                            </div>
+                            <div class="card-body">
+                                <img [src]="'data:image/png;base64,' + transaction?.data?.faceRecognition?.imageFaceUser">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <mc-footer>
+        <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+        <button class="btn btn-success" (click)="onNext()">NEXT</button>
+    </mc-footer>
 </div>

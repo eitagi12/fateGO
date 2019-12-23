@@ -9,6 +9,7 @@ import { WIZARD_DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN } from 'src/app/device-order/
 import { RemoveCartService } from '../../services/remove-cart.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
+
 @Component({
   selector: 'app-new-register-mnp-face-confirm-page',
   templateUrl: './new-register-mnp-face-confirm-page.component.html',
@@ -68,5 +69,4 @@ export class NewRegisterMnpFaceConfirmPageComponent implements OnInit {
   onHome(): void {
     this.removeCartService.backToReturnStock('/', this.transaction);
   }
-
 }

@@ -1,14 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CaptureAndSign, ShoppingCart, PageLoadingService } from 'mychannel-shared-libs';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { CaptureAndSign, ShoppingCart, HomeService, PageLoadingService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
-import {
-  ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CONFIRM_PAGE,
-  ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CAPTURE_PAGE,
-  ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_EAPPLICATION_PAGE
-} from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CAPTURE_PAGE, ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_EAPPLICATION_PAGE, ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CONFIRM_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction, Customer, FaceRecognition, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { RemoveCartService } from '../../services/remove-cart.service';
@@ -19,6 +15,7 @@ import { RemoveCartService } from '../../services/remove-cart.service';
   styleUrls: ['./new-register-mnp-face-compare-page.component.scss']
 })
 export class NewRegisterMnpFaceComparePageComponent implements OnInit, OnDestroy {
+
   wizards: string[] = WIZARD_DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN;
   captureAndSign: CaptureAndSign;
   shoppingCart: ShoppingCart;
@@ -29,8 +26,8 @@ export class NewRegisterMnpFaceComparePageComponent implements OnInit, OnDestroy
   imgFaceSrc: string = 'assets/images/img-loader.gif';
   transaction: Transaction;
 
-  constructor(
-    private router: Router,
+  constructor(private router: Router,
+    private homeService: HomeService,
     private transactionService: TransactionService,
     private http: HttpClient,
     private pageLoadingService: PageLoadingService,
