@@ -140,10 +140,10 @@ export class NewRegisterMnpEcontactPageComponent implements OnInit, OnDestroy {
       return 0;
     }
     if (Array.isArray(advancePayPromotions)) {
-      resultAirTimeDiscount = (advancePayPromotions.length > 0 ? (+amount / +(12 || 1)) : 0);
+      resultAirTimeDiscount = (advancePayPromotions.length > 0 ? (+amount / +(advancePayPromotions[0].month || 1)) : 0);
       return resultAirTimeDiscount.toFixed(2);
     } else {
-      resultAirTimeDiscount = (+amount / +(12 || 1)) || 0;
+      resultAirTimeDiscount = (+amount / +(advancePayPromotions.month || 1)) || 0;
       return resultAirTimeDiscount.toFixed(2);
     }
   }
