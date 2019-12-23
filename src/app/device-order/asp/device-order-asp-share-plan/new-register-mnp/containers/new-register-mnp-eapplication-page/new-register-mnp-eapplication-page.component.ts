@@ -3,7 +3,7 @@ import { CreateEapplicationService } from 'src/app/shared/services/create-eappli
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Router } from '@angular/router';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
-import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_ASP } from 'src/app/device-order/constants/wizard.constant';
+import { WIZARD_DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { PageLoadingService, ShoppingCart } from 'mychannel-shared-libs';
@@ -21,7 +21,7 @@ import { RemoveCartService } from '../../services/remove-cart.service';
 })
 export class NewRegisterMnpEapplicationPageComponent implements OnInit, OnDestroy {
   selectedTab: string = 'hotdeal-superkhum-new-register';
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_ASP;
+  wizards: string[] = WIZARD_DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN;
   shoppingCart: ShoppingCart;
   transaction: Transaction;
   eApplicationSuperKhumNew: string;

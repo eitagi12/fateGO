@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Utils, AlertService, ShoppingCart } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
-import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_ASP } from 'src/app/device-order/constants/wizard.constant';
+import { WIZARD_DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import {
   ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_AGREEMENT_SIGN_PAGE,
   ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_FACE_COMPARE_PAGE
@@ -17,7 +17,7 @@ import { RemoveCartService } from '../../services/remove-cart.service';
   styleUrls: ['./new-register-mnp-face-capture-page.component.scss']
 })
 export class NewRegisterMnpFaceCapturePageComponent implements OnInit, OnDestroy {
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_ASP;
+  wizards: string[] = WIZARD_DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN;
   shoppingCart: ShoppingCart;
   openCamera: boolean;
   transaction: Transaction;
