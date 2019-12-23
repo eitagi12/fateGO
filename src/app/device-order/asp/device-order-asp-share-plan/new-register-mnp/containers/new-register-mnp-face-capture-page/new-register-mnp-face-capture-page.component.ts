@@ -1,15 +1,89 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
+import { Utils, AlertService, ShoppingCart } from 'mychannel-shared-libs';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
+import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_ASP } from 'src/app/device-order/constants/wizard.constant';
+import {
+  ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_AGREEMENT_SIGN_PAGE,
+  ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_FACE_COMPARE_PAGE
+} from '../../constants/route-path.constant';
+import { Transaction } from 'src/app/shared/models/transaction.model';
+import { RemoveCartService } from '../../services/remove-cart.service';
 
 @Component({
   selector: 'app-new-register-mnp-face-capture-page',
   templateUrl: './new-register-mnp-face-capture-page.component.html',
   styleUrls: ['./new-register-mnp-face-capture-page.component.scss']
 })
-export class NewRegisterMnpFaceCapturePageComponent implements OnInit {
+export class NewRegisterMnpFaceCapturePageComponent implements OnInit, OnDestroy {
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_ASP;
+  shoppingCart: ShoppingCart;
+  openCamera: boolean;
+  transaction: Transaction;
+  camera: EventEmitter<void> = new EventEmitter<void>();
+  isCaptureSuccess: boolean = false;
 
-  constructor() { }
+  constructor(
+    private router: Router,
+    private transactionService: TransactionService,
+    private alertService: AlertService,
+    private utils: Utils,
+    private shoppingCartService: ShoppingCartService,
+    private removeCartService: RemoveCartService
+  ) {
+    this.transaction = this.transactionService.load();
+  }
 
   ngOnInit(): void {
+    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhum();
+    this.openCamera = !!(this.transaction.data.faceRecognition && this.transaction.data.faceRecognition.imageFaceUser);
+  }
+
+  onBack(): void {
+    this.router.navigate([ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_AGREEMENT_SIGN_PAGE]);
+  }
+
+  onNext(): void {
+    if (this.transaction.data.faceRecognition.imageFaceUser) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_FACE_COMPARE_PAGE]);
+    } else {
+      this.onOpenCamera();
+    }
+  }
+
+  onHome(): void {
+    this.removeCartService.backToReturnStock('/', this.transaction);
+  }
+
+  onOpenCamera(): void {
+    this.openCamera = true;
+  }
+
+  onCameraCompleted(image: string): void {
+    this.isCaptureSuccess = image ? true : false;
+    this.transaction.data.faceRecognition = {
+      imageFaceUser: image
+    };
+
+  }
+
+  onCameraError(error: string): void {
+    this.alertService.error(error);
+  }
+
+  onClearIdCardImage(): void {
+    this.transaction.data.faceRecognition.imageFaceUser = null;
+  }
+
+  isAisNative(): boolean {
+    return this.utils.isAisNative();
+  }
+
+  ngOnDestroy(): void {
+    if (this.transaction) {
+      this.transactionService.update(this.transaction);
+    }
   }
 
 }
