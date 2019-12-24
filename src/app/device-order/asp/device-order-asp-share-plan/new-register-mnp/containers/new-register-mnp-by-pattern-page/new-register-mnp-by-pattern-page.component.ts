@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { WIZARD_DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
+import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import {
   MobileNoCondition, HomeService, TokenService, PageLoadingService, ShoppingCart, MobileNo, User, AlertService
 } from 'mychannel-shared-libs';
@@ -21,7 +21,7 @@ import { RemoveCartService } from '../../services/remove-cart.service';
 })
 export class NewRegisterMnpByPatternPageComponent implements OnInit, OnInit, OnDestroy {
 
-  wizards: string[] = WIZARD_DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN;
 
   shoppingCart: ShoppingCart;
   transaction: Transaction;
