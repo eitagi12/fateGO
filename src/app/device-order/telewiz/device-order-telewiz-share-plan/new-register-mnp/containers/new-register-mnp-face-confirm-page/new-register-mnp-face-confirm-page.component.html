@@ -1,3 +1,39 @@
-<p>
-  new-register-mnp-face-confirm-page works!
-</p>
+<div class="mc-flex">
+    <mc-header title="{{ 'รายการสินค้า' | translate}}">
+        <div class="header-icon-left w-25">
+            <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+        </div>
+        <div class="header-icon-right w-25 text-right">
+            <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+        </div>
+    </mc-header>
+    <div class="mc-flex-wrap">
+        <div class="card-background border-0">
+            <div class="container-fluid">
+                <div class="message-noti">
+                    <p translate>การลงทะเบียนด้วยระบบอัตลักษณ์ไม่สมบูรณ์</p>
+                    <p translate>หากท่านประสงค์จะลงทะเบียนให้ผู้ใช้บริการต่อ</p>
+                    <p translate>กรุณายืนยัน และรับรองความถูกต้อง</p>
+                </div>
+                <form [formGroup]="confirmForm">
+                    <div class="row">
+                        <div class="col-12 col-sm-12">
+                            <input type="password" id="password" class="form-control" placeholder="password" formControlName="password" />
+                        </div>
+                    </div>
+                </form>
+                <!-- <div class="row">
+                  <modal #showFaceCompareScoreModal title="AIS FaceRecog" cancelButtonLabel="ตกลง">
+                      <modal-content>
+                          <p id="labelScore">{{ShowScore}}<br/></p>
+                      </modal-content>
+                  </modal>
+              </div> -->
+            </div>
+        </div>
+    </div>
+    <mc-footer>
+        <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+        <button class="btn btn-success" (click)="onNext()" [disabled]="confirmForm.invalid">NEXT</button>
+    </mc-footer>
+</div>
