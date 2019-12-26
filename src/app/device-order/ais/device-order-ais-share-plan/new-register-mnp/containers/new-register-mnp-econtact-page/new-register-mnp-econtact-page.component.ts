@@ -85,6 +85,7 @@ export class NewRegisterMnpEcontactPageComponent implements OnInit, OnDestroy {
     const currentPackage: any = this.transaction.data.currentPackage || {};
     const advancePay: any = trade.advancePay || {};
     const locationName: any =  this.transaction.data.seller.locationName;
+    const mobileCare: any = this.transaction.data.mobileCarePackage || '';
 
     this.http.post('/api/salesportal/promotion-shelves/promotion/condition', {
       conditionCode: campaign.conditionCode,
@@ -113,7 +114,7 @@ export class NewRegisterMnpEcontactPageComponent implements OnInit, OnDestroy {
           airTimeMonth: this.getAirTimeMonth(advancePay.promotions),
           price: this.decimalPipe.transform(+trade.promotionPrice + (+advancePay.amount)),
           signature: '',
-          mobileCarePackageTitle: '',
+          mobileCarePackageTitle: mobileCare.title ? mobileCare.title : '',
           condition: condition.conditionText
         },
         docType: 'ECONTRACT',
@@ -141,10 +142,10 @@ export class NewRegisterMnpEcontactPageComponent implements OnInit, OnDestroy {
     }
     if (Array.isArray(advancePayPromotions)) {
       resultAirTimeDiscount = (advancePayPromotions.length > 0 ? (+amount / +(advancePayPromotions[0].month || 1)) : 0);
-      return resultAirTimeDiscount.toFixed(2);
+      return resultAirTimeDiscount.toFixed(0);
     } else {
       resultAirTimeDiscount = (+amount / +(advancePayPromotions.month || 1)) || 0;
-      return resultAirTimeDiscount.toFixed(2);
+      return resultAirTimeDiscount.toFixed(0);
     }
   }
 
