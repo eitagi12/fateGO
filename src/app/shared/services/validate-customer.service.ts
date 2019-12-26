@@ -32,6 +32,16 @@ export class ValidateCustomerService {
     }).toPromise();
   }
 
+  checkValidateCustomerHandleMessages(idCardNo: string, idCardType: string, transactionType: string): Promise<any> {
+    return this.http.get('/api/customerportal/validate-customer-new-register-handle-messages', {
+      params: {
+        identity: idCardNo,
+        idCardType: idCardType,
+        transactionType: transactionType
+      }
+    }).toPromise();
+  }
+
   queryBillingAccount(identity: string): Promise<any> {
     return this.http.get(`/api/customerportal/newRegister/${identity}/queryBillingAccount`).toPromise();
   }

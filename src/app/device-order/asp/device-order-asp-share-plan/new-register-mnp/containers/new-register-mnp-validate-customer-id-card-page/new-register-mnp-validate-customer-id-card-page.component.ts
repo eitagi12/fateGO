@@ -96,7 +96,8 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol).then((zipCode: string) => {
         const transactionType = TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS; // New
         // if (this.profile.idCardType === 'บัตรประชาชน' || this.profile.idCardType === 'ID_CARD') {
-        return this.validateCustomerService.checkValidateCustomer(this.profile.idCardNo, this.profile.idCardType, transactionType)
+        // tslint:disable-next-line: max-line-length
+        return this.validateCustomerService.checkValidateCustomerHandleMessages(this.profile.idCardNo, this.profile.idCardType, transactionType)
           .then((resp: any) => {
             const data = resp.data || {};
             return {
@@ -147,55 +148,12 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
               });
           }).catch((err) => {
             this.pageLoadingService.closeLoading();
+            const developerMessage = err.error.developerMessage;
+            const messageError = err.error.errors;
             if (err.error.resultCode === 'MYCHN00150006') {
-              const messageError = err.error.errors;
-
-              // USER_IN_BLACKLIST_HEADER
-              if (messageError.indexOf('อาจมียอดค้างชำระ หรือเอกสารเปิดเบอร์ไม่ครบถ้วน') !== -1) {
-                if (messageError.indexOf('กรุณาติดต่อพนักงานเพื่อดำเนินการ') !== -1) {
-                  // tslint:disable-next-line: max-line-length
-                  this.alertService.error('<li>อาจมียอดค้างชำระ หรือเอกสารเปิดเบอร์ไม่ครบถ้วน</li><li>กรุณาติดต่อพนักงานเพื่อดำเนินการ</li>');
-                }
-                // OVER_LIMIT_HEADER
-              } else if (messageError.indexOf('เปิดเบอร์ใหม่ครบตามจำนวนที่กำหนดไว้') !== -1) {
-                if (messageError.indexOf('กรุณาติดต่อพนักงานเพื่อดำเนินการ') !== -1) {
-                  if (messageError.indexOf('อาจมียอดค้างชำระหรือเอกสารเปิดเบอร์ใหม่ไม่ครบถ้วน') !== -1) {
-                    // CASE_BLACKLIST_A_NEW_NUMBER_AND_MOBILE_LIMIT_HEADER
-                    // tslint:disable-next-line: max-line-length
-                    this.alertService.error('<li>เปิดเบอร์ใหม่ครบตามจำนวนที่กำหนดไว้</li><li>อาจมียอดค้างชำระหรือเอกสารเปิดเบอร์ใหม่ไม่ครบถ้วน</li><li>กรุณาติดต่อพนักงานเพื่อดำเนินการ</li>');
-                  } else {
-                    this.alertService.error('<li>เปิดเบอร์ใหม่ครบตามจำนวนที่กำหนดไว้</li><li>กรุณาติดต่อพนักงานเพื่อดำเนินการ</li>');
-                  }
-                }
-                // IS_UNDER_CONSTRACT_HEADER
-              } else if (messageError.indexOf('มีสัญญาใช้บริการในระบบ AIS ครบตามจำนวนที่กำหนดไว้') !== -1) {
-                // CASE_CON_Y_NEW_AND_BLACKLIST_Y_HEADER
-                if (messageError.indexOf('อาจมียอดค้างชำระหรือเอกสารเปิดเบอร์ใหม่ไม่ครบถ้วน') !== -1) {
-                  if (messageError.indexOf('กรุณาติดต่อพนักงานเพื่อดำเนินการ') !== -1) {
-                    // tslint:disable-next-line: max-line-length
-                    this.alertService.error('<li>อาจมียอดค้างชำระหรือเอกสารเปิดเบอร์ใหม่ไม่ครบถ้วน</li><li>มีสัญญาใช้บริการในระบบ AIS ครบตามจำนวนที่กำหนดไว้</li><li>กรุณาติดต่อพนักงานเพื่อดำเนินการ</li>');
-                  }
-                } else {
-                  this.alertService.error('<li>มีสัญญาใช้บริการในระบบ AIS ครบตามจำนวนที่กำหนดไว้</li>');
-                }
-                // CASE_CON_Y_AND_BLACKLIST_O_HEADER
-              } else if (messageError.indexOf('มีสัญญาบริการในระบบ AIS ครบตามจำนวนที่กำหนดไว้') !== -1) {
-                if (messageError.indexOf('เปิดเบอร์ใหม่ครบตามจำนวนที่กำหนด') !== -1) {
-                  if (messageError.indexOf('กรุณาติดต่อพนักงานเพื่อดำเนินการ') !== -1) {
-                    // CASE_CON_Y_AND_BLACKLIST_A_HEADER
-                    if (messageError.indexOf('อาจมียอดค้างชำระหรือเอกสารเปิดเบอร์ใหม่ไม่ครบถ้วน') !== -1) {
-                      // tslint:disable-next-line: max-line-length
-                      this.alertService.error('<li>อาจมียอดค้างชำระหรือเอกสารเปิดเบอร์ใหม่ไม่ครบถ้วน</li><li>เปิดเบอร์ใหม่ครบตามจำนวนที่กำหนด</li><li>มีสัญญาบริการในระบบ AIS ครบตามจำนวนที่กำหนดไว้</li><li>กรุณาติดต่อพนักงานเพื่อดำเนินการ</li>');
-                    } else {
-                      // CASE_CON_Y_AND_BLACKLIST_O_HEADER
-                      // tslint:disable-next-line: max-line-length
-                      this.alertService.error('<li>เปิดเบอร์ใหม่ครบตามจำนวนที่กำหนด</li><li>มีสัญญาบริการในระบบ AIS ครบตามจำนวนที่กำหนดไว้</li><li>กรุณาติดต่อพนักงานเพื่อดำเนินการ</li>');
-                    }
-                  }
-                }
-              }
+              this.alertService.error(developerMessage);
             } else {
-              this.alertService.error(JSON.parse(JSON.stringify(err.error.errors[0])));
+              this.alertService.error(messageError[0]);
             }
           });
       });
