@@ -1,3 +1,41 @@
-<p>
-  new-register-mnp-validate-customer-page works!
-</p>
+<div class="start-container bg-white" [ngClass]="{'extendWhiteBackground': disabledKeyIn}">
+  <div class="row read-card">
+    <div class="column medium-12 read-card-title">
+      ระบุข้อมูลลูกค้า</div>
+    <div class="column medium-5 text-center">
+      <div class="idcard-container column">
+        <div style="padding-top:50px">{{ INSERT_ID_CARD }}</div>
+        <a (click)="onCardImgPressCaller()">
+          <img id="ImgRegNumVerifyScanCardLink" class="idcard-img-pc" src="assets/images/icon/icon-insert-idcard.png" alt="">
+        </a>
+      </div>
+    </div>
+    <div *ngIf="!disabledKeyIn" class="line-center-pc">
+      <span>{{ OR }}</span>
+    </div>
+    <div class="column medium-5 text-center">
+      <div *ngIf="!disabledKeyIn" class="otherid-container-pc">
+        <div>{{ OTHER_IDENTITY }}</div>
+        <div class="font-small1">({{ placeholder }})</div>
+        <form [formGroup]="identityForm">
+          <input id="txtRegNumVerifyStartKeyInCard" type="text" class="mc-input text-center padding-input" placeholder="{{ placeholder }}"
+            autocomplete="off" maxlength="13" formControlName="identity">
+          <div *ngIf="formErrors.identity" class="row columns font-pink text-center padding-input">
+            * {{ formErrors.identity }}
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="small-6 large-6 columns text-right">
+      <button id="btnRegNumVerifyStartBack" class="mc-button mc-button--gray" (click)="onBackPressCaller()">
+        BACK
+      </button>
+    </div>
+    <div class="small-6 large-6 columns text-left">
+      <button id="btnRegNumVerifyStartNext" class="mc-button mc-button--green button-margin-bottom" [disabled]="!activeNextBtn"
+        (click)="onNextPressCaller()">NEXT</button>
+    </div>
+  </div>
+</div>
