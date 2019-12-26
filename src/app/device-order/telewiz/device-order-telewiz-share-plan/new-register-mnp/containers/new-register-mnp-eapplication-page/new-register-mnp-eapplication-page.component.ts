@@ -4,7 +4,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { Router } from '@angular/router';
 import { HomeService, PageLoadingService, ShoppingCart } from 'mychannel-shared-libs';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
-import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
+import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ } from 'src/app/device-order/constants/wizard.constant';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import {
@@ -21,7 +21,7 @@ import { RemoveCartService } from '../../services/remove-cart.service';
 export class NewRegisterMnpEapplicationPageComponent implements OnInit, OnDestroy {
 
   selectedTab: string = 'hotdeal-superkhum-new-register';
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
   shoppingCart: ShoppingCart;
   transaction: Transaction;
   eApplicationSuperKhumNew: string;
