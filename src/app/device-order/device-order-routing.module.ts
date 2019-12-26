@@ -73,6 +73,15 @@ const routes: Routes = [
         loadChildren: 'src/app/device-order/asp/device-order-asp-existing-best-buy/device-order-asp-existing-best-buy.module#DeviceOrderAspExistingBestBuyModule'
       }
     ]
+  },
+  {
+    path: 'telewiz',
+    children: [
+      {
+        path: 'share-plan',
+        loadChildren: 'src/app/device-order/telewiz/device-order-telewiz-share-plan/device-order-telewiz-share-plan.module#DeviceOrderTelewizSharePlanModule'
+      }
+    ]
   }
 ];
 
