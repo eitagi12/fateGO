@@ -73,7 +73,7 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
     const customer = this.transaction.data && this.transaction.data.billingInformation
       && this.transaction.data.billingInformation.billDeliveryAddress ?
       this.transaction.data.billingInformation.billDeliveryAddress : this.transaction.data.customer;
-    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhum();
+    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
 
     this.customerAddress = this.utils.getCurrentAddress({
       homeNo: customer.homeNo,

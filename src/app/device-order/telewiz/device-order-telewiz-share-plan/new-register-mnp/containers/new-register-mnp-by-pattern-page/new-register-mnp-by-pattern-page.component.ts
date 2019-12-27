@@ -49,7 +49,7 @@ export class NewRegisterMnpByPatternPageComponent implements OnInit, OnDestroy {
     // ลบข้อมูลที่เคยเลือก simcard ทิ้ง
     delete this.transaction.data.simCard;
     // อับเดดข้อมูลตะกร้า
-    this.shoppingCart = Object.assign(this.shoppingCartService.getShoppingCartDataSuperKhum(), {
+    this.shoppingCart = Object.assign(this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz(), {
       mobileNo: ''
     });
   }

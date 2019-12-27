@@ -57,7 +57,7 @@ export class NewRegisterMnpEcontactPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhum();
+    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
     this.callService();
   }
 

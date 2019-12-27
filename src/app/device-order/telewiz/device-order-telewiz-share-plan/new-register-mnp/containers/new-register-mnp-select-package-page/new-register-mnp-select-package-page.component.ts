@@ -64,7 +64,7 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
   }
 
   ngOnInit(): void {
-    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhum();
+    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
     this.callService();
   }
 

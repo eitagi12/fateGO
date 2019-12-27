@@ -129,7 +129,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
     private removeCartService: RemoveCartService
   ) {
     this.option = { scan_sim: true, key_sim: false };
-    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhum();
+    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
     this.transaction = this.transactionService.load();
   }
 

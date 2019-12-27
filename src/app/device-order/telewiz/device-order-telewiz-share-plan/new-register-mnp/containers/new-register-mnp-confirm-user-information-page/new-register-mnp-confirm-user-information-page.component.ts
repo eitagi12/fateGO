@@ -68,7 +68,7 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
   }
 
   ngOnInit(): void {
-    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhum();
+    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
     const mainPackage = this.transaction.data.mainPackage;
     const customer = this.transaction.data.customer;
     const simCard = this.transaction.data.simCard;
