@@ -1,86 +1,20 @@
-// @import "~foundation-sites/scss/util/util";
-
-.start-container{
-  padding: 2rem;
-}
-.otherid-container{
-  padding: 0 60px;
-//   @include breakpoint(small only){
-//     padding: 0;
-//   }
-}
-.underline{
-  padding-bottom: 10px;
-  border-bottom: 2px solid #cbcbcb;
-}
-.idcard-img{
-  display: block;
-  width: 250px;
-  margin: auto;
-  padding: 80px 0 30px 0;
-//   @include breakpoint(small only){
-//     width: 150px;
-//     padding: 40px 0 15px 0;
-//   }
-}
-
-.line-center {
-  max-width: 400px;
-  text-align: center;
-  border-bottom: 1px solid #cbcbcb;
-  line-height: 0.1em;
-  margin: 80px auto 80px auto;
-  span {
-    background:#fff;
-    padding:0 20px;
-  }
-//   @include breakpoint(small only){
-//     margin: 50px auto 50px auto;
-//   }
-}
-
-.font-small1{
-  color: #989898;
-}
-input.placeholder {
-  text-align: center;
-}
-
-.button-margin-bottom {
-  margin-bottom: 70px;
-//   @include breakpoint(small only){
-//     margin-bottom: 30px;
-//   }
-}
-
-.extendWhiteBackground {
-  height: 740px;
-}
-
-.padding-input {
-  margin: 1.5rem 0rem;
-}
-
-.mc-button:disabled {
-  opacity: 0.7;
-}
 //for PC
 .idcard-img-pc{
   display: block;
   width: 100px;
   margin: auto;
   padding: 20px 0 80px 0;
-//   @include breakpoint(small only){
-//     width: 50px;
-//     padding: 10px 0 40px 0;
-//   }
+  // @include breakpoint(small only){
+  //   width: 50px;
+  //   padding: 10px 0 40px 0;
+  // }
 }
 
 .otherid-container-pc{
   padding: 50px 60px;
-//   @include breakpoint(small only){
-//     padding: 0;
-//   }
+  // @include breakpoint(small only){
+  //   padding: 0;
+  // }
 }
 
 .line-center-pc {
@@ -97,9 +31,9 @@ input.placeholder {
     padding: 20px;
     position: absolute;
   }
-//   @include breakpoint(small only){
-//     margin: 50px auto 50px auto;
-//   }
+  // @include breakpoint(small only){
+  //   margin: 50px auto 50px auto;
+  // }
 }
 
 .read-card{
@@ -114,4 +48,8 @@ input.placeholder {
   width: 100%; 
   padding: 8px 10px 8px 15px; 
   color: #fff;
+}
+
+.font-small1 {
+  color: gray;
 }

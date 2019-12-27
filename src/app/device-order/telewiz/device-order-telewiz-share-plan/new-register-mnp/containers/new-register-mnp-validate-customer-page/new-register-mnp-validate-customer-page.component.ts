@@ -2,6 +2,7 @@ import { Component, Input, OnInit, ViewChild, ElementRef, AfterViewInit } from '
 
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
+import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 // import { thaiIDValidator } from 'app/shared/custom-validator/thai-id.directive';
 // import { ChannelType } from 'app/core/channel-type.constant';
 // import { TokenService } from 'app/core/token.service';
@@ -13,6 +14,7 @@ import { Observable } from 'rxjs';
   styleUrls: ['./new-register-mnp-validate-customer-page.component.scss']
 })
 export class NewRegisterMnpValidateCustomerPageComponent implements OnInit {
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN;
   @Input() onNextPress: Function;
   @Input() onBackPress: Function;
   @Input() onCardImgPress: Function;
