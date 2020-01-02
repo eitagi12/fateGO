@@ -46,7 +46,7 @@ export class NewRegisterMnpEapplicationPageComponent implements OnInit, OnDestro
 
   ngOnInit(): void {
     this.pageLoadingService.openLoading();
-    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhum();
+    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
     this.callGenerateEappService(this.transaction, this.translateService.currentLang);
     this.isSelect = this.eApplicationSuperKhumNew ? true : false; // Get eApp for new ca first.
   }

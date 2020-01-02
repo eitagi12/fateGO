@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AlertService, PageLoadingService, REGEX_MOBILE, HomeService } from 'mychannel-shared-libs';
+import { AlertService, PageLoadingService, REGEX_MOBILE, HomeService, ShoppingCart } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import * as moment from 'moment';
@@ -14,6 +14,7 @@ import {
 } from '../../constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { RemoveCartService } from '../../services/remove-cart.service';
+import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 @Component({
   selector: 'app-new-register-mnp-network-type-page',
   templateUrl: './new-register-mnp-network-type-page.component.html',
@@ -24,7 +25,7 @@ export class NewRegisterMnpNetworkTypePageComponent implements OnInit, OnDestroy
 
   transaction: Transaction;
   mnpForm: FormGroup;
-
+  shoppingCart: ShoppingCart;
   constructor(
     private router: Router,
     private fb: FormBuilder,
@@ -32,13 +33,14 @@ export class NewRegisterMnpNetworkTypePageComponent implements OnInit, OnDestroy
     private alertService: AlertService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private homeService: HomeService,
+    private shoppingCartService: ShoppingCartService,
     private removeCartService: RemoveCartService
   ) {
     this.transaction = this.transactionService.load();
   }
 
   ngOnInit(): void {
+    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
     this.createForm();
   }
 

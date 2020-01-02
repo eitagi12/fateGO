@@ -55,7 +55,7 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
   }
 
   ngOnInit(): void {
-    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhum();
+    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
     const paymentMethod = this.priceOption.trade.payment ? this.priceOption.trade.payment.method : '';
     const productDetail = this.priceOption.productDetail || {};
     const productStock = this.priceOption.productStock || {};

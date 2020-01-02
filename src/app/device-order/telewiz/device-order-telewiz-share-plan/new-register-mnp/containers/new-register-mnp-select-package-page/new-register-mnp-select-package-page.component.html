@@ -10,23 +10,19 @@
     <div class="mc-flex-wrap">
         <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
         <div class="my-3">
-            <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
+            <mc-wizard [wizards]="wizards" active="3"></mc-wizard>
             <div [hidden]="promotionShelves?.length === 0">
                 <div class="container-fluid">
                     <div class="bg-white p-3">
-                        <img src="assets/images/icon/package-info.png" class="icon-package-info" />
-                        {{'ข้อมูลแพ็กเกจ' | translate }}
+                        <img src="assets/images/icon/package-info.png" class="icon-package-info" /> {{'ข้อมูลแพ็กเกจ' | translate }}
                     </div>
                     <div class="container-fluid bg-white">
                         <div class="card">
                             <div class="card-header bg-green text-white mb-2">
-                                {{'เลือกแพ็กเกจใหม่' | translate}} <span
-                                    class="minimum-package">({{'แพ็กเกจเริ่มต้น' | translate}} {{
+                                {{'เลือกแพ็กเกจใหม่' | translate}} <span class="minimum-package">({{'แพ็กเกจเริ่มต้น' | translate}} {{
                 priceOption?.privilege?.minimumPackagePrice }} {{'บาท'| translate}})</span>
                             </div>
-                            <mc-promotion-shelve [selected]="transaction?.data?.mainPackage"
-                                [promotionShelves]="promotionShelves" (completed)="onCompleted($event)"
-                                (condition)="onTermConditions($event)"></mc-promotion-shelve>
+                            <mc-promotion-shelve [selected]="transaction?.data?.mainPackage" [promotionShelves]="promotionShelves" (completed)="onCompleted($event)" (condition)="onTermConditions($event)"></mc-promotion-shelve>
                         </div>
                     </div>
                 </div>
@@ -36,8 +32,7 @@
     </div>
     <mc-footer>
         <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-        <button class="btn btn-success" (click)="onNext()"
-            [disabled]="!(!!transaction?.data?.mainPackage)">NEXT</button>
+        <button class="btn btn-success" (click)="onNext()" [disabled]="!(!!transaction?.data?.mainPackage)">NEXT</button>
     </mc-footer>
 </div>
 

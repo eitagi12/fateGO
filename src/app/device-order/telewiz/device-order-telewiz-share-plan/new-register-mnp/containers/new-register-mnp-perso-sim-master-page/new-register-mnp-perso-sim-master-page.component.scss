@@ -1,0 +1,25 @@
+.icon-read-card {
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 500px;
+}
+
+.icon-perso-sim {
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 350px;
+}
+
+.line-behind {
+    max-width: 400px;
+    text-align: center;
+    border-bottom: 1px solid #cbcbcb;
+    line-height: 0.1em;
+    margin: 80px auto 80px auto;
+    span {
+        background: #fff;
+        padding: 0 20px;
+    }
+}

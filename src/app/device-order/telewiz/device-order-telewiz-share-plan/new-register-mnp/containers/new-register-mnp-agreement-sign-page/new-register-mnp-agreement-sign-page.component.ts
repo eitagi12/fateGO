@@ -108,7 +108,7 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
  }
 
  ngOnInit(): void {
-   this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhum();
+   this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
    this.isReadCard = this.transaction.data.action === 'READ_CARD' ? true : false;
    this.checkCaptureAndSign();
  }
