@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, ValidatorFn, AbstractControl, FormControl } from '@angular/forms';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ } from 'src/app/device-order/constants/wizard.constant';
 import { ValidateCustomerService } from 'src/app/shared/services/validate-customer.service';
 import { PageLoadingService, AlertService, Utils, User, TokenService } from 'mychannel-shared-libs';
@@ -8,6 +8,7 @@ import { ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOME
 import { Transaction, Order, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { Observable } from 'rxjs';
 // import { thaiIDValidator } from 'app/shared/custom-validator/thai-id.directive';
 // import { ChannelType } from 'app/core/channel-type.constant';
 // import { TokenService } from 'app/core/token.service';
@@ -36,6 +37,10 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   user: User;
   priceOption: any;
   transactionId: string;
+
+  ID_CARD: string = 'ID_CARD';
+  PASSPORT: string = 'PASSPORT';
+  IMM_CARD: string = 'IMM_CARD';
 
   private formErrors: any = {
     identity: ''
@@ -108,77 +113,104 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   }
 
   buildForm(): void {
-    this.identityForm = this.formBuilder.group({
-      identity: ['', Validators.minLength(9)]
+    // this.identityForm = this.formBuilder.group({
+    //   identity: ['', Validators.minLength(9), Validators.required]
+    // });
+
+    this.identityForm = new FormGroup({
+      'identity': new FormControl('', [Validators.required, Validators.minLength(9)])
     });
 
-    // this.identityForm.controls['identity'].valueChanges
-    //   .debounceTime(500)
-    //   .subscribe((identityValue: any) => {
-    //     this.onValueChanged(identityValue);
-    //   });
+    this.identityForm.controls['identity'].valueChanges
+      // .debounceTime(500)
+      .subscribe((identityValue: any) => {
+        this.onValueChanged(identityValue);
+      });
   }
 
   onValueChanged(data?: any): void {
     // let flow: boolean = JSON.parse(localStorage.getItem('flowLotus'));
-    // if (data[0] === '0' && !(flow)) {
-    //   this.identityType = IMM_CARD;
-    //   this.identityForm.controls.identity.setValidators([
-    //     Validators.required,
-    //     Validators.maxLength(13),
-    //     Validators.minLength(13),
-    //     Validators.pattern('[0-9.]+')
-    //   ]);
-    // } else if (data.match(/^[a-z]/ig) && !(flow)) {
-    //   this.identityType = PASSPORT;
-    //   this.identityForm.controls.identity.setValidators([
-    //     Validators.required,
-    //     Validators.maxLength(9),
-    //     Validators.minLength(9),
-    //     Validators.pattern('^[A-Z]{2}[0-9]{7}')
-    //   ]);
-    //   this.identityForm.controls.identity.setValue(data.toUpperCase());
-    // } else {
-    //   this.identityType = ID_CARD;
-    //   this.identityForm.controls.identity.setValidators([
-    //     Validators.required,
-    //     Validators.pattern('[0-9.]+'),
-    //     Validators.maxLength(13),
-    //     Validators.minLength(13),
-    //     thaiIDValidator()
-    //   ]);
-    // }
-    // if (!this.identityForm) { return; }
-    // const form: any = this.identityForm;
+    if (data[0] === '0') {
+      this.identityType = this.IMM_CARD;
+      this.identityForm.controls.identity.setValidators([
+        Validators.required,
+        Validators.maxLength(13),
+        Validators.minLength(13),
+        Validators.pattern('[0-9.]+')
+      ]);
+    } else if (data.match(/^[a-z]/ig)) {
+      // this.identityType = thiPASSPORT;
+      // this.identityForm.controls.identity.setValidators([
+      //   Validators.required,
+      //   Validators.maxLength(9),
+      //   Validators.minLength(9),
+      //   Validators.pattern('^[A-Z]{2}[0-9]{7}')
+      // ]);
+      // this.identityForm.controls.identity.setValue(data.toUpperCase());
+    } else {
+      this.identityType = this.ID_CARD;
+      this.identityForm.controls.identity.setValidators([
+        Validators.required,
+        Validators.pattern('[0-9.]+'),
+        Validators.maxLength(13),
+        Validators.minLength(13),
+        this.thaiIDValidator()
+      ]);
+    }
+    if (!this.identityForm) { return; }
+    const form: any = this.identityForm;
 
-    // // tslint:disable-next-line: forin
-    // for (const field in this.formErrors) {
-    //   this.formErrors[field] = '';
-    //   const control = form.get(field);
-    //   if (control && !control.valid) {
-    //     this.activeNextBtn = false;
-    //     const messages = this.getErrorMessages(this.identityType)[field];
-    //     // tslint:disable-next-line: forin
-    //     for (const key in control.errors) {
-    //       this.formErrors[field] += messages[key] + ' ';
-    //     }
-    //   } else if (control && control.valid) {
-    //     this.activeNextBtn = true;
-    //   }
-    // }
+    // tslint:disable-next-line: forin
+    for (const field in this.formErrors) {
+      this.formErrors[field] = '';
+      const control = form.get(field);
+      if (control && !control.valid) {
+        this.activeNextBtn = false;
+        const messages = this.getErrorMessages(this.identityType)[field];
+        // tslint:disable-next-line: forin
+        for (const key in control.errors) {
+          this.formErrors[field] += messages[key] + ' ';
+        }
+      } else if (control && control.valid) {
+        this.activeNextBtn = true;
+      }
+    }
+  }
+
+  thaiIDValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } => {
+
+      const thaiID = control.value;
+      const no = this.checkInvalidThaiID(thaiID);
+      return no ? { 'thaiIdDigit': { thaiID } } : null;
+    };
+  }
+
+  checkInvalidThaiID(id: any): boolean {
+    let sum = 0;
+    let i = 0;
+    if (id !== null && id.length === 13) {
+      for (; i < 12; i++) {
+        sum += parseFloat(id.charAt(i)) * (13 - i);
+      }
+      if ((11 - sum % 11) % 10 !== parseFloat(id.charAt(12))) {
+        return true;
+      }
+    }
+    return false;
   }
 
   getErrorMessages(identityType: string): any {
-    // switch (identityType) {
-    //   case ID_CARD:
-    //     return this.idCardValidationMessages;
-    //   case IMM_CARD:
-    //     return this.idMMCardValidationMessages;
-    //   case PASSPORT:
-    //     return this.idPassportValidationMessages;
-    //   default:
-    //     return this.commonValidationMessages;
-    // }
+    switch (identityType) {
+      case this.ID_CARD:
+        return this.idCardValidationMessages;
+      case this.IMM_CARD:
+        return this.idMMCardValidationMessages;
+      case this.PASSPORT:
+        return this.idPassportValidationMessages;
+      default:
+        return this.commonValidationMessages;
+    }
   }
 
   onNextPressCaller(): void {
