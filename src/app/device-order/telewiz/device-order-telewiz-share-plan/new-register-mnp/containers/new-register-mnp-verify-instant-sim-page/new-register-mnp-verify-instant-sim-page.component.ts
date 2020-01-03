@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit, Output, EventEmitter, NgZone } from '@angular/core';
 import { SimSerial, HomeService, AlertService, PageLoadingService, ShoppingCart, AisNativeService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -6,7 +6,7 @@ import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import {
   ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_NUMBER_PAGE,
   ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_PACKAGE_PAGE
@@ -14,15 +14,20 @@ import {
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { RemoveCartService } from '../../services/remove-cart.service';
+import { environment } from 'src/environments/environment';
+import { of } from 'rxjs';
+
+declare let window: any;
+declare let $: any;
 
 @Component({
   selector: 'app-new-register-mnp-verify-instant-sim-page',
   templateUrl: './new-register-mnp-verify-instant-sim-page.component.html',
   styleUrls: ['./new-register-mnp-verify-instant-sim-page.component.scss']
 })
-export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDestroy {
+export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit {
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN;
-  serialForm: FormGroup;
+  simSerialForm: FormGroup;
   transaction: Transaction;
   simSerial: SimSerial;
   simSerialValid: boolean;
@@ -34,116 +39,113 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
   // @ViewChild('serial')
   // serialField: ElementRef;
 
-  constructor(private router: Router,
+  aisNative: any = window.aisNative;
+  scanBarcodeText: string = 'สแกน Barcode';
+  getBarcode: any;
+  getMobileNoFn: any;
+  mobileNoKeyIn: string;
+  mobileNoScan: string;
+  registrationData: any;
+  simSerialScan: string;
+  urlBackLink: string;
+  xmlDoc: any;
+  minLength: number = 13;
+  offerType: string;
+  isHandsetDiscount: boolean;
+  isNativeApp: boolean;
+  simSerialFormSubmitted: boolean;
+  isSimSerial: boolean;
+
+  mockSimSerial: any = '<barcode>1720202094595</barcode>';
+
+  constructor(
+    private router: Router,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
     private alertService: AlertService,
-    private http: HttpClient,
     private shoppingCartService: ShoppingCartService,
-    private translationService: TranslateService,
     private fb: FormBuilder,
     private aisNativeService: AisNativeService,
-    private removeCartService: RemoveCartService) {
+    private removeCartService: RemoveCartService,
+    private zone: NgZone,
+    ) {
     this.transaction = this.transactionService.load();
   }
 
   ngOnInit(): void {
     this.createForm();
     delete this.transaction.data.simCard;
-    this.shoppingCart = Object.assign(this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz(), {
+    this.shoppingCart = Object.assign(this.shoppingCartService.getShoppingCartDataSuperKhum(), {
       mobileNo: ''
     });
-  }
 
-  public checkSimSerial(): void {
-    this.keyinSimSerial = true;
-    this.scanBarCode = false;
-    const serial = this.serialForm.controls['serial'].value;
-    this.getMobileNoBySim(serial);
-  }
+    this.aisNative = this.aisNative || {
+      sendIccCommand: (): void => {/**/
+      },
+      scanBarcode: (): void => {
+        window.onBarcodeCallback(this.mockSimSerial);
+      }
+    };
 
-  private getMobileNoBySim(serial: any): void {
-    this.pageLoadingService.openLoading();
-    this.http.get(`/api/customerportal/validate-verify-instant-sim?serialNo=${serial}`).toPromise()
-      .then((resp: any) => {
-        const simSerial = resp.data || [];
-        this.simSerialValid = true;
-        this.onSubmit();
-        this.simSerial = {
-          mobileNo: simSerial.mobileNo,
-          simSerial: serial
-        };
-        this.transaction.data.simCard = {
-          mobileNo: this.simSerial.mobileNo,
-          simSerial: this.simSerial.simSerial,
-          persoSim: false
-        };
-        this.pageLoadingService.closeLoading();
-      }).catch((resp: any) => {
-        this.simSerialValid = false;
-        this.simSerial = undefined;
-        const error = resp.error || [];
-        this.pageLoadingService.closeLoading();
-        this.alertService.notify({
-          type: 'error',
-          html: this.translationService.instant(error.resultDescription.replace(/<br>/, ' '))
-        });
-        this.onSubmit();
-      });
-  }
+    this.isNativeApp = false;
+    if (typeof window.aisNative !== 'undefined') {
+      this.isNativeApp = true;
+    }
 
-  private onSubmit(): void {
-    this.serialForm.patchValue({
-      serial: ''
-    });
-    // this.serialField.nativeElement.focus();
+    if (typeof this.aisNative !== 'undefined') {
+
+      window.onBarcodeCallback = (barcode: any): void => {
+        if (barcode && barcode.length > 0) {
+          this.zone.run(() => {
+            const parser: any = new DOMParser();
+            barcode = '<data>' + barcode + '</data>';
+            this.xmlDoc = parser.parseFromString(barcode, 'text/xml');
+            this.getBarcode = this.xmlDoc.getElementsByTagName('barcode')[0].firstChild.nodeValue;
+            this.getMobileNoByBarcode(this.getBarcode, true);
+          });
+        }
+      };
+    }
+    this.initialData();
+    console.log('isNativeApp= ' + this.isNativeApp);
   }
 
   private createForm(): void {
-    this.serialForm = this.fb.group({
-      serial: ['', [Validators.required, Validators.pattern(/\d{13}/)]]
+    this.simSerialForm = this.fb.group({
+      simSerial: ['', [
+        Validators.required,
+        Validators.minLength(this.minLength),
+        Validators.pattern(/\d{13}/)
+      ]]
     });
   }
 
-  onOpenScanBarcode(): void {
-    this.aisNativeService.scanBarcode();
-
-    this.aisNativeService.getBarcode().subscribe((imeiFromBarcode) => {
-      this.getMobileNoByScanImei(imeiFromBarcode);
-    });
+  initialData(): void {
+    this.mobileNoScan = '';
+    this.mobileNoKeyIn = '';
+    this.simSerialScan = '';
+    this.offerType = '';
   }
-  private getMobileNoByScanImei(serial: any): void {
+
+  openScanBarcode(): void {
+    this.aisNative.scanBarcode();
+  }
+
+  checkBarcode(barcode: string, isScan: boolean): void {
+    if (!this.simSerialForm.valid && !isScan) {
+      this.simSerialFormSubmitted = true;
+    } else {
+      this.getMobileNoByBarcode(barcode, isScan);
+    }
+  }
+
+  getMobileNoByBarcode(barcode: string, isScan: boolean): void {
+    const self: any = this;
+    if (isScan) {
+      self.mobileNoKeyIn = '';
+      self.simSerialKeyIn = '';
+    }
     this.pageLoadingService.openLoading();
-    this.http.get(`/api/customerportal/validate-verify-instant-sim?serialNo=${serial}`).toPromise()
-      .then((resp: any) => {
-        const simSerial = resp.data || [];
-        if (simSerial) {
-          this.scanBarCode = true;
-          this.keyinSimSerial = false;
-          this.simSerialValid = true;
-        }
-        this.onSubmit();
-        this.simSerialByBarCode = {
-          mobileNo: simSerial.mobileNo,
-          simSerial: serial
-        };
-        this.transaction.data.simCard = {
-          mobileNo: this.simSerialByBarCode.mobileNo,
-          simSerial: this.simSerialByBarCode.simSerial,
-          persoSim: false
-        };
-        this.pageLoadingService.closeLoading();
-      }).catch((resp: any) => {
-        this.simSerialValid = false;
-        this.simSerial = undefined;
-        const error = resp.error || [];
-        this.pageLoadingService.closeLoading();
-        this.alertService.notify({
-          type: 'error',
-          html: this.translationService.instant(error.resultDescription.replace(/<br>/, ' '))
-        });
-        this.onSubmit();
-      });
   }
 
   onBack(): void {
@@ -154,19 +156,7 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
     this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_PACKAGE_PAGE]);
   }
 
-  onHome(): void {
-    this.removeCartService.backToReturnStock('/', this.transaction);
-  }
-
-  // ngAfterViewInit(): void {
-  //   // this.serialField.nativeElement.focus();
-  // }
-
-  ngOnDestroy(): void {
-    if (this.translationSubscribe) {
-      this.translationSubscribe.unsubscribe();
-    }
-    this.transactionService.update(this.transaction);
+  verifyInstantSim(barCode: any): any {
   }
 
 }
