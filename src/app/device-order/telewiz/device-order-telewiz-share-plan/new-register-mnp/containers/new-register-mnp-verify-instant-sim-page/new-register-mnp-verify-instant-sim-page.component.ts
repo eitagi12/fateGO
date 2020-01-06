@@ -147,12 +147,15 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
         if (data) {
           if (data.prepChargeType === 'Pre-paid') {
             this.clearMobileBySerial(isScan);
+            this.pageLoadingService.closeLoading();
             this.alertService.error('หมายเลขนี้ เป็นหมายเลขระบบเติมเงิน<br>กรุณาเลือกหมายเลขใหม่');
           } else if (data.mobileStatus === 'Registered') {
             this.clearData();
+            this.pageLoadingService.closeLoading();
             this.alertService.error('หมายเลขนี้ ไม่สามารถทำรายการได้<br>กรุณาเลือกหมายเลขใหม่');
           } else if (data.mobileStatus !== 'Registered' && data.mobileStatus !== 'Reserved') {
             this.clearData();
+            this.pageLoadingService.closeLoading();
             this.alertService.error('หมายเลขนี้ ไม่สามารถทำรายการได้<br>กรุณาเลือกหมายเลขใหม่');
           } else {
             this.clearData();
@@ -161,20 +164,22 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
               self.simSerialScan = barcode;
               this.isSimSerial = true;
               this.simSerialFormSubmitted = false;
+              this.pageLoadingService.closeLoading();
               this.clearMobileBySerial(!isScan);
               this.submitSelectMobile();
             } else {
               self.mobileNoKeyIn = data.mobileNo;
               self.simSerialKeyIn = barcode;
               this.isSimSerial = true;
+              this.pageLoadingService.closeLoading();
               this.clearMobileBySerial(!isScan);
               this.submitSelectMobile();
             }
           }
         } else {
+          this.pageLoadingService.closeLoading();
           throw new Error('Cannot Verify the instant sim');
         }
-        // this.pageLoadingService.closeLoading();
       })
       .catch((resp) => {
         const error = resp.error || [];
@@ -186,7 +191,6 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
           type: 'error',
           html: this.translationService.instant(error.resultDescription.replace(/<br>/, ' '))
         });
-        // this.alertService.error('หมายเลขนี้ ไม่สามารถทำรายการได้<br>กรุณาเลือกหมายเลขใหม่');
       });
   }
 
@@ -216,16 +220,17 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
   }
 
   submitSelectMobile(): void {
-    // const selectedMobileNo: string = this.mobileNoScan ? this.mobileNoScan : this.mobileNoKeyIn;
     const selectedSimSerialNo: string = this.simSerialScan ? this.simSerialScan : this.simSerialForm.controls['simSerial'].value;
 
     this.verifyInstantSimService.verifyInstantSim(selectedSimSerialNo).then((resp) => {
       const data = resp.data;
         if (data.mobileStatus === 'Registered') {
           this.clearData();
+          this.pageLoadingService.closeLoading();
           this.alertService.error('หมายเลข ' + data.mobileNo + ' มีผู้ใช้งานแล้ว กรุณาเลือกหมายเลขใหม่');
         } else if (data.mobileStatus !== 'Registered' && data.mobileStatus !== 'Reserved') {
           this.clearData();
+          this.pageLoadingService.closeLoading();
           this.alertService.error('สถานะหมายเลข ' + data.mobileNo + ' ไม่พร้อมทำรายการ กรุณาเลือกหมายเลขใหม่');
         } else {
           this.simSerialValid = true;
@@ -238,8 +243,8 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
             simSerial: this.simSerial.simSerial,
             persoSim: false
           };
+          this.pageLoadingService.closeLoading();
         }
-        this.pageLoadingService.closeLoading();
       })
       .catch((err) => {
         console.error('error component', err);
