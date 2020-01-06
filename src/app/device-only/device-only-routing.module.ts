@@ -13,6 +13,10 @@ const routes: Routes = [
   {
     path: 'kiosk',
     loadChildren: 'src/app/device-only/kiosk/device-only-kiosk/device-only-kiosk.module#DeviceOnlyKioskModule'
+  },
+  {
+    path: 'shop-premium',
+    loadChildren: 'src/app/device-only/shop-premium/device-only-shop-premium.module#DeviceOnlyShopPremiumModule'
   }
 ];
 
