@@ -23,7 +23,7 @@
                                     <input #serial class="form-control" type="tel" maxlength="13"
                                         placeholder="ใส่เลขที่ซิม 13 หลัก"
                                         [ngClass]="{'has-error':!simSerialForm.controls['simSerial'].valid && simSerialFormSubmitted}"
-                                        formControlName="simSerial" autocomplete="off">
+                                        formControlName="simSerial" autocomplete="on">
                                     <small class="form-text text-danger"
                                         *ngIf="simSerialForm.controls.simSerial.touched && simSerialForm.controls.simSerial.errors">
                                         {{ '* เลขที่ซิมต้องเป็นตัวเลข 13 ตัวเท่านั้น' | translate }}

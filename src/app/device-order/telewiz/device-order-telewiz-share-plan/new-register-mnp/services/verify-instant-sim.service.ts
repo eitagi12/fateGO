@@ -16,12 +16,6 @@ export class VerifyInstantSimService {
         console.log(barCode);
         let verifySimAPI = '/api/customerportal/newRegister/:barcode/queryMobileBySim';
         verifySimAPI = verifySimAPI.replace(':barcode', barCode);
-        return this.http.get(verifySimAPI).toPromise()
-            .then((res: any) => {
-                return res.data || {};
-            })
-            .catch(
-                error => this.alertService.error(error)
-            );
+        return this.http.get(verifySimAPI).toPromise();
     }
 }
