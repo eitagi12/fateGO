@@ -1,21 +1,17 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit, Output, EventEmitter, NgZone } from '@angular/core';
-import { SimSerial, HomeService, AlertService, PageLoadingService, ShoppingCart, AisNativeService } from 'mychannel-shared-libs';
+import { Component, OnInit, OnDestroy, Output, EventEmitter, NgZone } from '@angular/core';
+import { SimSerial, AlertService, PageLoadingService, ShoppingCart, AisNativeService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ } from 'src/app/device-order/constants/wizard.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
-import { TranslateService } from '@ngx-translate/core';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription } from 'rxjs';
 import {
   ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_NUMBER_PAGE,
   ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_PACKAGE_PAGE
 } from '../../constants/route-path.constant';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Transaction } from 'src/app/shared/models/transaction.model';
-import { RemoveCartService } from '../../services/remove-cart.service';
-import { environment } from 'src/environments/environment';
-import { of } from 'rxjs';
+import { VerifyInstantSimService } from '../../services/verify-instant-sim.service';
 
 declare let window: any;
 declare let $: any;
@@ -25,7 +21,7 @@ declare let $: any;
   templateUrl: './new-register-mnp-verify-instant-sim-page.component.html',
   styleUrls: ['./new-register-mnp-verify-instant-sim-page.component.scss']
 })
-export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit {
+export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDestroy {
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
   simSerialForm: FormGroup;
   transaction: Transaction;
@@ -36,8 +32,6 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit {
   keyinSimSerial: boolean;
   scanBarCode: boolean;
   simSerialByBarCode: any;
-  // @ViewChild('serial')
-  // serialField: ElementRef;
 
   aisNative: any = window.aisNative;
   scanBarcodeText: string = 'สแกน Barcode';
@@ -47,6 +41,7 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit {
   mobileNoScan: string;
   registrationData: any;
   simSerialScan: string;
+  simSerialKeyIn: string;
   urlBackLink: string;
   xmlDoc: any;
   minLength: number = 13;
@@ -65,10 +60,9 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit {
     private alertService: AlertService,
     private shoppingCartService: ShoppingCartService,
     private fb: FormBuilder,
-    private aisNativeService: AisNativeService,
-    private removeCartService: RemoveCartService,
     private zone: NgZone,
-    ) {
+    private verifyInstantSimService: VerifyInstantSimService
+  ) {
     this.transaction = this.transactionService.load();
   }
 
@@ -146,6 +140,62 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit {
       self.simSerialKeyIn = '';
     }
     this.pageLoadingService.openLoading();
+    this.verifyInstantSimService.verifyInstantSim(barcode)
+      .then(
+        data => {
+          if (data) {
+            if (data.prepChargeType === 'Pre-paid') {
+              this.clearMobileBySerial(isScan);
+              this.alertService.error('หมายเลขนี้ เป็นหมายเลขระบบเติมเงิน<br>กรุณาเลือกหมายเลขใหม่');
+            } else if (data.mobileStatus === 'Registered') {
+              this.clearData();
+              this.alertService.error('หมายเลขนี้ ไม่สามารถทำรายการได้<br>กรุณาเลือกหมายเลขใหม่');
+            } else if (data.mobileStatus !== 'Registered' && data.mobileStatus !== 'Reserved') {
+              this.clearData();
+              this.alertService.error('หมายเลขนี้ ไม่สามารถทำรายการได้<br>กรุณาเลือกหมายเลขใหม่');
+            } else {
+              this.clearData();
+              if (isScan) {
+                self.mobileNoScan = data.mobileNo;
+                self.simSerialScan = barcode;
+                this.isSimSerial = true;
+                this.simSerialFormSubmitted = false;
+                this.clearMobileBySerial(!isScan);
+                this.submitSelectMobile();
+              } else {
+                self.mobileNoKeyIn = data.mobileNo;
+                self.simSerialKeyIn = barcode;
+                this.isSimSerial = true;
+                this.clearMobileBySerial(!isScan);
+                this.submitSelectMobile();
+              }
+            }
+          } else {
+            throw new Error('Cannot Verify the instant sim');
+          }
+          this.pageLoadingService.closeLoading();
+        },
+        (err) => {
+          this.clearData();
+          this.alertService.error('หมายเลขนี้ ไม่สามารถทำรายการได้<br>กรุณาเลือกหมายเลขใหม่');
+          this.pageLoadingService.closeLoading();
+        });
+  }
+
+  clearMobileBySerial(isScan: boolean): void {
+    if (isScan) {
+      this.mobileNoScan = '';
+      this.simSerialScan = '';
+    } else {
+      this.mobileNoKeyIn = '';
+    }
+  }
+
+  clearData(): void {
+    this.mobileNoScan = '';
+    this.mobileNoKeyIn = '';
+    this.simSerialScan = '';
+    this.simSerialKeyIn = '';
   }
 
   onBack(): void {
@@ -156,7 +206,43 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit {
     this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_PACKAGE_PAGE]);
   }
 
-  verifyInstantSim(barCode: any): any {
+  submitSelectMobile(): void {
+    // const selectedMobileNo: string = this.mobileNoScan ? this.mobileNoScan : this.mobileNoKeyIn;
+    const selectedSimSerialNo: string = this.simSerialScan ? this.simSerialScan : this.simSerialForm.controls['simSerial'].value;
+
+    this.verifyInstantSimService.verifyInstantSim(selectedSimSerialNo).then(
+      (res) => {
+        if (res.mobileStatus === 'Registered') {
+          this.clearData();
+          this.alertService.error('หมายเลข ' + res.mobileNo + ' มีผู้ใช้งานแล้ว กรุณาเลือกหมายเลขใหม่');
+        } else if (res.mobileStatus !== 'Registered' && res.mobileStatus !== 'Reserved') {
+          this.clearData();
+          this.alertService.error('สถานะหมายเลข ' + res.mobileNo + ' ไม่พร้อมทำรายการ กรุณาเลือกหมายเลขใหม่');
+        } else {
+          this.simSerialValid = true;
+          this.simSerial = {
+            mobileNo: res.mobileNo,
+            simSerial: selectedSimSerialNo
+          };
+          this.transaction.data.simCard = {
+            mobileNo: this.simSerial.mobileNo,
+            simSerial: this.simSerial.simSerial,
+            persoSim: false
+          };
+        }
+        this.pageLoadingService.closeLoading();
+      },
+      (err) => {
+        console.error('error component', err);
+        this.clearData();
+        this.alertService.error(err.resultDescription);
+        this.pageLoadingService.closeLoading();
+      }
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
   }
 
 }

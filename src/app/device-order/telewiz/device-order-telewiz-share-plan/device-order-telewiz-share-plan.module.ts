@@ -4,6 +4,7 @@ import { DeviceOrderTelewizSharePlanRoutingModule } from './device-order-telewiz
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { RemoveCartService } from './new-register-mnp/services/remove-cart.service';
+import { VerifyInstantSimService } from './new-register-mnp/services/verify-instant-sim.service';
 @NgModule({
   imports: [
     CommonModule,
@@ -14,6 +15,7 @@ import { RemoveCartService } from './new-register-mnp/services/remove-cart.servi
     DeviceOrderTelewizSharePlanComponent
   ],
   providers: [
+    VerifyInstantSimService,
     RemoveCartService
   ]
 })

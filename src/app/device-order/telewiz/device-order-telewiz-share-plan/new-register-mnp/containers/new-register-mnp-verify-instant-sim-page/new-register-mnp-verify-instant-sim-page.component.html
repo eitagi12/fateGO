@@ -11,7 +11,7 @@
                         {{ 'ระบุเลขที่ซิม' | translate }}
                     </div>
                     <div class="card-body">
-                        <form (ngSubmit)="checkBarcode(simSerialKeyIn, false)" [formGroup]="simSerialForm">
+                        <form (ngSubmit)="checkBarcode(simSerialForm.controls['simSerial'].value, false)" [formGroup]="simSerialForm">
                             <div class="text-center" *ngIf="mobileNoKeyIn">หมายเลขโทรศัพท์ :
                                 {{mobileNoKeyIn}}
                             </div>
