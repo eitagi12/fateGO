@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AlertService } from 'mychannel-shared-libs';
 
 @Injectable({
     providedIn: 'root'
@@ -8,8 +7,7 @@ import { AlertService } from 'mychannel-shared-libs';
 export class VerifyInstantSimService {
 
     constructor(
-        private http: HttpClient,
-        private alertService: AlertService
+        private http: HttpClient
     ) { }
 
     verifyInstantSim(barCode: any): Promise<any> {

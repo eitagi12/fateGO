@@ -11,13 +11,14 @@
                         {{ 'ระบุเลขที่ซิม' | translate }}
                     </div>
                     <div class="card-body">
+                        <div class="text-center" *ngIf="simSerial?.simSerial && simSerial?.mobileNo">
+                            <p>
+                                <label>{{ 'หมายเลขโทรศัพท์' | translate }} : {{simSerial?.mobileNo}}</label>
+                                <br>
+                                <label>{{ 'เลขที่ซิม' | translate }} : {{simSerial?.simSerial}}</label>
+                            </p>
+                        </div>
                         <form (ngSubmit)="checkBarcode(simSerialForm.controls['simSerial'].value, false)" [formGroup]="simSerialForm">
-                            <div class="text-center" *ngIf="mobileNoKeyIn">หมายเลขโทรศัพท์ :
-                                {{mobileNoKeyIn}}
-                            </div>
-                            <div class="text-center" *ngIf="mobileNoKeyIn">เลขที่ซิม :
-                                {{simSerialKeyIn}}
-                            </div>
                             <div class="form-row">
                                 <div class="col-9 col-sm-10">
                                     <input #serial class="form-control" type="tel" maxlength="13"
@@ -28,10 +29,6 @@
                                         *ngIf="simSerialForm.controls.simSerial.touched && simSerialForm.controls.simSerial.errors">
                                         {{ '* เลขที่ซิมต้องเป็นตัวเลข 13 ตัวเท่านั้น' | translate }}
                                     </small>
-                                    <!-- <div id="divRegNumSelectNumBySimErrMsg" class="error-msg"
-                                        [hidden]="simSerialForm.controls['simSerial'].valid || !simSerialFormSubmitted">
-                                        เลขที่ซิมต้องเป็นตัวเลข 13 ตัวเท่านั้น
-                                    </div> -->
                                 </div>
                                 <div>
                                     <button [disabled]="!this.simSerialForm.valid"

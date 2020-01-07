@@ -38,11 +38,9 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
   scanBarcodeText: string = 'สแกน Barcode';
   getBarcode: any;
   getMobileNoFn: any;
-  mobileNoKeyIn: string;
   mobileNoScan: string;
   registrationData: any;
   simSerialScan: string;
-  simSerialKeyIn: string;
   urlBackLink: string;
   xmlDoc: any;
   minLength: number = 13;
@@ -117,7 +115,6 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
 
   initialData(): void {
     this.mobileNoScan = '';
-    this.mobileNoKeyIn = '';
     this.simSerialScan = '';
     this.offerType = '';
   }
@@ -198,17 +195,12 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
     if (isScan) {
       this.mobileNoScan = '';
       this.simSerialScan = '';
-    } else {
-      this.mobileNoKeyIn = '';
-      this.simSerialKeyIn = '';
     }
   }
 
   clearData(): void {
     this.mobileNoScan = '';
-    this.mobileNoKeyIn = '';
     this.simSerialScan = '';
-    this.simSerialKeyIn = '';
   }
 
   onBack(): void {
@@ -247,7 +239,6 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
         }
       })
       .catch((err) => {
-        console.error('error component', err);
         this.clearData();
         const error = err.error || [];
         this.pageLoadingService.closeLoading();
