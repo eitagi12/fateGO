@@ -1,3 +1,34 @@
-<p>
-  brand-page works!
-</p>
+<div class="mc-flex">
+  <mc-header title="Premium">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <tabset [justified]="true" #brandTabs>
+      <tab (select)="onTabSelected('brand')">
+        <ng-template tabHeading>
+          <span>ยี่ห้อ</span>
+        </ng-template>
+
+        <!-- brand -->
+        <div class="container-fluid mt-3" *ngIf="brands">
+          <div class="row">
+            <div class="col-4 col-sm-3 col-md-3 col-lg-2 mb-3" *ngFor="let brand of brands">
+              <a href="#" routerLink="/buy-premium/product" [queryParams]="{ brand: brand.name }" class="brands bg-white">
+                <mc-lazy-load-image [src]="brand?.imageUrl"></mc-lazy-load-image>
+              </a>
+            </div>
+          </div>
+        </div>
+      </tab>
+    </tabset>
+  </div>
+</div>
+
+<ng-template #searchTemplate let-model="item">
+  <li class="p2">{{ model.commercialName }}</li>
+</ng-template>
