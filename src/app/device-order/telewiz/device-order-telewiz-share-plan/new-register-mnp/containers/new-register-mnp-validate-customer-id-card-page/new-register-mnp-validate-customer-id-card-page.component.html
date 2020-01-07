@@ -1,3 +1,153 @@
-<p>
-  new-register-mnp-validate-customer-id-card-page works!
-</p>
+<!-- <div class="mc-flex">
+    <mc-header title="{{ 'ซื้อเครื่องพร้อมเปิดเบอร์ใหม่' | translate }}">
+        <div class="header-icon-left">
+            <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+        </div>
+        <div class="header-icon-right">
+            <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+        </div>
+    </mc-header>
+    <div class="mc-flex-wrap">
+        <div class="mt-5 pt-4">
+            <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
+        </div>
+        <div class="mt-3 mb-3">
+            <mc-wizard [wizards]="wizards" active="3"></mc-wizard>
+            <div class="container-fluid">
+                <div class="card mb-3">
+                    <div class="row read-card">
+                        <div class="col-12 read-card-title">
+                            ระบุข้อมูลลูกค้า
+                        </div>
+                        <div class="col-3 text-center">
+                            <div class="proress-container text-center">
+                                <div class="progress-header">
+                                    <p>เสียบบัตรประชาชน</p>
+                                    <img src="assets/images/icon/icon-insert-idcard.png" width="100" class="float-center">
+                                    <div class="font-light-green" *ngIf="finishProgress">ตรวจสอบสำเร็จ</div>
+                                    <div id="divRegNumVerifyScanIdCardWording">
+                                        {{finishProgress? 'โปรดดึงบัตรประชาชนออก' : 'โปรดเสียบบัตรประชาชน'}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-1 float-center">
+                            <div class="proress-container">
+                                <div class="progress-header">
+                                    <div class="show-for-medium">
+                                        <div class="line"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-8 text-center float-center" *ngIf="!finishProgress" style="margin-top: 80px">
+                            <div class="proress-container">
+                                <div class="progress-header">
+                                    <div class="progress" role="progressbar" tabindex="0" aria-valuemin="0" aria-valuemax="100">
+                                        <div class="progress-meter meter custom" style="width: 0"></div>
+                                    </div>
+                                    <span class="waiting" *ngIf="!finishProgress">กรุณารอสักครู่...</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-5 text-center" *ngIf="finishProgress && !showProgress">
+                            <div class="success-data waiting text-left">
+                                <div class="proress-container">
+                                    <div class="progress-header">
+                                        <div id="divRegNumVerifyScanIdCardName">{{ thaiName }}</div>
+                                        <div id="divRegNumVerifyScanIdCardIdCardNo">เลขบัตรประชาชน {{ idCardNo }}</div>
+                                        <div id="divRegNumVerifyScanIdCardAddress">ที่อยู่ {{ textAddress }}</div>
+                                        <div id="divRegNumVerifyScanIdCardIssueDate">วันที่ออกบัตร {{ issueDate }}</div>
+                                        <div id="divRegNumVerifyScanIdCardExpDate" *ngIf="false">วันหมดอายุ {{ expireDate }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-3" *ngIf="finishProgress && !showProgress">
+                            <div class="success-data waiting text-left">
+                                <div class="proress-container">
+                                    <div class="progress-header">
+                                        <img id="imgRegNumVerifyScanIdProfilePhoto" [src]="imgReadCardPhoto" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-6 columns text-right">
+            <button id="btnRegNumVerifyScanIdCardBack" type="button" class="mc-button mc-button--gray" (click)="onBackPressCaller()">
+            BACK
+          </button>
+        </div>
+        <div class="col-6 text-left">
+            <button id="btnRegNumVerifyScanIdCardNext" type="button" class="mc-button mc-button--green" [disabled]="!finishProgress" (click)="submitKeyIn()">
+            NEXT
+          </button>
+        </div>
+    </div>
+</div>
+
+ -->
+
+<div class="mc-flex">
+    <mc-header title="{{'ซื้อเครื่องพร้อมเปิดเบอร์ใหม่'| translate}}">
+        <!-- <div class="header-icon-left w-25">
+    <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+  </div>
+  <div class="header-icon-right w-25 text-right">
+    <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+  </div> -->
+    </mc-header>
+    <div class="mt-5 pt-4">
+        <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
+    </div>
+    <div class="start-container bg-white" [ngClass]="{'extendWhiteBackground': disabledKeyIn}">
+        <div class="row read-card">
+            <div class="col-md-12 read-card-title">ระบุข้อมูลลูกค้า</div>
+            <div class="col-md-3 text-center">
+                <div class="idcard-container column">
+                    <div style="padding-top:50px; color: #614e47;">เสียบบัตรประชาชน</div>
+                    <img id="ImgRegNumVerifyScanCardLink" class="idcard-img-pc" src="assets/images/icon/icon-insert-idcard.png" alt="">
+                    <div style="padding-bottom: 60px; color: #614e47;">
+                        {{finishProgress? 'โปรดดึงบัตรประชาชนออก' : 'โปรดเสียบบัตรประชาชน'}}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div *ngIf="!disabledKeyIn" class="middile-line"></div>
+            </div>
+            <div class="col-md-7 text-center">
+                <div *ngIf="finishProgress" class="otherid-container-pc" style="color:#614e47;">
+                    <div>
+                        <div class="mb-1">{{ thaiName ? thaiName : 'นาย ทดสอบ ทดสอบ'}}</div>
+                        <div class="mb-1">เลขบัตรประชาชน {{ idCardNo ? idCardNo : 'xxxxxxxx7899' }}</div>
+                        <div class="mb-1">ที่อยู่ {{ textAddress ? textAddress : '88 ม.9 ต.นครจุภักดิ์ จ.ลับแล้วลับอีก'}}</div>
+                        <div class="mb-1">วันที่ออกบัตร {{ issueDate ? issueDate : 'วันที่ออกบัตร'}}</div>
+                        <div>วันหมดอายุ {{ expireDate ? expireDate : 'วันหมดอายุ'}}</div>
+                    </div>
+                </div>
+                <div *ngIf="!finishProgress">
+                    <div class="col-md-12 text-center float-center" *ngIf="!finishProgress" style="margin-top: 80px">
+                        <div class="progress-container">
+                            <div class="progress-header">
+                                <div class="progress" role="progressbar" tabindex="0" aria-valuemin="0" aria-valuemax="100">
+                                    <div class="progress-meter meter custom" style="width: 0"></div>
+                                </div>
+                                <span class="waiting" style="color:#614e47;" *ngIf="!finishProgress">กรุณารอสักครู่...</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <mc-footer>
+            <button class="btn btn-secondary" id="btnRegNumVerifyStartBack" (click)="onBackPressCaller()">BACK</button>
+            <button class="btn btn-success" id="btnRegNumVerifyStartNext" [disabled]="!finishProgress" (click)="onNext()">NEXT</button>
+        </mc-footer>
+    </div>
