@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { CustomerInfo, ShoppingCart } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ } from 'src/app/device-order/constants/wizard.constant';
@@ -27,7 +26,6 @@ export class NewRegisterMnpCustomerInfoPageComponent implements OnInit, OnDestro
   constructor(
     private router: Router,
     private transactionService: TransactionService,
-    private shoppingCartService: ShoppingCartService,
     private translateService: TranslateService,
     private removeCartService: RemoveCartService
   ) {
@@ -36,7 +34,6 @@ export class NewRegisterMnpCustomerInfoPageComponent implements OnInit, OnDestro
 
   ngOnInit(): void {
     const customer: Customer = this.transaction.data.customer;
-    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
     delete this.shoppingCart.mobileNo;
     this.customerInfo = this.mappingCustomerInfo(customer);
 
