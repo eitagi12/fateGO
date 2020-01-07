@@ -5,8 +5,8 @@ import { DeviceOnlyShopPremiumAggregatePageComponent } from './containers/device
 import { DeviceOnlyShopPremiumQueuePageComponent } from './containers/device-only-shop-premium-queue-page/device-only-shop-premium-queue-page.component';
 import { DeviceOnlyShopPremiumResultPageComponent } from './containers/device-only-shop-premium-result-page/device-only-shop-premium-result-page.component';
 import { DeviceOnlyShopPremiumQrCodeGeneratorPageComponent } from './containers/device-only-shop-premium-qr-code-generator-page/device-only-shop-premium-qr-code-generator-page.component';
-import { DeviceOnlyShopPremiumQrCodeQueuePageComponent } from './containers/device-only-shop-premium-qr-code-queue-page/device-only-shop-premium-qr-code-queue-page.component';
-import { DeviceOnlyShopPremiumQrCodeResultPageComponent } from './containers/device-only-shop-premium-qr-code-result-page/device-only-shop-premium-qr-code-result-page.component';
+import { DeviceOnlyShopPremiumQrCodeSummaryPageComponent } from 'src/app/device-only/ais-shop-premium/containers/device-only-shop-premium-qr-code-summary-page/device-only-shop-premium-qr-code-summary-page.component';
+import { DeviceOnlyShopPremiumSummaryPageComponent } from 'src/app/device-only/ais-shop-premium/containers/device-only-shop-premium-summary-page/device-only-shop-premium-summary-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'payment', pathMatch: 'full' },
@@ -14,13 +14,21 @@ const routes: Routes = [
     path: 'payment',
     component: DeviceOnlyShopPremiumPaymentPageComponent
   },
-  // {
-  //   path: 'summary',
-  //   component: DeviceOrderAisDeviceSummaryPageComponent
-  // },
+  {
+    path: 'summary',
+    component: DeviceOnlyShopPremiumSummaryPageComponent
+  },
   {
     path: 'aggregate',
     component: DeviceOnlyShopPremiumAggregatePageComponent
+  },
+  {
+    path: 'qr-code-summary',
+    component: DeviceOnlyShopPremiumQrCodeSummaryPageComponent
+  },
+  {
+    path: 'qr-code-generator',
+    component: DeviceOnlyShopPremiumQrCodeGeneratorPageComponent
   },
   {
     path: 'queue',
@@ -30,22 +38,6 @@ const routes: Routes = [
     path: 'result',
     component: DeviceOnlyShopPremiumResultPageComponent
   },
-  // {
-  //   path: 'qr-code-summary',
-  //   component:
-  // },
-  {
-    path: 'qr-code-generator',
-    component: DeviceOnlyShopPremiumQrCodeGeneratorPageComponent
-  },
-  {
-    path: 'qr-code-queue',
-    component: DeviceOnlyShopPremiumQrCodeQueuePageComponent
-  },
-  {
-    path: 'qr-code-result',
-    component: DeviceOnlyShopPremiumQrCodeResultPageComponent
-  }
 ];
 
 @NgModule({

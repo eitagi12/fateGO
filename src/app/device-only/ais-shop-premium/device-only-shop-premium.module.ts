@@ -8,6 +8,7 @@ import { DeviceOnlyShopPremiumResultPageComponent } from './containers/device-on
 import { DeviceOnlyShopPremiumQrCodeGeneratorPageComponent } from './containers/device-only-shop-premium-qr-code-generator-page/device-only-shop-premium-qr-code-generator-page.component';
 import { DeviceOnlyShopPremiumAggregatePageComponent } from './containers/device-only-shop-premium-aggregate-page/device-only-shop-premium-aggregate-page.component';
 import { DeviceOnlyShopPremiumQrCodeSummaryPageComponent } from './containers/device-only-shop-premium-qr-code-summary-page/device-only-shop-premium-qr-code-summary-page.component';
+import { DeviceOnlyShopPremiumSummaryPageComponent } from './containers/device-only-shop-premium-summary-page/device-only-shop-premium-summary-page.component';
 
 @NgModule({
   imports: [
@@ -20,7 +21,8 @@ import { DeviceOnlyShopPremiumQrCodeSummaryPageComponent } from './containers/de
     DeviceOnlyShopPremiumResultPageComponent,
     DeviceOnlyShopPremiumQrCodeGeneratorPageComponent,
     DeviceOnlyShopPremiumAggregatePageComponent,
-    DeviceOnlyShopPremiumQrCodeSummaryPageComponent
+    DeviceOnlyShopPremiumQrCodeSummaryPageComponent,
+    DeviceOnlyShopPremiumSummaryPageComponent
   ]
 })
 export class DeviceOnlyShopPremiumModule { }
