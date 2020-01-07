@@ -9,11 +9,20 @@ import { DeviceOnlyShopPremiumQrCodeGeneratorPageComponent } from './containers/
 import { DeviceOnlyShopPremiumAggregatePageComponent } from './containers/device-only-shop-premium-aggregate-page/device-only-shop-premium-aggregate-page.component';
 import { DeviceOnlyShopPremiumQrCodeSummaryPageComponent } from './containers/device-only-shop-premium-qr-code-summary-page/device-only-shop-premium-qr-code-summary-page.component';
 import { DeviceOnlyShopPremiumSummaryPageComponent } from './containers/device-only-shop-premium-summary-page/device-only-shop-premium-summary-page.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TabsModule } from 'ngx-bootstrap';
+import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
     CommonModule,
-    DeviceOnlyShopPremiumRoutingModule
+    DeviceOnlyShopPremiumRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TabsModule.forRoot(),
+    MyChannelSharedLibsModule,
+    TranslateModule,
   ],
   declarations: [
     DeviceOnlyShopPremiumPaymentPageComponent,
@@ -23,6 +32,7 @@ import { DeviceOnlyShopPremiumSummaryPageComponent } from './containers/device-o
     DeviceOnlyShopPremiumAggregatePageComponent,
     DeviceOnlyShopPremiumQrCodeSummaryPageComponent,
     DeviceOnlyShopPremiumSummaryPageComponent
-  ]
+  ],
+  providers: []
 })
 export class DeviceOnlyShopPremiumModule { }
