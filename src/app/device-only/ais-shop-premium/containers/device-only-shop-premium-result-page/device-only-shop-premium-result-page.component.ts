@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Transaction } from 'src/app/shared/models/transaction.model';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
 
 @Component({
   selector: 'app-device-only-shop-premium-result-page',
@@ -6,8 +8,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./device-only-shop-premium-result-page.component.scss']
 })
 export class DeviceOnlyShopPremiumResultPageComponent implements OnInit {
-
-  constructor() { }
+  transaction: Transaction;
+  constructor(private transactionService: TransactionService) {
+    this.transaction = this.transactionService.load();
+  }
 
   ngOnInit(): void {
   }
