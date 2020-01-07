@@ -16,7 +16,7 @@ const routes: Routes = [
   },
   {
     path: 'shop-premium',
-    loadChildren: 'src/app/device-only/shop-premium/device-only-shop-premium.module#DeviceOnlyShopPremiumModule'
+    loadChildren: 'src/app/device-only/ais-shop-premium/device-only-shop-premium.module#DeviceOnlyShopPremiumModule'
   }
 ];
 

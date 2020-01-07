@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { DeviceOnlyShopPremiumPaymentPageComponent } from 'src/app/device-only/shop-premium/containers/device-only-shop-premium-payment-page/device-only-shop-premium-payment-page.component';
+import { DeviceOnlyShopPremiumPaymentPageComponent } from 'src/app/device-only/ais-shop-premium/containers/device-only-shop-premium-payment-page/device-only-shop-premium-payment-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'payment', pathMatch: 'full' },
