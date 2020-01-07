@@ -96,7 +96,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     private tokenService: TokenService
   ) {
     // super();
-    this.placeholder = this.placeholder || 'หมายเลขบัตรประชาชน';
+    this.placeholder = this.placeholder || 'เลขบัตรประชาชน';
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     this.user = this.tokenService.getUser();

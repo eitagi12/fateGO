@@ -18,7 +18,8 @@
                 <div class="idcard-container column">
                     <div style="padding-top:50px">เสียบบัตรประชาชน</div>
                     <a (click)="onCardImgPressCaller()">
-                        <img id="ImgRegNumVerifyScanCardLink" class="idcard-img-pc" src="assets/images/icon/icon-insert-idcard.png" alt="">
+                        <img id="ImgRegNumVerifyScanCardLink" class="idcard-img-pc"
+                            src="assets/images/icon/icon-insert-idcard.png" alt="">
                     </a>
                 </div>
             </div>
@@ -30,7 +31,9 @@
                     <div>กรอกเอกสารแสดงตน</div>
                     <div class="font-small1">({{ placeholder }})</div>
                     <form [formGroup]="identityForm">
-                        <input id="txtRegNumVerifyStartKeyInCard" class="form-control text-center" placeholder="{{ placeholder }}" autocomplete="off" maxlength="13" formControlName="identity">
+                        <input id="txtRegNumVerifyStartKeyInCard" class="form-control text-center"
+                            placeholder="{{ placeholder }}" autocomplete="off" maxlength="13"
+                            formControlName="identity">
                         <div *ngIf="formErrors.identity" class="row col text-center" style="color: red;">
                             * {{ formErrors.identity }}
                         </div>
@@ -39,7 +42,7 @@
             </div>
         </div>
         <mc-footer>
-            <button class="btn btn-secondary" id="btnRegNumVerifyStartBack" (click)="onBackPressCaller()">BACK</button>
-            <button class="btn btn-success" id="btnRegNumVerifyStartNext" [disabled]="identityForm.invalid" (click)="onNext()">NEXT</button>
+            <button class="btn btn-secondary col-md-2" (click)="onBackPressCaller()">BACK</button>
+            <button class="btn btn-secondary col-md-2" [disabled]="identityForm.invalid" (click)="onNext()">NEXT</button>
         </mc-footer>
     </div>
