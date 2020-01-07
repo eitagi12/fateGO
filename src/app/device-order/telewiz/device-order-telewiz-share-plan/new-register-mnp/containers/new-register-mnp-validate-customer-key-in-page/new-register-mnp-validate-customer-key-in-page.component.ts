@@ -34,25 +34,20 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
   order: Order;
   imageReadSmartCard: any;
   idCardNo: string;
-
   days: string[] = [];
   months: string[] = [];
   expireYears: number[] = [];
   birthYears: number[] = [];
-
   expireDateValid: boolean;
   birthDateValid: boolean;
   idCardNoValid: boolean;
-
   validateCustomerKeyInForm: FormGroup;
-
   completed: EventEmitter<ValidateCustomerKeyIn> = new EventEmitter<ValidateCustomerKeyIn>();
-
   error: EventEmitter<boolean> = new EventEmitter<boolean>();
+
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private homeService: HomeService,
     private transactionService: TransactionService,
     private customerService: CustomerService,
     private alertService: AlertService,
@@ -109,7 +104,7 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
       birthDay: ['', [Validators.required]],
       birthMonth: ['', [Validators.required]],
       birthYear: ['', [Validators.required]],
-      gender: ['M', [Validators.required]]
+      gender: ['', [Validators.required]]
     });
 
     this.validateCustomerKeyInForm.valueChanges.subscribe((value: any) => {
@@ -257,7 +252,6 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
         transaction: this.transaction,
         transactionType: TransactionType.DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN
       });
-      console.log('==>', transactionObject);
       this.validateCustomerService.createTransaction(transactionObject).then((resp: any) => {
         this.pageLoadingService.closeLoading();
         if (resp.data.isSuccess) {
