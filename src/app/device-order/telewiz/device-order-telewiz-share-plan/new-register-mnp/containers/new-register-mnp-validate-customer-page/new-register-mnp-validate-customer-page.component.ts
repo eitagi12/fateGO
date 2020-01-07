@@ -285,6 +285,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
                 }
               });
           }).catch((err) => {
+            console.log('err', err);
             this.pageLoadingService.closeLoading();
             const developerMessage = err.error.developerMessage;
             const messageError = err.error.errors;
