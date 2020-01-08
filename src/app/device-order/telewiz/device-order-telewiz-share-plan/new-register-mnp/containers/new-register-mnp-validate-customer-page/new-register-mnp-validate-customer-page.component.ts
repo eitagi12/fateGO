@@ -1,5 +1,5 @@
-import { Component, Input, OnInit, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, ValidatorFn, AbstractControl, FormControl } from '@angular/forms';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormGroup, Validators, ValidatorFn, AbstractControl, FormControl } from '@angular/forms';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ } from 'src/app/device-order/constants/wizard.constant';
 import { ValidateCustomerService } from 'src/app/shared/services/validate-customer.service';
 import { PageLoadingService, AlertService, Utils, User, TokenService } from 'mychannel-shared-libs';
@@ -8,12 +8,7 @@ import { ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOME
 import { Transaction, Order, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { Observable } from 'rxjs';
-// import { thaiIDValidator } from 'app/shared/custom-validator/thai-id.directive';
-// import { ChannelType } from 'app/core/channel-type.constant';
-// import { TokenService } from 'app/core/token.service';
-// import { MessageValidateCustomer } from 'app/prepaid-hotdeal/constants/message-validate-customer.constant';
-// import { ID_CARD, IMM_CARD, PASSPORT } from 'app/prepaid-hotdeal/constants/message.constant';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-new-register-mnp-validate-customer-page',
   templateUrl: './new-register-mnp-validate-customer-page.component.html',
@@ -21,10 +16,6 @@ import { Observable } from 'rxjs';
 })
 export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDestroy {
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
-  // @Input() onNextPress: Function;
-  // @Input() onBackPress: Function;
-  // @Input() onCardImgPress: Function;
-  // @Input() placeholder: string;
 
   identityType: string;
   identityForm: FormGroup;
@@ -39,8 +30,9 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   transactionId: string;
 
   ID_CARD: string = 'ID_CARD';
-  PASSPORT: string = 'PASSPORT';
   IMM_CARD: string = 'IMM_CARD';
+
+  identityFormSubscripe: Subscription;
 
   private formErrors: any = {
     identity: ''
@@ -56,24 +48,6 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     }
   };
 
-  idMMCardValidationMessages: any = {
-    identity: {
-      required: 'กรุณากรอกหมายเลขบัตรเพื่อยืนยันตัวตน',
-      minlength: 'กรุณากรอกบัตรประจำตัวคนต่างด้าวให้ครบทั้ง 13 หลัก',
-      maxlength: 'กรุณากรอกบัตรประจำตัวคนต่างด้าวให้ครบทั้ง 13 หลัก',
-      pattern: 'กรุณากรอกหมายเลขบัตรโดยไม่มีอักษระพิเศษ'
-    }
-  };
-
-  idPassportValidationMessages: any = {
-    identity: {
-      required: 'กรุณากรอกหมายเลขบัตรเพื่อยืนยันตัวตน',
-      minlength: 'กรุณากรอกหนังสือเดินทางให้ครบทั้ง 9 หลัก',
-      maxlength: 'กรุณากรอกหนังสือเดินทางให้ครบทั้ง 9 หลัก',
-      pattern: 'กรุณากรอกหมายเลขบัตรโดยไม่มีอักษระพิเศษ'
-    }
-  };
-
   commonValidationMessages: any = {
     identity: {
       required: 'กรุณากรอกหมายเลขบัตรเพื่อยืนยันตัวตน',
@@ -84,8 +58,6 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   };
 
   constructor(
-    // private tokenService: TokenService,
-    private formBuilder: FormBuilder,
     private validateCustomerService: ValidateCustomerService,
     private pageLoadingService: PageLoadingService,
     private router: Router,
@@ -95,7 +67,6 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     private priceOptionService: PriceOptionService,
     private tokenService: TokenService
   ) {
-    // super();
     this.placeholder = this.placeholder || 'เลขบัตรประชาชน';
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -103,50 +74,24 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   }
 
   ngOnInit(): void {
-    if (this.identityType) {
-      this.buildForm();
-    } else {
-      this.buildForm();
-    }
-
+    this.buildForm();
     this.createTransaction();
   }
 
   buildForm(): void {
-    // this.identityForm = this.formBuilder.group({
-    //   identity: ['', Validators.minLength(9), Validators.required]
-    // });
-
     this.identityForm = new FormGroup({
-      'identity': new FormControl('', [Validators.required, Validators.minLength(9)])
+      'identity': new FormControl('', [Validators.required, Validators.minLength(13)])
     });
 
-    this.identityForm.controls['identity'].valueChanges
-      // .debounceTime(500)
+    this.identityFormSubscripe =  this.identityForm.controls['identity'].valueChanges
       .subscribe((identityValue: any) => {
         this.onValueChanged(identityValue);
       });
   }
 
   onValueChanged(data?: any): void {
-    // let flow: boolean = JSON.parse(localStorage.getItem('flowLotus'));
     if (data[0] === '0') {
       this.identityType = this.IMM_CARD;
-      this.identityForm.controls.identity.setValidators([
-        Validators.required,
-        Validators.maxLength(13),
-        Validators.minLength(13),
-        Validators.pattern('[0-9.]+')
-      ]);
-    } else if (data.match(/^[a-z]/ig)) {
-      // this.identityType = thiPASSPORT;
-      // this.identityForm.controls.identity.setValidators([
-      //   Validators.required,
-      //   Validators.maxLength(9),
-      //   Validators.minLength(9),
-      //   Validators.pattern('^[A-Z]{2}[0-9]{7}')
-      // ]);
-      // this.identityForm.controls.identity.setValue(data.toUpperCase());
     } else {
       this.identityType = this.ID_CARD;
       this.identityForm.controls.identity.setValidators([
@@ -164,15 +109,19 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     for (const field in this.formErrors) {
       this.formErrors[field] = '';
       const control = form.get(field);
-      if (control && !control.valid) {
+      if (control && !control.valid && this.identityType !== this.IMM_CARD) {
         this.activeNextBtn = false;
         const messages = this.getErrorMessages(this.identityType)[field];
         // tslint:disable-next-line: forin
         for (const key in control.errors) {
           this.formErrors[field] += messages[key] + ' ';
         }
-      } else if (control && control.valid) {
+      } else if (control && control.valid && this.identityType !== this.IMM_CARD) {
         this.activeNextBtn = true;
+      } else if (this.identityType === this.IMM_CARD) {
+        const messages = 'ระบบไม่อนุญาตให้กรอกเลขบัตรประจำตัวคนต่างด้าว';
+        this.formErrors[field] += messages;
+        this.activeNextBtn = false;
       }
     }
   }
@@ -204,21 +153,9 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     switch (identityType) {
       case this.ID_CARD:
         return this.idCardValidationMessages;
-      case this.IMM_CARD:
-        return this.idMMCardValidationMessages;
-      case this.PASSPORT:
-        return this.idPassportValidationMessages;
       default:
         return this.commonValidationMessages;
     }
-  }
-
-  onNextPressCaller(): void {
-    // this.onNextPress($('#txtRegNumVerifyStartKeyInCard').val());
-  }
-
-  onBackPressCaller(): void {
-    // this.onBackPress();
   }
 
   onCardImgPressCaller(): void {
@@ -409,6 +346,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   }
 
   ngOnDestroy(): void {
+    this.identityFormSubscripe.unsubscribe();
     this.transactionService.update(this.transaction);
   }
 }
