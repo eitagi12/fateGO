@@ -16,4 +16,8 @@ export class DeviceOnlyShopPremiumResultPageComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  onMainMenu(): void {
+    this.transactionService.remove();
+    window.location.href = '/';
+  }
 }
