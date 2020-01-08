@@ -8,7 +8,7 @@ import { DeviceOnlyShopPremiumQrCodeSummaryPageComponent } from 'src/app/device-
 import { DeviceOnlyShopPremiumSummaryPageComponent } from 'src/app/device-only/ais-shop-premium/containers/device-only-shop-premium-summary-page/device-only-shop-premium-summary-page.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'payment', pathMatch: 'full' },
+  { path: '', redirectTo: 'select-payment', pathMatch: 'full' },
   {
     path: 'select-payment',
     component: DeviceOnlyShopPremiumPaymentPageComponent
