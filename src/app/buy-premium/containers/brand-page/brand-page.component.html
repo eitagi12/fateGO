@@ -11,7 +11,7 @@
     <tabset [justified]="true" #brandTabs>
       <tab (select)="onTabSelected('brand')">
         <ng-template tabHeading>
-          <span>ยี่ห้อ</span>
+          <span>Premium</span>
         </ng-template>
 
         <!-- brand -->
@@ -24,6 +24,11 @@
             </div>
           </div>
         </div>
+      </tab>
+      <tab (select)="onTabSelected('brand')">
+        <ng-template tabHeading>
+          <span>ค้นหา</span>
+        </ng-template>
       </tab>
     </tabset>
   </div>

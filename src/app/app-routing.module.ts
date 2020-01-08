@@ -83,6 +83,11 @@ const routes: Routes = [
     path: 'rom-transaction',
     loadChildren: 'src/app/rom-transaction/rom-transaction.module#RomTransactionModule',
     canActivate: [AuthGuard, ApiRequestGuard],
+  },
+  {
+    path: 'buy-premium',
+    loadChildren: 'src/app/buy-premium/buy-premium.module#BuyPremiumModule',
+    canActivate: [AuthGuard, ApiRequestGuard]
   }
 ];
 
