@@ -113,7 +113,8 @@
                 <div class="idcard-container column">
                     <div style="padding-top:50px; color: #614e47;">เสียบบัตรประชาชน</div>
                     <img id="ImgRegNumVerifyScanCardLink" class="idcard-img-pc" src="assets/images/icon/icon-insert-idcard.png" alt="">
-                    <div style="padding-bottom: 60px; color: #614e47;">
+                    <div style="color: #8dc63f" *ngIf="finishProgress">ตรวจสอบสำเร็จ</div>
+                    <div style="padding-bottom: 36px; color: #614e47;">
                         {{finishProgress? 'โปรดดึงบัตรประชาชนออก' : 'โปรดเสียบบัตรประชาชน'}}
                     </div>
                 </div>
@@ -147,7 +148,7 @@
             </div>
         </div>
         <mc-footer>
-            <button class="btn btn-secondary" id="btnRegNumVerifyStartBack" (click)="onBackPressCaller()">BACK</button>
-            <button class="btn btn-success" id="btnRegNumVerifyStartNext" [disabled]="!finishProgress" (click)="onNext()">NEXT</button>
+            <button class="btn btn-secondary col-md-2" id="btnRegNumVerifyStartBack" (click)="onBackPressCaller()">BACK</button>
+            <button class="btn btn-secondary col-md-2" id="btnRegNumVerifyStartNext" [disabled]="!finishProgress" (click)="onNext()">NEXT</button>
         </mc-footer>
     </div>

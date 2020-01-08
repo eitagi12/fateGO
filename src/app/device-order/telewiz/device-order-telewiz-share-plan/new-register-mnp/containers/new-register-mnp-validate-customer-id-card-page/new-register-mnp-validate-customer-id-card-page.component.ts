@@ -129,7 +129,8 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
       case ChannelType.SFF_WEB:
         if ('WebSocket' in window) {
           this._ws = new WebSocket(this.webSocketEndpoint);
-          this._ws.onopen = () => {
+          this._ws.onopen = (res) => {
+            console.log('res ==>', res);
           };
           this._ws.onmessage = (evt: any) => {
             this.onGetMessage(evt.data);
@@ -140,12 +141,13 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
           };
 
           this._ws.onerror = () => {
-
+            this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อ 02-029-6303');
             // this.alertService.setCustomButton(this.buttonGoToKeyIn)
             // this.alertService.setpopupMessage('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อ 02-029-6303')
             // this.alertService.openPopup()
           };
         } else {
+          this.alertService.error('Error 500 : เว็บเบราว์เซอร์นี้ไม่รองรับการอ่านบัตรประชาชน กรุณาติดต่อ 02-029-6303');
           // this.alertService.setCustomButton(this.buttonGoToKeyIn);
           // this.alertService.setpopupMessage('Error 500 : เว็บเบราว์เซอร์นี้ไม่รองรับการอ่านบัตรประชาชน กรุณาติดต่อ 02-029-6303');
           // this.alertService.openPopup();
@@ -168,6 +170,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
           }, this.progressTimer);
         } else {
           localStorage.setItem('errorFlag', 'false');
+          this.alertService.error('Error 500 : เว็บเบราว์เซอร์นี้ไม่รองรับการอ่านบัตรประชาชน กรุณาติดต่อ 02-029-6303');
           // this.alertService.setCustomButton(this.buttonGoToKeyIn);
           // this.alertService.setpopupMessage('Error 500 : เว็บเบราว์เซอร์นี้ไม่รองรับการอ่านบัตรประชาชน กรุณาติดต่อ 02-029-6303');
           // this.alertService.openPopup();
@@ -205,6 +208,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
           if (this.progress === 0 && this.resultState === 'Presented') {
             // this.alertService.setCustomButton(this.buttonGoToKeyIn);
             localStorage.setItem('errorFlag', 'false');
+            this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้');
             // this.alertService.setpopupMessage('ไม่สามารถอ่านบัตรประชาชนได้');
             // this.alertService.openPopup();
           }
@@ -230,6 +234,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
         } else {
           // this.alertService.setCustomButton(this.buttonGoToKeyIn);
           localStorage.setItem('errorFlag', 'false');
+          this.alertService.error('อ่านบัตรประชาชนไม่สมบูรณ์ กรุณาลองใหม่อีกครั้ง');
           // this.alertService.setpopupMessage('อ่านบัตรประชาชนไม่สมบูรณ์ กรุณาลองใหม่อีกครั้ง');
           // this.alertService.openPopup();
           clearInterval(this.timerID);
@@ -431,6 +436,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
               if (this.progress === 0 && this.resultState === 'Presented') {
                 // this.alertService.setCustomButton(this.buttonData);
                 localStorage.setItem('errorFlag', 'false');
+                this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้');
                 // this.alertService.setpopupMessage('ไม่สามารถอ่านบัตรประชาชนได้');
                 // this.alertService.openPopup();
                 clearInterval(this.timerID);
@@ -464,6 +470,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
             } else {
               // this.alertService.setCustomButton(this.buttonData);
               localStorage.setItem('errorFlag', 'false');
+              this.alertService.error('อ่านบัตรประชาชนไม่สมบูรณ์ กรุณาลองใหม่อีกครั้ง');
               // this.alertService.setpopupMessage('อ่านบัตรประชาชนไม่สมบูรณ์ กรุณาลองใหม่อีกครั้ง');
               // this.alertService.openPopup();
               clearInterval(this.timerID);
@@ -486,6 +493,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
         $('.custom').css('width', 0);
         // this.alertService.setCustomButton(this.buttonData);
         localStorage.setItem('errorFlag', 'false');
+        this.alertService.error('อ่านบัตรประชาชนไม่สมบูรณ์ กรุณาลองใหม่อีกครั้ง');
         // this.alertService.setpopupMessage('อ่านบัตรประชาชนไม่สมบูรณ์ กรุณาลองใหม่อีกครั้ง');
         // this.alertService.openPopup();
         clearInterval(this.timerID);
