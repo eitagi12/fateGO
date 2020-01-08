@@ -9,6 +9,7 @@ import { QueueService } from 'src/app/device-only/services/queue.service';
 import { PageLoadingService, TokenService, User } from 'mychannel-shared-libs';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { ROUTE_SHOP_PREMIUM_RESULT_PAGE, ROUTE_SHOP_PREMIUM_QR_CODE_SUMMARY_PAGE, ROUTE_SHOP_PREMIUM_SUMMARY_PAGE } from 'src/app/device-only/ais-shop-premium/constants/route-path.constant';
 
 @Component({
   selector: 'app-device-only-shop-premium-aggregate-page',
@@ -61,12 +62,16 @@ export class DeviceOnlyShopPremiumAggregatePageComponent implements OnInit {
       this.createOrderService.createDeviceSellingOrderList(this.transaction, this.priceOption).then(() => {
         return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
           this.pageLoadingService.closeLoading();
-          this.router.navigate(['']);
+          this.router.navigate([ROUTE_SHOP_PREMIUM_RESULT_PAGE]);
         });
       });
   }
 
   qrCodeSummary(): void {
-    this.router.navigate(['']);
+    this.router.navigate([ROUTE_SHOP_PREMIUM_QR_CODE_SUMMARY_PAGE]);
+  }
+
+  onBack(): void {
+    this.router.navigate([ROUTE_SHOP_PREMIUM_SUMMARY_PAGE]);
   }
 }
