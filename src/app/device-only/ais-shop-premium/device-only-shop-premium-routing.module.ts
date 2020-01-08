@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { DeviceOnlyShopPremiumPaymentPageComponent } from 'src/app/device-only/ais-shop-premium/containers/device-only-shop-premium-payment-page/device-only-shop-premium-payment-page.component';
 import { DeviceOnlyShopPremiumAggregatePageComponent } from './containers/device-only-shop-premium-aggregate-page/device-only-shop-premium-aggregate-page.component';
-import { DeviceOnlyShopPremiumQueuePageComponent } from './containers/device-only-shop-premium-queue-page/device-only-shop-premium-queue-page.component';
 import { DeviceOnlyShopPremiumResultPageComponent } from './containers/device-only-shop-premium-result-page/device-only-shop-premium-result-page.component';
 import { DeviceOnlyShopPremiumQrCodeGeneratorPageComponent } from './containers/device-only-shop-premium-qr-code-generator-page/device-only-shop-premium-qr-code-generator-page.component';
 import { DeviceOnlyShopPremiumQrCodeSummaryPageComponent } from 'src/app/device-only/ais-shop-premium/containers/device-only-shop-premium-qr-code-summary-page/device-only-shop-premium-qr-code-summary-page.component';
@@ -11,7 +10,7 @@ import { DeviceOnlyShopPremiumSummaryPageComponent } from 'src/app/device-only/a
 const routes: Routes = [
   { path: '', redirectTo: 'payment', pathMatch: 'full' },
   {
-    path: 'payment',
+    path: 'select-payment',
     component: DeviceOnlyShopPremiumPaymentPageComponent
   },
   {
