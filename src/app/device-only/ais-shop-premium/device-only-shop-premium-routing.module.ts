@@ -31,10 +31,6 @@ const routes: Routes = [
     component: DeviceOnlyShopPremiumQrCodeGeneratorPageComponent
   },
   {
-    path: 'queue',
-    component: DeviceOnlyShopPremiumQueuePageComponent
-  },
-  {
     path: 'result',
     component: DeviceOnlyShopPremiumResultPageComponent
   },
