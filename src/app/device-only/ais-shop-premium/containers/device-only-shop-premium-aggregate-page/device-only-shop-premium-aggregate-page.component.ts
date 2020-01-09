@@ -49,6 +49,13 @@ export class DeviceOnlyShopPremiumAggregatePageComponent implements OnInit {
     };
   }
 
+  getThumbnail(): string {
+    const product = (this.priceOption.productDetail.products || []).find((p: any) => {
+      return p.colorName === this.priceOption.productStock.color;
+    });
+    return product && product.images ? product.images.thumbnail : '';
+  }
+
   genQueue(): void {
     this.queueService.getQueueZ(this.user.locationCode)
       .then((resp: any) => {
@@ -59,8 +66,8 @@ export class DeviceOnlyShopPremiumAggregatePageComponent implements OnInit {
   }
 
   createOrderAndupdateTransaction(): void {
-      this.createOrderService.createDeviceSellingOrderList(this.transaction, this.priceOption).then(() => {
-        return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
+      this.createOrderService.createDeviceSellingOrderList(this.transaction, this.priceOption, true).then(() => {
+        return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption, true).then(() => {
           this.pageLoadingService.closeLoading();
           this.router.navigate([ROUTE_SHOP_PREMIUM_RESULT_PAGE]);
         });
