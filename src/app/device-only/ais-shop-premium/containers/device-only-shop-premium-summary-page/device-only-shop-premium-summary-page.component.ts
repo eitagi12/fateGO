@@ -45,6 +45,7 @@ export class DeviceOnlyShopPremiumSummaryPageComponent implements OnInit, OnDest
   }
 
   ngOnInit(): void {
+    this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
   }
 
   onNext(): void {
