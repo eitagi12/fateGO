@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Router } from '@angular/router';
@@ -16,7 +16,7 @@ import { ROUTE_SHOP_PREMIUM_RESULT_PAGE, ROUTE_SHOP_PREMIUM_QR_CODE_SUMMARY_PAGE
   templateUrl: './device-only-shop-premium-aggregate-page.component.html',
   styleUrls: ['./device-only-shop-premium-aggregate-page.component.scss']
 })
-export class DeviceOnlyShopPremiumAggregatePageComponent implements OnInit {
+export class DeviceOnlyShopPremiumAggregatePageComponent implements OnInit, OnDestroy {
   transaction: Transaction;
   priceOption: PriceOption;
   user: User;
@@ -80,5 +80,9 @@ export class DeviceOnlyShopPremiumAggregatePageComponent implements OnInit {
 
   onBack(): void {
     this.router.navigate([ROUTE_SHOP_PREMIUM_SUMMARY_PAGE]);
+  }
+
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
   }
 }
