@@ -9,6 +9,7 @@ import { ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_PAGE } from 'src/app/order/orde
 import { ROUTE_ORDER_NEW_REGISTER_VERIFY_DOCUMENT_PAGE } from 'src/app/order/order-new-register/constants/route-path.constant';
 import { ROUTE_ORDER_MNP_NETWORK_TYPE_PAGE } from 'src/app/order/order-mnp/constants/route-path.constant';
 import { ROUTE_BUY_GADGET_BRAND_PAGE } from 'src/app/buy-gadget/constants/route-path.constant';
+import { ROUTE_BUY_PREMIUM_BRAND_PAGE } from 'src/app/buy-premium/constants/route-path.constant';
 
 @Component({
   selector: 'app-promotion-page',
@@ -37,6 +38,14 @@ export class PromotionPageComponent implements OnInit {
       disabled: true,
       click: () => {
         this.router.navigate([ROUTE_BUY_GADGET_BRAND_PAGE]);
+      }
+    },
+    {
+      icon: 'assets/images/icon/icon-serenade.png',
+      label: 'Premium',
+      disabled: true,
+      click: () => {
+        this.router.navigate([ROUTE_BUY_PREMIUM_BRAND_PAGE]);
       }
     },
     {
