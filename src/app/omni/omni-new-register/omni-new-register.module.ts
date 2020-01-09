@@ -1,0 +1,72 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MyChannelSharedLibsModule, I18nService } from 'mychannel-shared-libs';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { OmniNewRegisterRoutingModule } from './omni-new-register-routing.module';
+import { OmniNewRegisterValidateCustomerPageComponent } from './containers/omni-new-register-validate-customer-page/omni-new-register-validate-customer-page.component';
+import { OmniNewRegisterValidateCustomerIdCardPageComponent } from './containers/omni-new-register-validate-customer-id-card-page/omni-new-register-validate-customer-id-card-page.component';
+import { OmniNewRegisterValidateCustomerKeyInPageComponent } from './containers/omni-new-register-validate-customer-key-in-page/omni-new-register-validate-customer-key-in-page.component';
+import { OmniNewRegisterIdCardCapturePageComponent } from './containers/omni-new-register-id-card-capture-page/omni-new-register-id-card-capture-page.component';
+import { OmniNewRegisterFaceCapturePageComponent } from './containers/omni-new-register-face-capture-page/omni-new-register-face-capture-page.component';
+import { OmniNewRegisterFaceComparePageComponent } from './containers/omni-new-register-face-compare-page/omni-new-register-face-compare-page.component';
+import { OmniNewRegisterFaceConfirmPageComponent } from './containers/omni-new-register-face-confirm-page/omni-new-register-face-confirm-page.component';
+// tslint:disable-next-line: max-line-length
+// import { OmniNewRegisterSelectNumberPageComponent } from './containers/omni-new-register-select-number-page/omni-new-register-select-number-page.component';
+import { OmniNewRegisterVerifyInstantSimPageComponent } from './containers/omni-new-register-verify-instant-sim-page/omni-new-register-verify-instant-sim-page.component';
+import { OmniNewRegisterByPatternPageComponent } from './containers/omni-new-register-by-pattern-page/omni-new-register-by-pattern-page.component';
+import { OmniNewRegisterCustomerInfoPageComponent } from './containers/omni-new-register-customer-info-page/omni-new-register-customer-info-page.component';
+// tslint:disable-next-line: max-line-length
+// import { OmniNewRegisterSelectPackagePageComponent } from './containers/omni-new-register-select-package-page/omni-new-register-select-package-page.component';
+import { OmniNewRegisterOneLovePageComponent } from './containers/omni-new-register-one-love-page/omni-new-register-one-love-page.component';
+import { OmniNewRegisterOnTopPageComponent } from './containers/omni-new-register-on-top-page/omni-new-register-on-top-page.component';
+import { OmniNewRegisterMergeBillingPageComponent } from './containers/omni-new-register-merge-billing-page/omni-new-register-merge-billing-page.component';
+import { OmniNewRegisterConfirmUserInformationPageComponent } from './containers/omni-new-register-confirm-user-information-page/omni-new-register-confirm-user-information-page.component';
+import { OmniNewRegisterEbillingAddressPageComponent } from './containers/omni-new-register-ebilling-address-page/omni-new-register-ebilling-address-page.component';
+import { OmniNewRegisterEbillingPageComponent } from './containers/omni-new-register-ebilling-page/omni-new-register-ebilling-page.component';
+import { OmniNewRegisterSummaryPageComponent } from './containers/omni-new-register-summary-page/omni-new-register-summary-page.component';
+import { OmniNewRegisterAgreementSignPageComponent } from './containers/omni-new-register-agreement-sign-page/omni-new-register-agreement-sign-page.component';
+import { OmniNewRegisterPersoSimPageComponent } from './containers/omni-new-register-perso-sim-page/omni-new-register-perso-sim-page.component';
+import { OmniNewRegisterResultPageComponent } from './containers/omni-new-register-result-page/omni-new-register-result-page.component';
+import { OmniNewRegisterEapplicationPageComponent } from './containers/omni-new-register-eapplication-page/omni-new-register-eapplication-page.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { OmniNewRegisterVerifyDocumentPageComponent } from './containers/omni-new-register-verify-document-page/omni-new-register-verify-document-page.component';
+import { OmniNewRegisterPassportInfoPageComponent } from './containers/omni-new-register-passport-info-page/omni-new-register-passport-info-page.component';
+
+@NgModule({
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    OmniNewRegisterRoutingModule,
+    MyChannelSharedLibsModule,
+    TranslateModule
+  ],
+  declarations: [
+    OmniNewRegisterValidateCustomerPageComponent,
+    OmniNewRegisterValidateCustomerIdCardPageComponent,
+    OmniNewRegisterValidateCustomerKeyInPageComponent,
+    OmniNewRegisterIdCardCapturePageComponent,
+    OmniNewRegisterFaceCapturePageComponent,
+    OmniNewRegisterFaceComparePageComponent,
+    OmniNewRegisterFaceConfirmPageComponent,
+    // OmniNewRegisterSelectNumberPageComponent,
+    OmniNewRegisterVerifyInstantSimPageComponent,
+    OmniNewRegisterByPatternPageComponent,
+    OmniNewRegisterCustomerInfoPageComponent,
+    // OmniNewRegisterSelectPackagePageComponent,
+    OmniNewRegisterOneLovePageComponent,
+    OmniNewRegisterOnTopPageComponent,
+    OmniNewRegisterMergeBillingPageComponent,
+    OmniNewRegisterConfirmUserInformationPageComponent,
+    OmniNewRegisterEbillingAddressPageComponent,
+    OmniNewRegisterSummaryPageComponent,
+    OmniNewRegisterAgreementSignPageComponent,
+    OmniNewRegisterPersoSimPageComponent,
+    OmniNewRegisterResultPageComponent,
+    OmniNewRegisterEbillingPageComponent,
+    OmniNewRegisterEapplicationPageComponent,
+    OmniNewRegisterVerifyDocumentPageComponent,
+    OmniNewRegisterPassportInfoPageComponent,
+  ],
+})
+export class OmniNewRegisterModule { }

@@ -83,6 +83,14 @@ const routes: Routes = [
     path: 'rom-transaction',
     loadChildren: 'src/app/rom-transaction/rom-transaction.module#RomTransactionModule',
     canActivate: [AuthGuard, ApiRequestGuard],
+  },
+  {
+    path: 'omni',
+    loadChildren: 'src/app/omni/omni.module#OmniModule',
+    canActivate: [AuthGuard, ApiRequestGuard],
+    resolve: {
+      i18n: I18nService
+    }
   }
 ];
 

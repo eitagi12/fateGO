@@ -1,0 +1,51 @@
+<div class="mc-flex">
+  <mc-header title="{{ 'สมัครแทนบัตร' | translate }}">
+    <div class="header-icon-left w-25">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right w-25 text-right">
+      <!-- -->
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <div class="mb-3 mt-3">
+      <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
+      <div class="container-fluid vertical-center">
+        <div class="col-12 ">
+          <div class="card card-block">
+            <div class="card-header bg-light-blue text-center text-white">
+              <h5>เซ็นบันทึกข้อมูล</h5>
+            </div>
+            <p style="margin: 20px;" class="text-grey">&emsp;ข้าพเจ้าขอรับรองว่าเป็นผู้ให้ลายมือชื่อในแบบคำขอนี้และ/หรือในเอกสารแนบแบบคำขอนี้ (ถ้ามี) และใช้เป็นลายมือชื่อมือของข้าพเจ้า ข้าพเจ้าได้อ่านและเข้าใจ พร้อมตกลงยินยอมผูกพันและปฏิบัติตามข้อกำหนดและเงื่อนไขการใช้บริการของบริษัท แอดวานซ์ ไวร์เลส เน็ทเวอร์ค จำกัด  รวมทั้งตกลงยินยอมชำระค่าบริการและ/หรือค่าธรรมเนียม และ/หรือ ค่าใช้จ่ายใดๆ อันเนื่องมาจากการใช้บริการ ตามที่บริษัท แอดวานซ์ ไวร์เลส 
+              เน็ทเวอร์ค จำกัด กำหนดทุกประการ และหากข้าพเจ้าไม่ปฏิบัติตามข้อกำหนดและเงื่อนไขดังกล่าวจนเป็นเหตุให้เกิดความเสียหายใดๆ ข้าพเจ้ายินยอมรับผิดชอบทั้งสิ้น ทั้งนี้ ข้าพเจ้ายินยอมให้บริษัท แอดวานซ์ ไวร์เลส 
+              เน็ทเวอร์ค จำกัด เก็บรวบรวม ใช้ และ/หรือเปิดเผยข้อมูลส่วนบุคคลของข้าพเจ้าไปยังบุคคลที่สาม เพื่อการปฏิบัติตามข้อกำหนดและเงื่อนไขการใช้บริการนี้
+              </p>
+            <div class="card card-block margin-all">
+              <div class="card-header bg-transparent text-center">ผู้ขอใช้บริการ</div>
+              <div *ngIf="!transaction?.data?.customer?.imageSignature" class="signed">
+                <img src="assets/images/icon/pen.png" (click)="$event.preventDefault(); onSigned()"
+                  *ngIf="signatureText !== 'แก้ไขลายเซ็น'" />
+              </div>
+              <div *ngIf="transaction?.data?.customer?.imageSignature" class="signed">
+                <img [src]="'data:image/jpeg;base64,' + transaction?.data?.customer?.imageSignature"
+                  *ngIf="signatureText !== 'แก้ไขลายเซ็น'">
+              </div>
+            </div>
+            <p class="text-grey">&emsp;Date: {{ localTime }}</p>
+          </div>
+          <div class="card-footer text-center">
+            <a href="#" (click)="$event.preventDefault(); onSigned()" class="text-pink">
+              <span *ngIf="!transaction?.data?.customer?.imageSignature" translate>เซ็นลายเซ็น</span>
+              <span *ngIf="transaction?.data?.customer?.imageSignature" translate>แก้ไขลายเซ็น</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">ย้อนกลับ</button>
+    <button [disabled]="!transaction?.data?.customer?.imageSignature" class="btn btn-success" (click)="onNext()">ถัดไป</button>
+  </mc-footer>
+</div>

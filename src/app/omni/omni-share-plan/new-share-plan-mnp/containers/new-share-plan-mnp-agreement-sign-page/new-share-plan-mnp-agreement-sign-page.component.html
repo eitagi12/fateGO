@@ -1,0 +1,42 @@
+<div class="mc-flex">
+  <mc-header title="{{ 'เปิดเบอร์ใหม่' | translate }}">
+    <div class="header-icon-left w-25">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right w-25 text-right"></div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <div class="mt-3">
+      <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
+      <div class="card-body bg-white">
+        <div class="container-fluid">
+          <p class="text-center mt-2 mb-4">เซ็นยืนยันข้อมูล</p>
+          <hr>
+          <div class="text-grey">
+            <p>{{ contractText }}</p>
+            <p>กรุณาเซ็นลงในช่อง</p>
+          </div>
+          <div class="mt-4">
+            <div class="card embed-responsive embed-responsive-4by3 position-relative">
+              <div class="embed-responsive-item center my-auto">
+                <img class="w-100 h-auto" src="" name="imgPhoto" id="imgPhoto" [hidden]="!signature" />
+              </div>
+            </div>
+            <div class="row my-4">
+              <div class="col-6" id="lblShrSignWriterContractInfoDate">
+                {{ currentDate }}
+              </div>
+              <div class="col-6 text-right">
+                <button id="btnShrSignWriterSign" class="btn btn-success"(click)="openSignature()">{{ signatureText }}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!isSuccess">NEXT</button>
+  </mc-footer>
+</div>

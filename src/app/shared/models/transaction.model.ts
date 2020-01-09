@@ -26,7 +26,12 @@ export enum TransactionType {
   DEVICE_ONLY_WEB = 'DeviceOnlyWEB',
   DEVICE_ONLY_KIOSK = 'DeviceOnlyKiosk',
   VAS_PACKAGE_ROM = 'RomAgent',
-  VAS_PACKAGE_CUSTOMER = 'Customer'
+  VAS_PACKAGE_CUSTOMER = 'Customer',
+
+  // omni
+
+  OMNI_NEW_REGISTER = 'OmniNewRegister',
+  OMNI_NEW_SHARE_PLAN_MNP = 'OmniNewSharePlanMNP'
 }
 
 export enum TransactionAction {
