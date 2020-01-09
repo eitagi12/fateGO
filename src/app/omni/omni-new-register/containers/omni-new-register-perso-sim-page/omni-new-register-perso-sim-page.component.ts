@@ -6,8 +6,8 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import {
   ROUTE_OMNI_NEW_REGISTER_RESULT_PAGE,
   ROUTE_OMNI_NEW_REGISTER_AGREEMENT_SIGN_PAGE,
-  ROUTE_OMNI_NEW_REGISTER_BY_PATTERN_PAGE,
-  ROUTE_OMNI_NEW_REGISTER_EAPPLICATION_PAGE
+  ROUTE_OMNI_NEW_REGISTER_EAPPLICATION_PAGE,
+  ROUTE_OMNI_NEW_REGISTER_FACE_CONFIRM_PAGE
 } from 'src/app/omni/omni-new-register/constants/route-path.constant';
 import { Observable, Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
@@ -222,7 +222,7 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
             this.alertService.question(this.translation.instant(value.error.messages), this.translation.instant('ตกลง')).then((res) => {
               if (res.value) {
                 this.persoSimSubscription.unsubscribe();
-                this.router.navigate([ROUTE_OMNI_NEW_REGISTER_BY_PATTERN_PAGE]);
+                this.router.navigate([ROUTE_OMNI_NEW_REGISTER_FACE_CONFIRM_PAGE]);
               }
             });
           } else if (value.error.errorCase === ErrorPerSoSim.ERROR_CMD) {

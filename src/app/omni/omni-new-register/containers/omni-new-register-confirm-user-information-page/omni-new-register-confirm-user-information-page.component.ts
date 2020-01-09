@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { HomeService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import {
-  ROUTE_OMNI_NEW_REGISTER_ON_TOP_PAGE,
   ROUTE_OMNI_NEW_REGISTER_EBILLING_ADDRESS_PAGE,
   ROUTE_OMNI_NEW_REGISTER_SUMMARY_PAGE,
   ROUTE_OMNI_NEW_REGISTER_MERGE_BILLING_PAGE,
@@ -257,11 +256,7 @@ export class OmniNewRegisterConfirmUserInformationPageComponent implements OnIni
     if (this.isPackageNetExtreme()) {
       this.router.navigate([ROUTE_OMNI_NEW_REGISTER_MERGE_BILLING_PAGE]);
     } else {
-      if (this.transaction.data.onTopPackage) {
-        this.router.navigate([ROUTE_OMNI_NEW_REGISTER_ON_TOP_PAGE]);
-      } else {
-        this.router.navigate([ROUTE_OMNI_NEW_REGISTER_FACE_CONFIRM_PAGE]);
-      }
+      this.router.navigate([ROUTE_OMNI_NEW_REGISTER_FACE_CONFIRM_PAGE]);
     }
   }
 

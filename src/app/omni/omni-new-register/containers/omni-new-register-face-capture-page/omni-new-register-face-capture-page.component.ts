@@ -5,8 +5,6 @@ import { HomeService, Utils, AlertService, ImageUtils } from 'mychannel-shared-l
 import {
   ROUTE_OMNI_NEW_REGISTER_ID_CARD_CAPTURE_PAGE,
   ROUTE_OMNI_NEW_REGISTER_FACE_COMPARE_PAGE,
-  ROUTE_OMNI_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE,
-  ROUTE_OMNI_NEW_REGISTER_PASSPOPRT_INFO_PAGE
 } from 'src/app/omni/omni-new-register/constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
@@ -42,13 +40,7 @@ export class OmniNewRegisterFaceCapturePageComponent implements OnInit, OnDestro
   }
 
   onBack(): void {
-    if (this.transaction.data.action === TransactionAction.READ_CARD) {
-      this.router.navigate([ROUTE_OMNI_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
-    } else if (this.transaction.data.action === TransactionAction.READ_PASSPORT) {
-      this.router.navigate([ROUTE_OMNI_NEW_REGISTER_PASSPOPRT_INFO_PAGE]);
-    } else {
-      this.router.navigate([ROUTE_OMNI_NEW_REGISTER_ID_CARD_CAPTURE_PAGE]);
-    }
+    this.router.navigate([ROUTE_OMNI_NEW_REGISTER_ID_CARD_CAPTURE_PAGE]);
   }
 
   onNext(): void {

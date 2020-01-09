@@ -3,7 +3,6 @@ import { WIZARD_OMNI_NEW_REGISTER } from 'src/app/omni/constants/wizard.constant
 import { Router } from '@angular/router';
 import { HomeService, PageLoadingService } from 'mychannel-shared-libs';
 import {
-  ROUTE_OMNI_NEW_REGISTER_ON_TOP_PAGE,
   ROUTE_OMNI_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE,
   ROUTE_OMNI_NEW_REGISTER_FACE_CONFIRM_PAGE,
 } from 'src/app/omni/omni-new-register/constants/route-path.constant';
@@ -85,11 +84,7 @@ export class OmniNewRegisterMergeBillingPageComponent implements OnInit, OnDestr
 
   onBack(): void {
     if (this.isPackageNetExtreme()) {
-      if (this.transaction.data.onTopPackage) {
-        this.router.navigate([ROUTE_OMNI_NEW_REGISTER_ON_TOP_PAGE]);
-      } else {
-        this.router.navigate([ROUTE_OMNI_NEW_REGISTER_FACE_CONFIRM_PAGE]);
-      }
+      this.router.navigate([ROUTE_OMNI_NEW_REGISTER_FACE_CONFIRM_PAGE]);
     } else {
       this.router.navigate([ROUTE_OMNI_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE]);
     }

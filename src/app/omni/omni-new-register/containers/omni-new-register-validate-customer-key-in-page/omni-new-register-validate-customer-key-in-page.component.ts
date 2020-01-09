@@ -3,10 +3,7 @@ import { Params, Router, ActivatedRoute } from '@angular/router';
 import { HomeService, CustomerService, AlertService, Utils } from 'mychannel-shared-libs';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import {
-  ROUTE_OMNI_NEW_REGISTER_ID_CARD_CAPTURE_PAGE,
-  ROUTE_OMNI_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE
-} from 'src/app/omni/omni-new-register/constants/route-path.constant';
+import { ROUTE_OMNI_NEW_REGISTER_ID_CARD_CAPTURE_PAGE, ROUTE_OMNI_NEW_REGISTER_VALIDATE_CUSTOMER_KEY_IN_PAGE } from 'src/app/omni/omni-new-register/constants/route-path.constant';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -54,7 +51,7 @@ export class OmniNewRegisterValidateCustomerKeyInPageComponent implements OnInit
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_OMNI_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
+    this.router.navigate([ROUTE_OMNI_NEW_REGISTER_VALIDATE_CUSTOMER_KEY_IN_PAGE]);
   }
 
   onNext(): void {

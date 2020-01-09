@@ -6,7 +6,6 @@ import {
   ROUTE_OMNI_NEW_REGISTER_CUSTOMER_INFO_PAGE,
   ROUTE_OMNI_NEW_REGISTER_FACE_CAPTURE_PAGE,
   ROUTE_OMNI_NEW_REGISTER_VALIDATE_CUSTOMER_KEY_IN_PAGE,
-  ROUTE_OMNI_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE,
   ROUTE_OMNI_NEW_REGISTER_SUMMARY_PAGE
 } from 'src/app/omni/omni-new-register/constants/route-path.constant';
 import { Transaction, Customer, TransactionAction } from 'src/app/shared/models/transaction.model';
@@ -63,8 +62,6 @@ export class OmniNewRegisterIdCardCapturePageComponent implements OnInit, OnDest
     if (this.transaction.data.customer.caNumber) {
       if (this.transaction.data.action === TransactionAction.KEY_IN) {
         this.router.navigate([ROUTE_OMNI_NEW_REGISTER_CUSTOMER_INFO_PAGE]);
-      } else {
-        this.router.navigate([ROUTE_OMNI_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
       }
     } else {
       this.router.navigate([ROUTE_OMNI_NEW_REGISTER_VALIDATE_CUSTOMER_KEY_IN_PAGE]);

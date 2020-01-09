@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { ROUTE_OMNI_NEW_REGISTER_PASSPOPRT_INFO_PAGE, ROUTE_OMNI_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_OMNI_NEW_REGISTER_VERIFY_DOCUMENT_PAGE } from 'src/app/omni/omni-new-register/constants/route-path.constant';
 import { HomeService, PageLoadingService, ApiRequestService, Utils, ReadCardProfile, AlertService, ReadPassport, ReadPassportService, ValidateCustomerIdCardComponent, KioskControls, VendingApiService, ReadCardService, Environment, TokenService } from 'mychannel-shared-libs';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -317,13 +316,13 @@ export class OmniNewRegisterVerifyDocumentPageComponent implements OnInit, OnDes
 
   ngOnInit(): void {
     this.createTransaction();
-    this.onReadCard();
-    this.onReadPassport();
+    // this.onReadCard();
+    // this.onReadPassport();
   }
   onCompleted(profile: ReadCardProfile): void {
     this.profile = profile;
     // auto next
-    this.onReadPassport();
+    // this.onReadPassport();
   }
   onBack(): void {
     if (this.closeVendingApi && this.closeVendingApi.ws) {
@@ -342,155 +341,155 @@ export class OmniNewRegisterVerifyDocumentPageComponent implements OnInit, OnDes
     }, 750);
   }
 
-  onReadPassport(): void {
-    this.readPassportSubscription = this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
+  // onReadPassport(): void {
+  //   this.readPassportSubscription = this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
 
-      if (readPassport.error) {
-        this.alertService.error(this.translation.instant(this.ERR_MASSEAGE));
-        return;
-      }
-      if (readPassport.eventName && readPassport.eventName === 'OnScanDocError') {
-        this.alertService.error(this.translation.instant(this.ERR_MASSEAGE));
-        return;
-      }
-      if (!readPassport.profile && !readPassport.profile.idCardNo) {
-        this.alertService.error(this.translation.instant(this.ERR_MASSEAGE));
-        return;
-      }
-      if (readPassport.profile.issuingCountry === 'THA' && (environment.name === 'SIT' || environment.name === 'PROD')) {
-        this.alertService.error(this.translation.instant('สำหรับคนไทยกรุณาใช้บัตรประชาชนทำรายการ'));
-        return;
-      }
+  //     if (readPassport.error) {
+  //       this.alertService.error(this.translation.instant(this.ERR_MASSEAGE));
+  //       return;
+  //     }
+  //     if (readPassport.eventName && readPassport.eventName === 'OnScanDocError') {
+  //       this.alertService.error(this.translation.instant(this.ERR_MASSEAGE));
+  //       return;
+  //     }
+  //     if (!readPassport.profile && !readPassport.profile.idCardNo) {
+  //       this.alertService.error(this.translation.instant(this.ERR_MASSEAGE));
+  //       return;
+  //     }
+  //     if (readPassport.profile.issuingCountry === 'THA' && (environment.name === 'SIT' || environment.name === 'PROD')) {
+  //       this.alertService.error(this.translation.instant('สำหรับคนไทยกรุณาใช้บัตรประชาชนทำรายการ'));
+  //       return;
+  //     }
 
-      this.pageLoadingService.openLoading();
-      return this.http.get('/api/customerportal/validate-customer-new-register', {
-        params: {
-          identity: readPassport.profile.idCardNo,
-          idCardType: readPassport.profile.idCardType
-        }
-      }).toPromise()
-        .then((resp: any) => {
-          const data = resp.data || {};
-          // readPassport NewCa จะไม่ได้ address
-          console.log('data', data);
-          return {
-            caNumber: data.caNumber,
-            mainMobile: data.mainMobile,
-            billCycle: data.billCycle,
-            homeNo: data.homeNo,
-            moo: data.moo,
-            mooBan: data.mooBan,
-            room: data.room,
-            floor: data.floor,
-            buildingName: data.buildingName,
-            soi: data.soi,
-            street: data.street,
-            tumbol: data.tumbol,
-            amphur: data.amphur,
-            province: data.province,
-            zipCode: data.zipCode
-          };
-        }).then((customer) => {
-          this.transaction.data.customer = Object.assign(
-            Object.assign({}, this.transaction.data.customer),
-            Object.assign(readPassport.profile, customer)
-          );
-          return this.http.get(`/api/customerportal/newRegister/${readPassport.profile.idCardNo}/queryBillingAccount`).toPromise()
-            .then((respQueryBilling: any) => {
-              const data = respQueryBilling.data || {};
-              return this.http.post('/api/customerportal/verify/billingNetExtreme', {
-                businessType: '1',
-                listBillingAccount: data.billingAccountList
-              }).toPromise()
-                .then((respBillingNetExtreme: any) => {
-                  return {
-                    billCycles: data.billingAccountList,
-                    billCyclesNetExtreme: respBillingNetExtreme.data
-                  };
-                })
-                .catch(() => {
-                  return {
-                    billCycles: data.billingAccountList
-                  };
-                });
-            });
-        }).then((billingInformation: any) => {
-          this.transaction.data.billingInformation = billingInformation;
-          this.pageLoadingService.closeLoading();
-          this.transaction.data.action = TransactionAction.READ_PASSPORT;
-          this.transactionService.update(this.transaction);
-          if (this.checkBusinessLogic()) {
-            this.router.navigate([ROUTE_OMNI_NEW_REGISTER_PASSPOPRT_INFO_PAGE]);
-          }
-        }).catch((resp: any) => {
-          this.pageLoadingService.closeLoading();
-          const error = resp.error || [];
-          if (error && error.errors && error.errors.length > 0) {
-            this.alertService.notify({
-              type: 'error',
-              html: error.errors.map((err) => {
-                return '<li class="text-left">' + this.translation.instant(err) + '</li>';
-              }).join('')
-            }).then(() => {
-              this.onBack();
-            });
-          } else if (error.resultDescription) {
-            this.alertService.error(this.translation.instant(error.resultDescription));
-          } else {
-            this.alertService.error(this.translation.instant('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'));
+  //     this.pageLoadingService.openLoading();
+  //     return this.http.get('/api/customerportal/validate-customer-new-register', {
+  //       params: {
+  //         identity: readPassport.profile.idCardNo,
+  //         idCardType: readPassport.profile.idCardType
+  //       }
+  //     }).toPromise()
+  //       .then((resp: any) => {
+  //         const data = resp.data || {};
+  //         // readPassport NewCa จะไม่ได้ address
+  //         console.log('data', data);
+  //         return {
+  //           caNumber: data.caNumber,
+  //           mainMobile: data.mainMobile,
+  //           billCycle: data.billCycle,
+  //           homeNo: data.homeNo,
+  //           moo: data.moo,
+  //           mooBan: data.mooBan,
+  //           room: data.room,
+  //           floor: data.floor,
+  //           buildingName: data.buildingName,
+  //           soi: data.soi,
+  //           street: data.street,
+  //           tumbol: data.tumbol,
+  //           amphur: data.amphur,
+  //           province: data.province,
+  //           zipCode: data.zipCode
+  //         };
+  //       }).then((customer) => {
+  //         this.transaction.data.customer = Object.assign(
+  //           Object.assign({}, this.transaction.data.customer),
+  //           Object.assign(readPassport.profile, customer)
+  //         );
+  //         return this.http.get(`/api/customerportal/newRegister/${readPassport.profile.idCardNo}/queryBillingAccount`).toPromise()
+  //           .then((respQueryBilling: any) => {
+  //             const data = respQueryBilling.data || {};
+  //             return this.http.post('/api/customerportal/verify/billingNetExtreme', {
+  //               businessType: '1',
+  //               listBillingAccount: data.billingAccountList
+  //             }).toPromise()
+  //               .then((respBillingNetExtreme: any) => {
+  //                 return {
+  //                   billCycles: data.billingAccountList,
+  //                   billCyclesNetExtreme: respBillingNetExtreme.data
+  //                 };
+  //               })
+  //               .catch(() => {
+  //                 return {
+  //                   billCycles: data.billingAccountList
+  //                 };
+  //               });
+  //           });
+  //       }).then((billingInformation: any) => {
+  //         this.transaction.data.billingInformation = billingInformation;
+  //         this.pageLoadingService.closeLoading();
+  //         this.transaction.data.action = TransactionAction.READ_PASSPORT;
+  //         this.transactionService.update(this.transaction);
+  //         if (this.checkBusinessLogic()) {
+  //           this.router.navigate([ROUTE_OMNI_NEW_REGISTER_PASSPOPRT_INFO_PAGE]);
+  //         }
+  //       }).catch((resp: any) => {
+  //         this.pageLoadingService.closeLoading();
+  //         const error = resp.error || [];
+  //         if (error && error.errors && error.errors.length > 0) {
+  //           this.alertService.notify({
+  //             type: 'error',
+  //             html: error.errors.map((err) => {
+  //               return '<li class="text-left">' + this.translation.instant(err) + '</li>';
+  //             }).join('')
+  //           }).then(() => {
+  //             this.onBack();
+  //           });
+  //         } else if (error.resultDescription) {
+  //           this.alertService.error(this.translation.instant(error.resultDescription));
+  //         } else {
+  //           this.alertService.error(this.translation.instant('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'));
 
-          }
-        });
-    });
+  //         }
+  //       });
+  //   });
 
-  }
-  onReadCard(): void {
-    this.vendingApiSubscription = this.vendingApiService.excuteCommand().subscribe((command: any) => {
-      this.closeVendingApi = command;
-      if (command.error) {
-        return;
-      }
-      command.ws.send(KioskControls.LED_BLINK);
-      if (command.error) {
-        return;
-      }
-      command.ws.onmessage = (event) => {
-        const message = JSON.parse(event.data);
-        const isCardInside = message && (message.Result === 'Card in IC position' || message.Result === 'Card in RF position');
+  // }
+  // onReadCard(): void {
+  //   this.vendingApiSubscription = this.vendingApiService.excuteCommand().subscribe((command: any) => {
+  //     this.closeVendingApi = command;
+  //     if (command.error) {
+  //       return;
+  //     }
+  //     command.ws.send(KioskControls.LED_BLINK);
+  //     if (command.error) {
+  //       return;
+  //     }
+  //     command.ws.onmessage = (event) => {
+  //       const message = JSON.parse(event.data);
+  //       const isCardInside = message && (message.Result === 'Card in IC position' || message.Result === 'Card in RF position');
 
-        if (isCardInside) {
-          this.router.navigate([ROUTE_OMNI_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
-        }
+  //       if (isCardInside) {
+  //         this.router.navigate([ROUTE_OMNI_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
+  //       }
 
-        if (message.Command === KioskControls.LOAD_CARD) {
-          this.cardStateInterval = setInterval(() => {
-            command.ws.send(KioskControls.GET_CARD_STATE);
-          }, 1000);
-        }
-      };
-      command.ws.send(KioskControls.LOAD_CARD);
-    });
-  }
+  //       if (message.Command === KioskControls.LOAD_CARD) {
+  //         this.cardStateInterval = setInterval(() => {
+  //           command.ws.send(KioskControls.GET_CARD_STATE);
+  //         }, 1000);
+  //       }
+  //     };
+  //     command.ws.send(KioskControls.LOAD_CARD);
+  //   });
+  // }
 
-  checkBusinessLogic(): boolean {
-    const birthdate = this.transaction.data.customer.birthdate;
-    const expireDate = this.transaction.data.customer.expireDate;
-    const idCardType = this.transaction.data.customer.idCardType;
+  // checkBusinessLogic(): boolean {
+  //   const birthdate = this.transaction.data.customer.birthdate;
+  //   const expireDate = this.transaction.data.customer.expireDate;
+  //   const idCardType = this.transaction.data.customer.idCardType;
 
-    if (this.utils.isLowerAge17Year(birthdate)) {
-      this.alertService.error(this.translation.instant('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี')).then(() => {
-        this.router.navigate([ROUTE_OMNI_NEW_REGISTER_VERIFY_DOCUMENT_PAGE]);
-      });
-      return false;
-    }
-    if (this.utils.isIdCardExpiredDate(expireDate)) {
-      this.alertService.error(this.translation.instant('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ')).then(() => {
-        this.router.navigate([ROUTE_OMNI_NEW_REGISTER_VERIFY_DOCUMENT_PAGE]);
-      });
-      return false;
-    }
-    return true;
-  }
+  //   if (this.utils.isLowerAge17Year(birthdate)) {
+  //     this.alertService.error(this.translation.instant('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี')).then(() => {
+  //       this.router.navigate([ROUTE_OMNI_NEW_REGISTER_VERIFY_DOCUMENT_PAGE]);
+  //     });
+  //     return false;
+  //   }
+  //   if (this.utils.isIdCardExpiredDate(expireDate)) {
+  //     this.alertService.error(this.translation.instant('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ')).then(() => {
+  //       this.router.navigate([ROUTE_OMNI_NEW_REGISTER_VERIFY_DOCUMENT_PAGE]);
+  //     });
+  //     return false;
+  //   }
+  //   return true;
+  // }
   private createTransaction(): void {
     // New x-api-request-id
     this.apiRequestService.createRequestId();
@@ -602,9 +601,9 @@ export class OmniNewRegisterVerifyDocumentPageComponent implements OnInit, OnDes
         this.pageLoadingService.closeLoading();
         this.transaction.data.action = TransactionAction.READ_PASSPORT;
         this.transactionService.update(this.transaction);
-        if (this.checkBusinessLogic()) {
-          this.router.navigate([ROUTE_OMNI_NEW_REGISTER_PASSPOPRT_INFO_PAGE]);
-        }
+        // if (this.checkBusinessLogic()) {
+        //   this.router.navigate([ROUTE_OMNI_NEW_REGISTER_PASSPOPRT_INFO_PAGE]);
+        // }
       }).catch((resp: any) => {
         this.pageLoadingService.closeLoading();
         const error = resp.error || [];

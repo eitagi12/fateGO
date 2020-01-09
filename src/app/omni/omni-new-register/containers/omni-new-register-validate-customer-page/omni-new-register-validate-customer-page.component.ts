@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
-  ROUTE_OMNI_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE,
   ROUTE_OMNI_NEW_REGISTER_CUSTOMER_INFO_PAGE,
   ROUTE_OMNI_NEW_REGISTER_VALIDATE_CUSTOMER_KEY_IN_PAGE
 } from 'src/app/omni/omni-new-register/constants/route-path.constant';
@@ -39,10 +38,6 @@ export class OmniNewRegisterValidateCustomerPageComponent implements OnInit, OnD
 
   onCompleted(identity: string): void {
     this.identity = identity;
-  }
-
-  onReadCard(): void {
-    this.router.navigate([ROUTE_OMNI_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
   }
 
   onHome(): void {
