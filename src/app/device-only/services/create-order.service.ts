@@ -279,12 +279,11 @@ export class CreateOrderService {
     return this.http.post('/api/salesportal/create-device-selling-order', order).toPromise();
   }
 
-  createDeviceSellingOrderList(transaction: Transaction, priceOption: PriceOption, shopPremium?: boolean): Promise<any> {
-    return this.http.post('/api/salesportal/dt/create-order-list',
-      shopPremium ? this.getRequestCreateDeviceOnlyShopPremium(transaction, priceOption)
-        : this.getRequestCreateDeviceSellingOrderList(transaction, priceOption)
+  createDeviceSellingOrderList(transaction: Transaction, priceOption: PriceOption): Promise<any> {
+    return this.http.post('/api/salesportal/dt/create-order-list', this.getRequestCreateDeviceSellingOrderList(transaction, priceOption)
     ).toPromise();
   }
+
   private getRequestCreateDeviceSellingOrderList(transaction: Transaction, priceOption: PriceOption): any {
     const user = this.tokenService.getUser();
     const productStock = priceOption.productStock;
@@ -445,7 +444,12 @@ export class CreateOrderService {
     return data;
   }
 
-  private getRequestCreateDeviceOnlyShopPremium(transaction: Transaction, priceOption: PriceOption): any {
+  createDeviceSellingOrderShopPremium(transaction: Transaction, priceOption: PriceOption): Promise<any> {
+    return this.http.post('/api/salesportal/dt/create-order', this.getRequestCreateDeviceSellingShopPremium(transaction, priceOption)
+    ).toPromise();
+  }
+
+  private getRequestCreateDeviceSellingShopPremium(transaction: Transaction, priceOption: PriceOption): any {
     const user = this.tokenService.getUser();
     const productStock = priceOption.productStock;
     const productDetail = priceOption.productDetail;
@@ -458,17 +462,6 @@ export class CreateOrderService {
     const mpayPayment: any = transactionData.mpayPayment || {};
     const receiptInfo: any = transactionData.receiptInfo || {};
 
-    const product: any = {
-      productType: productStock.productType || productDetail.productType,
-      soCompany: productStock.company,
-      productSubType: productStock.productSubType || productDetail.productSubtype,
-      brand: productStock.brand || productDetail.brand,
-      model: productStock.model || productDetail.model,
-      qty: 1,
-      color: productStock.color || productStock.colorName,
-      priceIncAmt: (0).toFixed(2),
-    };
-
     const data: any = {
       soId: order.soId,
       locationSource: user.locationCode,
@@ -478,7 +471,7 @@ export class CreateOrderService {
       cusNameOrder: `คุณ ${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
       soChannelType: 'CSP',
       soDocumentType: 'RESERVED',
-      productList: [product],
+      soCompany: productStock.company,
       grandTotalAmt: (0).toFixed(2),
       saleCode: this.tokenService.isAisUser() ? (seller.sellerNo || '') : (seller.sellerNo || user.ascCode),
       taxCardId: customer.idCardNo,
@@ -486,8 +479,13 @@ export class CreateOrderService {
       paymentMethod: this.getPaymentMethod(transaction),
       installmentTerm: 0,
       installmentRate: 0,
-      mobileAisFlg: 'Y',
       bankAbbr: payment && payment.paymentBank ? payment.paymentBank.abb : '',
+      productType: productStock.productType || productDetail.productType,
+      productSubType: productStock.productSubType || productDetail.productSubtype,
+      brand: productStock.brand || productDetail.brand,
+      model: productStock.model || productDetail.model,
+      color: productStock.color || productStock.colorName,
+      priceIncAmt: (0).toFixed(2)
     };
 
     // payment with QR code

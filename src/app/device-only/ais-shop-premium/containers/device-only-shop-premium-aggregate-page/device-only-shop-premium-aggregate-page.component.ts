@@ -66,12 +66,12 @@ export class DeviceOnlyShopPremiumAggregatePageComponent implements OnInit, OnDe
   }
 
   createOrderAndupdateTransaction(): void {
-      this.createOrderService.createDeviceSellingOrderList(this.transaction, this.priceOption, true).then(() => {
-        return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption, true).then(() => {
-          this.pageLoadingService.closeLoading();
-          this.router.navigate([ROUTE_SHOP_PREMIUM_RESULT_PAGE]);
-        });
+    this.createOrderService.createDeviceSellingOrderShopPremium(this.transaction, this.priceOption).then(() => {
+      return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption, true).then(() => {
+        this.pageLoadingService.closeLoading();
+        this.router.navigate([ROUTE_SHOP_PREMIUM_RESULT_PAGE]);
       });
+    });
   }
 
   qrCodeSummary(): void {
