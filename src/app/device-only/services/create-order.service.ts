@@ -279,9 +279,10 @@ export class CreateOrderService {
     return this.http.post('/api/salesportal/create-device-selling-order', order).toPromise();
   }
 
-  createDeviceSellingOrderList(transaction: Transaction, priceOption: PriceOption): Promise<any> {
+  createDeviceSellingOrderList(transaction: Transaction, priceOption: PriceOption, shopPremium?: boolean): Promise<any> {
     return this.http.post('/api/salesportal/dt/create-order-list',
-      this.getRequestCreateDeviceSellingOrderList(transaction, priceOption)
+      shopPremium ? this.getRequestCreateDeviceOnlyShopPremium(transaction, priceOption)
+        : this.getRequestCreateDeviceSellingOrderList(transaction, priceOption)
     ).toPromise();
   }
   private getRequestCreateDeviceSellingOrderList(transaction: Transaction, priceOption: PriceOption): any {
@@ -441,6 +442,67 @@ export class CreateOrderService {
       data.installmentTerm = payment.paymentMethod.month || 0;
       data.installmentRate = payment.paymentMethod.percentage || 0;
     }
+    return data;
+  }
+
+  private getRequestCreateDeviceOnlyShopPremium(transaction: Transaction, priceOption: PriceOption): any {
+    const user = this.tokenService.getUser();
+    const productStock = priceOption.productStock;
+    const productDetail = priceOption.productDetail;
+    const transactionData = transaction.data;
+    const customer = transactionData.customer;
+    const order = transactionData.order;
+    const queue: any = transactionData.queue || {};
+    const seller = transactionData.seller || {};
+    const payment = transactionData.payment;
+    const mpayPayment: any = transactionData.mpayPayment || {};
+    const receiptInfo: any = transactionData.receiptInfo || {};
+
+    const product: any = {
+      productType: productStock.productType || productDetail.productType,
+      soCompany: productStock.company,
+      productSubType: productStock.productSubType || productDetail.productSubtype,
+      brand: productStock.brand || productDetail.brand,
+      model: productStock.model || productDetail.model,
+      qty: 1,
+      color: productStock.color || productStock.colorName,
+      priceIncAmt: (0).toFixed(2),
+    };
+
+    const data: any = {
+      soId: order.soId,
+      locationSource: user.locationCode,
+      locationReceipt: user.locationCode,
+      userId: user.username,
+      queueNo: queue.queueNo,
+      cusNameOrder: `คุณ ${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
+      soChannelType: 'CSP',
+      soDocumentType: 'RESERVED',
+      productList: [product],
+
+      grandTotalAmt: (0).toFixed(2),
+      saleCode: this.tokenService.isAisUser() ? (seller.sellerNo || '') : (seller.sellerNo || user.ascCode),
+      taxCardId: customer.idCardNo,
+      cusMobileNoOrder: receiptInfo.telNo,
+      paymentMethod: this.getPaymentMethod(transaction),
+      mobileAisFlg: 'Y',
+      bankAbbr: payment && payment.paymentBank ? payment.paymentBank.abb : '',
+    };
+
+    // payment with QR code
+    if (payment && payment.paymentType === 'QR_CODE') {
+      if (mpayPayment && mpayPayment.mpayStatus && mpayPayment.mpayStatus.orderIdDevice) {
+        data.qrOrderId = mpayPayment.mpayStatus.orderIdDevice;
+      } else {
+        data.qrOrderId = mpayPayment && mpayPayment.orderId ? mpayPayment.orderId : null;
+      }
+      // QR code for device
+      if (payment && payment.paymentType === 'QR_CODE') {
+        data.qrTransId = payment.paymentType === 'QR_CODE' ? mpayPayment.tranId : null;
+        data.qrAmt = payment.paymentType === 'QR_CODE' && mpayPayment.tranId ? (0).toFixed(2) : null;
+      }
+    }
+
     return data;
   }
 

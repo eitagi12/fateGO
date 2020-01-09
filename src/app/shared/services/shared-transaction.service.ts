@@ -43,7 +43,7 @@ export class SharedTransactionService {
     ).toPromise();
   }
 
-  updateSharedTransaction(transaction: Transaction, priceOption: PriceOption): Promise<any> {
+  updateSharedTransaction(transaction: Transaction, priceOption: PriceOption, shopPremium?: boolean): Promise<any> {
     const user = this.tokenService.getUser();
     //
     transaction.lastUpdateBy = user.username;
@@ -51,7 +51,8 @@ export class SharedTransactionService {
     transaction.data.status = SharedTransactionStatus.WAITING_PAYMENT;
 
     return this.http.post('/api/salesportal/device-order/update-transaction',
-      this.getRequestSharedTransaction(transaction, priceOption)
+      shopPremium ? this.getRequestSharedTransactionShopPremium(transaction, priceOption)
+        : this.getRequestSharedTransaction(transaction, priceOption)
     ).toPromise();
   }
 
@@ -278,6 +279,64 @@ export class SharedTransactionService {
       params.data.mpay_payment = data.mpayPayment;
     }
     console.log('params', params);
+    return params;
+  }
+
+  private getRequestSharedTransactionShopPremium(transaction: Transaction, priceOption: PriceOption): any {
+    const data = transaction.data;
+    const productDetail = priceOption.productDetail;
+    const productStock = priceOption.productStock;
+
+    const params: any = {
+      transactionId: transaction.transactionId,
+      createBy: transaction.createBy,
+      createDate: transaction.createDate,
+      lastUpdateBy: transaction.lastUpdateBy,
+      lastUpdateDate: transaction.lastUpdateDate,
+      issueBy: transaction.lastUpdateBy || transaction.createBy,
+      data: {
+        transactionType: data.transactionType,
+        customer: data.customer || {},
+        device: {
+          amount: 1,
+          brand: productStock.brand || productDetail.brand,
+          model: productStock.model || productDetail.model || '',
+          colorCode: productStock.colorCode || '',
+          colorName: productStock.color || productStock.colorName || '',
+          company: productStock.company || '',
+          name: productDetail.name || '',
+          imei: !!data.device ? data.device.imei : ''
+        },
+        receipt_information: {
+          telNo: !!data.receiptInfo ? data.receiptInfo.telNo : ''
+        },
+        order: {
+          soId: data.order.soId
+        },
+        queue: {},
+        seller: {
+          locationCode: !!data.seller ? data.seller.locationCode : productStock.location || '',
+          locationName: !!data.seller ? data.seller.locationName : productStock.locationName || '',
+          sellerName: !!data.seller ? data.seller.sellerName : '',
+          isAscCode: !this.tokenService.isAisUser(),
+          sellerNo: !!data.seller ? data.seller.sellerNo : '',
+          employeeId: data.seller && data.seller.employeeId ? data.seller.employeeId : '',
+          sharedUser: !!data.seller ? data.seller.sharedUser : ''
+        },
+        status: data.status || {}
+      }
+    };
+
+    if (data.queue) {
+      params.data.queue = data.queue;
+    }
+    if (data.payment) {
+      params.data.payment = data.payment;
+    }
+
+    if (data.mpayPayment) {
+      params.data.mpay_payment = data.mpayPayment;
+    }
     return params;
   }
 
