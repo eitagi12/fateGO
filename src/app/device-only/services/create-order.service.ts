@@ -479,12 +479,13 @@ export class CreateOrderService {
       soChannelType: 'CSP',
       soDocumentType: 'RESERVED',
       productList: [product],
-
       grandTotalAmt: (0).toFixed(2),
       saleCode: this.tokenService.isAisUser() ? (seller.sellerNo || '') : (seller.sellerNo || user.ascCode),
       taxCardId: customer.idCardNo,
       cusMobileNoOrder: receiptInfo.telNo,
       paymentMethod: this.getPaymentMethod(transaction),
+      installmentTerm: 0,
+      installmentRate: 0,
       mobileAisFlg: 'Y',
       bankAbbr: payment && payment.paymentBank ? payment.paymentBank.abb : '',
     };
