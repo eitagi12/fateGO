@@ -12,6 +12,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TabsModule } from 'ngx-bootstrap';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { TranslateModule } from '@ngx-translate/core';
+import { DeviceOnlySharedModule } from '../shared/shared.module';
 
 @NgModule({
   imports: [
@@ -22,6 +23,7 @@ import { TranslateModule } from '@ngx-translate/core';
     TabsModule.forRoot(),
     MyChannelSharedLibsModule,
     TranslateModule,
+    DeviceOnlySharedModule
   ],
   declarations: [
     DeviceOnlyShopPremiumPaymentPageComponent,
