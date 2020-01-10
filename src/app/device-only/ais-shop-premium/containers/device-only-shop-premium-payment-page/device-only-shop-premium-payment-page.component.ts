@@ -10,7 +10,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { CreateOrderService } from 'src/app/device-only/services/create-order.service';
 import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
-import { ROUTE_BUY_PREMIUM_BRAND_PAGE } from 'src/app/buy-premium/constants/route-path.constant';
+import { ROUTE_BUY_PREMIUM_BRAND_PAGE, ROUTE_BUY_PREMIUM_CAMPAIGN_PAGE } from 'src/app/buy-premium/constants/route-path.constant';
 import { ROUTE_SHOP_PREMIUM_SUMMARY_PAGE } from '../../constants/route-path.constant';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 
@@ -37,6 +37,7 @@ export class DeviceOnlyShopPremiumPaymentPageComponent implements OnInit, OnDest
   localtion: any;
   addessValid: boolean;
   omiseBanks: PaymentDetailBank[];
+  phoneNumber: string;
 
   constructor(
     private router: Router,
@@ -131,7 +132,7 @@ export class DeviceOnlyShopPremiumPaymentPageComponent implements OnInit, OnDest
     if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
       this.clearstock();
     } else {
-      this.router.navigate([ROUTE_BUY_PREMIUM_BRAND_PAGE], { queryParams: this.priceOption.queryParams });
+      this.router.navigate([ROUTE_BUY_PREMIUM_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
     }
   }
 
@@ -197,6 +198,10 @@ export class DeviceOnlyShopPremiumPaymentPageComponent implements OnInit, OnDest
       default:
         return true;
     }
+  }
+
+  inputPhoneNumber(phoneNumber: string): void {
+    this.phoneNumber = phoneNumber;
   }
 
   isNotFormValid(): boolean {

@@ -1,0 +1,35 @@
+.banks,
+.qr-codes {
+    max-height: 110px;
+    overflow: hidden;
+
+    &.more {
+        max-height: 100%;
+    }
+    
+    .bank,
+    .qr-code {
+        max-width: 90px; 
+        width: 100%; 
+        margin: 0 auto; 
+        padding: 5px; 
+        border-radius: 3px;
+        display: block;
+
+        img {
+            width: 80px;
+        }
+
+        &::before {
+            content: none;
+        }
+
+        &.active {
+            background-color: #74a822;
+        }
+
+        &:hover {
+            background-color: #74a822;
+        }
+    }
+}
