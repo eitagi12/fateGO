@@ -10,7 +10,7 @@ import { DeviceOnlyShopPremiumSummaryPageComponent } from 'src/app/device-only/a
 const routes: Routes = [
   { path: '', redirectTo: 'select-payment', pathMatch: 'full' },
   {
-    path: 'select-payment',
+    path: 'payment',
     component: DeviceOnlyShopPremiumPaymentPageComponent
   },
   {
