@@ -79,12 +79,11 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
   }
 
   ngOnInit(): void {
-    this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
+    this.price = this.priceOption.productDetail.price;
     this.initialOrderID();
     this.homeButtonService.initEventButtonHome();
     if (this.orderID && this.payment.paymentQrCodeType) {
       this.orderID = `${this.orderID}_${this.refreshCount}`;
-      // this.transaction.data.payment = this.orderID;
       this.getQRCode(this.setBodyRequestForGetQRCode());
       this.setBodyRequestForPreMpay();
       this.qrcodePaymentService.insertPreMpay(this.qrCodePrePostMpayModel).then(

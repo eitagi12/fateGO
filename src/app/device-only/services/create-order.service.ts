@@ -472,7 +472,7 @@ export class CreateOrderService {
       soChannelType: 'CSP',
       soDocumentType: 'RESERVED',
       soCompany: productStock.company,
-      grandTotalAmt: (0).toFixed(2),
+      grandTotalAmt: (+productDetail.price).toFixed(2),
       saleCode: this.tokenService.isAisUser() ? (seller.sellerNo || '') : (seller.sellerNo || user.ascCode),
       taxCardId: customer.idCardNo,
       cusMobileNoOrder: receiptInfo.telNo,
@@ -485,7 +485,7 @@ export class CreateOrderService {
       brand: productStock.brand || productDetail.brand,
       model: productStock.model || productDetail.model,
       color: productStock.color || productStock.colorName,
-      priceIncAmt: (0).toFixed(2)
+      priceIncAmt: (+productDetail.price).toFixed(2)
     };
 
     // payment with QR code
@@ -498,7 +498,7 @@ export class CreateOrderService {
       // QR code for device
       if (payment && payment.paymentType === 'QR_CODE') {
         data.qrTransId = payment.paymentType === 'QR_CODE' ? mpayPayment.tranId : null;
-        data.qrAmt = payment.paymentType === 'QR_CODE' && mpayPayment.tranId ? (0).toFixed(2) : null;
+        data.qrAmt = payment.paymentType === 'QR_CODE' && mpayPayment.tranId ? (+productDetail.price).toFixed(2) : null;
       }
     }
 

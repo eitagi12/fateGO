@@ -298,6 +298,7 @@ export class SharedTransactionService {
         transactionType: data.transactionType,
         customer: data.customer || {},
         device: {
+          price: +productDetail.price,
           amount: 1,
           brand: productStock.brand || productDetail.brand,
           model: productStock.model || productDetail.model || '',

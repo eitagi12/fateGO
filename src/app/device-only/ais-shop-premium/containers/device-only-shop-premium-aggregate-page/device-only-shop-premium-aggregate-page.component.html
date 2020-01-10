@@ -12,13 +12,13 @@
         <div class="row text-light">
           <div class="col-6">
               <img src="assets/images/icon/icon-person.png" class="icon-person" />
-              {{ transaction?.data?.customer?.titleName }}
+              คุณ
               {{ transaction?.data?.customer?.firstName }}
               {{ transaction?.data?.customer?.lastName }}
             </div>
           <div class="col-6 text-right">
               <img src="assets/images/icon/sales_portal_green_phone.png" class="icon-mobile" />
-              {{ transaction?.data?.simCard?.mobileNo | mobileNo }}
+              {{ transaction?.data?.receiptInfo?.telNo | mobileNo }}
           </div>
         </div>
 
@@ -36,7 +36,7 @@
                   {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }}
                 </span>
                 <h2 class="text-green">
-                  ฿{{ +priceOption?.trade?.promotionPrice | number : '1.2-2' }}
+                  ฿{{ +priceOption?.productDetail?.price | number : '1.2-2' }}
                 </h2>
               </div>
             </div>
@@ -53,7 +53,7 @@
                         {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }}
                       </span>
                       <span class="pull-right text-green">
-                        ฿{{ +priceOption?.trade?.promotionPrice | number : '1.2-2' }}
+                        ฿{{ +priceOption?.productDetail.price | number : '1.2-2' }}
                       </span>
                     </p>
                   </div>
@@ -61,7 +61,7 @@
                   <div class="text-right mt-3">
                     Total
                     <span class="total text-green h2 ml-5">
-                      ฿{{ +priceOption?.trade?.promotionPrice | number : '1.2-2' }}</span>
+                      ฿{{ +priceOption?.productDetail.price | number : '1.2-2' }}</span>
                   </div>
                 </div>
               </div>
