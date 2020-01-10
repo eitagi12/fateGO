@@ -1,10 +1,9 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { SimSerial, AlertService, PageLoadingService, ShoppingCart, AisNativeService } from 'mychannel-shared-libs';
+import { SimSerial, AlertService, PageLoadingService, ShoppingCart } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ } from 'src/app/device-order/constants/wizard.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
-import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import {
   ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_NUMBER_PAGE,
@@ -29,23 +28,13 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
   simSerial: SimSerial;
   simSerialValid: boolean;
   shoppingCart: ShoppingCart;
-  translationSubscribe: Subscription;
-  keyinSimSerial: boolean;
-  scanBarCode: boolean;
-  simSerialByBarCode: any;
 
   aisNative: any = window.aisNative;
-  scanBarcodeText: string = 'สแกน Barcode';
   getBarcode: any;
-  getMobileNoFn: any;
   mobileNoScan: string;
-  registrationData: any;
   simSerialScan: string;
-  urlBackLink: string;
   xmlDoc: any;
-  minLength: number = 13;
   offerType: string;
-  isHandsetDiscount: boolean;
   isNativeApp: boolean;
   simSerialFormSubmitted: boolean;
   isSimSerial: boolean;
