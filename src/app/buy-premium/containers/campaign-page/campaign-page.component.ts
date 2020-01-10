@@ -6,11 +6,10 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { debounceTime } from 'rxjs/internal/operators/debounceTime';
 import { Params, ActivatedRoute, Router } from '@angular/router';
-import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
-import { CustomerGroup } from '../../services/flow.service';
 import { PRODUCT_TYPE, PRODUCT_SUB_TYPE, SUB_STOCK_DESTINATION } from '../../constants/premium.constant';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { ROUTE_BUY_PREMIUM_PRODUCT_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_SHOP_PREMIUM_PAYMENT_PAGE } from 'src/app/device-only/ais-shop-premium/constants/route-path.constant';
 
 @Component({
   selector: 'app-campaign-page',
@@ -29,6 +28,9 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
   installmentTemplate: TemplateRef<any>;
   user: User;
   colorForm: FormGroup;
+
+  nextForm: FormGroup;
+  isDisableNextButton: boolean = true;
 
   // local storage name
   transaction: Transaction;
@@ -55,16 +57,17 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
   ) {
     this.priceOptionService.remove();
     this.user = this.tokenService.getUser();
+    this.transaction = {};
    }
 
   ngOnInit(): void {
     this.priceOption = {};
-    this.transaction = {};
 
     this.createForm();
 
     this.activatedRoute.queryParams.subscribe((params: any) => {
       this.params = params;
+      console.log('params:' + JSON.stringify(this.params));
       this.callService(
         params.brand,
         params.model,
@@ -75,11 +78,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
   }
 
   onBack(): void {
-    if (this.priceOption && this.priceOption.campaign) {
-      this.priceOption.customerGroup = null;
-      this.priceOption.campaign = null;
-      return;
-    }
     const queryParams: any = {
       brand: this.params.brand
     };
@@ -91,6 +89,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    console.log('params:' + JSON.stringify(this.params));
     this.priceOption.queryParams = Object.assign({}, this.params);
     this.priceOptionService.save(this.priceOption);
   }
@@ -99,6 +98,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
   callService(
     brand: string, model: string,
     productType?: string, productSubtype?: string): void {
+    console.log('callService');
     const user: User = this.tokenService.getUser();
 
     // clear
@@ -110,6 +110,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
       productType: productType || PRODUCT_TYPE,
       productSubtype: productSubtype || PRODUCT_SUB_TYPE
     }).then((resp: any) => {
+      console.log('DEBUG productDetail response Info:' + resp);
 
       // เก็บข้อมูลไว้ไปแสดงหน้าอื่นโดยไม่เปลี่ยนแปลงค่าข้างใน
       this.priceOption.productDetail = resp.data || {};
@@ -125,9 +126,13 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
           listLocationCodeDestination: [user.locationCode]
         }).then((respStock: any) => respStock.data.listLocationCodeDestinationOut || []);
       })).subscribe((respStocks: any[]) => {
-
+        // tslint:disable-next-line: max-line-length
+        const test = {'resultCode': '20000', 'resultDescription': 'Success', 'developerMessage': 'Success', 'data': {'resultFlg': 'Y', 'message': 'Warning :   This location cannot reserve other location.', 'listLocationCodeDestinationOut': [{'company': 'AWN', 'subStock': 'BRN', 'productType': 'PREMIUM', 'productSubType': 'N/A', 'productName': 'เสื้อยืดลาย Thailand ไซส์ 42', 'brand': 'CPVM-TEERACHAI', 'model': 'M02', 'color': 'BLACK', 'location': '1100', 'locationName': 'สาขาอาคารเอไอเอส 2', 'qty': '89', 'flagReserve': 'Y', 'flagWaiting': 'N'}, {'company': 'AWN', 'subStock': 'BRN', 'productType': 'PREMIUM', 'productSubType': 'N/A', 'productName': 'เสื้อยืดลาย Thailand ไซส์ 38', 'brand': 'CPVM-TEERACHAI', 'model': 'M01', 'color': 'BLACK', 'location': '1100', 'locationName': 'สาขาอาคารเอไอเอส 2', 'qty': '32', 'flagReserve': 'Y', 'flagWaiting': 'N'}]}};
+        respStocks = test.data.listLocationCodeDestinationOut;
+        console.log('DEBUG productStock response Info:' + respStocks);
         this.productDetail = resp.data || {};
         this.productDetail.products = [];
+        console.log('DEBUG productDetail Info:' + JSON.stringify(this.productDetail));
 
         const productStocks: any[] = respStocks.reduce((previousValue: any[], currentValue: any[]) => {
           return previousValue.concat(currentValue);
@@ -139,12 +144,14 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             return stock;
           });
 
+        console.log(`DEBUG befor productDetail.products:${JSON.stringify(this.productDetail.products)}`);
         this.productDetail.products = products.map((product: any) => {
           const stock = productStocks.find((productStock: any) => productStock.color === product.colorName) || { qty: 0 };
           product.stock = stock;
           return product;
         }).sort((a, b) => a.stock.qty - b.stock.qty);
 
+        console.log(`DEBUG after productDetail.products:${JSON.stringify(this.productDetail.products)}`);
         // default selected
         let defaultProductSelected;
         if (this.priceOption.productStock && this.priceOption.productStock.colorName) {
@@ -170,8 +177,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     }
     // clear tabs
     this.tabs = null;
-    // clear data local storage
-    this.clearPriceOption();
 
     // keep stock
     this.priceOption.productStock = null;
@@ -180,10 +185,10 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     this.colorForm.patchValue({
       stock: product.stock
     });
+    this.isDisableNextButton = false;
   }
 
   createForm(): void {
-    this.clearPriceOption();
     this.colorForm = this.formBuilder.group({
       'stock': []
     });
@@ -191,254 +196,25 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     this.colorForm.valueChanges.pipe(debounceTime(1000)).subscribe(obs => {
       const stock = obs.stock;
       this.priceOption.productStock = stock;
-
+      console.log('DEBUG createForm Info:' + this.priceOption.productDetail.products);
       const product = (this.priceOption.productDetail.products || []).find((p: any) => {
         return p.colorName === stock.color;
       });
       this.thumbnail = product && product.images ? product.images.thumbnail : '';
-
-      this.clearPriceOption();
-      this.callPriceOptionsService(
-        this.params.brand,
-        this.params.model,
-        stock.color,
-        this.params.productType,
-        this.params.productSubtype
-      );
     });
   }
 
-  callPriceOptionsService(brand: string, model: string, color: string, productType: string, productSubtype: string): void {
-    this.priceOptionDetailService = this.salesService.priceOptions({
-      brand: brand,
-      model: model,
-      color: color,
-      productType: productType,
-      productSubtype: productSubtype,
-      location: this.user.locationCode
-    }).then((resp: any) => {
-      const priceOptions = this.filterCampaigns(resp.data.priceOptions || []);
-      if (priceOptions && priceOptions.length > 0) {
-        this.maximumNormalPrice = priceOptions[0].maximumNormalPrice;
-      }
-      // generate customer tabs
-      this.tabs = this.getTabsFormPriceOptions(priceOptions);
-      this.tabs.forEach((tab: any) => {
-        tab.campaignSliders = this.getCampaignSliders(priceOptions, tab.code);
-      });
-    });
-  }
-
-  getCampaignSliders(priceOptions: any[], code: string): any[] {
-    return priceOptions
-      .filter((campaign: any) => {
-        const allowCampaign: boolean = !!campaign.customerGroups.find(
-          group => group.code === code
-        );
-
-        const campaignCode: string = campaign.code;
-
-        return allowCampaign;
-      }).map((campaign: any) => {
-        // filter privilege and trades
-        const privileges = this.filterPrivileges(
-          campaign.privileges, code
-        ).map((privilege: any) => {
-          privilege.trades = this.filterTrades(privilege.trades, code);
-          privilege.trades = this.mapTrades(privilege.trades);
-          return privilege;
-        }).sort((a, b) =>
-          // แพคเกจน้อยไปมาก
-          (+a.minimumPromotionPrice) - (+b.minimumPromotionPrice)
-        );
-
-        const campaignFromFilter = Object.assign(
-          Object.assign({}, campaign),
-          { privileges: privileges }
-        );
-
-        const campaignSlider: any = {
-          thumbnail: campaign.imageUrl,
-          name: campaign.campaignName,
-          minPromotionPrice: +campaign.minimumPromotionPrice,
-          maxPromotionPrice: +campaign.maximumPromotionPrice,
-          minAdvancePay: +campaign.minimumAdvancePay,
-          maxAdvancePay: +campaign.maximumAdvancePay,
-          contract: +campaign.maximumContract,
-          // ค่าที่จะเก็บจากการเลือก campaign
-          value: campaignFromFilter
-        };
-
-        campaignSlider.installments = PriceOptionUtils.getInstallmentsFromCampaign(campaignFromFilter);
-
-        campaignSlider.freeGoods = (campaign.freeGoods || []).map(
-          (freeGood: any) => freeGood.name
-        );
-
-        campaignSlider.discounts = PriceOptionUtils.getDiscountFromCampaign(campaignFromFilter);
-        campaignSlider.mainPackagePrice = +campaign.minimumPackagePrice;
-        return campaignSlider;
-      });
-  }
-
-  mapTrades(trades: any[]): any[] {
-    return trades.map((trade: any) => {
-      if (!trade.payments || trade.payments.length === 0) {
-        // Trade for TDM --> payments is []
-        trade.payments = [{ cardType: '', method: 'CC/CA', installmentId: '' }];
-      } else {
-        if (trade.payments[0].installId === null) {
-          // console.log('trade', trade);
-          if (trade.payments[0].method === 'CC') {
-            trade.payments = [{ cardType: '', method: 'CC/CA', installmentId: '' }];
-            trade.advancePay.installmentFlag = 'N';
-          } else if (trade.payments[0].method === 'CA') {
-            trade.advancePay.installmentFlag = 'N';
-          }
-        }
-      }
-      return trade;
-    });
-  }
-
-  /* กรองค่า trades ใน privilege ที่ถูก filterPrivileges ให้แสดงตาม tab, user, etc ที่นี้ */
-  filterTrades(trades: any[], code: string): any[] {
-    return trades.filter((trade: any) => {
-      return trade.customerGroups.find(
-        customerGroup => customerGroup.code === code
-      );
-    }).filter((trade: any) => {
-      const payment = (trade.payments || []).find(p => p.method !== 'PP') || {};
-      if (payment.method !== 'CC') {
-        return true;
-      } else { // Trade เป็นผ่อนชำระ ต้องมี installment
-        return (trade.banks || []).find((bank: any) => bank.installment);
-      }
-    });
-  }
-
-  /* กรองค่า privilege ใน campaign ที่ถูก filterCampaigns ให้แสดงตาม tab, user, etc ที่นี้ */
-  filterPrivileges(privileges: any[], code: string): any[] {
-    return privileges.filter((privilege: any) => {
-      return privilege.customerGroups.find(customerGroup => {
-        return customerGroup.code === code;
-      });
-    });
-  }
-
-  getTabsFormPriceOptions(priceOptions: any[]): any[] {
-    const tabs = [];
-
-    const criteriasGroup = this.filterCriteriasGroup(priceOptions);
-    criteriasGroup.map((group: any) => {
-      const groupDetail: any = this.mapCriteriasCode(group);
-      return {
-        code: groupDetail.code,
-        name: groupDetail.name,
-        active: false
-      };
-    }).forEach((group: any) => {
-      if (!tabs.find((tab: any) => tab.code === group.code)) {
-        tabs.push(group);
-      }
-    });
-
-    tabs.sort((a: any, b: any) => {
-      const aCode = +a.code.replace('MC', '');
-      const bCode = +b.code.replace('MC', '');
-      return aCode - bCode;
-    });
-    if (tabs.length > 0) {
-      tabs[0].active = true;
+  onCheckStock($event: any, stock: any): void {
+    if (stock && stock.qty <= 0) {
+      $event.preventDefault();
     }
-    return tabs;
   }
 
-  mapCriteriasCode(customerGroup: any): any {
-    const groupDetail = {
-      'New Registration': {
-        code: CustomerGroup.NEW_REGISTER,
-        name: 'เครื่องพร้อมเปิดเบอร์ใหม่'
-      },
-      'Convert Pre to Post': {
-        code: CustomerGroup.PRE_TO_POST,
-        name: 'เครื่องพร้อมเปลี่ยนเป็นรายเดือน'
-      },
-      'MNP': {
-        code: CustomerGroup.MNP,
-        name: 'ลูกค้าย้ายค่าย'
-      },
-      'Existing': {
-        code: CustomerGroup.EXISTING,
-        name: 'ลูกค้าปัจจุบัน'
-      },
-      '': {
-        code: CustomerGroup.DEVICE_ONLY,
-        name: 'ลูกค้าซื้อเครื่องเปล่า'
-      },
-    };
-    return groupDetail[customerGroup];
+  onNext(): void {
+    this.priceOption.queryParams = Object.assign({}, this.params);
+    this.priceOption.productDetail.price = this.params.maxNormalPrice;
+    console.log('DEBUG onNext():' + JSON.stringify(this.priceOption));
+    this.priceOptionService.save(this.priceOption);
+    this.router.navigate([ROUTE_SHOP_PREMIUM_PAYMENT_PAGE]);
   }
-
-  mapCriteriasInTrade(trade: any): any {
-    const criteriasObj: any = {
-      chargeType: [''],
-      criteria: [''],
-      instanceName: [''],
-      target: [''],
-    };
-    trade.criterias.map((criteria: any) => {
-      if (criteria.chargeType) {
-        criteriasObj.chargeType = criteria.chargeType;
-      }
-      if (criteria.criteria) {
-        criteriasObj.criteria = criteria.criteria;
-      }
-      if (criteria.instanceName) {
-        criteriasObj.instanceName = criteria.instanceName;
-      }
-      if (criteria.target) {
-        criteriasObj.target = criteria.target;
-      }
-    });
-
-    return criteriasObj;
-  }
-
-  private filterCriteriasGroup(priceOptions: any[]): any {
-    const criteriasGroup = [];
-    let arraygroup = [];
-    priceOptions.forEach((priceOption: any) => {
-      priceOption.privileges.map((privilege: any) => {
-        privilege.trades.map((trade: any) => {
-          const criteriasObj: any = this.mapCriteriasInTrade(trade);
-          // criteriasObj : chargeType: [], criteria: [], instanceName: [], target: []
-          criteriasGroup.push(criteriasObj.criteria);
-        });
-      });
-    });
-    criteriasGroup.map((group) => {
-      arraygroup = arraygroup.concat(group);
-    });
-    const customerGroup = new Set(arraygroup);
-    return Array.from(customerGroup);
-  }
-
-  /* กรองค่า campaign ให้แสดงตาม tab, user, etc ที่นี้ */
-  filterCampaigns(priceOptions: any[]): any[] {
-    return priceOptions.filter((campaign: any) => {
-      // Filter here ...
-      if (campaign.promotionFlag !== 'Y') {
-        return false;
-      }
-      return true;
-    });
-  }
-
-  clearPriceOption(): void {
-    this.priceOption.customerGroup = null;
-    this.priceOption.campaign = null;
-    this.priceOption.trade = null;
-  }
-
 }

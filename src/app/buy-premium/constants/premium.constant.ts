@@ -1,7 +1,7 @@
 // export const PRODUCT_TYPE = 'GADGET/IOT';
-export const PRODUCT_TYPE = 'PREMIUM';
-export const PRODUCT_SUB_TYPE = 'N/A';
-export const SUB_STOCK_DESTINATION = 'BRN';
+export const PRODUCT_TYPE: string = 'PREMIUM';
+export const PRODUCT_SUB_TYPE: string = 'N/A';
+export const SUB_STOCK_DESTINATION: string = 'BRN';
 
 export const DATA_models_of_product: object = {
     'resultCode': '20000',

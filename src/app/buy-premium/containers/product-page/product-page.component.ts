@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { User, TokenService, SalesService, ProductStock, ProductStockBrandAndModel, HomeService } from 'mychannel-shared-libs';
 import { PRODUCT_TYPE, PRODUCT_SUB_TYPE, SUB_STOCK_DESTINATION } from '../../constants/premium.constant';
-import { ROUTE_BUY_PREMIUM_BRAND_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_BUY_PREMIUM_BRAND_PAGE, ROUTE_BUY_PREMIUM_CAMPAIGN_PAGE } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-product-page',
@@ -163,16 +163,10 @@ export class ProductPageComponent implements OnInit {
       model: stock.model,
       commercialName: this.params.commercialName || '',
       productType: stock.productType,
-      productSubtype: stock.productSubtype
+      productSubtype: stock.productSubtype,
+      maxNormalPrice: stock.maxNormalPrice
     };
-
-    if (this.params.commercialName) {
-      queryParams.previous = 'search';
-    } else if (this.params.model) {
-      queryParams.previous = 'best-seller';
-    }
-
-    this.router.navigate(['buy-premium/campaign'], { queryParams });
+    this.router.navigate([ROUTE_BUY_PREMIUM_CAMPAIGN_PAGE], { queryParams });
   }
 
   onCompare(stock: ProductStockBrandAndModel): void {
