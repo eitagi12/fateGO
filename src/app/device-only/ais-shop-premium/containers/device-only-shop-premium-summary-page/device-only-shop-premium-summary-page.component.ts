@@ -3,7 +3,7 @@ import { Transaction, Seller } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { ROUTE_SHOP_PREMIUM_SELECT_PAYMENT_PAGE, ROUTE_SHOP_PREMIUM_AGGREGATE } from '../../constants/route-path.constant';
+import { ROUTE_SHOP_PREMIUM_PAYMENT_PAGE, ROUTE_SHOP_PREMIUM_AGGREGATE } from '../../constants/route-path.constant';
 import { Router } from '@angular/router';
 import { SummarySellerCodeComponent } from 'src/app/device-only/components/summary-seller-code/summary-seller-code.component';
 import { HomeService, AlertService, TokenService, PageLoadingService } from 'mychannel-shared-libs';
@@ -81,7 +81,7 @@ export class DeviceOnlyShopPremiumSummaryPageComponent implements OnInit, OnDest
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_SHOP_PREMIUM_SELECT_PAYMENT_PAGE]);
+    this.router.navigate([ROUTE_SHOP_PREMIUM_PAYMENT_PAGE]);
   }
 
   onHome(): void {
