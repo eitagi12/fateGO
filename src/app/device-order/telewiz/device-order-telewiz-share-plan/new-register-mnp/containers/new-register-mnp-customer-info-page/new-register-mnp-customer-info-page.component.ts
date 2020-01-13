@@ -34,7 +34,7 @@ export class NewRegisterMnpCustomerInfoPageComponent implements OnInit, OnDestro
 
   ngOnInit(): void {
     const customer: Customer = this.transaction.data.customer;
-    delete this.shoppingCart.mobileNo;
+    // delete this.shoppingCart.mobileNo;
     this.customerInfo = this.mappingCustomerInfo(customer);
 
     this.translateSubscription = this.translateService.onLangChange
