@@ -205,7 +205,7 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
     const checkAgeAndExpire = this.validateCustomerService.checkAgeAndExpireCard(this.transaction);
     if (checkAgeAndExpire.true) {
       const cardType = this.transaction.data.customer.idCardType;
-      const transactionType = TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS; // New
+      const transactionType = TransactionType.DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN; // New
       this.validateCustomerService.checkValidateCustomerHandleMessages(this.identity, cardType, transactionType)
         .then(() => {
           if (this.order) {
@@ -252,7 +252,7 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
     } else {
       const transactionObject: any = this.validateCustomerService.buildTransaction({
         transaction: this.transaction,
-        transactionType: TransactionType.DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN
+        transactionType: TransactionType.DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN
       });
       console.log('==>', transactionObject);
       this.validateCustomerService.createTransaction(transactionObject).then((resp: any) => {

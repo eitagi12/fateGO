@@ -94,7 +94,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
     this.createTransaction();
     return this.validateCustomerService.queryCustomerInfo(this.profile.idCardNo).then((res) => {
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol).then((zipCode: string) => {
-        const transactionType = TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS; // New
+        const transactionType = TransactionType.DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN; // New
         // if (this.profile.idCardType === 'บัตรประชาชน' || this.profile.idCardType === 'ID_CARD') {
         // tslint:disable-next-line: max-line-length
         return this.validateCustomerService.checkValidateCustomerHandleMessages(this.profile.idCardNo, this.profile.idCardType, transactionType)
@@ -161,7 +161,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
       const mapCustomer = this.mapCustomer(this.profile);
       this.transaction.data.customer = mapCustomer;
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol).then((zipCode: string) => {
-        const transactionType = TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS; // New
+        const transactionType = TransactionType.DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN; // New
         return this.validateCustomerService.checkValidateCustomer(this.profile.idCardNo, this.profile.idCardType, transactionType)
           .then((res) => {
             const data = res.data || {};
@@ -287,7 +287,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
   createTransaction(): void {
     this.transaction = {
       data: {
-        transactionType: TransactionType.DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN, // Share
+        transactionType: TransactionType.DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN, // Share
         action: TransactionAction.READ_CARD,
       },
       transactionId: this.transaction.transactionId ? this.transaction.transactionId : ''

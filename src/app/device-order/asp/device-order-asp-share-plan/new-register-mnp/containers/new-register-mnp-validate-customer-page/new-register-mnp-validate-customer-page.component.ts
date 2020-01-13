@@ -114,7 +114,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   validateCustomer(): any {
     return this.validateCustomerService.queryCustomerInfo(this.identity)
       .then((customerInfo: any) => {
-        const transactionType = TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS; // New
+        const transactionType = TransactionType.DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN; // New
         const cardType = this.mapCardType(customerInfo.data.idCardType);
         return this.validateCustomerService.checkValidateCustomerHandleMessages(this.identity, cardType, transactionType)
           .then((customer: any) => {
@@ -173,7 +173,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     } else {
       const transactionObject: any = this.validateCustomerService.buildTransaction({
         transaction: this.transaction,
-        transactionType: TransactionType.DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN // Share
+        transactionType: TransactionType.DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN // Share
       });
       this.validateCustomerService.createTransaction(transactionObject).then((response: any) => {
         this.pageLoadingService.closeLoading();
@@ -265,7 +265,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     } else {
       this.transaction = {
         data: {
-          transactionType: TransactionType.DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN, // Share
+          transactionType: TransactionType.DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN, // Share
           action: TransactionAction.KEY_IN,
           order: this.order
         },
