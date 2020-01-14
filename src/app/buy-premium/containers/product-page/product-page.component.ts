@@ -39,7 +39,7 @@ export class ProductPageComponent implements OnInit {
     const user: User = this.tokenService.getUser();
 
     const req = {
-      brand: brand,
+      brand: 'BRAND-WANSMORM',
       model: model,
       offset: offset,
       maxrow: this.MAX_ROW,

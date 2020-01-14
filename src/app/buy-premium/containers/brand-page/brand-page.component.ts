@@ -66,7 +66,7 @@ export class BrandPageComponent implements OnInit {
 
   callService(): void {
     const param = {
-      location: this.tokenService.getUser().locationCode,
+      location: '110',
       productType: [PRODUCT_TYPE],
       productSubtype: [PRODUCT_SUB_TYPE]
     };
