@@ -1,33 +1,8 @@
 import { ChargeType } from 'mychannel-shared-libs';
 
 export enum TransactionType {
-  DEVICE_ORDER_NEW_REGISTER_AIS = 'NewRegisterAIS',
-  DEVICE_ORDER_NEW_REGISTER_ASP = 'NewRegisterASP',
-  DEVICE_ORDER_PRE_TO_POST_AIS = 'ConvertPreToPostAIS',
-  DEVICE_ORDER_PRE_TO_POST_ASP = 'ConvertPreToPostASP',
-  DEVICE_ORDER_MNP_AIS = 'Port-InAIS',
-  DEVICE_ORDER_MNP_ASP = 'Port-InASP',
-  DEVICE_ORDER_EXISTING_AIS = 'ExistingAIS',
-  DEVICE_ORDER_EXISTING_ASP = 'ExistingASP',
-  DEVICE_ORDER_EXISTING_GADGET_AIS = 'ExistingGadgetAIS',
-  DEVICE_ORDER_PREPAID_HOTDEAL_AIS = 'PrepaidHotDealAIS',
-  DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN = 'NewRegisterMNPAIS',
-  // pure
-  ORDER_NEW_REGISTER = 'NewRegister',
-  ORDER_PRE_TO_POST = 'ConvertPreToPost',
-  ORDER_MNP = 'Port-In',
-  ORDER_EXISTING = 'Existing',
-  RESERVE_WITH_DEPOSIT = 'ReserveWithDeposit',
-  ORDER_NEW_SHARE_PLAN_MNP = 'NewSharePlanMNP',
-
-  // device only
-  DEVICE_ONLY_AIS = 'DeviceOnlyAIS',
-  DEVICE_ONLY_ASP = 'DeviceOnlyASP',
-  DEVICE_ONLY_WEB = 'DeviceOnlyWEB',
-  DEVICE_ONLY_KIOSK = 'DeviceOnlyKiosk',
-  VAS_PACKAGE_ROM = 'RomAgent',
-  VAS_PACKAGE_CUSTOMER = 'Customer',
-
+  OMNI_NEW_REGISTER = 'OmniNewRegister',
+  OMNI_NEW_SHARE_PLAN_MNP = 'OmniNewSharePlanMNP'
 }
 
 export enum TransactionAction {

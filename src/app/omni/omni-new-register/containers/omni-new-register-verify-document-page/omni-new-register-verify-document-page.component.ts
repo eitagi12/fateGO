@@ -2,13 +2,13 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { HomeService, PageLoadingService, ApiRequestService, Utils, ReadCardProfile, AlertService, ReadPassport, ReadPassportService, ValidateCustomerIdCardComponent, KioskControls, VendingApiService, ReadCardService, Environment, TokenService } from 'mychannel-shared-libs';
 import { Subscription } from 'rxjs/internal/Subscription';
-import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { ReserveMobileService, SelectMobileNumberRandom } from 'src/app/omni/omni-shared/services/reserve-mobile.service';
 import { HttpClient } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from 'src/environments/environment';
 import * as moment from 'moment';
+import { TransactionAction, TransactionType, Transaction } from 'src/app/omni/omni-shared/models/transaction.model';
+import { TransactionService } from 'src/app/omni/omni-shared/services/transaction.service';
 
 const REGEX_DATA_IMAGE = /^data:image\/[a-z]+;base64,/g;
 const Moment = moment;

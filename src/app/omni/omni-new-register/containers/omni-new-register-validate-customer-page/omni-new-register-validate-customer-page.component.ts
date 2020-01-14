@@ -5,9 +5,9 @@ import {
 } from 'src/app/omni/omni-new-register/constants/route-path.constant';
 import { Router } from '@angular/router';
 import { HomeService, PageLoadingService } from 'mychannel-shared-libs';
-import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
-import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
+import { TransactionType, TransactionAction, Transaction } from 'src/app/omni/omni-shared/models/transaction.model';
+import { TransactionService } from 'src/app/omni/omni-shared/services/transaction.service';
 
 @Component({
   selector: 'app-omni-new-register-validate-customer-page',
