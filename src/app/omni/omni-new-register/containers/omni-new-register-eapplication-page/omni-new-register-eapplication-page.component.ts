@@ -1,7 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CreateEapplicationService } from 'src/app/shared/services/create-eapplication.service';
-import { Transaction } from 'src/app/shared/models/transaction.model';
-import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Router } from '@angular/router';
 import {
   ROUTE_OMNI_NEW_REGISTER_AGREEMENT_SIGN_PAGE,
@@ -12,6 +9,9 @@ import {
 import { HomeService, PageLoadingService } from 'mychannel-shared-libs';
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { Transaction } from 'src/app/omni/omni-shared/models/transaction.model';
+import { CreateEapplicationService } from 'src/app/omni/omni-shared/services/create-eapplication.service';
+import { TransactionService } from 'src/app/omni/omni-shared/services/transaction.service';
 
 @Component({
   selector: 'app-omni-new-register-eapplication-page',
@@ -66,7 +66,7 @@ export class OmniNewRegisterEapplicationPageComponent implements OnInit, OnDestr
   }
 
   ngOnDestroy(): void {
-    this.translationSubscribe.unsubscribe();
+    // this.translationSubscribe.unsubscribe();
     this.transactionService.save(this.transaction);
   }
 }

@@ -50,8 +50,8 @@ export class OmniNewRegisterValidateCustomerKeyInPageComponent implements OnInit
     this.homeService.goToHome();
   }
 
-  onBack(): void {
-    this.router.navigate([ROUTE_OMNI_NEW_REGISTER_VALIDATE_CUSTOMER_KEY_IN_PAGE]);
+  onBack(): any {
+    window.location.href = `/sales-portal/reserve-stock/verify`;
   }
 
   onNext(): void {

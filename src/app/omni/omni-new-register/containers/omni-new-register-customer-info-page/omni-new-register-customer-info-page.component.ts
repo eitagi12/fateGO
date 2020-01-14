@@ -42,8 +42,8 @@ export class OmniNewRegisterCustomerInfoPageComponent implements OnInit, OnDestr
     };
   }
 
-  onBack(): void {
-    this.router.navigate([ROUTE_OMNI_NEW_REGISTER_VALIDATE_CUSTOMER_PAGE]);
+  onBack(): any {
+    window.location.href = `/sales-portal/reserve-stock/verify`;
   }
 
   onNext(): void {

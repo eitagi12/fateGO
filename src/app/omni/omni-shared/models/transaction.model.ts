@@ -14,11 +14,7 @@ export enum TransactionAction {
   KEY_IN_MOBILE_NO = 'KEY_IN_MOBILE_NO',
   KEY_IN_PI = 'KEY_IN_PI',
   KEY_IN_REPI = 'KEY_IN_REPI',
-  READ_PASSPORT = 'READ_PASSPORT',
-  READ_PASSPORT_REPI = 'READ_PASSPORT_REPI',
-  SEARCH = 'SEARCH',
-  VAS_PACKAGE_ROM = 'VaspackageRom',
-  VAS_PACKAGE_ROM_OTP = 'VaspackageRomOTP'
+  READ_PASSPORT = 'READ_PASSPORT'
 }
 
 export interface Transaction {

@@ -2,10 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { HomeService, ShoppingCart, PageLoadingService, TokenService, IdCardPipe, Utils } from 'mychannel-shared-libs';
-import {
-  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_EAPPLICATION_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SUMMARY_PAGE
-} from 'src/app/device-order/ais/device-order-ais-new-register/constants/route-path.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -16,7 +12,7 @@ import { Subscription } from 'rxjs';
 // import { CreateEcontractService } from 'src/app/shared/services/create-econtract.service';
 // import { TranslateService } from '@ngx-translate/core';
 import { WIZARD_OMNI_NEW_REGISTER } from 'src/app/omni/constants/wizard.constant';
-import { ROUTE_OMNI_NEW_REGISTER_SUMMARY_PAGE, ROUTE_OMNI_NEW_REGISTER_EAPPLICATION_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_OMNI_NEW_REGISTER_SUMMARY_PAGE, ROUTE_OMNI_NEW_REGISTER_AGREEMENT_SIGN_PAGE } from '../../constants/route-path.constant';
 import { CreateEcontractService } from 'src/app/omni/omni-shared/services/create-econtract.service';
 
 @Component({
@@ -70,7 +66,7 @@ export class OmniNewRegisterEcontactPageComponent implements OnInit, OnDestroy {
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_OMNI_NEW_REGISTER_EAPPLICATION_PAGE]);
+    this.router.navigate([ROUTE_OMNI_NEW_REGISTER_AGREEMENT_SIGN_PAGE]);
   }
 
   onHome(): void {

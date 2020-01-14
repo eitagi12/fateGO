@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { WIZARD_OMNI_NEW_REGISTER } from 'src/app/omni/constants/wizard.constant';
 import { HomeService, PageLoadingService } from 'mychannel-shared-libs';
-import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Transaction } from 'src/app/shared/models/transaction.model';
-import { CreateNewRegisterService } from 'src/app/shared/services/create-new-register.service';
+import { Transaction } from 'src/app/omni/omni-shared/models/transaction.model';
+import { TransactionService } from 'src/app/omni/omni-shared/services/transaction.service';
+import { CreateNewRegisterService } from 'src/app/omni/omni-shared/services/create-new-register.service';
 
 @Component({
   selector: 'app-omni-new-register-result-page',
@@ -25,6 +25,32 @@ export class OmniNewRegisterResultPageComponent implements OnInit {
     this.transaction = this.transactionService.load();
   }
 
+  customer: any = {
+    idCardNo: 'AA9900854',
+    idCardType: 'บัตรประชาชน',
+      firstName: 'Thanita',
+      lastName: 'Anantaphaiboon',
+      birthdate: '19/03/2535',
+      gender: 'F',
+      expireDate: '18/03/2567',
+      nationality: 'Other',
+      issuingCountry: 'ENG',
+      caNumber: '1101500737451',
+      mainMobile: '0855555555',
+      billCycle: '13',
+      homeNo: '12',
+      moo: '1',
+      room: '1',
+      floor: '4',
+      buildingName: 'A',
+      soi: '-',
+      street: '-',
+      tumbol: 'บึง',
+      amphur: 'ศรีราชา',
+      province: 'ชลบุรี',
+      zipCode: '20230',
+      titleName: 'Ms.',
+  };
   ngOnInit(): void {
     this.pageLoadingService.openLoading();
     this.createTransactionService = this.createNewRegisterService.createNewRegister(this.transaction)

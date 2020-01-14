@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_OMNI_NEW_REGISTER } from 'src/app/omni/constants/wizard.constant';
 import { Router } from '@angular/router';
 import { HomeService, Utils, AlertService, TokenService, ChannelType } from 'mychannel-shared-libs';
-import { TransactionService } from 'src/app/shared/services/transaction.service';
 import {
   ROUTE_OMNI_NEW_REGISTER_RESULT_PAGE,
   ROUTE_OMNI_NEW_REGISTER_AGREEMENT_SIGN_PAGE,
@@ -11,9 +10,10 @@ import {
 } from 'src/app/omni/omni-new-register/constants/route-path.constant';
 import { Observable, Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { Transaction } from 'src/app/shared/models/transaction.model';
 import { environment } from 'src/environments/environment';
 import { TranslateService } from '@ngx-translate/core';
+import { Transaction } from 'src/app/omni/omni-shared/models/transaction.model';
+import { TransactionService } from 'src/app/omni/omni-shared/services/transaction.service';
 
 export enum PersoSimCommand {
   EVENT_CONNECT_LIB = 9000,
@@ -180,20 +180,26 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
     }
   }
 
+  data: any = {
+    simCard: {
+      mobileNo: '0849725128',
+    }
+  };
+
   ngOnInit(): void {
     this.option = {
       scan_sim: true,
       key_sim: false
     };
     this.transaction = this.transactionService.load();
-    if (this.transaction.data.simCard.mobileNo) {
+    if (this.data.simCard.mobileN) {
       this.startPersoSim(this.transaction);
     }
   }
 
   startPersoSim(transaction: Transaction | Partial<Transaction>): void {
     this.errorMessage = '';
-    this.persoSimSubscription = this.onPersoSim(transaction.data.simCard.mobileNo).subscribe((value) => {
+    this.persoSimSubscription = this.onPersoSim(this.data.simCard.mobileNo).subscribe((value) => {
       this.isNext = false;
       this.persoSim = value;
       this.title = value.eventName;
