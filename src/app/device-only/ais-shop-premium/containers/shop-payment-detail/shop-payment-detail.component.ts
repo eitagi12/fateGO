@@ -122,10 +122,10 @@ export class ShopPaymentDetailComponent implements OnInit {
     this.paymentDetailForm.valueChanges.subscribe(() => this.onCheckFormAndEmitValue());
     this.paymentDetailAdvancePayForm.valueChanges.subscribe(() => this.onCheckFormAndEmitValue());
 
-    this.paymentDetailForm.patchValue({
-      paymentType: this.paymentDetail.isFullPayment ? 'DEBIT' : 'CREDIT',
-      paymentForm: this.paymentDetail.isFullPayment ? 'FULL' : 'INSTALLMENT'
-    });
+    // this.paymentDetailForm.patchValue({
+    //   paymentType: this.paymentDetail.isFullPayment ? 'DEBIT' : 'CREDIT',
+    //   paymentForm: this.paymentDetail.isFullPayment ? 'FULL' : 'INSTALLMENT'
+    // });
     this.paymentDetailForm.controls['paymentForm'].disable();
   }
 
