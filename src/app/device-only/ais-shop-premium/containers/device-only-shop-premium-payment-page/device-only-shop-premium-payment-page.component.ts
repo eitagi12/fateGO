@@ -10,8 +10,6 @@ import { Router } from '@angular/router';
 import { WIZARD_DEVICE_ONLY_AIS } from 'src/app/device-only/constants/wizard.constant';
 import {
   Transaction,
-  TransactionAction,
-  TransactionType,
   Seller,
   SimCard
 } from 'src/app/shared/models/transaction.model';
@@ -32,12 +30,11 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { CreateOrderService } from 'src/app/device-only/services/create-order.service';
 import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
 import {
-  ROUTE_BUY_PREMIUM_BRAND_PAGE,
-  ROUTE_BUY_PREMIUM_CAMPAIGN_PAGE
+  ROUTE_BUY_PREMIUM_CAMPAIGN_PAGE,
+  ROUTE_BUY_PREMIUM_PRODUCT_PAGE
 } from 'src/app/buy-premium/constants/route-path.constant';
 import { ROUTE_SHOP_PREMIUM_SUMMARY_PAGE } from '../../constants/route-path.constant';
-import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { ValidateCustomerService } from 'src/app/shared/services/validate-customer.service';
 import * as moment from 'moment';
 
@@ -99,8 +96,7 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
     private homeButtonService: HomeButtonService,
     private tokenService: TokenService,
     private validateCustomerService: ValidateCustomerService
-  ) //  private fb: FormBuilder,
-  {
+  ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     this.user = this.tokenService.getUser();
@@ -118,16 +114,11 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
     // REFACTOR IT'S
     this.paymentDetail = {
       commercialName: commercialName,
-      promotionPrice:
-        this.priceOption.trade.priceType === 'NORMAL'
-          ? +this.priceOption.trade.normalPrice
-          : +this.priceOption.trade.promotionPrice,
-      isFullPayment: this.isFullPayment(),
+      promotionPrice: this.priceOption.productDetail.price,
       installmentFlag: false,
       advancePay: 0,
       qrCode: true,
-      omisePayment:
-        this.isFullPayment() && this.priceOption.productStock.company !== 'WDS'
+      omisePayment: this.priceOption.productStock.company !== 'WDS'
     };
     this.http
       .get('/api/salesportal/omise/get-bank')
@@ -136,23 +127,14 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
         const data = res.data || [];
         this.omiseBanks = data;
       });
-
-    if (
-      this.priceOption.trade.banks &&
-      this.priceOption.trade.banks.length > 0
-    ) {
-      this.banks = this.priceOption.trade.banks || [];
-    } else {
-      this.localtion = this.tokenService.getUser();
-      this.localtion = this.user.locationCode;
-      this.http
-        .post('/api/salesportal/banks-promotion', {
-          localtion: this.localtion
-        })
-        .toPromise()
-        .then((response: any) => (this.banks = response.data || ''));
-    }
-
+    this.localtion = this.tokenService.getUser();
+    this.localtion = this.user.locationCode;
+    this.http
+      .post('/api/salesportal/banks-promotion', {
+        localtion: this.localtion
+      })
+      .toPromise()
+      .then((response: any) => (this.banks = response.data || ''));
     this.http
       .get(`/api/salesportal/location-by-code?code=${this.user.locationCode}`)
       .toPromise()
@@ -164,12 +146,11 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
         };
         this.locationName = this.seller.locationName;
       });
-      this.transaction = {
-        transactionId: this.createOrderService.generateTransactionId(
-          this.apiRequestService.getCurrentRequestId()
-        )
-      };
-      console.log('transactionId =>', this.transaction.transactionId);
+    this.transaction = {
+      transactionId: this.createOrderService.generateTransactionId(
+        this.apiRequestService.getCurrentRequestId()
+      )
+    };
   }
 
   onHome(): void {
@@ -187,15 +168,15 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
         if (response.value === true) {
           this.createOrderService
             .cancelOrderDT(this.transaction)
-            .then((isSuccess: any) => {
+            .then(() => {
               this.transactionService.remove();
-              this.router.navigate([ROUTE_BUY_PREMIUM_BRAND_PAGE], {
+              this.router.navigate([ROUTE_BUY_PREMIUM_PRODUCT_PAGE], {
                 queryParams: this.priceOption.queryParams
               });
             });
         }
       })
-      .catch((err: any) => {
+      .catch(() => {
         this.transactionService.remove();
       });
   }
@@ -216,11 +197,6 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
   }
 
   onNext(): void {
-  //  this.transaction.data.payment = this.paymentDetailTemp.payment;
-    console.log(
-      'this.paymentDetailTemp.payment =>',
-      this.paymentDetailTemp.payment
-    );
     this.callAddToCart(this.priceOption)
       .then(response => {
         if (response.resultCode === 'S') {
@@ -239,35 +215,10 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
     this.alertService.notify({ text: message });
   }
 
-  onComplete(customerInfo: any): void {
-    this.transaction.data.customer = customerInfo.customer;
-    this.transaction.data.billingInformation = {
-      billDeliveryAddress: customerInfo.billDeliveryAddress
-    };
-    this.transaction.data.receiptInfo = customerInfo.receiptInfo;
-  }
-
-  onError(error: boolean): void {
-    this.isReceiptInformationValid = error;
-  }
-
-  public onErrorAddessValid(err: boolean): void {
-    this.addessValid = err;
-  }
-
-  checkAction(action: string): void {
-    if (action === 'READ_CARD') {
-      this.transaction.data.action = TransactionAction.READ_CARD;
-    } else {
-      this.transaction.data.action = TransactionAction.KEY_IN;
-    }
-  }
-  private callAddToCart(
-    priceOption: PriceOption
-  ): Promise<any> {
+  callAddToCart(priceOption: PriceOption): Promise<any> {
     const productStock = priceOption.productStock;
     const productDetail = priceOption.productDetail;
-  //  const customer = transaction.data.customer;
+    //  const customer = transaction.data.customer;
     const cusNameOrder =
       this.firstName && this.lastName
         ? `${this.firstName} ${this.lastName}`
@@ -306,14 +257,18 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
     const transactionId: string = randomAlphabet + today + randomNumber;
     return transactionId;
   }
-  
   createAddToCartTrasaction(): void {
     const user: User = this.tokenService.getUser();
-    console.log('this.priceOption ==>', this.priceOption);
-    console.log('this.paymentDetailTemp.payment ==>', this.paymentDetailTemp.payment);
-     this.transaction.data.device = this.createOrderService.getDevice(this.priceOption);
+    // console.log('this.priceOption ==>', this.priceOption);
+    // console.log(
+    //   'this.paymentDetailTemp.payment ==>',
+    //   this.paymentDetailTemp.payment
+    // );
+    const product: any = this.priceOption.productStock;
+    const productDetail: any = this.priceOption.productDetail;
     const transactionObject: any = {
-      transactionId: this.transaction.transactionId || this.generateTransactionId(),
+      transactionId:
+        this.transaction.transactionId || this.generateTransactionId(),
       transactionType: 'Premium',
       data: {
         status: {
@@ -321,12 +276,29 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
           description: 'pending'
         },
         payment: this.paymentDetailTemp.payment,
+        productStock: product,
+        productDetail: productDetail,
+        product: {
+          model: productDetail.model,
+          amount: 1,
+          name: productDetail.name,
+          price: productDetail.price,
+          colorName: product.color,
+          colorCode: product.colorCode,
+          productType: productDetail.productType,
+          productSubtype: productDetail.productSubtype
+        },
+        customer: {
+          firstName: this.firstName,
+          lastName: this.lastName,
+          taxId: this.taxId,
+          phoneNumber: this.phoneNumber
+        }
       },
       create_date: Date.now(),
       create_by: user.username,
       issueBy: user.username
     };
-    console.log('transactionObject ==>', transactionObject);
     this.validateCustomerService
       .createTransaction(transactionObject)
       .then((resp: any) => {
@@ -351,22 +323,6 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
     this.paymentDetailValid = valid;
   }
 
-  isFullPayment(): boolean {
-    const trade = this.priceOption.trade || {};
-    const payment = (trade.payments || []).find(p => p.method !== 'PP') || {};
-    switch (payment.method) {
-      case 'CC':
-        if (PriceOptionUtils.getInstallmentsFromTrades([trade])) {
-          return false;
-        } else {
-          return true;
-        }
-      case 'CA':
-      case 'CA/CC':
-      default:
-        return true;
-    }
-  }
   inputFirstName(firstName: string): void {
     this.firstName = firstName;
   }
@@ -387,7 +343,9 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
       this.lastName &&
       this.taxId &&
       this.phoneNumber &&
-      this.paymentDetailTemp !== null);
+      (this.paymentDetailTemp.payment.paymentQrCodeType ||
+        this.paymentDetailTemp.payment.paymentBank)
+    );
   }
 
   ngOnDestroy(): void {

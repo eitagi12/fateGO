@@ -57,7 +57,6 @@ export class ShopPaymentDetailComponent implements OnInit {
   }
 
   createForm(): void {
-
     this.paymentDetailForm = this.fb.group({
       'paymentQrCodeType': [''],
       'paymentType': ['', Validators.required],
@@ -95,37 +94,11 @@ export class ShopPaymentDetailComponent implements OnInit {
       if (this.paymentDetail.isFullPayment) {
         return;
       }
-      this.installments = (this.banks || [])
-        .filter((b: any) => b.abb === bank.abb)
-        .reduce((prev: any, curr: any) => {
-          const instalmment = (curr.installment || '').split(/เดือน|%/);
-          if (instalmment && instalmment.length >= 1) {
-            curr.percentage = +instalmment[0];
-            curr.month = +instalmment[1];
-          } else {
-            curr.percentage = 0;
-            curr.month = 0;
-          }
-          if (!prev.find(p => p.month === curr.month && p.percentage === curr.percentage)) {
-            prev.push(curr);
-          }
-          return prev;
-        }, [])
-        .sort((a, b) => {
-          // month + percentage to string and convert to number
-          const aMonthAndPercentage = +`${a.month}${a.percentage}`;
-          const bMonthAndPercentage = +`${b.month}${b.percentage}`;
-          return bMonthAndPercentage - aMonthAndPercentage;
-        });
+      this.installments = (this.banks || []);
     });
 
     this.paymentDetailForm.valueChanges.subscribe(() => this.onCheckFormAndEmitValue());
     this.paymentDetailAdvancePayForm.valueChanges.subscribe(() => this.onCheckFormAndEmitValue());
-
-    // this.paymentDetailForm.patchValue({
-    //   paymentType: this.paymentDetail.isFullPayment ? 'DEBIT' : 'CREDIT',
-    //   paymentForm: this.paymentDetail.isFullPayment ? 'FULL' : 'INSTALLMENT'
-    // });
     this.paymentDetailForm.controls['paymentForm'].disable();
   }
 
@@ -159,7 +132,7 @@ export class ShopPaymentDetailComponent implements OnInit {
       paymentQrCodeType = targetControl.value.paymentQrCodeType;
     }
     sourceControl.patchValue({
-      paymentQrCodeType: paymentQrCodeType,
+      paymentQrCodeType: paymentQrCodeType ? paymentQrCodeType : '',
       paymentBank: ''
     }, { emitEvent: false });
   }
@@ -170,28 +143,19 @@ export class ShopPaymentDetailComponent implements OnInit {
       return;
     }
     targetControl.patchValue({
-      paymentQrCodeType: qrCodeType
+      paymentQrCodeType: qrCodeType ? qrCodeType : ''
     }, { emitEvent: false });
     sourceControl.patchValue({
-      paymentQrCodeType: qrCodeType
+      paymentQrCodeType: qrCodeType ? qrCodeType : ''
     }, { emitEvent: false });
   }
 
   onCheckFormAndEmitValue(): void {
-    const paymentDetailvalid = this.paymentDetailForm.valid;
-    const paymentDetailAdvancePayvalid = this.paymentDetailAdvancePayForm.valid;
-
-    const valid = this.paymentDetail.installmentFlag
-      ? (paymentDetailvalid && paymentDetailAdvancePayvalid)
-      : paymentDetailvalid;
-
-    this.error.emit(valid);
-    if (valid) {
+    if (this.paymentDetailForm.value) {
       this.completed.emit({
         payment: Object.assign({
-          paymentForm: this.paymentDetail.isFullPayment ? 'FULL' : 'INSTALLMENT'
+          paymentForm: 'FULL'
         }, this.paymentDetailForm.value),
-        advancePayment: this.paymentDetailAdvancePayForm.value
       });
     } else {
       this.completed.emit(null);

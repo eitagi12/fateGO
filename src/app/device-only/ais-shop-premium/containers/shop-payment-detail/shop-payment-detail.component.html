@@ -10,7 +10,7 @@
           </span>
         </div>
       </div>
-      <div class="card-body py-2 border-top" *ngIf="paymentDetail?.qrCode" [hidden]="!paymentDetail?.isFullPayment">
+      <div class="card-body py-2 border-top" *ngIf="paymentDetail?.qrCode">
         <div class="row">
           <div class="col-6 px-2">
             <input type="radio" id="payment-qr-code" name="paymentType" value="QR_CODE" formControlName="paymentType">
@@ -68,22 +68,6 @@
             <a href="#" (click)="$event.preventDefault(); isPaymentDetailCollapsed = !isPaymentDetailCollapsed">
               <u>More</u>
             </a>
-          </div>
-        </div>
-        <div class="card-body py-2 border-top" *ngIf="paymentDetailForm?.value?.paymentBank && installments?.length > 0">
-          <div class="text-center text-pink">
-            <small>กรุณาเลือกรูปแบบการชำระเงิน</small>
-          </div>
-          <div class="row">
-            <ng-container *ngFor="let bank of installments">
-              <div class="col-3 p-2">
-                <input type="radio" id="payment-method-{{ bank?.percentage }}-{{ bank?.month }}" name="paymentMethod"
-                  [value]="bank" formControlName="paymentMethod">
-                <label for="payment-method-{{ bank?.percentage }}-{{ bank?.month }}">{{ bank?.percentage }}%
-                  {{ bank?.month }} เดือน
-                </label>
-              </div>
-            </ng-container>
           </div>
         </div>
       </ng-container>
