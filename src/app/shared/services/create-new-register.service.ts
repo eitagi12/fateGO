@@ -84,6 +84,8 @@ export class CreateNewRegisterService {
       const simCard = transaction.data.simCard;
       const billDeliveryAddress = transaction.data.billingInformation.billDeliveryAddress;
       const billCycleData = billingInformation.billCycleData;
+      const kyc = faceRecognition.kyc ? ' KYC' : ' Face';
+      const ocr = localStorage.getItem('OCRflag') === 'Y' ? ' OCR' : '';
 
       const data: any = {
         isNewCa: !!!customer.caNumber, /*required*/
@@ -175,16 +177,16 @@ export class CreateNewRegisterService {
 
       // orderVerify
       let orderUserVerify: string = 'User';
-      const kyc = transaction.data.faceRecognition.kyc ? ' KYC' : ' Face';
-      const ocr = localStorage.getItem('OCRflag') === 'Y' ? ' OCR' : '';
       if (faceRecognition && faceRecognition.kyc) {
         if (action === TransactionAction.READ_CARD) {
           data.orderVerify = 'Smart' + `${kyc}`;
         } else if (action === TransactionAction.KEY_IN) {
-          orderUserVerify += `${ocr}${kyc}`;
+          data.orderVerify = orderUserVerify += `${ocr}${kyc}`;
         } else {
-          orderUserVerify += `${kyc}`;
+          data.orderVerify = orderUserVerify += `${kyc}`;
         }
+      } else {
+        data.orderVerify = orderUserVerify += `${kyc}`;
       }
 
       // has one love
