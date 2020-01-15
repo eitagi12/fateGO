@@ -21,6 +21,8 @@ import { OmniNewRegisterResultPageComponent } from './containers/omni-new-regist
 import { OmniNewRegisterEapplicationPageComponent } from './containers/omni-new-register-eapplication-page/omni-new-register-eapplication-page.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { OmniNewRegisterEcontactPageComponent } from './containers/omni-new-register-econtract-page/omni-new-register-econtact-page.component';
+import { OmniNewRegisterSummarySellerCodeComponent } from './containers/omni-new-register-summary-seller-code/omni-new-register-summary-seller-code.component';
+import { OmniNewRegisterBillingInfoComponent } from './containers/omni-new-register-billing-info/omni-new-register-billing-info.component';
 
 @NgModule({
   imports: [
@@ -49,6 +51,8 @@ import { OmniNewRegisterEcontactPageComponent } from './containers/omni-new-regi
     OmniNewRegisterEbillingPageComponent,
     OmniNewRegisterEapplicationPageComponent,
     OmniNewRegisterEcontactPageComponent,
+    OmniNewRegisterSummarySellerCodeComponent,
+    OmniNewRegisterBillingInfoComponent
   ],
 })
 export class OmniNewRegisterModule { }
