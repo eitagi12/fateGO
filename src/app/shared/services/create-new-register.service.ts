@@ -174,17 +174,16 @@ export class CreateNewRegisterService {
       }
 
       // orderVerify
+      let orderUserVerify: string = 'User';
+      const kyc = transaction.data.faceRecognition.kyc ? ' KYC' : ' Face';
+      const ocr = localStorage.getItem('OCRflag') === 'Y' ? ' OCR' : '';
       if (faceRecognition && faceRecognition.kyc) {
         if (action === TransactionAction.READ_CARD) {
-          data.orderVerify = 'Smart KYC';
+          data.orderVerify = 'Smart' + `${kyc}`;
+        } else if (action === TransactionAction.KEY_IN) {
+          orderUserVerify += `${ocr}${kyc}`;
         } else {
-          data.orderVerify = 'User KYC';
-        }
-      } else {
-        if (action === TransactionAction.READ_CARD) {
-          data.orderVerify = 'Smart Face';
-        } else {
-          data.orderVerify = 'User Face';
+          orderUserVerify += `${kyc}`;
         }
       }
 

@@ -43,7 +43,7 @@ export class NewSharePlanMnpFaceComparePageComponent implements OnInit, OnDestro
     }).toPromise()
       .then((resp: any) => {
         this.pageLoadingService.closeLoading();
-        const isMatched: boolean = resp.data.isMatched;
+        const isMatched: boolean = !resp.data.isMatched;
         this.transaction.data.faceRecognition.kyc = isMatched;
         // tslint:disable-next-line: max-line-length
         isMatched === true ? this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_SELECT_NUMBER_PAGE]) : this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_FACE_CONFIRM_PAGE]);
