@@ -41,7 +41,7 @@ export class PromotionPageComponent implements OnInit {
       }
     },
     {
-      icon: 'assets/images/icon/icon-serenade.png',
+      icon: 'assets/images/icon/01-Premium.png',
       label: 'Premium',
       disabled: true,
       click: () => {
