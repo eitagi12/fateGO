@@ -74,9 +74,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
     console.log('isTelewiz1');
     // if (this.isTelewiz) {
     //   console.log('isTelewiz2');
-
     this.readCardflowPC();
-    this.readCard = { progress: 20 };
     // }
   }
 
@@ -103,7 +101,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
     this.createTransaction();
     return this.validateCustomerService.queryCustomerInfo(this.profile.idCardNo).then((res) => {
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol).then((zipCode: string) => {
-        const transactionType = TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS; // New
+        const transactionType = TransactionType.DEVICE_ORDER_TELEWIZ_DEVICE_SHARE_PLAN; // New
         // if (this.profile.idCardType === 'บัตรประชาชน' || this.profile.idCardType === 'ID_CARD') {
         return this.validateCustomerService.checkValidateCustomer(this.profile.idCardNo, this.profile.idCardType, transactionType)
           .then((resp: any) => {
@@ -169,7 +167,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
       const mapCustomer = this.mapCustomer(this.profile);
       this.transaction.data.customer = mapCustomer;
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol).then((zipCode: string) => {
-        const transactionType = TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS; // New
+        const transactionType = TransactionType.DEVICE_ORDER_TELEWIZ_DEVICE_SHARE_PLAN; // New
         // tslint:disable-next-line: max-line-length
         return this.validateCustomerService.checkValidateCustomerHandleErrorMessages(this.profile.idCardNo, this.profile.idCardType, transactionType)
           .then((res) => {
@@ -229,7 +227,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
   createTransaction(): void {
     this.transaction = {
       data: {
-        transactionType: TransactionType.DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN, // Share
+        transactionType: TransactionType.DEVICE_ORDER_TELEWIZ_DEVICE_SHARE_PLAN, // Share
         action: TransactionAction.READ_CARD,
       },
       transactionId: this.transaction.transactionId ? this.transaction.transactionId : ''
@@ -388,10 +386,10 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
   }
 
   readCardflowPC(): void {
+    // this.readCard = { progress: 10 };
     this.readCardSubscription = this.readCardService.onReadCard().subscribe((readCard: ReadCard) => {
-      console.log('find image ----', readCard);
+      console.log('find image ----', readCard.progress);
       this.readCard = readCard;
-
       this.progress = readCard.progress;
       const valid = !!(readCard.progress >= 100 && readCard.profile);
       console.log('valid', valid);

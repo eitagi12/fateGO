@@ -46,8 +46,9 @@ canvas.captured-image {
         z-index: 2;
         left: 50%;
         top: 50%;
-        width: 70% !important;
+        // width: 70% !important;
         transform: translate(-50%, -50%);
+        max-width: 35%;
     }
     &.watermark {
         z-index: 3;
