@@ -73,6 +73,7 @@ export class OrderBlockChainFaceConfirmPageComponent implements OnInit, OnDestro
   }
 
   onNext(): void {
+    this.pageLoadingService.openLoading();
     this.http.get(`/api/customerportal/checkSeller/${this.confirmForm.value.password}`).toPromise()
       .then((employee: any) => {
         const isEmployee = employee.data || '';
@@ -86,7 +87,6 @@ export class OrderBlockChainFaceConfirmPageComponent implements OnInit, OnDestro
       });
   }
   callService(): void {
-    this.pageLoadingService.openLoading();
     const customer = this.transaction.data.customer;
     const simCard = this.transaction.data.simCard;
     const faceImage = this.transaction.data.faceRecognition;
