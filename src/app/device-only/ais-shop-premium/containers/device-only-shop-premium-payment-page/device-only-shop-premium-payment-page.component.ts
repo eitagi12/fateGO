@@ -16,7 +16,6 @@ import {
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Product } from 'src/app/device-only/models/product.model';
 import {
-  PaymentDetail,
   PaymentDetailBank,
   HomeService,
   ApiRequestService,
@@ -37,6 +36,7 @@ import { ROUTE_SHOP_PREMIUM_SUMMARY_PAGE } from '../../constants/route-path.cons
 import { FormGroup } from '@angular/forms';
 import { ValidateCustomerService } from 'src/app/shared/services/validate-customer.service';
 import * as moment from 'moment';
+import { PaymentDetail } from '../shop-payment-detail/shop-payment-detail.component';
 
 @Component({
   selector: 'app-device-only-shop-premium-payment-page',
@@ -47,8 +47,6 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
   implements OnInit, OnDestroy {
   @Input()
   banks: PaymentDetailBank[];
-  @Input()
-  omiseBanks: PaymentDetailBank[];
 
   @Output()
   completed: EventEmitter<any> = new EventEmitter<any>();
@@ -60,7 +58,6 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
   isPaymentDetailCollapsed: boolean;
   paymentDetailAdvancePayForm: FormGroup;
   isPaymentDetailAdvancePayCollapsed: boolean;
-  installments: PaymentDetailBank[];
   //  banks: PaymentDetailBank[];
   wizards: string[] = WIZARD_DEVICE_ONLY_AIS;
   transaction: Transaction;
@@ -107,26 +104,16 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
     this.homeButtonService.initEventButtonHome();
     this.apiRequestService.createRequestId();
 
-    let commercialName = this.priceOption.productDetail.name;
+    let name = this.priceOption.productDetail.name;
     if (this.priceOption.productStock.color) {
-      commercialName += ` สี ${this.priceOption.productStock.color}`;
+      name += ` สี ${this.priceOption.productStock.color}`;
     }
     // REFACTOR IT'S
     this.paymentDetail = {
-      commercialName: commercialName,
-      promotionPrice: this.priceOption.productDetail.price,
-      installmentFlag: false,
-      advancePay: 0,
+      name: name,
+      price: this.priceOption.productDetail.price,
       qrCode: true,
-      omisePayment: this.priceOption.productStock.company !== 'WDS'
     };
-    this.http
-      .get('/api/salesportal/omise/get-bank')
-      .toPromise()
-      .then((res: any) => {
-        const data = res.data || [];
-        this.omiseBanks = data;
-      });
     this.localtion = this.tokenService.getUser();
     this.localtion = this.user.locationCode;
     this.http
@@ -259,11 +246,6 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
   }
   createAddToCartTrasaction(): void {
     const user: User = this.tokenService.getUser();
-    // console.log('this.priceOption ==>', this.priceOption);
-    // console.log(
-    //   'this.paymentDetailTemp.payment ==>',
-    //   this.paymentDetailTemp.payment
-    // );
     const product: any = this.priceOption.productStock;
     const productDetail: any = this.priceOption.productDetail;
     const transactionObject: any = {
@@ -316,7 +298,6 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
 
   onPaymentDetailCompleted(payment: any): void {
     this.paymentDetailTemp = payment;
-    console.log('this.paymentDetailTemp =>', this.paymentDetailTemp);
   }
 
   onPaymentDetailError(valid: boolean): void {

@@ -2,11 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 export interface PaymentDetail {
-  commercialName: string;
-  promotionPrice: number;
-  isFullPayment?: boolean;
-  installmentFlag?: boolean;
-  advancePay?: number;
+  name: string;
+  price: number;
   qrCode?: boolean;
 }
 
@@ -31,9 +28,6 @@ export class ShopPaymentDetailComponent implements OnInit {
   @Input()
   banks: PaymentDetailBank[];
 
-  @Input()
-  omiseBanks: PaymentDetailBank[];
-
   @Output()
   completed: EventEmitter<any> = new EventEmitter<any>();
 
@@ -41,12 +35,8 @@ export class ShopPaymentDetailComponent implements OnInit {
   error: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   paymentDetailForm: FormGroup;
-  isPaymentDetailCollapsed: boolean;
-  //
   paymentDetailAdvancePayForm: FormGroup;
-  isPaymentDetailAdvancePayCollapsed: boolean;
-  //
-  installments: PaymentDetailBank[];
+  isPaymentDetailCollapsed: boolean;
 
   constructor(
     private fb: FormBuilder
@@ -62,7 +52,6 @@ export class ShopPaymentDetailComponent implements OnInit {
       'paymentType': ['', Validators.required],
       'paymentForm': [''],
       'paymentBank': [''],
-      'paymentMethod': ['']
     }, { validator: this.customValidate.bind(this) });
 
     // Advance pay
@@ -77,28 +66,11 @@ export class ShopPaymentDetailComponent implements OnInit {
       this.changePaymentType(obs, this.paymentDetailForm, this.paymentDetailAdvancePayForm);
     });
 
-    this.paymentDetailAdvancePayForm.controls['paymentType'].valueChanges.subscribe((obs: any) => {
-      this.changePaymentType(obs, this.paymentDetailAdvancePayForm, this.paymentDetailForm);
-    });
-
     this.paymentDetailForm.controls['paymentQrCodeType'].valueChanges.subscribe((obs: any) => {
       this.changePaymentQrCodeType(obs, this.paymentDetailForm, this.paymentDetailAdvancePayForm);
     });
 
-    this.paymentDetailAdvancePayForm.controls['paymentQrCodeType'].valueChanges.subscribe((obs: any) => {
-      this.changePaymentQrCodeType(obs, this.paymentDetailAdvancePayForm, this.paymentDetailForm);
-    });
-
-    this.paymentDetailForm.controls['paymentBank'].valueChanges.subscribe((bank: any) => {
-      this.paymentDetailForm.patchValue({ paymentMethod: '' });
-      if (this.paymentDetail.isFullPayment) {
-        return;
-      }
-      this.installments = (this.banks || []);
-    });
-
     this.paymentDetailForm.valueChanges.subscribe(() => this.onCheckFormAndEmitValue());
-    this.paymentDetailAdvancePayForm.valueChanges.subscribe(() => this.onCheckFormAndEmitValue());
     this.paymentDetailForm.controls['paymentForm'].disable();
   }
 
@@ -111,13 +83,6 @@ export class ShopPaymentDetailComponent implements OnInit {
         break;
       case 'CREDIT':
         if (group.value.paymentBank) {
-          if (!this.paymentDetail.isFullPayment
-            // Advance pay จะไม่มี paymentMethod ไม่ต้อง check
-            && group.controls['paymentMethod']
-            && !group.value.paymentMethod) {
-            return { field: 'paymentMethod' };
-          }
-        } else {
           return { field: 'paymentBank' };
         }
         break;

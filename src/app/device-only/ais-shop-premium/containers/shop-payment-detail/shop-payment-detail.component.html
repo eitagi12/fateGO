@@ -4,9 +4,9 @@
       <div class="card-header bg-orange text-white">รูปแบบชำระเงิน</div>
       <div class="card-body py-2 text-lime">
         <div>
-          สินค้า {{ paymentDetail?.commercialName }}
+          สินค้า {{ paymentDetail?.name }}
           <span class="pull-right">
-            ฿ {{ (paymentDetail?.promotionPrice || 0) | number }}
+            ฿ {{ (paymentDetail?.price || 0) | number }}
           </span>
         </div>
       </div>
@@ -48,7 +48,7 @@
           </div>
         </div>
       </div>
-      
+
       <ng-container *ngIf="paymentDetailForm?.value?.paymentType === 'CREDIT'">
         <div class="card-body py-2 border-top">
           <div class="text-center text-pink">
