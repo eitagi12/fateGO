@@ -101,3 +101,53 @@
 .progress-container {
     margin-top: 12%;
 }
+
+.card-reader {
+    .inserted {
+        display: block;
+    }
+    .removed {
+        display: none;
+    }
+    &.reading {
+        .inserted {
+            display: none;
+        }
+        .removed {
+            display: block;
+        }
+    }
+    img {
+        display: block;
+        margin: 0 auto;
+        width: 100%;
+        max-width: 390px;
+    }
+}
+
+.card-reader-native {
+    .inserted {
+        display: block;
+    }
+    .removed {
+        display: none;
+    }
+    &.reading {
+        .inserted {
+            display: none;
+        }
+        .removed {
+            display: block;
+        }
+    }
+    img {
+        display: block;
+        margin: 0 auto;
+        width: 50%;
+        max-width: 250px;
+    }
+}
+
+.img-fluid {
+    max-width: 50% !important;
+}

@@ -9,6 +9,7 @@ import { Transaction, Order, TransactionType, TransactionAction } from 'src/app/
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-new-register-mnp-validate-customer-page',
   templateUrl: './new-register-mnp-validate-customer-page.component.html',
@@ -16,7 +17,7 @@ import { Subscription } from 'rxjs';
 })
 export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDestroy {
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
-
+  priceOptionMock: any = require('../new-register-mnp-validate-customer-page/priceOption-Mock.json');
   identityType: string;
   identityForm: FormGroup;
   activeNextBtn: boolean = false;
@@ -76,6 +77,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   ngOnInit(): void {
     this.buildForm();
     this.createTransaction();
+    localStorage.setItem('priceOption', JSON.stringify(this.priceOptionMock));
   }
 
   buildForm(): void {
