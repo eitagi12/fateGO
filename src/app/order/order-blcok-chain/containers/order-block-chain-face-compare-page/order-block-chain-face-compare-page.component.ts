@@ -89,20 +89,15 @@ export class OrderBlockChainFaceComparePageComponent implements OnInit, OnDestro
     };
     this.http.post(`/api/customerportal/newRegister/post-mobile-id`, param).toPromise()
       .then((data: any) => {
-        this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_FACE_CONFIRM_PAGE]);
+        this.transaction.data.customer.isBlockChain = true;
+        this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_RESULT_PAGE]);
       }).catch((err) => {
-        this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_FACE_CONFIRM_PAGE]);
-
-        // .then((data: any) => {
-        //   this.transaction.data.customer.isBlockChain = true;
-        //   this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_RESULT_PAGE]);
-        // }).catch((err) => {
-        //   if (err.error.developerMessage.indexOf('41200') !== -1) {
-        //     this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_FACE_CONFIRM_PAGE]);
-        //   } else {
-        //     this.transaction.data.customer.isBlockChain = false;
-        //     this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_RESULT_PAGE]);
-        //   }
+        if (err.error.developerMessage.indexOf('41200') !== -1) {
+          this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_FACE_CONFIRM_PAGE]);
+        } else {
+          this.transaction.data.customer.isBlockChain = false;
+          this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_RESULT_PAGE]);
+        }
 
       }).then(() => {
         this.pageLoadingService.closeLoading();
