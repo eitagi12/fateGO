@@ -22,46 +22,24 @@ export class OmniNewRegisterResultPageComponent implements OnInit {
     private createNewRegisterService: CreateNewRegisterService,
     private pageLoadingService: PageLoadingService
   ) {
-    this.transaction = this.transactionService.load();
+    // this.transaction = this.transactionService.load();
   }
 
-  customer: any = {
-    idCardNo: 'AA9900854',
-    idCardType: 'บัตรประชาชน',
-      firstName: 'Thanita',
-      lastName: 'Anantaphaiboon',
-      birthdate: '19/03/2535',
-      gender: 'F',
-      expireDate: '18/03/2567',
-      nationality: 'Other',
-      issuingCountry: 'ENG',
-      caNumber: '1101500737451',
-      mainMobile: '0855555555',
-      billCycle: '13',
-      homeNo: '12',
-      moo: '1',
-      room: '1',
-      floor: '4',
-      buildingName: 'A',
-      soi: '-',
-      street: '-',
-      tumbol: 'บึง',
-      amphur: 'ศรีราชา',
-      province: 'ชลบุรี',
-      zipCode: '20230',
-      titleName: 'Ms.',
+  data: any = {
+    orderNo: 'RE1234545444',
+    orderDate: '15/01/2020'
   };
   ngOnInit(): void {
-    this.pageLoadingService.openLoading();
-    this.createTransactionService = this.createNewRegisterService.createNewRegister(this.transaction)
+    // this.pageLoadingService.openLoading();
+    this.createTransactionService = this.createNewRegisterService.createNewRegister(this.data)
       .then((resp: any) => {
-        const data = resp.data || {};
-        this.transaction.data.order = {
-          orderNo: data.orderNo,
-          orderDate: data.orderDate
+        // const data = resp.data || {};
+        this.data.order = {
+          orderNo: this.data.orderNo,
+          orderDate: this.data.orderDate
         };
-        this.transactionService.update(this.transaction);
-        if (this.transaction.data.order.orderNo) {
+        this.transactionService.update(this.data);
+        if (this.data.order.orderNo) {
           this.isSuccess = true;
         } else {
           this.isSuccess = false;
@@ -76,7 +54,7 @@ export class OmniNewRegisterResultPageComponent implements OnInit {
 
   onMainMenu(): void {
     // bug gotohome จะ unlock เบอร์ ทำให้ออก orderไม่สำเร็จ
-    window.location.href = '/smart-digital/main-menu';
+    window.location.href = `/sales-portal/reserve-stock/receive-confirm-online`;
     // this.homeService.goToHome();
   }
 }

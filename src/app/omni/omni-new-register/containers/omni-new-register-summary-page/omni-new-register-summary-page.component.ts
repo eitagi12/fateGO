@@ -3,7 +3,8 @@ import { WIZARD_OMNI_NEW_REGISTER } from 'src/app/omni/constants/wizard.constant
 import {
   ROUTE_OMNI_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE,
   ROUTE_OMNI_NEW_REGISTER_EAPPLICATION_PAGE,
-  ROUTE_OMNI_NEW_REGISTER_EBILLING_ADDRESS_PAGE
+  ROUTE_OMNI_NEW_REGISTER_EBILLING_ADDRESS_PAGE,
+  ROUTE_OMNI_NEW_REGISTER_FACE_CONFIRM_PAGE
 } from 'src/app/omni/omni-new-register/constants/route-path.constant';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -137,27 +138,27 @@ export class OmniNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_OMNI_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE]);
+    this.router.navigate([ROUTE_OMNI_NEW_REGISTER_FACE_CONFIRM_PAGE]);
   }
   onNext(): void {
-    const seller: Seller = this.summarySellerCode.setASCCode();
-    if (!seller.ascCode) {
-      this.alertService.warning('กรุณากรอกข้อมูลให้ถูกต้อง');
-      return;
-    }
-    this.http.get(`/api/customerportal/checkSeller/` + `${seller.ascCode}`).toPromise().then((response: any) => {
-      if (response.data.condition === true) {
-        this.transaction.data.seller = {
-          ...this.transaction.data.seller,
-          locationName: seller.locationName,
-          locationCode: seller.locationCode,
-          ascCode: seller.ascCode
-        };
+    // const seller: Seller = this.summarySellerCode.setASCCode();
+    // if (!seller.ascCode) {
+    //   this.alertService.warning('กรุณากรอกข้อมูลให้ถูกต้อง');
+    //   return;
+    // }
+    // this.http.get(`/api/customerportal/checkSeller/` + `${seller.ascCode}`).toPromise().then((response: any) => {
+    //   if (response.data.condition === true) {
+    //     this.transaction.data.seller = {
+    //       ...this.transaction.data.seller,
+    //       locationName: seller.locationName,
+    //       locationCode: seller.locationCode,
+    //       ascCode: seller.ascCode
+    //     };
         this.router.navigate([ROUTE_OMNI_NEW_REGISTER_EAPPLICATION_PAGE]);
-      } else {
-        this.alertService.warning(response.data.message);
-      }
-    });
+    //   } else {
+    //     this.alertService.warning(response.data.message);
+    //   }
+    // });
   }
 
   onMailBillingInfoCompleted(mailBillingInfo: any): void {
