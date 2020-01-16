@@ -35,6 +35,9 @@ export class CreateMnpService {
     const billDeliveryAddress = transaction.data.billingInformation.billDeliveryAddress;
     const billCycleData = billingInformation.billCycleData;
     const reasonCode = transaction.data.reasonCode;
+    const faceRecognition = transaction.data.faceRecognition;
+    const kyc = faceRecognition.kyc ? ' KYC' : ' Face';
+    const ocr = localStorage.getItem('OCRflag') === 'Y' ? ' OCR' : '';
 
     const data: any = {
       isNewCa: !!!customer.caNumber, /*required*/
@@ -113,11 +116,18 @@ export class CreateMnpService {
     };
 
     // orderVerify
-    if (this.isReadCard(action)) {
-      data.orderVerify = 'Smart Card';
-    } else {
-      data.orderVerify = 'User';
-    }
+    let orderUserVerify: string = 'User';
+      if (faceRecognition && faceRecognition.kyc) {
+        if (action === TransactionAction.READ_CARD) {
+          data.orderVerify = 'Smart' + `${kyc}`;
+        } else if (action === TransactionAction.KEY_IN) {
+          data.orderVerify = orderUserVerify += `${ocr}${kyc}`;
+        } else {
+          data.orderVerify = orderUserVerify += `${kyc}`;
+        }
+      } else {
+        data.orderVerify = orderUserVerify += `${kyc}`;
+      }
 
     // has one love
     if (mainPackageOneLove && mainPackageOneLove.length > 0) {

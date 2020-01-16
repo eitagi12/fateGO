@@ -113,7 +113,6 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
   }
 
   onCameraError(error: string): void {
-    this.alertService.error(error);
     this.imageSigned = false;
   }
 
@@ -272,13 +271,6 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
             localStorage.setItem('OCRflag', this.ocrFlag);
           } else {
             this.alertService.error('ถ่ายรูปบัตรไม่ชัดเจน / ไม่ถูกต้อง<br>ท่านสามารถถ่ายรูปได้อีก 1 ครั้ง');
-            // this.alertService.notify({
-            //   type: 'error',
-            //   html: 'ถ่ายรูปบัตรไม่ชัดเจน / ไม่ถูกต้อง<br>ท่านสามารถถ่ายรูปได้อีก 1 ครั้ง',
-            //   confirmButtonText: 'RETRY',
-            //   onClose: () => this.hasImageSignature()
-            // });
-            alert(this.isSignature);
             this.isSignature = false;
             this.count++;
           }
@@ -289,13 +281,11 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
             localStorage.setItem('OCRflag', this.ocrFlag);
           } else {
             const errMsg = 'ภาพถ่ายไม่ชัดเจน กรุณายืนยัน และรับรองความถูกต้องก่อนทำรายการต่อไป';
-            // this.alertService.error('ภาพถ่ายไม่ชัดเจน กรุณายืนยัน และรับรองความถูกต้องก่อนทำรายการต่อไป');
             this.alertService.question(errMsg, 'ตกลง', 'ยกเลิก').then((response: any) => {
               if (response.value) {
                 this.ocrFlag = 'N';
                 localStorage.setItem('OCRflag', this.ocrFlag);
                 this.isSignature = true;
-                this.alertService.error('ตกลง');
               } else {
                 window.location.href = '/sales-portal/dashboard';
               }
