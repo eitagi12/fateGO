@@ -87,11 +87,16 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
 
   ngOnInit(): void {
     this.createForm();
-    this.simSerialForm.controls.simSerial.valueChanges.subscribe((value) => {
-      if (value && value.length === 13) {
-        this.verifySimSerialByBarcode(value);
-      }
-    });
+    if (!this.transaction.data.simCard.simSerial) {
+      this.simSerialForm.controls.simSerial.valueChanges.subscribe((value) => {
+        if (value && value.length === 13) {
+          this.verifySimSerialByBarcode(value);
+        }
+      });
+
+    } else {
+      this.isNext = true;
+    }
 
     if (window.aisNative) {
       this.scanBarcodePC$ = of(true);
