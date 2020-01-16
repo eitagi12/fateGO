@@ -82,15 +82,11 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
 
   constructor(
     private router: Router,
-    private homeService: HomeService,
     private http: HttpClient,
-    private tokenService: TokenService,
     private transactionService: TransactionService,
     private alertService: AlertService,
-    private persoSimService: PersoSimService,
     private shoppingCartService: ShoppingCartService,
     private pageLoadingService: PageLoadingService,
-    private translateService: TranslateService,
     private removeCartService: RemoveCartService
   ) {
     this.option = { scan_sim: true, key_sim: false };

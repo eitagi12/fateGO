@@ -20,7 +20,7 @@ import { RemoveCartService } from '../../services/remove-cart.service';
   templateUrl: './new-register-mnp-verify-instant-sim-page.component.html',
   styleUrls: ['./new-register-mnp-verify-instant-sim-page.component.scss']
 })
-export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDestroy, AfterViewInit {
+export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDestroy {
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN;
   serialForm: FormGroup;
   transaction: Transaction;
@@ -31,11 +31,8 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
   keyinSimSerial: boolean;
   scanBarCode: boolean;
   simSerialByBarCode: any;
-  // @ViewChild('serial')
-  // serialField: ElementRef;
 
   constructor(private router: Router,
-    private homeService: HomeService,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
     private alertService: AlertService,
@@ -159,9 +156,9 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
     this.removeCartService.backToReturnStock('/', this.transaction);
   }
 
-  ngAfterViewInit(): void {
+  // ngAfterViewInit(): void {
     // this.serialField.nativeElement.focus();
-  }
+  // }
 
   ngOnDestroy(): void {
     if (this.translationSubscribe) {

@@ -43,7 +43,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   }
 
   ngOnInit(): void {
-    localStorage.setItem('priceOption', JSON.stringify(this.priceOptionMock));
+    // localStorage.setItem('priceOption', JSON.stringify(this.priceOptionMock));
     this.createTransaction();
   }
   onError(valid: boolean): void {
@@ -231,8 +231,8 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
       firstNameEn: '',
       lastNameEn: '',
       issueDate: customer.birthdate || customer.issueDate || '',
-      expireDate:
-        customer.expireDate || customer.expireDay ? customer.expireDay + '/' + customer.expireMonth + '/' + customer.expireYear : '',
+      expireDate: customer.expireDate || customer.expireDay ? customer.expireDay
+                  + '/' + customer.expireMonth + '/' + customer.expireYear : '',
       zipCode: customer.zipCode || '',
       mainMobile: customer.mainMobile || '',
       mainPhone: customer.mainPhone || '',

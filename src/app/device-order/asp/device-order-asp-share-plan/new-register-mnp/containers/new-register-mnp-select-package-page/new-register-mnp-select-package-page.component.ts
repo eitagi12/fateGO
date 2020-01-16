@@ -39,7 +39,6 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
   promotionShelveForm: FormGroup;
   constructor(
     private router: Router,
-    private homeService: HomeService,
     private pageLoadingService: PageLoadingService,
     private priceOptionService: PriceOptionService,
     private transactionService: TransactionService,
@@ -63,7 +62,7 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
 
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhum();
-    console.log('===>', this.shoppingCart);
+    // console.log('===>', this.shoppingCart);
     this.callService();
   }
 
@@ -117,7 +116,7 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
   }
 
   buildPromotionShelveActive(promotionShelves: PromotionShelve[]): PromotionShelve[] {
-    console.log(promotionShelves);
+    // console.log(promotionShelves);
 
     const main_package: any = this.transaction.data.mainPackage || {};
     if (!promotionShelves || promotionShelves.length <= 0) {
@@ -167,7 +166,7 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
     console.log('RequestQueryListLovConfigInfo', RequestQueryListLovConfigInfo);
     this.http.post(`/api/salesportal/queryListLovConfigInfo`, RequestQueryListLovConfigInfo).toPromise()
       .then((promotionCodes: any) => {
-        console.log('promotionCodes ==>', promotionCodes);
+        // console.log('promotionCodes ==>', promotionCodes);
         this.promotionCodes = promotionCodes.data;
       }).then(() => {
         const RequestGetPromotionsByCodes: any = {
@@ -175,7 +174,7 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
         };
         return this.http.post(`/api/customerportal/myChannel/getPromotionsByCodes`, RequestGetPromotionsByCodes).toPromise()
           .then((res: any) => {
-            console.log('res=>', res);
+            // console.log('res=>', res);
 
             const data = res.data.data || [];
             // mock packageList for subShelve

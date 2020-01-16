@@ -34,7 +34,6 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
 
   constructor(
     private router: Router,
-    private homeService: HomeService,
     private priceOptionService: PriceOptionService,
     private transactionService: TransactionService,
     private sharedTransactionService: SharedTransactionService,
@@ -213,7 +212,6 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
               });
           });
       });
-      // }
     });
   }
 

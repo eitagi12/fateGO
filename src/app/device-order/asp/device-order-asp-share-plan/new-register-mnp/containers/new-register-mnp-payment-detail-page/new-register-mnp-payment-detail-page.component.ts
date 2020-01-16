@@ -44,7 +44,6 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
     private http: HttpClient,
     private utils: Utils,
     private router: Router,
-    private homeService: HomeService,
     private tokenService: TokenService,
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,

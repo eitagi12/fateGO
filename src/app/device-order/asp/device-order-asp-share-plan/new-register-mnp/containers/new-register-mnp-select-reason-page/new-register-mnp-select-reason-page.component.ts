@@ -28,11 +28,9 @@ export class NewRegisterMnpSelectReasonPageComponent implements OnInit, OnDestro
     private fb: FormBuilder,
     private pageLoadingService: PageLoadingService,
     private http: HttpClient,
-    private homeService: HomeService,
     private removeCartService: RemoveCartService
   ) {
     this.transaction = this.transactionService.load();
-    console.log();
   }
 
   ngOnInit(): void {

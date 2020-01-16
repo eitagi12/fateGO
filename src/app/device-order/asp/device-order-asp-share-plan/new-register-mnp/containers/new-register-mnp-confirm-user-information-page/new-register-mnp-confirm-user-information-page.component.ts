@@ -50,7 +50,6 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
 
   constructor(
     private router: Router,
-    private homeService: HomeService,
     private transactionService: TransactionService,
     private alertService: AlertService,
     private utils: Utils,

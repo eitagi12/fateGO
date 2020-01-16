@@ -24,7 +24,6 @@ export class NewRegisterMnpAggregatePageComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private homeService: HomeService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private removeCartService: RemoveCartService

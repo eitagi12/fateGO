@@ -40,10 +40,9 @@ export class NewRegisterMnpEligibleMobilePageComponent implements OnInit, OnDest
     private checkChangeService: CheckChangeServiceService,
     private removeCartService: RemoveCartService) {
     this.transaction = this.transactionService.load();
-    console.log(this.transaction);
-
+    // console.log(this.transaction);
     this.priceOption = this.priceOptionService.load();
-    console.log('this.priceOption', this.priceOption);
+    // console.log('this.priceOption', this.priceOption);
 
   }
 
