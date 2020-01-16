@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HomeService, ReadCardProfile, ValidateCustomerIdCardComponent, Utils, TokenService, AlertService, PageLoadingService, ChannelType, KioskControls } from 'mychannel-shared-libs';
-import { ROUTE_OMNI_BLOCK_CHAIN_ELIGIBLE_MOBILE_PAGE } from 'src/app/omni/order-blcok-chain/constants/route-path.constant';
+import { ROUTE_OMNI_BLOCK_CHAIN_ELIGIBLE_MOBILE_PAGE } from 'src/app/omni/omni-blcok-chain/constants/route-path.constant';
 import { TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { TransactionType, TransactionAction, Transaction, Customer } from 'src/app/omni/omni-shared/models/transaction.model';

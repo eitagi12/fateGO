@@ -17,6 +17,7 @@ import { OmniNewRegisterPersoSimPageComponent } from './containers/omni-new-regi
 import { OmniNewRegisterResultPageComponent } from './containers/omni-new-register-result-page/omni-new-register-result-page.component';
 import { OmniNewRegisterEapplicationPageComponent } from './containers/omni-new-register-eapplication-page/omni-new-register-eapplication-page.component';
 import { OmniNewRegisterEcontactPageComponent } from './containers/omni-new-register-econtract-page/omni-new-register-econtact-page.component';
+import { OmniNewRegisterValidateCustomerPageComponent } from './containers/omni-new-register-validate-customer-page/omni-new-register-validate-customer-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'validate-customer-key-in', pathMatch: 'full' },
@@ -37,6 +38,7 @@ const routes: Routes = [
   { path: 'result', component: OmniNewRegisterResultPageComponent },
   { path: 'eapplication', component: OmniNewRegisterEapplicationPageComponent },
   { path: 'econtract', component: OmniNewRegisterEcontactPageComponent },
+  {path: 'validate', component: OmniNewRegisterValidateCustomerPageComponent}
 ];
 
 @NgModule({

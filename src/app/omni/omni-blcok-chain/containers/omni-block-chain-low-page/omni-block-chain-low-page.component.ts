@@ -4,9 +4,9 @@ import { HomeService, TokenService, AlertService } from 'mychannel-shared-libs';
 import { WIZARD_OMNI_BLOCK_CHAIN } from 'src/app/omni/constants/wizard.constant';
 import { ROUTE_OMNI_BLOCK_CHAIN_ELIGIBLE_MOBILE_PAGE, ROUTE_OMNI_BLOCK_CHAIN_AGREEMENT_SIGN_PAGE } from '../../constants/route-path.constant';
 @Component({
-  selector: 'app-order-block-chain-low-page',
-  templateUrl: './order-block-chain-low-page.component.html',
-  styleUrls: ['./order-block-chain-low-page.component.scss']
+  selector: 'app-omni-block-chain-low-page',
+  templateUrl: './omni-block-chain-low-page.component.html',
+  styleUrls: ['./omni-block-chain-low-page.component.scss']
 })
 export class OmniBlockChainLowPageComponent implements OnInit {
   wizards: string[] = WIZARD_OMNI_BLOCK_CHAIN;

@@ -11,9 +11,9 @@ import { ROUTE_OMNI_BLOCK_CHAIN_FACE_COMPARE_PAGE, ROUTE_OMNI_BLOCK_CHAIN_RESULT
 import { WIZARD_OMNI_BLOCK_CHAIN } from 'src/app/omni/constants/wizard.constant';
 
 @Component({
-  selector: 'app-order-block-chain-face-confirm-page',
-  templateUrl: './order-block-chain-face-confirm-page.component.html',
-  styleUrls: ['./order-block-chain-face-confirm-page.component.scss']
+  selector: 'app-omni-block-chain-face-confirm-page',
+  templateUrl: './omni-block-chain-face-confirm-page.component.html',
+  styleUrls: ['./omni-block-chain-face-confirm-page.component.scss']
 })
 export class OmniBlockChainFaceConfirmPageComponent implements OnInit, OnDestroy {
 

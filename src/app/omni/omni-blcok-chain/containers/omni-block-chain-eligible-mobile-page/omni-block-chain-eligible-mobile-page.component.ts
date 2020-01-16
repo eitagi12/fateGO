@@ -16,9 +16,9 @@ interface EligibleMobile {
 }
 
 @Component({
-  selector: 'app-order-block-chain-eligible-mobile-page',
-  templateUrl: './order-block-chain-eligible-mobile-page.component.html',
-  styleUrls: ['./order-block-chain-eligible-mobile-page.component.scss']
+  selector: 'app-omni-block-chain-eligible-mobile-page',
+  templateUrl: './omni-block-chain-eligible-mobile-page.component.html',
+  styleUrls: ['./omni-block-chain-eligible-mobile-page.component.scss']
 })
 export class OmniBlockChainEligibleMobilePageComponent implements OnInit, OnDestroy {
 

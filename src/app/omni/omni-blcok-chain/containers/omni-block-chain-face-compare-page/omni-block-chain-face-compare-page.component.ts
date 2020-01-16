@@ -9,9 +9,9 @@ import { ROUTE_OMNI_BLOCK_CHAIN_FACE_CAPTURE_PAGE, ROUTE_OMNI_BLOCK_CHAIN_RESULT
 import * as moment from 'moment';
 const Moment = moment;
 @Component({
-  selector: 'app-order-block-chain-face-compare-page',
-  templateUrl: './order-block-chain-face-compare-page.component.html',
-  styleUrls: ['./order-block-chain-face-compare-page.component.scss']
+  selector: 'app-omni-block-chain-face-compare-page',
+  templateUrl: './omni-block-chain-face-compare-page.component.html',
+  styleUrls: ['./omni-block-chain-face-compare-page.component.scss']
 })
 export class OmniBlockChainFaceComparePageComponent implements OnInit, OnDestroy {
 
