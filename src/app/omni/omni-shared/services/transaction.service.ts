@@ -20,7 +20,7 @@ export class TransactionService {
 
   private get settings(): NgxResource<Transaction> {
     return this.localStorageService
-      .load(`transaction`)
+      .load(`OmniNewRegister`)
       .setDefaultValue({});
   }
 
