@@ -177,14 +177,10 @@ export class CreateNewRegisterService {
 
       // orderVerify
       let orderUserVerify: string = 'User';
-      if (faceRecognition && faceRecognition.kyc) {
-        if (action === TransactionAction.READ_CARD) {
-          data.orderVerify = 'Smart' + `${kyc}`;
-        } else if (action === TransactionAction.KEY_IN) {
-          data.orderVerify = orderUserVerify += `${ocr}${kyc}`;
-        } else {
-          data.orderVerify = orderUserVerify += `${kyc}`;
-        }
+      if (action === TransactionAction.READ_CARD) {
+        data.orderVerify = 'Smart' + `${kyc}`;
+      } else if (action === TransactionAction.KEY_IN) {
+        data.orderVerify = orderUserVerify += `${ocr}${kyc}`;
       } else {
         data.orderVerify = orderUserVerify += `${kyc}`;
       }
