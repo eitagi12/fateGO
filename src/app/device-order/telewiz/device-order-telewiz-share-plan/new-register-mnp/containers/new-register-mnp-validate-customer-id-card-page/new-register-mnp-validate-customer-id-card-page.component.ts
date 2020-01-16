@@ -14,6 +14,7 @@ import { CustomerInfoService } from 'src/app/device-order/services/customer-info
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { ValidateCustomerService } from 'src/app/shared/services/validate-customer.service';
 import { TranslateService } from '@ngx-translate/core';
+import { RemoveCartService } from '../../services/remove-cart.service';
 declare let $: any;
 declare let window: any;
 declare function escape(s: string): string;
@@ -52,18 +53,17 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
   constructor(
     private router: Router,
     private http: HttpClient,
-    private homeService: HomeService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private alertService: AlertService,
-    private customerInfoService: CustomerInfoService,
     private priceOptionService: PriceOptionService,
     private sharedTransactionService: SharedTransactionService,
     private tokenService: TokenService,
     private readCardService: ReadCardService,
     private validateCustomerService: ValidateCustomerService,
     private utils: Utils,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private removeCartService: RemoveCartService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -71,10 +71,9 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
   }
 
   ngOnInit(): void {
-    console.log('isTelewiz1');
+    this.readCardflowPC();
     // if (this.isTelewiz) {
     //   console.log('isTelewiz2');
-    this.readCardflowPC();
     // }
   }
 
@@ -88,13 +87,12 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
           this.validateCustomerIdcard.ngOnInit();
         }
       });
-
     }
   }
 
-  onCompleted(profile: ReadCardProfile): void {
-    this.profile = profile;
-  }
+  // onCompleted(profile: ReadCardProfile): void {
+  //   this.profile = profile;
+  // }
 
   onNext(): any {
     this.pageLoadingService.openLoading();
@@ -220,7 +218,6 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
               });
           });
       });
-      // }
     });
   }
 
@@ -303,7 +300,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    this.removeCartService.backToReturnStock('/', this.transaction);
   }
 
   ngOnDestroy(): void {
