@@ -16,7 +16,6 @@ import {
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Product } from 'src/app/device-only/models/product.model';
 import {
-  PaymentDetailBank,
   HomeService,
   ApiRequestService,
   AlertService,
@@ -33,10 +32,23 @@ import {
   ROUTE_BUY_PREMIUM_PRODUCT_PAGE
 } from 'src/app/buy-premium/constants/route-path.constant';
 import { ROUTE_SHOP_PREMIUM_SUMMARY_PAGE } from '../../constants/route-path.constant';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ValidateCustomerService } from 'src/app/shared/services/validate-customer.service';
 import * as moment from 'moment';
-import { PaymentDetail } from '../shop-payment-detail/shop-payment-detail.component';
+
+export interface PaymentDetail {
+  name: string;
+  price: number;
+  qrCode?: boolean;
+}
+
+export interface PaymentDetailBank {
+  abb: string;
+  imageUrl: string;
+  installment: string;
+  name: string;
+  remark: string;
+}
 
 @Component({
   selector: 'app-device-only-shop-premium-payment-page',
@@ -53,6 +65,10 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
 
   @Output()
   error: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+  @Input()
+  paymentDetail: PaymentDetail;
+
   profileForm: FormGroup;
   paymentDetailForm: FormGroup;
   isPaymentDetailCollapsed: boolean;
@@ -66,7 +82,7 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
   product: Product;
   isSelectBank: any;
   fullPayment: boolean;
-  paymentDetail: PaymentDetail;
+  //  paymentDetail: PaymentDetail;
   paymentDetailTemp: any;
   paymentDetailValid: boolean;
   customerInfoTemp: any;
@@ -80,8 +96,10 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
   seller: Seller;
   simCard: SimCard;
   locationName: string;
+  payment: any;
 
   constructor(
+    private fb: FormBuilder,
     private router: Router,
     private http: HttpClient,
     private homeService: HomeService,
@@ -92,7 +110,7 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
     private alertService: AlertService,
     private homeButtonService: HomeButtonService,
     private tokenService: TokenService,
-    private validateCustomerService: ValidateCustomerService
+    private validateCustomerService: ValidateCustomerService,
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -100,18 +118,18 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
   }
 
   ngOnInit(): void {
-    //  this.createForm();
+    this.createForm();
     this.homeButtonService.initEventButtonHome();
     this.apiRequestService.createRequestId();
-
     let name = this.priceOption.productDetail.name;
+    const price = this.priceOption.productDetail.price;
     if (this.priceOption.productStock.color) {
       name += ` สี ${this.priceOption.productStock.color}`;
     }
     // REFACTOR IT'S
     this.paymentDetail = {
       name: name,
-      price: this.priceOption.productDetail.price,
+      price: price,
       qrCode: true,
     };
     this.localtion = this.tokenService.getUser();
@@ -138,6 +156,80 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
         this.apiRequestService.getCurrentRequestId()
       )
     };
+  }
+
+  createForm(): void {
+    this.paymentDetailForm = this.fb.group({
+      'paymentQrCodeType': [''],
+      'paymentType': ['', Validators.required],
+      'paymentForm': [''],
+      'paymentBank': Validators.required,
+    },
+      { validator: this.customValidate.bind(this) });
+    // Events
+    this.paymentDetailForm.controls['paymentType'].valueChanges.subscribe((obs: any) => {
+      this.changePaymentType(obs, this.paymentDetailForm);
+    });
+
+    this.paymentDetailForm.controls['paymentBank'].valueChanges.subscribe((obs: any) => {
+      this.changePaymentBank(this.paymentDetailForm);
+      this.onPaymentDetailCompleted(this.paymentDetailForm.value);
+    });
+
+    this.paymentDetailForm.controls['paymentQrCodeType'].valueChanges.subscribe((obs: any) => {
+      this.changePaymentQrCodeType(obs, this.paymentDetailForm);
+      this.onPaymentDetailCompleted(this.paymentDetailForm.value);
+    });
+     this.paymentDetailForm.controls['paymentForm'].disable();
+  }
+
+  customValidate(group: FormGroup): any {
+    switch (group.value.paymentType) {
+      case 'QR_CODE':
+        if (group.value.paymentQrCodeType) {
+          return { field: 'paymentQrCodeType' };
+        }
+        break;
+      case 'CREDIT':
+        if (group.value.paymentBank) {
+          return { field: 'paymentBank' };
+        }
+        break;
+    }
+    return null;
+  }
+
+  changePaymentType(paymentType: string, sourceControl: any): void {
+    let paymentQrCodeType;
+    this.onPaymentDetailCompleted(this.payment);
+    paymentQrCodeType = paymentType;
+    sourceControl.patchValue({
+      paymentQrCodeType: paymentQrCodeType ? paymentQrCodeType : '',
+      paymentBank: ''
+    }, { emitEvent: false }
+    );
+  }
+
+  changePaymentQrCodeType(qrCodeType: string, sourceControl: any): void {
+    sourceControl.patchValue({
+      paymentQrCodeType: qrCodeType ? qrCodeType : ''
+    }, { emitEvent: false });
+  }
+
+  changePaymentBank(sourceControl: any): void {
+    sourceControl.patchValue({
+      paymentQrCodeType: ''
+    }, { emitEvent: false });
+  }
+
+  getBanks(): PaymentDetailBank[] {
+    return (this.banks || []).reduce((prev: any, curr: any) => {
+      const exists = prev.find(p => p.abb === curr.abb);
+      if (!exists) {
+        prev.push(curr);
+      }
+      return prev;
+    }, []);
   }
 
   onHome(): void {
@@ -251,13 +343,15 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
     const transactionObject: any = {
       transactionId:
         this.transaction.transactionId || this.generateTransactionId(),
-      transactionType: 'Premium',
       data: {
         status: {
           code: '001',
           description: 'pending'
         },
-        payment: this.paymentDetailTemp.payment,
+        payment: {
+          paymentForm: 'FULL',
+          ...this.paymentDetailTemp
+        },
         productStock: product,
         productDetail: productDetail,
         product: {
@@ -297,7 +391,9 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
   }
 
   onPaymentDetailCompleted(payment: any): void {
+    this.payment = payment;
     this.paymentDetailTemp = payment;
+    console.log('paymentDetailTemp', this.paymentDetailTemp);
   }
 
   onPaymentDetailError(valid: boolean): void {
@@ -324,8 +420,7 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
       this.lastName &&
       this.taxId &&
       this.phoneNumber &&
-      (this.paymentDetailTemp.payment.paymentQrCodeType ||
-        this.paymentDetailTemp.payment.paymentBank)
+      (this.paymentDetailTemp)
     );
   }
 

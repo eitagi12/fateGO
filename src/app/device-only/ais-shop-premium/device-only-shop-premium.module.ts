@@ -13,7 +13,6 @@ import { TabsModule } from 'ngx-bootstrap';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { TranslateModule } from '@ngx-translate/core';
 import { DeviceOnlySharedModule } from '../shared/shared.module';
-import { ShopPaymentDetailComponent } from './containers/shop-payment-detail/shop-payment-detail.component';
 
 @NgModule({
   imports: [
@@ -33,7 +32,6 @@ import { ShopPaymentDetailComponent } from './containers/shop-payment-detail/sho
     DeviceOnlyShopPremiumAggregatePageComponent,
     DeviceOnlyShopPremiumQrCodeSummaryPageComponent,
     DeviceOnlyShopPremiumSummaryPageComponent,
-    ShopPaymentDetailComponent
   ],
   providers: []
 })
