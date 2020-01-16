@@ -17,7 +17,7 @@ import { Subscription } from 'rxjs';
 })
 export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDestroy {
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
-  priceOptionMock: any = require('../new-register-mnp-validate-customer-page/priceOption-Mock.json');
+  // priceOptionMock: any = require('../new-register-mnp-validate-customer-page/priceOption-Mock.json');
   identityType: string;
   identityForm: FormGroup;
   activeNextBtn: boolean = false;
