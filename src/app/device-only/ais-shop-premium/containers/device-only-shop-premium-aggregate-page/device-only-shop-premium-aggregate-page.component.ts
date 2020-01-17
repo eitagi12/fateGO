@@ -67,7 +67,7 @@ export class DeviceOnlyShopPremiumAggregatePageComponent implements OnInit, OnDe
 
   createOrderAndupdateTransaction(): void {
     this.createOrderService.createDeviceSellingOrderShopPremium(this.transaction, this.priceOption).then(() => {
-      return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption, true).then(() => {
+      this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption, true).then(() => {
         this.pageLoadingService.closeLoading();
         this.router.navigate([ROUTE_SHOP_PREMIUM_RESULT_PAGE]);
       });
