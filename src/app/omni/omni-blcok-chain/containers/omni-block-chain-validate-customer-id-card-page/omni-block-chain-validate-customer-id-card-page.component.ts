@@ -48,7 +48,7 @@ export class OmniBlockChainValidateCustomerIdCardPageComponent implements OnInit
   }
 
   ngOnInit(): void {
-    this.createTransaction();
+    // this.createTransaction();
   }
 
   onError(valid: boolean): void {

@@ -3,62 +3,69 @@ import { DecimalPipe } from '@angular/common';
 import { BillingSystemType } from 'mychannel-shared-libs';
 import { TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
+import { Transaction } from '../models/transaction.model';
+import { TransactionService } from './transaction.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CreateEcontractService {
-
   constructor(
     private http: HttpClient,
     private decimalPipe: DecimalPipe,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private transaction: TransactionService
   ) { }
 
-  createEContractV2( condition: any): Promise<any> {
+  createEContractV2(transaction: Transaction, condition: any): Promise<any> {
     return this.http.post(
       '/api/salesportal/v2/generate-e-document-econtract',
-      this.getRequestEContractV2(condition)
+      this.getRequestEContractV2(transaction, condition)
     ).toPromise();
   }
 
-  getRequestEContractV2(condition: any): Promise<any> {
-    // const campaign: any = priceOption.campaign || {};
+  getRequestEContractV2(transaction: Transaction, condition: any): Promise<any> {
+    const campaign: any = transaction.data.campaign || {};
     // const trade: any = priceOption.trade || {};
     // const productStock: any = priceOption.productStock || {};
-    // const customer: any = transaction.data.customer || {};
-    // const simCard: any = transaction.data.simCard || {};
-    // const mainPackage: any = (transaction.data.mainPackage || transaction.data.currentPackage) || {};
+    const customer: any = transaction.data.customer || {};
+    const simCard: any = transaction.data.customer.mobileNo || {};
+    const mainPackage: any = (transaction.data.mainPackage || transaction.data.currentPackage) || {};
     // const mobileCarePackage: any = transaction.data.mobileCarePackage || {};
-    const advancePay: any = {};
-    // const promotionByMainPackage = this.findPromotionByMainPackage(mainPackage.customAttributes, simCard, priceOption);
+    const advancePay: any = parseInt(transaction.data.mainPackage.payAdvance, 0) || {};
+    // const promotionByMainPackage = this.findPromotionByMainPackage(mainPackage);
 
-    // const seller: any = transaction.data.seller || {};
+    // const seller: any = transaction.data.seller.locationDestName || {};
     // const locationFromSeller = (seller && seller.locationName) ? seller.locationName : productStock.locationName;
 
+    const productPrice = parseInt(transaction.data.productPrice, 0);
+    const productDiscount = parseInt(transaction.data.productDiscount, 0);
+    const productNetPrice = parseInt(transaction.data.productNetPrice, 0);
+    const locationFromSeller = transaction.data.locationDestName;
     const data: any = {
-      campaignName: 'Hot deal NEW',
-      locationName: 'สาขาอาคารเอไอเอส 2',
+      campaignName: campaign.campaignName,
+      locationName: this.translateService.instant(locationFromSeller) || '',
       customerType: '',
-      idCard: '1479900297517', // this.transformIDcard(customer.idCardNo),
-      fullName: 'นางสาวปิ่นแก้ว ศิริวรรณา',
-      mobileNumber: '0849725128',
-      imei: '',
-      brand: 'SAMSUNG',
-      model: 'J200',
-      color: 'BLACK',
-      priceIncludeVat: '4280.00',
-      priceDiscount: '899.00',
-      netPrice: '3280.00',
-      advancePay: '1070.00',
-      contract: '10',
-      packageDetail: 'แพ็กเกจค่าบริการรายเดือน 1,000 บาท',
-      airTimeDiscount: 12,
-      airTimeMonth: 10,
-      price: 2899,
+      idCard: this.transformIDcard(customer.idCardNo), // this.transformIDcard(customer.idCardNo),
+      fullName: `${customer.firstName || ''} ${customer.lastName || ''}`,
+      mobileNumber: simCard.mobileNo,
+      imei: simCard.imei || '',
+      brand: transaction.data.brand,
+      model: transaction.data.model,
+      color: transaction.data.color,
+      priceIncludeVat: this.transformDecimalPipe(productPrice),
+      priceDiscount: this.transformDecimalPipe(productDiscount),
+      netPrice: this.transformDecimalPipe(productNetPrice),
+      advancePay: this.transformDecimalPipe(advancePay),
+      contract: mainPackage.durationContract,
+      packageDetail: mainPackage.mainPackageName,
+      airTimeDiscount: 0,
+      airTimeMonth:  0,
+      price: 2000,
       signature: '',
-      mobileCarePackageTitle:  '',
-      isPayAdvance: '',
+      // mobileCarePackageTitle: this.getMobileCarePackageTitle(mobileCarePackage.customAttributes, language) || '',
+      isPayAdvance: this.isAdvancePay(mainPackage.payAdvance) || '',
+      // language: language
     };
     return data;
   }
@@ -71,15 +78,15 @@ export class CreateEcontractService {
     }
   }
 
-  isAdvancePay(trade: any): boolean {
-    const advancePay = trade.advancePay || {};
+  isAdvancePay(mainPackage: any): boolean {
+    const advancePay = mainPackage.payAdvance || {};
     return (advancePay && advancePay.amount > 0);
   }
 
   // findPromotionByMainPackage(mainPackageCustomAttributes: any): any {
-  //   if (priceOption.trade) {
+  //   if (this.transaction.data.mainPackage.payAdvance) {
   //     // check mainPackage กับเบอร์ที่ทำรายการให้ตรงกับ billingSystem ของเบอร์ที่ทำรายการ
-  //     const advancePay = priceOption.trade.advancePay || {};
+  //     const advancePay = this.transaction.data.mainPackage.payAdvance || {};
   //     const billingSystem = (simCard.billingSystem === 'RTBS')
   //       ? BillingSystemType.IRB : simCard.billingSystem || BillingSystemType.IRB;
   //     if (advancePay.promotions) {

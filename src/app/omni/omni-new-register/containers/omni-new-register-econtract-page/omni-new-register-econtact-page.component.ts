@@ -2,11 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { HomeService, ShoppingCart, PageLoadingService, TokenService, IdCardPipe, Utils } from 'mychannel-shared-libs';
-import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
-import { Transaction } from 'src/app/shared/models/transaction.model';
-import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { DecimalPipe } from '@angular/common';
 import { Subscription } from 'rxjs';
 // import { CreateEcontractService } from 'src/app/shared/services/create-econtract.service';
@@ -14,6 +9,8 @@ import { Subscription } from 'rxjs';
 import { WIZARD_OMNI_NEW_REGISTER } from 'src/app/omni/constants/wizard.constant';
 import { ROUTE_OMNI_NEW_REGISTER_SUMMARY_PAGE, ROUTE_OMNI_NEW_REGISTER_AGREEMENT_SIGN_PAGE } from '../../constants/route-path.constant';
 import { CreateEcontractService } from 'src/app/omni/omni-shared/services/create-econtract.service';
+import { Transaction } from 'src/app/omni/omni-shared/models/transaction.model';
+import { TransactionService } from 'src/app/omni/omni-shared/services/transaction.service';
 
 @Component({
   selector: 'app-omni-new-register-econtact-page',
@@ -22,8 +19,6 @@ import { CreateEcontractService } from 'src/app/omni/omni-shared/services/create
 })
 export class OmniNewRegisterEcontactPageComponent implements OnInit, OnDestroy {
   wizards: string[] = WIZARD_OMNI_NEW_REGISTER;
-
-  priceOption: PriceOption;
   transaction: Transaction;
   shoppingCart: ShoppingCart;
   eContactSrc: string;
@@ -37,16 +32,16 @@ export class OmniNewRegisterEcontactPageComponent implements OnInit, OnDestroy {
     private homeService: HomeService,
     private http: HttpClient,
     private transactionService: TransactionService,
-    private priceOptionService: PriceOptionService,
+    // private priceOptionService: PriceOptionService,
     private tokenService: TokenService,
     private pageLoadingService: PageLoadingService,
-    private shoppingCartService: ShoppingCartService,
+    // private shoppingCartService: ShoppingCartService,
     private idCardPipe: IdCardPipe,
     private decimalPipe: DecimalPipe,
     private createContractService: CreateEcontractService,
     // private translationService: TranslateService
   ) {
-    this.priceOption = this.priceOptionService.load();
+    // this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
 
     this.currentLang = 'TH';
@@ -75,16 +70,16 @@ export class OmniNewRegisterEcontactPageComponent implements OnInit, OnDestroy {
 
   callService(): void {
     // http://10.137.16.46:8080/api/salesportal/promotion-shelves/promotion/condition
-    const user = '1100';
-    const campaign: any = this.priceOption.campaign || {};
-    const trade: any = this.priceOption.trade || {};
+    const user = this.tokenService.getUser();
+    const campaign: any = this.transaction.data.campaign || {};
+    // const trade: any = this.priceOption.trade || {};
     this.pageLoadingService.openLoading();
     this.http.post('/api/salesportal/promotion-shelves/promotion/condition', {
-      conditionCode: 'CONDITION_2',
+      conditionCode: campaign.conditionCode,
       location: user
     }).toPromise().then((resp: any) => {
       const condition = resp.data ? resp.data.data || {} : {};
-      return this.createContractService.createEContractV2(condition)
+      return this.createContractService.createEContractV2(this.transaction, condition)
         .then((eDocResp: any) => {
           return eDocResp.data || '';
         });

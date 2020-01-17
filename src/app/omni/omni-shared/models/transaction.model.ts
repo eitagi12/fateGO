@@ -30,7 +30,7 @@ export interface Transaction {
 export interface TransactionData {
   transactionType: TransactionType;
   action: TransactionAction;
-  mainPromotion?: MainPromotion;
+  campaign?: Campaign;
   airTime?: AirTime;
   customer?: Customer;
   simCard?: SimCard;
@@ -40,9 +40,9 @@ export interface TransactionData {
   onTopPackage?: OnTopPackage;
   deleteOntopPackage?: DeleteOntopPackage[];
   mainPackageOneLove?: any[];
-  mobileCarePackage?: MobileCarePackage;
+  // mobileCarePackage?: MobileCarePackage;
   faceRecognition?: FaceRecognition;
-  existingMobileCare?: ExistingMobileCare;
+  // existingMobileCare?: ExistingMobileCare;
   order?: Order;
   reasonCode?: string;
   billingInformation?: BillingInformation;
@@ -66,7 +66,14 @@ export interface TransactionData {
   romAgent?: RomAgent;
   romTransaction?: RomTransactionData;
   // Omise
-  omise?: Omise;
+  // omise?: Omise;
+  locationDestName?: any;
+  brand?: any;
+  model?: any;
+  color?: any;
+  productPrice?: any;
+  productDiscount?: any;
+  productNetPrice?: any;
 }
 
 export interface Omise {
@@ -114,10 +121,10 @@ export interface Payment {
   paymentOnlineCredit?: any;
 }
 
-export interface MainPromotion {
-  campaign?: any;
-  privilege?: any;
-  trade?: any;
+export interface Campaign {
+  campaignName?: any;
+  campaignDesc?: any;
+  conditionCode?: any;
 }
 
 // tslint:disable-next-line:no-empty-interface
@@ -189,6 +196,8 @@ export interface Customer {
   requestNo?: string;
   laserCode?: string;
   isBlockChain?: boolean;
+  campaign: string;
+  locationDestName: string;
 }
 
 export interface Recipientinformation {
@@ -225,21 +234,30 @@ export interface SimCard {
 }
 
 export interface MainPackage {
-  billingSystem?: string;
-  duration?: string;
-  itemId: string;
-  itemsPriority?: string;
-  numberOfMobile?: string;
-  packageType?: string;
-  productPkg?: string;
-  promotionPackage?: string;
-  shortNameThai: string;
-  statementThai?: string;
-  shortNameEng?: string;
-  statementEng?: string;
-  parameters?: any;
-  [key: string]: any;
-  memberMainPackage?: Array<any>;
+  // billingSystem?: string;
+  // duration?: string;
+  // itemId: string;
+  // itemsPriority?: string;
+  // numberOfMobile?: string;
+  // packageType?: string;
+  // productPkg?: string;
+  // promotionPackage?: string;
+  // shortNameThai: string;
+  // statementThai?: string;
+  // shortNameEng?: string;
+  // statementEng?: string;
+  // parameters?: any;
+  // [key: string]: any;
+  // memberMainPackage?: Array<any>;
+
+  mainPackageCode?: any;
+  mainPackageName?: any;
+  mainPackageDesc?: any;
+  matAirtime?: any;
+  promotionPrice?: any;
+  payAdvance?: any;
+  payAdvanceDiscount?: any;
+  durationContract?: any;
 }
 
 export interface MainPackageMember {
@@ -388,7 +406,7 @@ export interface BillDeliveryAddress {
 export interface Seller {
   isAscCode?: boolean;
   sellerName?: string;
-  locationName?: string;
+  locationDestName?: string;
   locationCode?: string;
   sellerNo?: string;
   shareUser?: string;
