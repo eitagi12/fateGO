@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Params, Router, ActivatedRoute } from '@angular/router';
 import { HomeService, CustomerService, AlertService, Utils } from 'mychannel-shared-libs';
-import { ROUTE_OMNI_NEW_REGISTER_ID_CARD_CAPTURE_PAGE, ROUTE_OMNI_NEW_REGISTER_VALIDATE_CUSTOMER_KEY_IN_PAGE } from 'src/app/omni/omni-new-register/constants/route-path.constant';
+import { ROUTE_OMNI_NEW_REGISTER_ID_CARD_CAPTURE_PAGE, ROUTE_OMNI_NEW_REGISTER_VALIDATE_CUSTOMER_KEY_IN_PAGE, ROUTE_OMNI_NEW_REGISTER_CUSTOMER_INFO_PAGE, ROUTE_OMNI_NEW_REGISTER_FACE_CAPTURE_PAGE } from 'src/app/omni/omni-new-register/constants/route-path.constant';
 import { TranslateService } from '@ngx-translate/core';
 import { TransactionService } from 'src/app/omni/omni-shared/services/transaction.service';
 import { Transaction } from 'src/app/omni/omni-shared/models/transaction.model';
@@ -12,7 +12,6 @@ import { Transaction } from 'src/app/omni/omni-shared/models/transaction.model';
   styleUrls: ['./omni-new-register-validate-customer-key-in-page.component.scss']
 })
 export class OmniNewRegisterValidateCustomerKeyInPageComponent implements OnInit, OnDestroy {
-
   transaction: Transaction;
   params: Params;
   prefixes: string[] = [];
@@ -29,15 +28,20 @@ export class OmniNewRegisterValidateCustomerKeyInPageComponent implements OnInit
     private utils: Utils,
     private translation: TranslateService
   ) {
+    this.transactionService.setDataMockup();
     this.transaction = this.transactionService.load();
   }
 
   ngOnInit(): void {
     // this.activatedRoute.queryParams.subscribe((params: Params) => this.params = params);
 
+    this.activatedRoute.queryParams.subscribe((params: Params) => this.params = params);
     this.callService();
-    console.log('transaction======>', this.transaction);
-    console.log('22222222222======>', this.transaction.data.customer.idCardNo);
+    if (this.transaction.data.customer.caNumber && this.transaction.data.customer.caNumber !== '') { // Old CA
+      this.router.navigate([ROUTE_OMNI_NEW_REGISTER_CUSTOMER_INFO_PAGE]);
+    } else if (this.transaction.data.customer.caNumber === '' && this.transaction.data.action === 'READ_CARD') {
+      this.router.navigate([ROUTE_OMNI_NEW_REGISTER_FACE_CAPTURE_PAGE]);
+    }
   }
 
   onError(valid: boolean): void {
@@ -76,18 +80,17 @@ export class OmniNewRegisterValidateCustomerKeyInPageComponent implements OnInit
 
     const birthdate = customer.birthDay + '/' + customer.birthMonth + '/' + customer.birthYear;
     const expireDate = customer.expireDay + '/' + customer.expireMonth + '/' + customer.expireYear;
-
-    // this.transaction.data.customer = {
-    //   idCardNo: this.transaction.data.customer.idCardNo,
-    //   titleName: 'นางสาว',
-    //   firstName: this.transaction.data.customer.firstName,
-    //   lastName: this.transaction.data.customer.lastName,
-    //   idCardType: this.transaction.data.customer.idCardType,
-    //   gender:  this.transaction.data.customer.gender,
-    //   birthdate: birthdate,
-    //   expireDate: expireDate,
-    //   campaign:
-    // };
+    const profile: any = {
+      idCardNo: customer.idCardNo,
+      titleName: customer.prefix,
+      firstName: customer.firstName,
+      lastName: customer.lastName,
+      idCardType: customer.idCardType,
+      gender: customer.gender,
+      birthdate: birthdate,
+      expireDate: expireDate
+    };
+    this.transaction.data.customer = profile;
 
     this.transaction.data.billingInformation = {};
 

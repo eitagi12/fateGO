@@ -21,9 +21,7 @@ export class OmniNewRegisterIdCardCapturePageComponent implements OnInit, OnDest
   wizards: string[] = WIZARD_OMNI_NEW_REGISTER;
   transaction: Transaction;
   captureAndSign: CaptureAndSign;
-
   apiSigned: string;
-
   idCardValid: boolean;
   constructor(
     private router: Router,

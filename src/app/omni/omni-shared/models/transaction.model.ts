@@ -143,13 +143,13 @@ export interface Receipt {
 
 export interface Customer {
   idCardNo: string;
-  idCardType: string;
-  titleName: string;
+  idCardType?: string;
+  titleName?: string;
   titleNameEN?: string;
-  firstName: string;
-  lastName: string;
-  birthdate: string;
-  gender: string;
+  firstName?: string;
+  lastName?: string;
+  birthdate?: string;
+  gender?: string;
   homeNo?: string;
   moo?: string;
   mooBan?: string;
