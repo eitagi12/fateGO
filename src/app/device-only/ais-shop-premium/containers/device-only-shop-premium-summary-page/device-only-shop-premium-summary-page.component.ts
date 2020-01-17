@@ -54,6 +54,12 @@ export class DeviceOnlyShopPremiumSummaryPageComponent implements OnInit, OnDest
     this.checkSeller(seller);
   }
 
+  summary(amount: number[]): number {
+    return amount.reduce((prev, curr) => {
+      return prev + curr;
+    }, 0);
+  }
+
   checkSeller(seller: Seller): void {
     if (!seller.sellerNo) {
       this.alertService.warning('กรุณากรอกข้อมูลให้ถูกต้อง');
