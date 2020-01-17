@@ -44,7 +44,6 @@ export class SharedTransactionService {
 
   updateSharedTransaction(transaction: Transaction, priceOption: PriceOption, shopPremium?: boolean): Promise<any> {
     const user = this.tokenService.getUser();
-    //
     transaction.lastUpdateBy = user.username;
     transaction.lastUpdateDate = Moment().toISOString();
     transaction.data.status = SharedTransactionStatus.WAITING_PAYMENT;
