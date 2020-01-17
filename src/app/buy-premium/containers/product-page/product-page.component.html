@@ -14,24 +14,12 @@
         <li class="breadcrumb-item">
           <a href="#" routerLink="/buy-premium/brand">Premium</a>
         </li>
-        <!-- Brand && Best seller -->
-        <ng-container *ngIf="!params?.commercialName">
-          <li class="breadcrumb-item active">{{ params?.brand }}</li>
-        </ng-container>
-        <!-- Search -->
-        <ng-container *ngIf="params?.commercialName">
-          <li class="breadcrumb-item">
-            <a href="#" routerLink="/buy-premium/brand" [queryParams]="{ tab: 'search' }">ค้นหา</a>
-          </li>
-          <li class="breadcrumb-item active">
-            ผลการค้นหาสำหรับ {{ params?.commercialName }}
-          </li>
-        </ng-container>
       </ol>
     </nav>
     <div class="mb-3">
       <div *ngFor="let productStock of productStocks">
-        <mc-product-stock [productStock]="productStock" (view)="onView($event)" (compare)="onCompare($event)"></mc-product-stock>
+        <mc-product-stock [productStock]="productStock" (view)="onView($event)" (compare)="onCompare($event)">
+        </mc-product-stock>
       </div>
     </div>
 

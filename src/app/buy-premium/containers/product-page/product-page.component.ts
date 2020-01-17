@@ -3,6 +3,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { User, TokenService, SalesService, ProductStock, ProductStockBrandAndModel, HomeService } from 'mychannel-shared-libs';
 import { PRODUCT_TYPE, PRODUCT_SUB_TYPE, SUB_STOCK_DESTINATION } from '../../constants/premium.constant';
 import { ROUTE_BUY_PREMIUM_BRAND_PAGE, ROUTE_BUY_PREMIUM_CAMPAIGN_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEASHBOARD_PROMOTION_PAGE } from 'src/app/dashboard/constants/route-path.constant';
 
 @Component({
   selector: 'app-product-page',
@@ -30,7 +31,7 @@ export class ProductPageComponent implements OnInit {
 
       this.callService(params.brand, params.model, 1);
     });
-   }
+  }
 
   ngOnInit(): void {
   }
@@ -61,11 +62,8 @@ export class ProductPageComponent implements OnInit {
         const normalPrice = product.normalPrice || {};
         const promotionPrice = product.promotionPrice || {};
         let subproducts = product.subProducts || [];
-        const ribbonType = (product.itemType || '').toLowerCase();
-        const ribbon = ['hot', 'new'].find((rib: string) => rib === ribbonType);
 
         const productStock: ProductStock = {
-          ribbon: ribbon,
           thumbnail: product.imageUrl,
           name: `${product.name}`,
           quantity: 0,
@@ -153,11 +151,6 @@ export class ProductPageComponent implements OnInit {
   }
 
   onView(stock: ProductStockBrandAndModel): void {
-    /*
-    - brand มาจากหน้า brand
-    - model มาจากหน้า best seller
-    - commercialName มาจากหน้า search
-    */
     const queryParams: any = {
       brand: stock.brand,
       model: stock.model,
@@ -174,11 +167,7 @@ export class ProductPageComponent implements OnInit {
   }
 
   onBack(): void {
-    const queryParams: any = {};
-    if (this.params.commercialName) {
-      queryParams.tab = 'search';
-    }
-    this.router.navigate([ROUTE_BUY_PREMIUM_BRAND_PAGE], { queryParams });
+    this.router.navigate([ROUTE_DEASHBOARD_PROMOTION_PAGE]);
   }
 
   onHome(): void {
