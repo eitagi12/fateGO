@@ -15,3 +15,4 @@ export const ROUTE_OMNI_NEW_REGISTER_AGREEMENT_SIGN_PAGE = '/omni/new-register/a
 export const ROUTE_OMNI_NEW_REGISTER_PERSO_SIM_PAGE = '/omni/new-register/perso-sim';
 export const ROUTE_OMNI_NEW_REGISTER_RESULT_PAGE = '/omni/new-register/result';
 export const ROUTE_OMNI_NEW_REGISTER_EAPPLICATION_PAGE = '/omni/new-register/eapplication';
+export const ROUTE_OMNI_NEW_REGISTER_ECONTRACT_PAGE = '/omni/new-register/econtract';

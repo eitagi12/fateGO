@@ -29,18 +29,16 @@ export class CreateEcontractService {
     // const trade: any = priceOption.trade || {};
     // const productStock: any = priceOption.productStock || {};
     const customer: any = transaction.data.customer || {};
-    const simCard: any = transaction.data.customer.mobileNo || {};
+    const simCard: any = transaction.data.simCard.mobileNo || {};
     const mainPackage: any = (transaction.data.mainPackage || transaction.data.currentPackage) || {};
     // const mobileCarePackage: any = transaction.data.mobileCarePackage || {};
-    const advancePay: any = parseInt(transaction.data.mainPackage.payAdvance, 0) || {};
     // const promotionByMainPackage = this.findPromotionByMainPackage(mainPackage);
-
     // const seller: any = transaction.data.seller.locationDestName || {};
     // const locationFromSeller = (seller && seller.locationName) ? seller.locationName : productStock.locationName;
-
-    const productPrice = parseInt(transaction.data.productPrice, 0);
-    const productDiscount = parseInt(transaction.data.productDiscount, 0);
-    const productNetPrice = parseInt(transaction.data.productNetPrice, 0);
+    const advancePay = transaction.data.mainPackage.payAdvance || {};
+    const productPrice = transaction.data.productPrice;
+    const productDiscount = transaction.data.productDiscount;
+    const productNetPrice = transaction.data.productNetPrice;
     const locationFromSeller = transaction.data.locationDestName;
     const data: any = {
       campaignName: campaign.campaignName,
@@ -48,7 +46,7 @@ export class CreateEcontractService {
       customerType: '',
       idCard: this.transformIDcard(customer.idCardNo), // this.transformIDcard(customer.idCardNo),
       fullName: `${customer.firstName || ''} ${customer.lastName || ''}`,
-      mobileNumber: simCard.mobileNo,
+      mobileNumber: simCard,
       imei: simCard.imei || '',
       brand: transaction.data.brand,
       model: transaction.data.model,
@@ -58,14 +56,15 @@ export class CreateEcontractService {
       netPrice: this.transformDecimalPipe(productNetPrice),
       advancePay: this.transformDecimalPipe(advancePay),
       contract: mainPackage.durationContract,
-      packageDetail: mainPackage.mainPackageName,
-      airTimeDiscount: 0,
-      airTimeMonth:  0,
-      price: 2000,
+      packageDetail: mainPackage.mainPackageDesc || mainPackage.mainPackageName,
+      airTimeDiscount: 400,
+      airTimeMonth:  10,
+      // tslint:disable-next-line: radix
+      price: parseInt(productPrice) + parseInt(productDiscount),
       signature: '',
-      // mobileCarePackageTitle: this.getMobileCarePackageTitle(mobileCarePackage.customAttributes, language) || '',
+      mobileCarePackageTitle: '',
       isPayAdvance: this.isAdvancePay(mainPackage.payAdvance) || '',
-      // language: language
+      language: 'TH',
     };
     return data;
   }

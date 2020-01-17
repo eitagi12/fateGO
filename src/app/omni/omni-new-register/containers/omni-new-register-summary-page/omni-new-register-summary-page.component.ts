@@ -1,10 +1,8 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { WIZARD_OMNI_NEW_REGISTER } from 'src/app/omni/constants/wizard.constant';
 import {
-  ROUTE_OMNI_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE,
-  ROUTE_OMNI_NEW_REGISTER_EAPPLICATION_PAGE,
-  ROUTE_OMNI_NEW_REGISTER_EBILLING_ADDRESS_PAGE,
-  ROUTE_OMNI_NEW_REGISTER_FACE_CONFIRM_PAGE
+  ROUTE_OMNI_NEW_REGISTER_FACE_CONFIRM_PAGE,
+  ROUTE_OMNI_NEW_REGISTER_ECONTRACT_PAGE
 } from 'src/app/omni/omni-new-register/constants/route-path.constant';
 import { Router } from '@angular/router';
 
@@ -160,7 +158,7 @@ export class OmniNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
     //       locationCode: seller.locationCode,
     //       ascCode: seller.ascCode
     //     };
-        this.router.navigate([ROUTE_OMNI_NEW_REGISTER_EAPPLICATION_PAGE]);
+        this.router.navigate([ROUTE_OMNI_NEW_REGISTER_ECONTRACT_PAGE]);
     //   } else {
     //     this.alertService.warning(response.data.message);
     //   }
