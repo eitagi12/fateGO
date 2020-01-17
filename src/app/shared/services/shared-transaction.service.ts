@@ -32,7 +32,6 @@ export class SharedTransactionService {
 
   createSharedTransaction(transaction: Transaction, priceOption: PriceOption): Promise<any> {
     const user = this.tokenService.getUser();
-    //
     transaction.transactionId = this.getTransactionId();
     transaction.createBy = user.username;
     transaction.createDate = Moment().toISOString();
@@ -305,8 +304,7 @@ export class SharedTransactionService {
           colorCode: productStock.colorCode || '',
           colorName: productStock.color || productStock.colorName || '',
           company: productStock.company || '',
-          name: productDetail.name || '',
-          imei: !!data.device ? data.device.imei : ''
+          name: productDetail.name || ''
         },
         receipt_information: {
           telNo: !!data.receiptInfo ? data.receiptInfo.telNo : ''
