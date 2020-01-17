@@ -9,7 +9,7 @@ export enum TransactionAction {
   READ_CARD = 'READ_CARD',
   READ_CARD_PI = 'READ_CARD_PI',
   READ_CARD_REPI = 'READ_CARD_REPI',
-  KEY_IN = 'KEY_IN',
+  KEY_IN = 'KEY_IDCARD',
   KEY_IN_FBB = 'KEY_IN_FBB',
   KEY_IN_MOBILE_NO = 'KEY_IN_MOBILE_NO',
   KEY_IN_PI = 'KEY_IN_PI',
@@ -74,6 +74,7 @@ export interface TransactionData {
   productPrice?: any;
   productDiscount?: any;
   productNetPrice?: any;
+  cardId?: string;
 }
 
 export interface Omise {

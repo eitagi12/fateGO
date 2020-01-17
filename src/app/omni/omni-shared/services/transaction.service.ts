@@ -70,7 +70,7 @@ export class TransactionService {
         commercialName: 'J200 GALAXY J2',
         cardId: '1101500737451',
         statusDtm: '08/01/2020 16:48:28',
-        action: 'KEYIN',
+        action: 'KEY_IDCARD',
         transactionType: 'OmniNewRegister',
         flagKnoxguard: false,
         customer: {

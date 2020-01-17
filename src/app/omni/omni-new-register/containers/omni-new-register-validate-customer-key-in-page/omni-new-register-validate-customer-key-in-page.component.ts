@@ -4,7 +4,7 @@ import { HomeService, CustomerService, AlertService, Utils } from 'mychannel-sha
 import { ROUTE_OMNI_NEW_REGISTER_ID_CARD_CAPTURE_PAGE, ROUTE_OMNI_NEW_REGISTER_VALIDATE_CUSTOMER_KEY_IN_PAGE, ROUTE_OMNI_NEW_REGISTER_CUSTOMER_INFO_PAGE, ROUTE_OMNI_NEW_REGISTER_FACE_CAPTURE_PAGE } from 'src/app/omni/omni-new-register/constants/route-path.constant';
 import { TranslateService } from '@ngx-translate/core';
 import { TransactionService } from 'src/app/omni/omni-shared/services/transaction.service';
-import { Transaction } from 'src/app/omni/omni-shared/models/transaction.model';
+import { Transaction, TransactionAction } from 'src/app/omni/omni-shared/models/transaction.model';
 
 @Component({
   selector: 'app-omni-new-register-validate-customer-key-in-page',
@@ -35,11 +35,10 @@ export class OmniNewRegisterValidateCustomerKeyInPageComponent implements OnInit
   ngOnInit(): void {
     // this.activatedRoute.queryParams.subscribe((params: Params) => this.params = params);
 
-    this.activatedRoute.queryParams.subscribe((params: Params) => this.params = params);
     this.callService();
     if (this.transaction.data.customer.caNumber && this.transaction.data.customer.caNumber !== '') { // Old CA
       this.router.navigate([ROUTE_OMNI_NEW_REGISTER_CUSTOMER_INFO_PAGE]);
-    } else if (this.transaction.data.customer.caNumber === '' && this.transaction.data.action === 'READ_CARD') {
+    } else if (this.transaction.data.customer.caNumber === '' && this.transaction.data.action === TransactionAction.READ_CARD) {
       this.router.navigate([ROUTE_OMNI_NEW_REGISTER_FACE_CAPTURE_PAGE]);
     }
   }
