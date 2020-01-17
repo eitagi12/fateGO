@@ -42,6 +42,18 @@ export class SharedTransactionService {
     ).toPromise();
   }
 
+  createSharedTransactionShopPremium(transaction: Transaction, priceOption: PriceOption): Promise<any> {
+    const user = this.tokenService.getUser();
+    transaction.transactionId = this.getTransactionId();
+    transaction.createBy = user.username;
+    transaction.createDate = Moment().toISOString();
+    transaction.data.status = SharedTransactionStatus.PENDING;
+
+    return this.http.post('/api/salesportal/device-order/create-transaction',
+      this.getRequestSharedTransactionShopPremium(transaction, priceOption)
+    ).toPromise();
+  }
+
   updateSharedTransaction(transaction: Transaction, priceOption: PriceOption, shopPremium?: boolean): Promise<any> {
     const user = this.tokenService.getUser();
     //

@@ -11,7 +11,9 @@ import { WIZARD_DEVICE_ONLY_AIS } from 'src/app/device-only/constants/wizard.con
 import {
   Transaction,
   Seller,
-  SimCard
+  SimCard,
+  TransactionType,
+  TransactionAction,
 } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Product } from 'src/app/device-only/models/product.model';
@@ -20,7 +22,8 @@ import {
   ApiRequestService,
   AlertService,
   TokenService,
-  User
+  User,
+  PageLoadingService
 } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -32,9 +35,15 @@ import {
   ROUTE_BUY_PREMIUM_PRODUCT_PAGE
 } from 'src/app/buy-premium/constants/route-path.constant';
 import { ROUTE_SHOP_PREMIUM_SUMMARY_PAGE } from '../../constants/route-path.constant';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ValidateCustomerService } from 'src/app/shared/services/validate-customer.service';
-import * as moment from 'moment';
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  AbstractControl,
+  ValidationErrors
+} from '@angular/forms';
+import { Utils } from 'mychannel-shared-libs';
+import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 
 export interface PaymentDetail {
   name: string;
@@ -57,38 +66,24 @@ export interface PaymentDetailBank {
 })
 export class DeviceOnlyShopPremiumPaymentPageComponent
   implements OnInit, OnDestroy {
-  @Input()
+  // @Input()
+  // banks: PaymentDetailBank[];
+
   banks: PaymentDetailBank[];
-
-  @Output()
-  completed: EventEmitter<any> = new EventEmitter<any>();
-
-  @Output()
-  error: EventEmitter<boolean> = new EventEmitter<boolean>();
-
-  @Input()
   paymentDetail: PaymentDetail;
-
-  profileForm: FormGroup;
+  customerAddressForm: FormGroup;
   paymentDetailForm: FormGroup;
   isPaymentDetailCollapsed: boolean;
-  paymentDetailAdvancePayForm: FormGroup;
   isPaymentDetailAdvancePayCollapsed: boolean;
-  //  banks: PaymentDetailBank[];
   wizards: string[] = WIZARD_DEVICE_ONLY_AIS;
   transaction: Transaction;
   priceOption: PriceOption;
   isReceiptInformationValid: boolean;
   product: Product;
-  isSelectBank: any;
-  fullPayment: boolean;
-  //  paymentDetail: PaymentDetail;
   paymentDetailTemp: any;
   paymentDetailValid: boolean;
   customerInfoTemp: any;
   user: User;
-  localtion: any;
-  addessValid: boolean;
   phoneNumber: string;
   taxId: string;
   firstName: string;
@@ -102,6 +97,7 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
     private fb: FormBuilder,
     private router: Router,
     private http: HttpClient,
+    private utils: Utils,
     private homeService: HomeService,
     private apiRequestService: ApiRequestService,
     private transactionService: TransactionService,
@@ -110,7 +106,8 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
     private alertService: AlertService,
     private homeButtonService: HomeButtonService,
     private tokenService: TokenService,
-    private validateCustomerService: ValidateCustomerService,
+    private sharedTransactionService: SharedTransactionService,
+    private pageLoadingService: PageLoadingService,
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -119,6 +116,7 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
 
   ngOnInit(): void {
     this.createForm();
+    this.createTransaction();
     this.homeButtonService.initEventButtonHome();
     this.apiRequestService.createRequestId();
     let name = this.priceOption.productDetail.name;
@@ -130,16 +128,22 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
     this.paymentDetail = {
       name: name,
       price: price,
-      qrCode: true,
+      qrCode: true
     };
-    this.localtion = this.tokenService.getUser();
-    this.localtion = this.user.locationCode;
+    this.getBanksPromotion();
+    this.getLocationByCode();
+  }
+
+  getBanksPromotion(): void {
     this.http
       .post('/api/salesportal/banks-promotion', {
-        localtion: this.localtion
+        localtion: this.user.locationCode
       })
       .toPromise()
       .then((response: any) => (this.banks = response.data || ''));
+  }
+
+  getLocationByCode(): void {
     this.http
       .get(`/api/salesportal/location-by-code?code=${this.user.locationCode}`)
       .toPromise()
@@ -151,36 +155,59 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
         };
         this.locationName = this.seller.locationName;
       });
-    this.transaction = {
-      transactionId: this.createOrderService.generateTransactionId(
-        this.apiRequestService.getCurrentRequestId()
-      )
-    };
   }
 
   createForm(): void {
-    this.paymentDetailForm = this.fb.group({
-      'paymentQrCodeType': [''],
-      'paymentType': ['', Validators.required],
-      'paymentForm': [''],
-      'paymentBank': Validators.required,
-    },
-      { validator: this.customValidate.bind(this) });
+    this.customerAddressForm = this.fb.group({
+      idCardNo: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(/^[1-8]\d{12}$/),
+          this.customerValidate.bind(this)
+        ]
+      ],
+      telNo: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(/^0[6-9]{1}[0-9]{8}/),
+          this.customerValidate.bind(this)
+        ]
+      ]
+    });
+
+    this.paymentDetailForm = this.fb.group(
+      {
+        paymentQrCodeType: [''],
+        paymentType: ['', Validators.required],
+        paymentForm: [''],
+        paymentBank: Validators.required
+      },
+      { validator: this.customValidate.bind(this) }
+    );
     // Events
-    this.paymentDetailForm.controls['paymentType'].valueChanges.subscribe((obs: any) => {
-      this.changePaymentType(obs, this.paymentDetailForm);
-    });
+    this.paymentDetailForm.controls['paymentType'].valueChanges.subscribe(
+      (obs: any) => {
+        this.changePaymentType(obs, this.paymentDetailForm);
+        this.onPaymentDetailCompleted(this.paymentDetailForm.value);
+      }
+    );
 
-    this.paymentDetailForm.controls['paymentBank'].valueChanges.subscribe((obs: any) => {
-      this.changePaymentBank(this.paymentDetailForm);
-      this.onPaymentDetailCompleted(this.paymentDetailForm.value);
-    });
+    this.paymentDetailForm.controls['paymentBank'].valueChanges.subscribe(
+      (obs: any) => {
+        this.changePaymentBank(this.paymentDetailForm);
+        this.onPaymentDetailCompleted(this.paymentDetailForm.value);
+      }
+    );
 
-    this.paymentDetailForm.controls['paymentQrCodeType'].valueChanges.subscribe((obs: any) => {
-      this.changePaymentQrCodeType(obs, this.paymentDetailForm);
-      this.onPaymentDetailCompleted(this.paymentDetailForm.value);
-    });
-     this.paymentDetailForm.controls['paymentForm'].disable();
+    this.paymentDetailForm.controls['paymentQrCodeType'].valueChanges.subscribe(
+      (obs: any) => {
+        this.changePaymentQrCodeType(obs, this.paymentDetailForm);
+        this.onPaymentDetailCompleted(this.paymentDetailForm.value);
+      }
+    );
+    this.paymentDetailForm.controls['paymentForm'].disable();
   }
 
   customValidate(group: FormGroup): any {
@@ -200,26 +227,31 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
   }
 
   changePaymentType(paymentType: string, sourceControl: any): void {
-    let paymentQrCodeType;
-    this.onPaymentDetailCompleted(this.payment);
-    paymentQrCodeType = paymentType;
-    sourceControl.patchValue({
-      paymentQrCodeType: paymentQrCodeType ? paymentQrCodeType : '',
-      paymentBank: ''
-    }, { emitEvent: false }
+    sourceControl.patchValue(
+      {
+        paymentQrCodeType: paymentType ? paymentType : '',
+        paymentBank: '',
+      },
+      { emitEvent: false }
     );
   }
 
   changePaymentQrCodeType(qrCodeType: string, sourceControl: any): void {
-    sourceControl.patchValue({
-      paymentQrCodeType: qrCodeType ? qrCodeType : ''
-    }, { emitEvent: false });
+    sourceControl.patchValue(
+      {
+        paymentQrCodeType: qrCodeType ? qrCodeType : ''
+      },
+      { emitEvent: false }
+    );
   }
 
   changePaymentBank(sourceControl: any): void {
-    sourceControl.patchValue({
-      paymentQrCodeType: ''
-    }, { emitEvent: false });
+    sourceControl.patchValue(
+      {
+        paymentQrCodeType: ''
+      },
+      { emitEvent: false }
+    );
   }
 
   getBanks(): PaymentDetailBank[] {
@@ -245,14 +277,12 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
       )
       .then((response: any) => {
         if (response.value === true) {
-          this.createOrderService
-            .cancelOrderDT(this.transaction)
-            .then(() => {
-              this.transactionService.remove();
-              this.router.navigate([ROUTE_BUY_PREMIUM_PRODUCT_PAGE], {
-                queryParams: this.priceOption.queryParams
-              });
+          this.createOrderService.cancelOrderDT(this.transaction).then(() => {
+            this.transactionService.remove();
+            this.router.navigate([ROUTE_BUY_PREMIUM_PRODUCT_PAGE], {
+              queryParams: this.priceOption.queryParams
             });
+          });
         }
       })
       .catch(() => {
@@ -276,28 +306,23 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
   }
 
   onNext(): void {
+    this.pageLoadingService.openLoading();
     this.callAddToCart(this.priceOption)
       .then(response => {
         if (response.resultCode === 'S') {
           this.transaction.data.order = {
             soId: response.soId
           };
+          this.createAddToCartTrasaction();
+        } else {
+          this.alertService.error(response.resultMessage);
         }
-      })
-      .catch(error => {
-        this.alertNotify(error);
       });
-    this.createAddToCartTrasaction();
-  }
-
-  private alertNotify(message: string): void {
-    this.alertService.notify({ text: message });
   }
 
   callAddToCart(priceOption: PriceOption): Promise<any> {
     const productStock = priceOption.productStock;
     const productDetail = priceOption.productDetail;
-    //  const customer = transaction.data.customer;
     const cusNameOrder =
       this.firstName && this.lastName
         ? `${this.firstName} ${this.lastName}`
@@ -324,76 +349,40 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
       .then((res: any) => res.data);
   }
 
-  generateTransactionId(): any {
-    let emptyString: string = '';
-    const alphabet: string = 'abcdefghijklmnopqrstuvwxyz';
-    while (emptyString.length < 2) {
-      emptyString += alphabet[Math.floor(Math.random() * alphabet.length)];
-    }
-    const randomAlphabet: string = emptyString;
-    const today: any = moment().format('YYYYMMD');
-    const randomNumber: string = Math.floor(Math.random() * 1000000).toString();
-    const transactionId: string = randomAlphabet + today + randomNumber;
-    return transactionId;
-  }
   createAddToCartTrasaction(): void {
-    const user: User = this.tokenService.getUser();
-    const product: any = this.priceOption.productStock;
-    const productDetail: any = this.priceOption.productDetail;
-    const transactionObject: any = {
-      transactionId:
-        this.transaction.transactionId || this.generateTransactionId(),
-      data: {
-        status: {
-          code: '001',
-          description: 'pending'
-        },
-        payment: {
-          paymentForm: 'FULL',
-          ...this.paymentDetailTemp
-        },
-        productStock: product,
-        productDetail: productDetail,
-        product: {
-          model: productDetail.model,
-          amount: 1,
-          name: productDetail.name,
-          price: productDetail.price,
-          colorName: product.color,
-          colorCode: product.colorCode,
-          productType: productDetail.productType,
-          productSubtype: productDetail.productSubtype
-        },
-        customer: {
-          firstName: this.firstName,
-          lastName: this.lastName,
-          taxId: this.taxId,
-          phoneNumber: this.phoneNumber
-        }
-      },
-      create_date: Date.now(),
-      create_by: user.username,
-      issueBy: user.username
+    const customer: any = {
+      firstName: this.firstName,
+      lastName: this.lastName,
+      idCardNo: this.taxId,
     };
-    this.validateCustomerService
-      .createTransaction(transactionObject)
-      .then((resp: any) => {
-        if (resp.data.isSuccess) {
-          this.transaction = transactionObject;
-          this.router.navigate([ROUTE_SHOP_PREMIUM_SUMMARY_PAGE]);
-        } else {
-          this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
-        }
-      })
-      .catch((error: any) => {
-        this.alertService.error(error);
+    const receiptInfo: any = {
+      telNo: this.phoneNumber,
+      taxId: this.taxId,
+    };
+    this.transaction.data.seller = { ...this.seller };
+    this.transaction.data.payment = { paymentForm: 'FULL', ...this.paymentDetailTemp };
+    this.transaction.data.receiptInfo = { ...receiptInfo };
+    this.transaction.data.customer = { ...customer };
+
+    this.sharedTransactionService.createSharedTransactionShopPremium(this.transaction, this.priceOption)
+      .then(() => {
+        this.pageLoadingService.closeLoading();
+        this.router.navigate([ROUTE_SHOP_PREMIUM_SUMMARY_PAGE]);
       });
+  }
+
+  createTransaction(): void {
+    this.transaction = {
+      data: {
+        transactionType: TransactionType.DEVICE_ONLY_AIS,
+        action: TransactionAction.KEY_IN,
+      }
+    };
   }
 
   onPaymentDetailCompleted(payment: any): void {
     this.payment = payment;
     this.paymentDetailTemp = payment;
-    console.log('paymentDetailTemp', this.paymentDetailTemp);
   }
 
   onPaymentDetailError(valid: boolean): void {
@@ -414,14 +403,41 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
     this.phoneNumber = phoneNumber;
   }
 
-  isNotFormValid(): boolean {
-    return !(
+  customerValidate(control: AbstractControl): ValidationErrors | null {
+    const value = control.value;
+    const length: number = control.value.length;
+
+    if (length === 10) {
+      if (this.utils.isMobileNo(value)) {
+        return null;
+      } else {
+        return {
+          message: 'กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง'
+        };
+      }
+    } else if (length === 13) {
+      if (this.utils.isThaiIdCard(value)) {
+        return null;
+      } else {
+        return {
+          message: 'กรุณากรอกเลขบัตรประชาชนให้ถูกต้อง'
+        };
+      }
+    }
+  }
+
+  isDisableNext(): boolean {
+    if (
       this.firstName &&
       this.lastName &&
-      this.taxId &&
-      this.phoneNumber &&
-      (this.paymentDetailTemp)
-    );
+      this.paymentDetailTemp && this.phoneNumber && this.taxId
+    ) {
+      const id = this.taxId.length;
+      const tel = this.phoneNumber.length;
+      if (id === 13 && tel === 10 && (this.paymentDetailTemp.paymentQrCodeType !== this.paymentDetailTemp.paymentType)) {
+        return true;
+      }
+    }
   }
 
   ngOnDestroy(): void {
