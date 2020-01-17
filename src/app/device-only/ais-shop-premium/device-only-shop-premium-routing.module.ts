@@ -26,7 +26,7 @@ const routes: Routes = [
     component: DeviceOnlyShopPremiumQrCodeSummaryPageComponent
   },
   {
-    path: 'qr-code-generator',
+    path: 'qr-code-generate',
     component: DeviceOnlyShopPremiumQrCodeGeneratorPageComponent
   },
   {

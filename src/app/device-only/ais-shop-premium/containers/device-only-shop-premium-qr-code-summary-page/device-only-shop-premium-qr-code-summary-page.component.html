@@ -14,9 +14,9 @@
         <div class="col-12 col-sm-6">
           <img src="assets/images/icon/icon-person.png" class="icon-img icon-person" />
           <span id="text-customer-name">
-              {{ transaction?.data?.customer?.titleName }}
-              {{ transaction?.data?.customer?.firstName }}
-              {{ transaction?.data?.customer?.lastName }}
+            {{ transaction?.data?.customer?.titleName }}
+            {{ transaction?.data?.customer?.firstName }}
+            {{ transaction?.data?.customer?.lastName }}
           </span>
         </div>
         <div class="col-12 col-sm-6 text-sm-right">
@@ -35,21 +35,20 @@
               โครงการ ซื้อเครื่องเปล่า
             </p>
             <div class="text-grey">
-                <i class="fa fa-circle mr-3 text-green"></i>
-                <span class="text-grey" id="text-name-model">
-                  {{ priceOption?.productDetail?.name }}
-                </span>
-                <span class="text-grey" *ngIf="priceOption?.productStock?.colorName">
-                  {{ priceOption?.productStock?.colorName? 'สี': '' }} {{ priceOption?.productStock?.colorName }}
-                </span>
-              </div>  
+              <i class="fa fa-circle mr-3 text-green"></i>
+              <span class="text-grey" id="text-name-model">
+                {{ priceOption?.productDetail?.name }}
+              </span>
+              <span class="text-grey" *ngIf="priceOption?.productStock?.colorName">
+                {{ priceOption?.productStock?.colorName? 'สี': '' }} {{ priceOption?.productStock?.colorName }}
+              </span>
+            </div>
           </div>
           <div class="card-footer bg-transparent text-right">
             รวมยอดชำระ(รวมVAT)
             <span class="text-green ml-2" id="text-includ-vat-price">
               ฿ {{ summary([
-                +price,
-                +priceOption?.trade?.advancePay?.amount
+                +price
                 ]) | number }}
             </span>
           </div>
@@ -73,7 +72,8 @@
                 {{ priceOption?.productStock?.colorName?'สี': '' }} {{ priceOption?.productStock?.colorName }}
               </span>
               <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'"> : ชำระเต็มจำนวน</span>
-              <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'"> : ผ่อนชำระบัตรเครดิต</span>
+              <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'"> :
+                ผ่อนชำระบัตรเครดิต</span>
               <span class="pull-right text-green" id="text-normal-price-payment">
                 ฿ {{ price | number }}
               </span>
@@ -97,30 +97,31 @@
             </small>
           </ng-container>
           <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">
-              <span class="text-grey"  id="text-credit-summary">
-                (
-                ชำระโดย เครดิตธนาคาร
-                {{ transaction?.data?.payment?.paymentMethod?.name }}
-                {{ transaction?.data?.payment?.paymentMethod?.percentage }} %
-                {{ transaction?.data?.payment?.paymentMethod?.month }} เดือน
-                {{ ((+price) + (priceOption?.trade?.advancePay?.installmentFlag === 'N' ? +priceOption?.trade?.advancePay?.amount : 0)) / transaction?.data?.payment?.paymentMethod?.month | number: '1.2-2' }} 
-                บาทต่อเดือน
-                )
-              </span>
+            <span class="text-grey" id="text-credit-summary">
+              (
+              ชำระโดย เครดิตธนาคาร
+              {{ transaction?.data?.payment?.paymentMethod?.name }}
+              {{ transaction?.data?.payment?.paymentMethod?.percentage }} %
+              {{ transaction?.data?.payment?.paymentMethod?.month }} เดือน
+              {{ ((+price) + (priceOption?.trade?.advancePay?.installmentFlag === 'N' ? +priceOption?.trade?.advancePay?.amount : 0)) / transaction?.data?.payment?.paymentMethod?.month | number: '1.2-2' }}
+              บาทต่อเดือน
+              )
+            </span>
           </ng-container>
-          <ng-container *ngIf="transaction?.data?.payment?.paymentForm !== 'INSTALLMENT' && transaction?.data?.payment?.paymentType === 'CREDIT'">
-              <span class="text-grey"  id="text-credit-summary">
-                (
-                ชำระโดย เครดิตธนาคาร
-                {{ transaction?.data?.payment?.paymentMethod?.name }}
-                {{ transaction?.data?.payment?.paymentBank?.name}}
-                )
-              </span>
+          <ng-container
+            *ngIf="transaction?.data?.payment?.paymentForm !== 'INSTALLMENT' && transaction?.data?.payment?.paymentType === 'CREDIT'">
+            <span class="text-grey" id="text-credit-summary">
+              (
+              ชำระโดย เครดิตธนาคาร
+              {{ transaction?.data?.payment?.paymentMethod?.name }}
+              {{ transaction?.data?.payment?.paymentBank?.name}}
+              )
+            </span>
           </ng-container>
         </div>
       </div>
     </div>
-    
+
     <div class="container-fluid mt-3 mb-3">
       <div class="row">
         <div class="col-8">
@@ -140,7 +141,8 @@
           <span class="text-green pull-right" for="text-total-price">ยอดชำระ</span>
         </div>
         <div class="col-4">
-          <input class="form-control text-green text-center pull-right " type="text" id="text-total-price" value="฿{{ summary([+price, deposit]) | number }}" readonly>
+          <input class="form-control text-green text-center pull-right " type="text" id="text-total-price"
+            value="฿{{ summary([+price]) | number }}" readonly>
         </div>
       </div>
     </div>

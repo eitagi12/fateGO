@@ -18,7 +18,6 @@ export class DeviceOnlyShopPremiumQrCodeSummaryPageComponent implements OnInit {
 
   transaction: Transaction;
   priceOption: PriceOption;
-  deposit: number;
   brannerImagePaymentQrCode: ImageBrannerQRCode;
   payment: Payment;
   price: any;
@@ -38,14 +37,8 @@ export class DeviceOnlyShopPremiumQrCodeSummaryPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
+    this.price = this.priceOption.productDetail.price;
     this.homeButtonService.initEventButtonHome();
-    this.calculateSummary(this.deposit);
-  }
-
-  private calculateSummary(deposit: number): void {
-    this.deposit = this.transaction.data.preBooking
-      && this.transaction.data.preBooking.depositAmt ? -Math.abs(+this.transaction.data.preBooking.depositAmt) : 0;
   }
 
   summary(amount: number[]): number {
