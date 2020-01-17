@@ -50,7 +50,34 @@
     <div class="mt-3 mb-3">
       <div class="container-fluid">
         <!-- สรุปรายการสั่งชื้อสินค้า -->
-        <app-summary-order-detail></app-summary-order-detail>
+        <div class="card mb-3">
+          <div class="card-header bg-pink text-white">{{ 'สรุปรายการสั่งซื้อสินค้า' | translate }}</div>
+          <div class="card-body">
+            
+            <i class="fa fa-circle mr-3 text-lime"></i>
+            <span>
+            <span class="text-grey" id="text-name-summary">
+              {{ priceOption?.productDetail?.name }}
+            </span>
+            <span class="text-grey" id="text-color-summary" *ngIf="priceOption?.productStock?.colorName">
+                    {{ priceOption?.productStock?.colorName?'สี': '' }} {{ priceOption?.productStock?.colorName }} 
+            </span>
+          </span>
+            <span class="pull-right text-green" id="text-model-price">
+              ฿ {{ price | number }}
+            </span>
+          </div>
+          <div class="card-footer bg-transparent text-right">
+            <span>
+             {{ 'รวมยอดชำระ (รวม VAT)' | translate }}
+            </span>
+            <span class="text-green ml-2" id="text-summary-price">
+              ฿ {{ summary([
+                +price
+                ]) | number }}
+            </span>
+          </div>
+        </div>
 
         <!-- รายละเอียดการชำระ -->
         <div class="card mb-3">
