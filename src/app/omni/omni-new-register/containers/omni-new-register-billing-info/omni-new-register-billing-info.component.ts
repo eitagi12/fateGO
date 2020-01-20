@@ -36,23 +36,23 @@ export class OmniNewRegisterBillingInfoComponent implements OnInit {
     private transactionService: TransactionService,
     private router: Router,
   ) {
-    // this.transaction = this.transactionService.load();
+    this.transaction = this.transactionService.load();
   }
 
   ngOnInit(): void {
-    // this.mobileNoMember = this.transaction.data.simCard.mobileNoMember;
+    this.mobileNoMember = this.transaction.data.simCard.mobileNoMember;
   }
   getBillCycleText(bill: string): any {
-  //   const bills = bill.split(' ');
-  //   if (this.translation.currentLang === 'TH') {
-  //     return bill;
-  //   } else {
-  //     if (bills[3] === 'สิ้นเดือน') {
-  //       return `From the ${Moment([0, 0, bills[1]]).format('Do')} to the end of every month`;
-  //     } else {
-  //       return `From the ${Moment([0, 0, bills[1]]).format('Do')} to the ${Moment([0, 0, bills[3]]).format('Do')} of every month`;
-  //     }
-  //   }
+    const bills = bill.split(' ');
+    if (this.translation.currentLang === 'TH') {
+      return bill;
+    } else {
+      if (bills[3] === 'สิ้นเดือน') {
+        return `From the ${Moment([0, 0, bills[1]]).format('Do')} to the end of every month`;
+      } else {
+        return `From the ${Moment([0, 0, bills[1]]).format('Do')} to the ${Moment([0, 0, bills[3]]).format('Do')} of every month`;
+      }
+    }
   }
 
   onEditAddress(): void {

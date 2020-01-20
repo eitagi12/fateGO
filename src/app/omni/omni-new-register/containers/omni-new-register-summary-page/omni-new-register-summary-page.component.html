@@ -15,9 +15,9 @@
     <mc-confirm-customer-info title="สรุปข้อมูล" [confirmCustomerInfo]="confirmCustomerInfo">
     </mc-confirm-customer-info>
 
-    <app-omni-new-register-billing-info [billingInfo]="billingInfo" [view]="true"></app-omni-new-register-billing-info>
+    <app-omni-new-register-billing-info [billingInfo]="billingInfo" [view]="true" (editAddress)="onEditAddress()"></app-omni-new-register-billing-info>
 
-    <mc-mail-billing-info [eBill]="false" [view]="true" [mailBillingInfo]="mailBillingInfo" (completed)="onMailBillingInfoCompleted($event)"
+    <mc-mail-billing-info [mailBillingInfo]="mailBillingInfo" (completed)="onMailBillingInfoCompleted($event)"
     (error)="onMailBillingInfoError($event)">>
     </mc-mail-billing-info>
 

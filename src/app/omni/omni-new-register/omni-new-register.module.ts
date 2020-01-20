@@ -13,7 +13,6 @@ import { OmniNewRegisterCustomerInfoPageComponent } from './containers/omni-new-
 import { OmniNewRegisterMergeBillingPageComponent } from './containers/omni-new-register-merge-billing-page/omni-new-register-merge-billing-page.component';
 import { OmniNewRegisterConfirmUserInformationPageComponent } from './containers/omni-new-register-confirm-user-information-page/omni-new-register-confirm-user-information-page.component';
 import { OmniNewRegisterEbillingAddressPageComponent } from './containers/omni-new-register-ebilling-address-page/omni-new-register-ebilling-address-page.component';
-import { OmniNewRegisterEbillingPageComponent } from './containers/omni-new-register-ebilling-page/omni-new-register-ebilling-page.component';
 import { OmniNewRegisterSummaryPageComponent } from './containers/omni-new-register-summary-page/omni-new-register-summary-page.component';
 import { OmniNewRegisterAgreementSignPageComponent } from './containers/omni-new-register-agreement-sign-page/omni-new-register-agreement-sign-page.component';
 import { OmniNewRegisterPersoSimPageComponent } from './containers/omni-new-register-perso-sim-page/omni-new-register-perso-sim-page.component';
@@ -49,12 +48,11 @@ import { OmniNewRegisterValidateCustomerPageComponent } from './containers/omni-
     OmniNewRegisterAgreementSignPageComponent,
     OmniNewRegisterPersoSimPageComponent,
     OmniNewRegisterResultPageComponent,
-    OmniNewRegisterEbillingPageComponent,
     OmniNewRegisterEapplicationPageComponent,
     OmniNewRegisterEcontactPageComponent,
     OmniNewRegisterSummarySellerCodeComponent,
     OmniNewRegisterBillingInfoComponent,
-    OmniNewRegisterValidateCustomerPageComponent
+    OmniNewRegisterValidateCustomerPageComponent,
   ],
 })
 export class OmniNewRegisterModule { }

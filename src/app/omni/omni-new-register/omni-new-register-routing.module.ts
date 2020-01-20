@@ -10,7 +10,6 @@ import { OmniNewRegisterCustomerInfoPageComponent } from './containers/omni-new-
 import { OmniNewRegisterMergeBillingPageComponent } from './containers/omni-new-register-merge-billing-page/omni-new-register-merge-billing-page.component';
 import { OmniNewRegisterConfirmUserInformationPageComponent } from './containers/omni-new-register-confirm-user-information-page/omni-new-register-confirm-user-information-page.component';
 import { OmniNewRegisterEbillingAddressPageComponent } from './containers/omni-new-register-ebilling-address-page/omni-new-register-ebilling-address-page.component';
-import { OmniNewRegisterEbillingPageComponent } from './containers/omni-new-register-ebilling-page/omni-new-register-ebilling-page.component';
 import { OmniNewRegisterSummaryPageComponent } from './containers/omni-new-register-summary-page/omni-new-register-summary-page.component';
 import { OmniNewRegisterAgreementSignPageComponent } from './containers/omni-new-register-agreement-sign-page/omni-new-register-agreement-sign-page.component';
 import { OmniNewRegisterPersoSimPageComponent } from './containers/omni-new-register-perso-sim-page/omni-new-register-perso-sim-page.component';
@@ -31,7 +30,6 @@ const routes: Routes = [
   { path: 'merge-billing', component: OmniNewRegisterMergeBillingPageComponent },
   { path: 'confirm-user-information', component: OmniNewRegisterConfirmUserInformationPageComponent },
   { path: 'ebilling-address', component: OmniNewRegisterEbillingAddressPageComponent },
-  { path: 'ebilling', component: OmniNewRegisterEbillingPageComponent },
   { path: 'summary', component: OmniNewRegisterSummaryPageComponent },
   { path: 'agreement-sign', component: OmniNewRegisterAgreementSignPageComponent },
   { path: 'perso-sim', component: OmniNewRegisterPersoSimPageComponent },
