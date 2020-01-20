@@ -114,7 +114,8 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   validateCustomer(): any {
     return this.validateCustomerService.queryCustomerInfo(this.identity)
       .then((customerInfo: any) => {
-        const transactionType = TransactionType.DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN; // New
+        const transactionType = TransactionType.DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN;
+        this.transaction.data.action = TransactionAction.KEY_IN;
         const cardType = this.mapCardType(customerInfo.data.idCardType);
         return this.validateCustomerService.checkValidateCustomerHandleMessages(this.identity, cardType, transactionType)
           .then((customer: any) => {
@@ -232,7 +233,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
       lastNameEn: '',
       issueDate: customer.birthdate || customer.issueDate || '',
       expireDate: customer.expireDate || customer.expireDay ? customer.expireDay
-                  + '/' + customer.expireMonth + '/' + customer.expireYear : '',
+        + '/' + customer.expireMonth + '/' + customer.expireYear : '',
       zipCode: customer.zipCode || '',
       mainMobile: customer.mainMobile || '',
       mainPhone: customer.mainPhone || '',

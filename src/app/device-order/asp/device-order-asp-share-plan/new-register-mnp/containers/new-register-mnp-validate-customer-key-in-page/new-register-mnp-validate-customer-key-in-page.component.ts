@@ -214,7 +214,7 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
           } else {
             // tslint:disable-next-line: max-line-length
             const body: any = this.validateCustomerService.getRequestAddDeviceSellingCartSharePlanASP(this.user, this.transaction, this.priceOption, { customer: this.transaction.data.customer });
-            this.validateCustomerService.getRequestAddDeviceSellingCartSharePlanASP(body).then((order: any) => {
+            this.validateCustomerService.addDeviceSellingCartSharePlanASP(body).then((order: any) => {
               if (order.data && order.data.soId) {
                 this.transaction.data = {
                   ...this.transaction.data,
@@ -225,11 +225,13 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
                 this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
               }
             }).catch((error: any) => {
+              console.log('error', error);
               this.pageLoadingService.closeLoading();
               this.alertService.error(error);
             });
           }
         }).catch((err: any) => {
+          console.log('err', err);
           this.pageLoadingService.closeLoading();
           const developerMessage = err.error.developerMessage;
           const messageError = err.error.errors;
