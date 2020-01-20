@@ -22,30 +22,14 @@ export class OmniNewRegisterResultPageComponent implements OnInit {
     private createNewRegisterService: CreateNewRegisterService,
     private pageLoadingService: PageLoadingService
   ) {
-    // this.transaction = this.transactionService.load();
+    this.transaction = this.transactionService.load();
   }
 
-  data: any = {
-    orderNo: 'RE1234545444',
-    orderDate: '15/01/2020'
-  };
   ngOnInit(): void {
     // this.pageLoadingService.openLoading();
-    this.createTransactionService = this.createNewRegisterService.createNewRegister(this.data)
+    this.createTransactionService = this.createNewRegisterService.createNewRegister(this.transaction)
       .then((resp: any) => {
-        // const data = resp.data || {};
-        this.data.order = {
-          orderNo: this.data.orderNo,
-          orderDate: this.data.orderDate
-        };
-        this.transactionService.update(this.data);
-        if (this.data.order.orderNo) {
-          this.isSuccess = true;
-        } else {
-          this.isSuccess = false;
-        }
         this.pageLoadingService.closeLoading();
-
       }).catch(() => {
         this.isSuccess = true;
         this.pageLoadingService.closeLoading();

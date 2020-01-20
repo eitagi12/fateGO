@@ -9,6 +9,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { TranslateService } from '@ngx-translate/core';
+import { Transaction } from 'src/app/omni/omni-shared/models/transaction.model';
+import { TransactionService } from 'src/app/omni/omni-shared/services/transaction.service';
 
 @Component({
   selector: 'app-omni-new-register-face-confirm-page',
@@ -18,7 +20,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class OmniNewRegisterFaceConfirmPageComponent implements OnInit {
 
   wizards: string[] = WIZARD_OMNI_NEW_REGISTER;
-
+  transaction: Transaction;
   confirmForm: FormGroup;
 
   constructor(
@@ -28,23 +30,13 @@ export class OmniNewRegisterFaceConfirmPageComponent implements OnInit {
     private http: HttpClient,
     private pageLoadingService: PageLoadingService,
     private alertService: AlertService,
-    private translation: TranslateService
+    private translation: TranslateService,
+    private transactionService: TransactionService
   ) {
+    this.transaction = this.transactionService.load();
   }
 
   ngOnInit(): void {
-    this.createForm();
-  }
-
-  createForm(): void {
-    let username;
-    if (environment.name === 'LOCAL' || environment.name === 'PVT') {
-      username = 'netnapht';
-    }
-    this.confirmForm = this.fb.group({
-      username: [username, [Validators.required]],
-      password: ['', [Validators.required]],
-    });
   }
 
   onBack(): void {
@@ -52,27 +44,17 @@ export class OmniNewRegisterFaceConfirmPageComponent implements OnInit {
   }
 
   onNext(): void {
-    this.pageLoadingService.openLoading();
-    const username = this.confirmForm.value.username;
-    this.http.get('/api/customerportal/checkEmployeeCode', {
-      params: {
-        username: username
-      }
-    }).toPromise()
-      .then((resp: any) => {
-        if (resp && resp.data) {
-          this.router.navigate([ROUTE_OMNI_NEW_REGISTER_SUMMARY_PAGE]);
-        } else {
-          return this.alertService.error(this.translation.instant('ชื่อ/รหัสผ่าน ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง'));
-        }
-      })
-      .then(() => {
-        this.pageLoadingService.closeLoading();
-      });
+    this.transaction.data.faceRecognition.kyc = true;
+    this.router.navigate([ROUTE_OMNI_NEW_REGISTER_SUMMARY_PAGE]);
   }
 
   onHome(): void {
     this.homeService.goToHome();
+  }
+
+  // tslint:disable-next-line: use-life-cycle-interface
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
   }
 
 }

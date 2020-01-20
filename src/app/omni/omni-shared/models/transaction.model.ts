@@ -217,21 +217,9 @@ export interface SelectedLocation {
 }
 
 export interface SimCard {
-  mobileNo: string;
-  mobileNoMember?: string;
+  mobileNo?: string;
   simSerial?: string;
-  simSerialMember?: string;
-  imei?: string;
-  billingSystem?: string;
-  moblieNoTypeA?: string;
-  chargeType?: ChargeType;
-  persoSim?: boolean;
-  privilegeCode?: string;
-  nType?: string;
-  memberSimCard?: Array<any>;
-  mobileNoStatus?: 'Active' | 'Suspended' | 'Enroll';
-  forceEnrollFlag?: 'Y' | 'N';
-  registerDate?: string;
+  persoSim?: string;
 }
 
 export interface MainPackage {
