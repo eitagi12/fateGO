@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { TokenService } from 'mychannel-shared-libs';
+import { TokenService, AlertService } from 'mychannel-shared-libs';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { Transaction, Customer, Payment, Prebooking, Omise } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
@@ -52,7 +52,8 @@ export class CreateOrderService {
     private http: HttpClient,
     private tokenService: TokenService,
     public qrCodeOmiseService: QrCodeOmiseService,
-    private sharedTransactionService: SharedTransactionService
+    private sharedTransactionService: SharedTransactionService,
+    private alertService: AlertService
   ) {
     this.user = this.tokenService.getUser();
   }
@@ -109,27 +110,42 @@ export class CreateOrderService {
   }
 
   createAddToCartTrasaction(transaction: Transaction, priceOption: PriceOption): Promise<any> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       if (transaction
         && transaction.data
         && transaction.data.order
         && transaction.data.order.soId) {
         resolve(transaction);
       } else {
-        this.callAddToCartDT(transaction, priceOption).then((response) => {
-          if (response.resultCode === 'S') {
-            transaction.data.order = {
-              soId: response.soId
-            };
-            this.sharedTransactionService.createSharedTransaction(transaction, priceOption).then((res) => {
-              if (res.data.isSuccess === true) {
-                resolve(transaction);
-              }
-            }).catch(resolve);
-          } else {
-            reject('Cannot add item to the cart');
-          }
-        });
+        if (this.tokenService.isTelewizUser()) {
+          console.log('THIS IS TELEWIZ');
+          this.callAddToCart(transaction, priceOption).then((response: any) => {
+            if (response) {
+              transaction.data.order = {
+                soId: response.soId
+              };
+              this.sharedTransactionService.createSharedTransaction(transaction, priceOption).then((res: any) => {
+                if (res.data.isSuccess === true) {
+                  resolve(transaction);
+                }
+              });
+            }
+          });
+        } else {
+          console.log('THIS IS ASP/ KIOSK');
+          this.callAddToCartDT(transaction, priceOption).then((response: any) => {
+            if (response.resultCode === 'S') {
+              transaction.data.order = {
+                soId: response.soId
+              };
+              this.sharedTransactionService.createSharedTransaction(transaction, priceOption).then((res: any) => {
+                if (res.data.isSuccess === true) {
+                  resolve(transaction);
+                }
+              });
+            }
+          });
+        }
       }
     });
   }
@@ -160,7 +176,7 @@ export class CreateOrderService {
       }]
     };
 
-    let subStock;
+    let subStock: any;
     if (preBooking && preBooking.preBookingNo) {
       subStock = 'PRE';
     } else {
@@ -185,10 +201,14 @@ export class CreateOrderService {
     };
 
     return this.http.post('/api/salesportal/dt/add-cart-list', requestData).toPromise()
-      .then((res: any) => res.data);
+      .then((res: any) => {
+        if (res.resultCode === '20000') {
+          return res.data;
+        }
+      });
   }
 
-  private callAddToCart(transaction: Transaction, priceOption: PriceOption): Promise<any> {
+  private callAddToCart(transaction: Transaction, priceOption: PriceOption): any {
     const productStock = priceOption.productStock;
     const productDetail = priceOption.productDetail;
     const customer = transaction.data.customer;
@@ -210,11 +230,15 @@ export class CreateOrderService {
       cusNameOrder: cusNameOrder,
       preBookingNo: '',
       depositAmt: '',
-      reserveNo: ''
+      reserveNo: '',
     };
 
     return this.http.post('/api/salesportal/add-device-selling-cart', requestData).toPromise()
-      .then((res: any) => res.data);
+      .then((res: any) => {
+        if (res.resultCode === '20000') {
+          return res.data;
+        }
+    });
   }
 
   cancelOrder(transaction: Transaction): Promise<any> {
