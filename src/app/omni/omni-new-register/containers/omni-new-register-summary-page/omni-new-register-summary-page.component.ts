@@ -55,10 +55,9 @@ export class OmniNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
     const billCycle = billingInformation.billCycles[0];
     this.getBllingCycle((billCycle ? billCycle.bill : null) || customer.billCycle
     ).then((billCycleText: string) => {
-      console.log('billCycleText', billCycleText)
+      console.log('billCycleText', billCycleText);
       this.billingInfo.billingCycle.text = billCycleText;
     });
-
 
     this.confirmCustomerInfo = {
       titleName: customer.titleName,
@@ -213,6 +212,4 @@ export class OmniNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
   onHome(): void {
     this.homeService.goToHome();
   }
-
-
 }
