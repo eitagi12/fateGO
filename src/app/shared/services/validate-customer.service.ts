@@ -185,8 +185,42 @@ export class ValidateCustomerService {
     };
   }
 
+  getRequestAddDeviceSellingCartSharePlanASP(user?: any, transaction?: any, priceOption?: any, customer?: any): any {
+    const productStock = priceOption.productStock;
+    const productDetail = priceOption.productDetail;
+    const trade = priceOption.trade;
+    const preBooking: Prebooking = transaction.data.preBooking;
+    let subStock;
+    if (preBooking && preBooking.preBookingNo) {
+      subStock = 'PRE';
+    }
+    return {
+      soCompany: productStock.company ? productStock.company : 'AWN',
+      locationSource: user.locationCode,
+      locationReceipt: user.locationCode,
+      productType: productDetail.productType ? productDetail.productType : 'DEVICE',
+      productSubType: productDetail.productSubType ? productDetail.productSubType : 'HANDSET',
+      brand: productDetail.brand ? productDetail.brand : productStock.brand,
+      model: productDetail.model ? productDetail.model : productStock.model,
+      color: productStock.color ? productStock.color : productStock.colorName,
+      priceIncAmt: '' + trade.normalPrice,
+      priceDiscountAmt: '' + trade.discount.amount,
+      grandTotalAmt: '',
+      userId: user.username,
+      cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
+      preBookingNo: preBooking ? preBooking.preBookingNo : '',
+      depositAmt: preBooking ? preBooking.depositAmt : '',
+      reserveNo: preBooking ? preBooking.reserveNo : '',
+      subStockDestination: subStock
+    };
+  }
+
   addDeviceSellingCartSharePlan(body: any): Promise<any> {
     return this.http.post(`/api/salesportal/dt/add-cart-list`, body).toPromise();
+  }
+
+  addDeviceSellingCartSharePlanASP(body?: any): any {
+    return this.http.post(`/api/salesportal/add-device-selling-cart`, body).toPromise();
   }
 
   mapCardType(idCardType: string): string {

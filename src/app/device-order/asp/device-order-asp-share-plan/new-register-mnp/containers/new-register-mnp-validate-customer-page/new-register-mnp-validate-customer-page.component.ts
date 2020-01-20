@@ -132,13 +132,13 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
                   if (this.order) {
                     this.setTransaction(customer);
                   } else {
-                    const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(
+                    const body: any = this.validateCustomerService.getRequestAddDeviceSellingCartSharePlanASP(
                       this.user,
                       this.transaction,
                       this.priceOption,
                       { customer: customer }
                     );
-                    return this.validateCustomerService.addDeviceSellingCartSharePlan(body).then((order: any) => {
+                    return this.validateCustomerService.addDeviceSellingCartSharePlanASP(body).then((order: any) => {
                       if (order.data && order.data.soId) {
                         this.transaction.data = {
                           ...this.transaction.data,
