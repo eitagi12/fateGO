@@ -94,9 +94,9 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
     return this.validateCustomerService.queryCustomerInfo(this.profile.idCardNo).then((res) => {
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol).then((zipCode: string) => {
         const transactionType = TransactionType.DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN; // New
-        // if (this.profile.idCardType === 'บัตรประชาชน' || this.profile.idCardType === 'ID_CARD') {
-        // tslint:disable-next-line: max-line-length
-        return this.validateCustomerService.checkValidateCustomerHandleMessages(this.profile.idCardNo, this.profile.idCardType, transactionType)
+
+        return this.validateCustomerService
+          .checkValidateCustomerHandleMessages(this.profile.idCardNo, this.profile.idCardType, transactionType)
           .then((resp: any) => {
             const data = resp.data || {};
             return {
@@ -123,13 +123,13 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                       return;
                     }
                     if (!this.soId) {
-                      const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(
+                      const body: any = this.validateCustomerService.getRequestAddDeviceSellingCartSharePlanASP(
                         this.user,
                         this.transaction,
                         this.priceOption,
                         { customer: this.transaction.data.customer }
                       );
-                      return this.validateCustomerService.addDeviceSellingCartSharePlan(body).then((response: any) => {
+                      return this.validateCustomerService.addDeviceSellingCartSharePlanASP(body).then((response: any) => {
                         this.transaction.data = {
                           ...this.transaction.data,
                           order: { soId: response.data.soId }
@@ -188,8 +188,9 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                       return;
                     }
                     if (!this.soId) {
-                      // tslint:disable-next-line: max-line-length
-                      const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: this.transaction.data.customer });
+                      const body: any = this.validateCustomerService
+                        .getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption,
+                          { customer: this.transaction.data.customer });
                       return this.validateCustomerService.addDeviceSellingCartSharePlan(body).then((response: any) => {
                         this.transaction.data = {
                           ...this.transaction.data,
