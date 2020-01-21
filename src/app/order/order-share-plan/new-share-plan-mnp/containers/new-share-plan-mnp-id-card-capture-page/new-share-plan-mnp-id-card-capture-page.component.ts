@@ -6,6 +6,7 @@ import { Customer, Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { Subscription } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 declare let window: any;
 @Component({
   selector: 'app-new-share-plan-mnp-id-card-capture-page',
@@ -25,6 +26,7 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
   onChangeValid: boolean = false;
   isNextValid: boolean;
   // Signature
+  public isSignature: any = false;
   signedSubscription: Subscription;
   signedWidthIdCardImageSubscription: Subscription;
   commandSigned: any;
@@ -32,6 +34,10 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
   isDrawingSignature: boolean = false;
   imageSigned: boolean;
   watermark: string = AWS_WATERMARK;
+  count: number = 0;
+  public ocrFlag: string;
+  ocrMessage: string;
+  ocrMessageShow: boolean;
 
   constructor(
     private router: Router,
@@ -39,7 +45,8 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
     private tokenService: TokenService,
     private alertService: AlertService,
     private aisNativeDeviceService: AisNativeService,
-    private utils: Utils
+    private utils: Utils,
+    private http: HttpClient,
   ) {
     this.transaction = this.transactionService.load();
     this.user = this.tokenService.getUser();
@@ -99,13 +106,13 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
     return !!this.captureAndSign.imageSignature;
   }
 
-  onCameraCompleted(image: string): void {
+  async onCameraCompleted(image: string): Promise<void> {
     this.captureAndSign.imageSmartCard = image;     // ได้รูปถ่ายบัตรปชช.
+    await this.checkTypeOcr(image);
     this.createCanvas();
   }
 
   onCameraError(error: string): void {
-    this.alertService.error(error);
     this.imageSigned = false;
   }
 
@@ -244,6 +251,61 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
     customer.imageSignature = this.captureAndSign.imageSignature;
     customer.imageSmartCard = this.captureAndSign.imageSmartCard;
     customer.imageSignatureSmartCard = this.captureAndSign.imageSignatureWidthCard;
+  }
+
+  checkTypeOcr(imageOCR: string): any {
+    const dataOcr: any = {
+      machineId: '12345',
+      command: 'classify',
+      channel: 'mychannel',
+      base64Image: imageOCR
+    };
+    return this.getResultTypeOcr(dataOcr)
+      .then((res: any) => {
+        this.ocrMessage = `${res.data.result} - ${res.data.message}`;
+        const RESULT_IDCARD_NUMBER: number = 1100;
+        if (this.count === 0) {
+          if (res.data.result === RESULT_IDCARD_NUMBER) {
+            this.ocrFlag = 'Y';
+            this.isSignature = true;
+            localStorage.setItem('OCRflag', this.ocrFlag);
+          } else {
+            this.alertService.error('ถ่ายรูปบัตรไม่ชัดเจน / ไม่ถูกต้อง<br>ท่านสามารถถ่ายรูปได้อีก 1 ครั้ง');
+            this.isSignature = false;
+            this.count++;
+          }
+        } else if (this.count === 1) {
+          if (res.data.result === RESULT_IDCARD_NUMBER) {
+            this.ocrFlag = 'Y';
+            this.isSignature = true;
+            localStorage.setItem('OCRflag', this.ocrFlag);
+          } else {
+            const errMsg = 'ภาพถ่ายไม่ชัดเจน กรุณายืนยัน และรับรองความถูกต้องก่อนทำรายการต่อไป';
+            this.alertService.question(errMsg, 'ตกลง', 'ยกเลิก').then((response: any) => {
+              if (response.value) {
+                this.ocrFlag = 'N';
+                localStorage.setItem('OCRflag', this.ocrFlag);
+                this.isSignature = true;
+              } else {
+                window.location.href = '/sales-portal/dashboard';
+              }
+            });
+          }
+        }
+      }).catch((error: any) => {
+        this.ocrMessage = JSON.stringify(error);
+        if (this.count === 0) {
+          this.alertService.error('ถ่ายรูปบัตรไม่ชัดเจน / ไม่ถูกต้อง<br>ท่านสามารถถ่ายรูปได้อีก 1 ครั้ง');
+          this.count++;
+        } else if (this.count === 1) {
+          this.alertService.error('ภาพถ่ายไม่ชัดเจน กรุณายืนยัน และรับรองความถูกต้องก่อนทำรายการต่อไป');
+        }
+      });
+  }
+
+  getResultTypeOcr(ocrClassify: any): Promise<any> {
+    const queryOcrClassify: string = `/api/facerecog/ocrclassify`;
+    return this.http.post(queryOcrClassify, ocrClassify).toPromise();
   }
 
   ngOnDestroy(): void {

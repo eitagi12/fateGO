@@ -9,58 +9,64 @@
       {{ 'Post Paid' | translate }}
     </div>
     <div class="card-body bg-white">
+      <div class="text-center mt-0 mb-3" *ngIf="!transaction.data.simCard.persoSim">
+        <div>SIM Serial No.: {{ transaction.data.simCard.simSerial }}</div>
+      </div>
       <div class="container py-3">
-        <p>1. {{ mobileNo | mobileNo }} (เบอร์โทรหลัก - เบอร์จดทะเบียนใหม่)</p>
-        <img src="assets/images/icon/icon-ReadIDCard-01.png" class="icon-read-card">
-        <img src="assets/images/icon/icon-input-sim.png" class="icon-perso-sim">
-        <div class="progress mt-3 mb-5">
-          <div class="progress-bar bg-success" role="progressbar" [style.width.%]="persoSim?.progress"
-            [attr.aria-valuenow]="persoSim?.progress" aria-valuemin="0" aria-valuemax="100"></div>
-        </div>
-        <div>
-          <div class="text-center my-3" *ngIf="!persoSim?.progress">
-            {{ 'กรุณาเสียบซิมการ์ด' | translate }}
+        <div *ngIf="transaction.data.simCard.persoSim" class="container">
+          <p>1. {{ mobileNo | mobileNo }} (เบอร์โทรหลัก - เบอร์จดทะเบียนใหม่)</p>
+          <img src="assets/images/icon/icon-ReadIDCard-01.png" class="icon-read-card">
+          <img src="assets/images/icon/icon-input-sim.png" class="icon-perso-sim">
+          <div class="progress mt-3 mb-5">
+            <div class="progress-bar bg-success" role="progressbar" [style.width.%]="persoSim?.progress"
+              [attr.aria-valuenow]="persoSim?.progress" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
-          <div class="text-center my-3 text-red" *ngIf="persoSim?.progress && persoSim?.progress !== 100">
-            {{ '(ห้ามนำซิมการ์ดออก)' | translate }}
-          </div>
-          <div class="text-center my-3" *ngIf="persoSim?.progress === 100">
-            {{ 'กรุณานำซิมออกและเปลี่ยนเป็นซิมสำหรับเบอร์ย้ายค่าย' | translate }}
-          </div>
-        </div>
-        <div *ngIf="isStateStatus === 'waitingFixSim'">
-          <div class="line-behind">
-            <span translate>หรือ</span>
-          </div>
-          <form [formGroup]="simSerialForm">
-            <div class="form-group">
-              <label for="simserial" class="form-text text-center" translate>กรอกเลขที่ซิมการ์ด</label>
-              <input 
-                name="barcodeValue" 
-                id="txtRegNumConfirmScanSim"
-                class="form-control text-center w-50 m-auto" 
-                type="tel" 
-                maxlength="13"
-                placeholder="{{(scanBarcodePC$ | async)? 'ใส่เลขที่ซิม 13 หลัก' : 'สแกน Barcode หรือ ใส่เลขที่ซิม 13 หลัก'}}"
-                [ngClass]="{'is-invalid':!simSerialForm.controls['simSerial'].valid}" 
-                formControlName="simSerial"
-                [(ngModel)]="simSerialKeyIn" 
-                autocomplete="off" 
-                (ngModelChange)="onSerialNumberChanged($event)">
-              <small class="form-text text-red text-center" [hidden]="simSerialForm.controls['simSerial'].valid" translate>
-                * เลขที่ซิมต้องเป็นตัวเลข 13 ตัวเท่านั้น
-              </small>
+          <div>
+            <div class="text-center my-3" *ngIf="!persoSim?.progress">
+              {{ 'กรุณาเสียบซิมการ์ด' | translate }}
             </div>
-          </form>
-          <div *ngIf="isAisNative()" class="text-center">
-            <button type="button" class="btn btn-light-blue text-white py-3 w-50" (click)="onOpenScanBarcode()">สแกน Barcode</button>
+            <div class="text-center my-3 text-red" *ngIf="persoSim?.progress && persoSim?.progress !== 100">
+              {{ '(ห้ามนำซิมการ์ดออก)' | translate }}
+            </div>
+            <div class="text-center my-3" *ngIf="persoSim?.progress === 100">
+              {{ 'กรุณานำซิมออกและเปลี่ยนเป็นซิมสำหรับเบอร์ย้ายค่าย' | translate }}
+            </div>
           </div>
+          <div *ngIf="isStateStatus === 'waitingFixSim'">
+            <div class="line-behind">
+              <span translate>หรือ</span>
+            </div>
+            <form [formGroup]="simSerialForm">
+              <div class="form-group">
+                <label for="simserial" class="form-text text-center" translate>กรอกเลขที่ซิมการ์ด</label>
+                <input name="barcodeValue" id="txtRegNumConfirmScanSim" class="form-control text-center w-50 m-auto"
+                  type="tel" maxlength="13"
+                  placeholder="{{(scanBarcodePC$ | async)? 'ใส่เลขที่ซิม 13 หลัก' : 'สแกน Barcode หรือ ใส่เลขที่ซิม 13 หลัก'}}"
+                  [ngClass]="{'is-invalid':!simSerialForm.controls['simSerial'].valid}" formControlName="simSerial"
+                  [(ngModel)]="simSerialKeyIn" autocomplete="off" (ngModelChange)="onSerialNumberChanged($event)">
+                <small class="form-text text-red text-center" [hidden]="simSerialForm.controls['simSerial'].valid"
+                  translate>
+                  * เลขที่ซิมต้องเป็นตัวเลข 13 ตัวเท่านั้น
+                </small>
+              </div>
+            </form>
+          </div>
+          <div *ngIf="isAisNative()" class="text-center">
+            <button type="button" class="btn btn-light-blue text-white py-3 w-50" (click)="onOpenScanBarcode()">สแกน
+              Barcode</button>
+          </div>
+          
         </div>
+            <div class="text-center mt-0 mb-3" *ngIf="!transaction.data.simCard.persoSim">
+  
+                <div style="padding-top: 34%;">{{ '(กรุณากด NEXT เพื่อไปทำ Perso SIM เบอร์ย้ายค่าย)' | translate }}</div>
+            </div>
       </div>
     </div>
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()" [disabled]="disableBack">BACK</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]="!(persoSim?.progress === 100) && !isNext">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()"
+      [disabled]="!(persoSim?.progress === 100) && !isNext">NEXT</button>
   </mc-footer>
 </div>
