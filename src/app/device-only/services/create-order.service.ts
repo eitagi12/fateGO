@@ -118,7 +118,6 @@ export class CreateOrderService {
         resolve(transaction);
       } else {
         if (this.tokenService.isTelewizUser()) {
-          console.log('THIS IS TELEWIZ');
           this.callAddToCart(transaction, priceOption).then((response: any) => {
             if (response) {
               transaction.data.order = {
@@ -129,10 +128,11 @@ export class CreateOrderService {
                   resolve(transaction);
                 }
               });
+            } else {
+              this.alertService.error('Cannot add item to the cart');
             }
           });
         } else {
-          console.log('THIS IS ASP/ KIOSK');
           this.callAddToCartDT(transaction, priceOption).then((response: any) => {
             if (response.resultCode === 'S') {
               transaction.data.order = {
@@ -143,6 +143,8 @@ export class CreateOrderService {
                   resolve(transaction);
                 }
               });
+            } else {
+              this.alertService.error('Cannot add item to the cart');
             }
           });
         }
@@ -164,7 +166,6 @@ export class CreateOrderService {
       brand: productDetail.brand || productStock.brand,
       model: productDetail.model || productStock.model,
       qty: '1',
-
       color: productStock.color || productStock.colorName,
       matCode: '',
       priceIncAmt: '' + trade.normalPrice,
@@ -202,9 +203,7 @@ export class CreateOrderService {
 
     return this.http.post('/api/salesportal/dt/add-cart-list', requestData).toPromise()
       .then((res: any) => {
-        if (res.resultCode === '20000') {
-          return res.data;
-        }
+        return res.data;
       });
   }
 
@@ -235,10 +234,8 @@ export class CreateOrderService {
 
     return this.http.post('/api/salesportal/add-device-selling-cart', requestData).toPromise()
       .then((res: any) => {
-        if (res.resultCode === '20000') {
-          return res.data;
-        }
-    });
+        return res.data;
+      });
   }
 
   cancelOrder(transaction: Transaction): Promise<any> {
