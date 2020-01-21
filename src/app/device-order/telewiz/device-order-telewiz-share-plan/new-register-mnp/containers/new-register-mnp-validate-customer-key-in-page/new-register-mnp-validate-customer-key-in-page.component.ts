@@ -211,8 +211,8 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
             this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
           } else {
             // tslint:disable-next-line: max-line-length
-            const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: this.transaction.data.customer });
-            this.validateCustomerService.addDeviceSellingCartSharePlan(body).then((order: any) => {
+            const body: any = this.validateCustomerService.getRequestAddDeviceSellingCartSharePlanASP(this.user, this.transaction, this.priceOption, { customer: this.transaction.data.customer });
+            this.validateCustomerService.addDeviceSellingCartSharePlanASP(body).then((order: any) => {
               if (order.data && order.data.soId) {
                 this.transaction.data = {
                   ...this.transaction.data,

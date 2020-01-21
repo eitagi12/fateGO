@@ -128,13 +128,13 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                       return;
                     }
                     if (!this.soId) {
-                      const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(
+                      const body: any = this.validateCustomerService.getRequestAddDeviceSellingCartSharePlanASP(
                         this.user,
                         this.transaction,
                         this.priceOption,
                         { customer: this.transaction.data.customer }
                       );
-                      return this.validateCustomerService.addDeviceSellingCartSharePlan(body).then((response: any) => {
+                      return this.validateCustomerService.addDeviceSellingCartSharePlanASP(body).then((response: any) => {
                         this.transaction.data = {
                           ...this.transaction.data,
                           order: { soId: response.data.soId }
