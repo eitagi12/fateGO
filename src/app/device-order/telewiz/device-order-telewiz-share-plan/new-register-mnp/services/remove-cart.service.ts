@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionType } from 'src/app/shared/models/transaction.model';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { User, TokenService, AlertService } from 'mychannel-shared-libs';
@@ -25,12 +25,25 @@ export class RemoveCartService {
     }).toPromise();
   }
 
+  removeCartTDM( transaction: Transaction): Promise<any> {
+    return this.http.post('/api/salesportal/device-sell/item/remove', {
+      soId: transaction.data.order.soId,
+      userId: this.user.username
+    }).toPromise();
+  }
+
   returnStock(transaction: Transaction): Promise<void> {
     return new Promise(resolve => {
       const promiseAll = [];
       if (transaction.data) {
         if (transaction.data.order && transaction.data.order.soId) {
-          const order = this.removeCartDT(transaction).catch(() => Promise.resolve());
+          let order;
+          // tslint:disable-next-line: max-line-length
+          if (transaction.data.transactionType === TransactionType.DEVICE_ORDER_TELEWIZ_DEVICE_SHARE_PLAN && this.user.userType === 'TELEWIZ') {
+            order = this.removeCartTDM(transaction).catch(() => Promise.resolve());
+          } else {
+            order = this.removeCartDT(transaction).catch(() => Promise.resolve());
+          }
           promiseAll.push(order);
         }
       }
