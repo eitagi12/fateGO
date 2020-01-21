@@ -26,7 +26,7 @@ export class RemoveCartService {
   }
 
   removeCartTDM( transaction: Transaction): Promise<any> {
-    return this.http.post('/api/device-sell/item/remove', {
+    return this.http.post('/api/salesportal/device-sell/item/remove', {
       soId: transaction.data.order.soId,
       userId: this.user.username
     }).toPromise();
