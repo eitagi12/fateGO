@@ -45,18 +45,16 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
     this.createForm();
     this.currenDate = this.getCurrentDate();
     this.aisNativeOrderService.getNativeUsername();
-      this.usernameSubscript = this.aisNativeOrderService.getUsername().subscribe((response: any) => {
-        this.username = response.username;
-      });
-    setTimeout(() => {
+    this.usernameSubscript = this.aisNativeOrderService.getUsername().subscribe((response: any) => {
+      this.username = response.username;
       this.queryRomList();
-    }, 0);
+    });
   }
 
   createForm(): void {
     this.mobileForm = this.fb.group({
       'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])],
-  });
+    });
   }
 
   queryRomList(mobile?: string): void {
@@ -74,23 +72,23 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
       username: this.username,
       cusMobileNo: mobile
     }).toPromise()
-    .then((res: any) => {
-      const data = res.data || [];
-      this.pageLoadingService.closeLoading();
-      return this.romData = data.map((roms: any) => {
-        const createMoment = moment(roms.createDate);
-        roms.time = createMoment.format('HH.mm');
-        return roms;
+      .then((res: any) => {
+        const data = res.data || [];
+        this.pageLoadingService.closeLoading();
+        return this.romData = data.map((roms: any) => {
+          const createMoment = moment(roms.createDate);
+          roms.time = createMoment.format('HH.mm');
+          return roms;
+        })
+          .sort((val1, val2) => val2.time - val1.time);
       })
-      .sort((val1, val2) => val2.time - val1.time);
-    })
-    .then(() => {
-      this.createTransaction(this.romData);
-    })
-    .catch((err) => {
-      this.pageLoadingService.closeLoading();
-      this.alertService.error(err);
-    });
+      .then(() => {
+        this.createTransaction(this.romData);
+      })
+      .catch((err) => {
+        this.pageLoadingService.closeLoading();
+        this.alertService.error(err);
+      });
   }
 
   getCurrentDate(): string {
@@ -98,9 +96,9 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
     const mount = moment().format('M');
     const year = moment().format('YYYY');
     const monthList = [
-    'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
-    'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
-  ];
+      'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+      'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+    ];
     return day + ' ' + monthList[+mount - 1] + ' ' + (+year + 543);
   }
 
