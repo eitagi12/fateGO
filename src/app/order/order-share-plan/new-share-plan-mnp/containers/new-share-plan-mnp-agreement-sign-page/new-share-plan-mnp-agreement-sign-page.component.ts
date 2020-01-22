@@ -157,12 +157,13 @@ export class NewSharePlanMnpAgreementSignPageComponent implements OnInit, OnDest
     if (this.openSignedCommand && !this.openSignedCommand.error) {
       this.openSignedCommand.ws.send('CaptureImage');
     }
+    this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_NEW_PAGE]);
 
-    if (this.transaction.data.simCard.simSerial) {
-      this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_MNP_PAGE]);
-    } else {
-      this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_NEW_PAGE]);
-    }
+    // if (this.transaction.data.simCard.simSerial) {
+    //   this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_MNP_PAGE]);
+    // } else {
+    //   this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_NEW_PAGE]);
+    // }
   }
 
   ngOnDestroy(): void {

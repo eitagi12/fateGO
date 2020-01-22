@@ -117,7 +117,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
         const transactionType = TransactionType.DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN;
         this.transaction.data.action = TransactionAction.KEY_IN;
         const cardType = this.mapCardType(customerInfo.data.idCardType);
-        return this.validateCustomerService.checkValidateCustomerHandleMessages(this.identity, cardType, transactionType)
+        return this.validateCustomerService.checkValidateCustomerHandleErrorMessages(this.identity, cardType, transactionType)
           .then((customer: any) => {
             return this.validateCustomerService.queryBillingAccount(this.identity)
               .then((resp: any) => {

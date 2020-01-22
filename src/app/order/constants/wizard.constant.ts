@@ -15,5 +15,5 @@ export const WIZARD_ORDER_BLOCK_CHAIN = [
 ];
 
 export const WIZARD_ORDER_NEW_SHARE_PLAN_MNP = [
-    'ข้อมูลลูกค้า', 'เลือกแพ็กเกจ', 'ระบุข้อมูลย้ายค่าย', 'ยืนยันและรับSIM'
+    'ข้อมูลลูกค้า', 'เปิดเบอร์ใหม่', 'ระบุข้อมูลย้ายค่าย', 'ยืนยันและรับSIM'
 ];

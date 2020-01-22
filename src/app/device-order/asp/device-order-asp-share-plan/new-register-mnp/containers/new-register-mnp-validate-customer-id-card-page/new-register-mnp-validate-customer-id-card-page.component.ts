@@ -96,7 +96,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
         const transactionType = TransactionType.DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN; // New
 
         return this.validateCustomerService
-          .checkValidateCustomerHandleMessages(this.profile.idCardNo, this.profile.idCardType, transactionType)
+          .checkValidateCustomerHandleErrorMessages(this.profile.idCardNo, this.profile.idCardType, transactionType)
           .then((resp: any) => {
             const data = resp.data || {};
             return {

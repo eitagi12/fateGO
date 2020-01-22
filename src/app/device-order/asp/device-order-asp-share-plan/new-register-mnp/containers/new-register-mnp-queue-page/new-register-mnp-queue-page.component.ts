@@ -25,7 +25,7 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
   transaction: Transaction;
   priceOption: PriceOption;
   queueFrom: FormGroup;
-
+  locationCode: string;
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -40,6 +40,7 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
     private alertService: AlertService,
     private removeCartService: RemoveCartService
   ) {
+    this.locationCode = tokenService.getUser().locationCode;
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
   }
@@ -64,19 +65,20 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
   onNext(queue: boolean): void {
     this.pageLoadingService.openLoading();
     if (queue) {
-      this.queuePageService.autoGetQueue(this.queueFrom.value.mobileNo)
+      this.queuePageService.getQueueAspAndTelewiz(this.locationCode)
         .then((queueNo: any) => {
-          const data = queueNo || {};
-          return data;
+          console.log('queueNo ===>', queueNo);
+          // const data = queueNo || {};
+          // return data;
         })
-        .then((queueNo: string) => {
+        .then(() => {
           this.transaction.data.queue = {
-            queueNo: queueNo
+            queueNo: 'queueNo'
           };
-          return this.queuePageService.createDeviceSellingOrderList(this.transaction, this.priceOption) // New Service Que
-            .then(() => {
-              return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
-            });
+          // return this.queuePageService.createDeviceSellingOrderList(this.transaction, this.priceOption) // New Service Que
+          //   .then(() => {
+          //     return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
+          //   });
         })
         .then((res) => {
           this.router.navigate([ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_RESULT_PAGE]);

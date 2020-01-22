@@ -206,7 +206,7 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
     if (checkAgeAndExpire.true) {
       const cardType = this.transaction.data.customer.idCardType;
       const transactionType = TransactionType.DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN; // New
-      this.validateCustomerService.checkValidateCustomerHandleMessages(this.identity, cardType, transactionType)
+      this.validateCustomerService.checkValidateCustomerHandleErrorMessages(this.identity, cardType, transactionType)
         .then(() => {
           if (this.order) {
             this.setTransaction();
