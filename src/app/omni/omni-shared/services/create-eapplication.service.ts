@@ -24,17 +24,19 @@ export class CreateEapplicationService {
   }
 
   getRequestEapplicationV2(transaction: Transaction): any {
-    const customer: any = transaction.data.customer || {};
-    const billingInformation: any = transaction.data.billingInformation || {};
-    const billCycleData: any = transaction.data.billingInformation.billCycles[0] || {};
+    const customer: any = transaction.data.customer || transaction.data || {};
+    // const billingInformation: any = transaction.data.billingInformation || {};
+    // const billCycleData: any = transaction.data.billingInformation.billCycles[0] || {};
     const action: any = transaction.data.action;
     const mainPackage: any = transaction.data.mainPackage || {};
-    const simCard: any = transaction.data.simCard || {};
-    const billCycle = 'วันที่ 16 ถึงวันที่ 15 กุมภาพันธ์';
+    const simCard: any = transaction.data.cusMobileNo || {};
+    // const billCycle = 'วันที่ 16 ถึงวันที่ 15 กุมภาพันธ์';
+    const billingInformation = transaction.data.billingInformation;
+    const billCycleData = billingInformation.billCycleData || {};
 
     const data: any = {
       fullNameTH: customer.firstName + ' ' + customer.lastName || '',
-      idCard: this.privateIdcard(customer.idCardNo) || '',
+      idCard: this.privateIdcard(customer.cardId) || '',
       idCardType: customer.idCardType || '',
       birthDate: customer.birthdate || '',
       customerAddress: this.utils.getCurrentAddress({
@@ -50,15 +52,15 @@ export class CreateEapplicationService {
         province: customer.province || '',
         zipCode: customer.zipCode || ''
       }, 'TH') || '',
-      mobileNumber: simCard.mobileNo || '',
+      mobileNumber: simCard || '',
 
       mainPackage: {
         name: mainPackage.mainPackageName || '',
         description: mainPackage.mainPackageDesc || ''
       },
-      billCycle: billCycle || '',
+      billCycle: billCycleData.billCycleText || '',
       receiveBillMethod: billCycleData.billMedia || '',
-      billDeliveryAddress: billCycleData.billingAddr || '',
+      billDeliveryAddress: billCycleData.billAddressText || '',
       fullNameEN: `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}`,
       issueDate: customer.issueDate || '',
       expireDate: customer.expireDate || '',

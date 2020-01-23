@@ -28,7 +28,7 @@ export class CreateEcontractService {
     const campaign: any = transaction.data.campaign || '';
     // const trade: any = priceOption.trade || {};
     // const productStock: any = priceOption.productStock || {};
-    const customer: any = transaction.data.customer || '';
+    const customer: any = transaction.data.customer || transaction.data  || '';
     const simCard: any = transaction.data.cusMobileNo || '';
     const mainPackage: any = (transaction.data.mainPackage || transaction.data.currentPackage) || {};
     // const mobileCarePackage: any = transaction.data.mobileCarePackage || {};
@@ -44,8 +44,8 @@ export class CreateEcontractService {
       campaignName: campaign.campaignName,
       locationName: this.translateService.instant(locationFromSeller) || '',
       customerType: '',
-      idCard: this.transformIDcard(customer.idCardNo), // this.transformIDcard(customer.idCardNo),
-      fullName: `${customer.firstName || ''} ${customer.lastName || ''}`,
+      idCard: this.transformIDcard(customer.cardId), // this.transformIDcard(customer.idCardNo),
+      fullName: `${customer.cusName}` || `${customer.firstName} ${customer.lastName}`,
       mobileNumber: simCard,
       imei: simCard.imei || '',
       brand: transaction.data.brand,
@@ -60,7 +60,7 @@ export class CreateEcontractService {
       airTimeDiscount: 400,
       airTimeMonth:  10,
       // tslint:disable-next-line: radix
-      price: parseInt(productPrice) + parseInt(productDiscount),
+      price: productPrice + productDiscount,
       signature: '',
       mobileCarePackageTitle: '',
       isPayAdvance: this.isAdvancePay(mainPackage.payAdvance) || '',
