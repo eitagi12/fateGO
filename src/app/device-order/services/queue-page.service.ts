@@ -74,7 +74,7 @@ export class QueuePageService {
 
   createDeviceSellingOrderListSPKASP(transaction: Transaction, priceOption: PriceOption, user: User): Promise<any> {
     return this.http.post('/api/salesportal/create-device-selling-order',
-      this.mapCreateOrder(transaction, priceOption, user)
+      this.mapCreateOrderSpkAsp(transaction, priceOption, user)
     ).toPromise();
   }
 
@@ -239,78 +239,78 @@ export class QueuePageService {
     return data;
   }
 
-  private getRequestCreateDeviceSellingOrderListSPKASP(transaction: Transaction, priceOption: PriceOption, user: User): any {
+  // private getRequestCreateDeviceSellingOrderListSPKASP(transaction: Transaction, priceOption: PriceOption, user: User): any {
 
-    const customer = transaction.data.customer;
-    const productStock = priceOption.productStock;
-    const productDetail = priceOption.productDetail;
-    const trade = priceOption.trade;
-    const payment = transaction.data.payment;
-    const simCard = transaction.data.simCard;
-    const queue = transaction.data.queue;
-    const seller = transaction.data.seller;
-    const prebooking = transaction.data.preBooking;
-    const mobileCare = transaction.data.mobileCarePackage;
-    const order = transaction.data.order;
-    const paymentTrade = trade.payments[0];
+  //   const customer = transaction.data.customer;
+  //   const productStock = priceOption.productStock;
+  //   const productDetail = priceOption.productDetail;
+  //   const trade = priceOption.trade;
+  //   const payment = transaction.data.payment;
+  //   const simCard = transaction.data.simCard;
+  //   const queue = transaction.data.queue;
+  //   const seller = transaction.data.seller;
+  //   const prebooking = transaction.data.preBooking;
+  //   const mobileCare = transaction.data.mobileCarePackage;
+  //   const order = transaction.data.order;
+  //   const paymentTrade = trade.payments[0];
 
-    let qrAmt;
-    if (payment.paymentType === 'QR_CODE' && transaction.transactionId) {
-      qrAmt = this.getQrAmount(trade.normalPrice, trade.discount);
-    }
+  //   let qrAmt;
+  //   if (payment.paymentType === 'QR_CODE' && transaction.transactionId) {
+  //     qrAmt = this.getQrAmount(trade.normalPrice, trade.discount);
+  //   }
 
-    const paymentMethod = (payment.paymentType === 'QR_CODE' && transaction.transactionId) ?
-      this.replacePaymentMethodForQRCodeWithOutAirtime(payment.paymentQrCodeType) : paymentTrade.method;
+  //   const paymentMethod = (payment.paymentType === 'QR_CODE' && transaction.transactionId) ?
+  //     this.replacePaymentMethodForQRCodeWithOutAirtime(payment.paymentQrCodeType) : paymentTrade.method;
 
-    const data: any = {
-      soId: order.soId,
-      soCompany: productStock.company,
-      locationSource: user.locationCode,
-      locationReceipt: user.locationCode,
-      productType: productDetail.productType || 'DEVICE',
-      productSubType: productDetail.productSubtype || 'HANDSET',
-      brand: productDetail.brand,
-      model: productDetail.model,
-      color: productStock.color,
-      matCode: '',
-      priceIncAmt: (+trade.normalPrice).toFixed(2),
-      priceDiscountAmt: (+trade.discount.amount || 0).toFixed(2),
-      grandTotalAmt: this.getGrandTotalAmt(trade, prebooking),
-      userId: user.username,
-      saleCode: seller && seller.sellerNo ? seller.sellerNo : '',
-      queueNo: queue.queueNo || '',
-      cusNameOrder: `${customer.titleName || ''}${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
-      taxCardId: customer && customer.idCardNo || '',
-      cusMobileNoOrder: simCard && simCard.mobileNo || '',
-      customerAddress: this.getCustomerAddress(customer),
-      tradeNo: trade && trade.tradeNo || '',
-      ussdCode: trade && trade.ussdCode || '',
-      returnCode: customer.privilegeCode || '',
-      cashBackFlg: '',
-      matAirTime: trade.advancePay ? trade.advancePay.matAirtime : '',
-      matCodeFreeGoods: '',
-      paymentRemark: this.getOrderRemarkSPK(trade, payment, mobileCare, queue.queueNo, transaction),
-      installmentTerm: payment.paymentMethod.month, // this.getInstallmentTerm(payment),
-      installmentRate: payment.paymentMethod.percentage, // this.getInstallmentRate(payment),
-      mobileAisFlg: 'Y',
-      paymentMethod: this.getPaymentMethod(transaction),
-      bankCode: payment && payment.paymentBank ? payment.paymentBank.abb : '',
-      tradeFreeGoodsId: trade.freeGoods[0] ? trade.freeGoods[0].tradeFreegoodsId : '',
-      matairtimeId: '',
-      tradeDiscountId: trade.discount ? trade.discount.tradeAirtimeId : '',
-      tradeAirtimeId: trade.advancePay ? trade.advancePay.tradeAirtimeId : '',
-      focCode: '',
-      bankAbbr: payment && payment.paymentBank ? payment.paymentBank.abb : '',
-      preBookingNo: prebooking ? prebooking.preBookingNo : '',
-      depositAmt: prebooking ? prebooking.depositAmt : '',
-      qrTransId: transaction.transactionId ? transaction.transactionId : '',
-      qrAmt: qrAmt
-    };
+  //   const data: any = {
+  //     soId: order.soId,
+  //     soCompany: productStock.company,
+  //     locationSource: user.locationCode,
+  //     locationReceipt: user.locationCode,
+  //     productType: productDetail.productType || 'DEVICE',
+  //     productSubType: productDetail.productSubtype || 'HANDSET',
+  //     brand: productDetail.brand,
+  //     model: productDetail.model,
+  //     color: productStock.color,
+  //     matCode: '',
+  //     priceIncAmt: (+trade.normalPrice).toFixed(2),
+  //     priceDiscountAmt: (+trade.discount.amount || 0).toFixed(2),
+  //     grandTotalAmt: this.getGrandTotalAmt(trade, prebooking),
+  //     userId: user.username,
+  //     saleCode: seller && seller.sellerNo ? seller.sellerNo : '',
+  //     queueNo: queue.queueNo || '',
+  //     cusNameOrder: `${customer.titleName || ''}${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
+  //     taxCardId: customer && customer.idCardNo || '',
+  //     cusMobileNoOrder: simCard && simCard.mobileNo || '',
+  //     customerAddress: this.getCustomerAddress(customer),
+  //     tradeNo: trade && trade.tradeNo || '',
+  //     ussdCode: trade && trade.ussdCode || '',
+  //     returnCode: customer.privilegeCode || '',
+  //     cashBackFlg: '',
+  //     matAirTime: trade.advancePay ? trade.advancePay.matAirtime : '',
+  //     matCodeFreeGoods: '',
+  //     paymentRemark: this.getOrderRemarkSPK(trade, payment, mobileCare, queue.queueNo, transaction),
+  //     installmentTerm: payment.paymentMethod.month, // this.getInstallmentTerm(payment),
+  //     installmentRate: payment.paymentMethod.percentage, // this.getInstallmentRate(payment),
+  //     mobileAisFlg: 'Y',
+  //     paymentMethod: this.getPaymentMethod(transaction),
+  //     bankCode: payment && payment.paymentBank ? payment.paymentBank.abb : '',
+  //     tradeFreeGoodsId: trade.freeGoods[0] ? trade.freeGoods[0].tradeFreegoodsId : '',
+  //     matairtimeId: '',
+  //     tradeDiscountId: trade.discount ? trade.discount.tradeAirtimeId : '',
+  //     tradeAirtimeId: trade.advancePay ? trade.advancePay.tradeAirtimeId : '',
+  //     focCode: '',
+  //     bankAbbr: payment && payment.paymentBank ? payment.paymentBank.abb : '',
+  //     preBookingNo: prebooking ? prebooking.preBookingNo : '',
+  //     depositAmt: prebooking ? prebooking.depositAmt : '',
+  //     qrTransId: transaction.transactionId ? transaction.transactionId : '',
+  //     qrAmt: qrAmt
+  //   };
 
-    return data;
-  }
+  //   return data;
+  // }
 
-  mapCreateOrder(transaction: Transaction, priceOption: PriceOption, user: User): any {
+  mapCreateOrderSpkAsp(transaction: Transaction, priceOption: PriceOption, user: User): any {
     const simCard = transaction.data.simCard;
     const trade = priceOption.trade;
     const prebooking = transaction.data.preBooking;
@@ -340,7 +340,7 @@ export class QueuePageService {
       queueNo: transaction.data.queue.queueNo,
       cusNameOrder: transaction.data.customer.firstName + ' ' + transaction.data.customer.lastName,
       taxCardId: transaction.data.customer.idCardNo,
-      cusMobileNoOrder: simCard && simCard.mobileNo || '' || '',
+      cusMobileNoOrder: simCard && simCard.mobileNo || '',
       customerAddress: this.mapCusAddress(transaction.data.customer),
       tradeNo: priceOption.trade.tradeNo,
       ussdCode: priceOption.trade && priceOption.trade.ussdCode || '',
