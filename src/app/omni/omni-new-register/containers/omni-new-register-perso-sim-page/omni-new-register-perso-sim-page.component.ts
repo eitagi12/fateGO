@@ -296,7 +296,7 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
                       serialNo: serialSim[1].slice(6),
                       index: serialSim[3],
                       simService: 'Normal',
-                      sourceSystem: 'MC-KIOSK'
+                      sourceSystem: 'MC'
                     };
                     this.requestPersoSim = persoSim;
                     this.getPersoDataCommand(persoSim.mobileNo, persoSim.serialNo, persoSim.index,
