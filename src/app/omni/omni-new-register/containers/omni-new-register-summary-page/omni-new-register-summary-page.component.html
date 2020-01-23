@@ -18,11 +18,12 @@
       <app-omni-new-register-billing-info [billingInfo]="billingInfo" [view]="true" (editAddress)="onEditAddress()">
       </app-omni-new-register-billing-info>
 
-      <mc-mail-billing-info [mailBillingInfo]="mailBillingInfo" (completed)="onMailBillingInfoCompleted($event)"
-        (error)="onMailBillingInfoError($event)">
+      <mc-mail-billing-info [eBill]="eBill" [mailBillingInfo]="mailBillingInfo" (completed)="onMailBillingInfoCompleted($event)"
+        (error)="onMailBillingInfoError($event)">>
       </mc-mail-billing-info>
 
-      <mc-tel-no-billing-info [telNoBillingInfo]="telNoBillingInfo" >
+      <mc-tel-no-billing-info [telNoBillingInfo]="telNoBillingInfo" (completed)="onTelNoBillingCompleted($event)"
+        (error)="onTelNoBillingError($event)">
       </mc-tel-no-billing-info>
 
       <app-omni-new-register-summary-seller-code></app-omni-new-register-summary-seller-code>

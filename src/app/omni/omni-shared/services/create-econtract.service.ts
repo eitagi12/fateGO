@@ -25,11 +25,11 @@ export class CreateEcontractService {
   }
 
   getRequestEContractV2(transaction: Transaction, condition: any): Promise<any> {
-    const campaign: any = transaction.data.campaign || {};
+    const campaign: any = transaction.data.campaign || '';
     // const trade: any = priceOption.trade || {};
     // const productStock: any = priceOption.productStock || {};
-    const customer: any = transaction.data.customer || {};
-    const simCard: any = transaction.data.simCard.mobileNo || {};
+    const customer: any = transaction.data.customer || '';
+    const simCard: any = transaction.data.cusMobileNo || '';
     const mainPackage: any = (transaction.data.mainPackage || transaction.data.currentPackage) || {};
     // const mobileCarePackage: any = transaction.data.mobileCarePackage || {};
     // const promotionByMainPackage = this.findPromotionByMainPackage(mainPackage);

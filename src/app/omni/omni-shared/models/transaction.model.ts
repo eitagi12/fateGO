@@ -225,7 +225,6 @@ export interface SimCard {
 }
 
 export interface MainPackage {
-  // billingSystem?: string;
   // duration?: string;
   // itemId: string;
   // itemsPriority?: string;
@@ -241,6 +240,7 @@ export interface MainPackage {
   // [key: string]: any;
   // memberMainPackage?: Array<any>;
 
+  billingSystem?: string;
   mainPackageCode?: any;
   mainPackageName?: any;
   mainPackageDesc?: any;

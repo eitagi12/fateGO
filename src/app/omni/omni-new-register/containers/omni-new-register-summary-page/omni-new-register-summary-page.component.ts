@@ -15,7 +15,7 @@ import * as moment from 'moment';
 import { HttpClient } from '@angular/common/http';
 import { OmniNewRegisterSummarySellerCodeComponent } from '../omni-new-register-summary-seller-code/omni-new-register-summary-seller-code.component';
 import { BillingInfo } from '../omni-new-register-billing-info/omni-new-register-billing-info.component';
-import { HomeService, AlertService, ConfirmCustomerInfo, MailBillingInfo, TelNoBillingInfo, Utils } from 'mychannel-shared-libs';
+import { HomeService, AlertService, ConfirmCustomerInfo, MailBillingInfo, TelNoBillingInfo, Utils, BillingSystemType } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/omni/omni-shared/services/transaction.service';
 import { Transaction } from 'src/app/omni/omni-shared/models/transaction.model';
 const Moment = moment;
@@ -37,6 +37,7 @@ export class OmniNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
   seller: Seller;
   isMailBillingInfoValid: boolean;
   isTelNoBillingValid: boolean;
+  eBill: boolean;
 
   constructor(
     private router: Router,
@@ -55,13 +56,14 @@ export class OmniNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
     const billingInformation = this.transaction.data.billingInformation;
     const simCard = this.transaction.data.simCard;
     const billCycle = billingInformation.billCycles[0];
+    const billCycleData = billingInformation.billCycleData[0];
+
     this.getBllingCycle((billCycle ? billCycle.bill : null) || customer.billCycle
     ).then((billCycleText: string) => {
-      console.log('billCycleText', billCycleText);
       this.billingInfo.billingCycle.text = billCycleText;
     });
-    const billCycleData = billingInformation.billCycleData[0];
-    console.log('billCycleData.billAddressText', billCycleData.billAddressText);
+    this.eBill = !(mainPackage.billingSystem === BillingSystemType.BOS);
+
     const customerAddress = this.utils.getCurrentAddress({
       homeNo: customer.homeNo,
       moo: customer.moo,
@@ -77,7 +79,6 @@ export class OmniNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
       zipCode: customer.zipCode
     }
     );
-    console.log('customerAddress', customerAddress);
 
     this.confirmCustomerInfo = {
       titleName: customer.titleName,
@@ -93,23 +94,22 @@ export class OmniNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
 
     this.billingInfo = {
       billingAddress: {
-        text: (billCycleData ? billCycleData.billAddressText : !null) || customerAddress
+        text: (billCycleData ? billCycleData.billAddressText : null) || customerAddress
       },
       billingCycle: {
         text: billCycle.bill
       },
     };
-    console.log('billCycleData.email', billCycleData.email);
 
     this.mailBillingInfo = {
-      mobileNo: simCard.mobileNo,
+      mobileNo: this.transaction.data.cusMobileNo,
       email: (billCycleData ? billCycleData.email : null) || 'test@test.com',
       address: billCycleData.billingAddr,
-      billChannel: billCycleData.billChannel
+      billChannel: (billCycleData ? billCycleData.billChannel : null) || 'eBill'
     };
 
     this.telNoBillingInfo = {
-      mobileNo: billCycleData.mobileNo,
+      mobileNo: this.transaction.data.cusMobileNo,
       phoneNo: billCycleData.phoneNo || '',
     };
   }
@@ -154,24 +154,24 @@ export class OmniNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
     }
   }
   onNext(): void {
-    // const seller: Seller = this.summarySellerCode.setASCCode();
-    // if (!seller.ascCode) {
-    //   this.alertService.warning('กรุณากรอกข้อมูลให้ถูกต้อง');
-    //   return;
-    // }
-    // this.http.get(`/api/customerportal/checkSeller/` + `${seller.ascCode}`).toPromise().then((response: any) => {
-    //   if (response.data.condition === true) {
-    //     this.transaction.data.seller = {
-    //       ...this.transaction.data.seller,
-    //       locationName: seller.locationName,
-    //       locationCode: seller.locationCode,
-    //       ascCode: seller.ascCode
-    //     };
+    const seller: Seller = this.summarySellerCode.setASCCode();
+    if (!seller.ascCode) {
+      this.alertService.warning('กรุณากรอกข้อมูลให้ถูกต้อง');
+      return;
+    }
+    this.http.get(`/api/customerportal/checkSeller/` + `${seller.ascCode}`).toPromise().then((response: any) => {
+      if (response.data.condition === true) {
+        this.transaction.data.seller = {
+          ...this.transaction.data.seller,
+          locationDestName: seller.locationName,
+          locationCode: seller.locationCode,
+          ascCode: seller.ascCode || seller.employeeId
+        };
     this.router.navigate([ROUTE_OMNI_NEW_REGISTER_ECONTRACT_PAGE]);
-    //   } else {
-    //     this.alertService.warning(response.data.message);
-    //   }
-    // });
+      } else {
+        this.alertService.warning(response.data.message);
+      }
+    });
   }
 
   onMailBillingInfoCompleted(mailBillingInfo: any): void {
@@ -183,14 +183,14 @@ export class OmniNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData || {};
 
-    billCycleData.email = this.mailBillingInfo.email || null;
+    billCycleData.email = mailBillingInfo.email;
     billCycleData.billChannel = mailBillingInfo.billChannel;
     billCycleData.billMedia = mailBillingInfo.billMedia;
     billCycleData.receiveBillMethod = mailBillingInfo.receiveBillMethod;
 
     this.transaction.data.billingInformation.billCycleData = billCycleData;
-    billCycleData.email = this.mailBillingInfo.email || '-';
-    billCycleData.billChannel = this.mailBillingInfo.billChannel;
+    billCycleData.email = mailBillingInfo.email;
+    billCycleData.billChannel = mailBillingInfo.billChannel;
     billCycleData.billMedia = '';
     billCycleData.receiveBillMethod = '';
 
