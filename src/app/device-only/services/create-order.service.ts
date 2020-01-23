@@ -6,9 +6,6 @@ import { Transaction, Customer, Payment, Prebooking, Omise } from 'src/app/share
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { User } from 'mychannel-shared-libs';
 import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
-import { QRCodeModel } from 'src/app/shared/services/qrcode-payment.service';
-import { environment } from 'src/environments/environment';
 import { QrCodeOmiseService } from 'src/app/device-only/services/qr-code-omise.service';
 import { CustomerGroup } from 'src/app/buy-product/services/flow.service';
 
@@ -127,10 +124,12 @@ export class CreateOrderService {
                 if (res.data.isSuccess === true) {
                   resolve(transaction);
                 }
+              }).catch((err: any) => {
+                this.alertService.error(err.error.developerMessage);
               });
-            } else {
-              this.alertService.error('Cannot add item to the cart');
             }
+          }).catch((err: any) => {
+            this.alertService.error(err.error.developerMessage);
           });
         } else {
           this.callAddToCartDT(transaction, priceOption).then((response: any) => {
@@ -142,13 +141,19 @@ export class CreateOrderService {
                 if (res.data.isSuccess === true) {
                   resolve(transaction);
                 }
+              }).catch((err: any) => {
+                this.alertService.error(err.error.developerMessage);
               });
             } else {
               this.alertService.error('Cannot add item to the cart');
             }
+          }).catch((err: any) => {
+            this.alertService.error(err.error.developerMessage);
           });
         }
       }
+    }).catch((err: any) => {
+      this.alertService.error(err.error.developerMessage);
     });
   }
 
