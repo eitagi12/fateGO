@@ -182,7 +182,7 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
 
   data: any = {
     simCard: {
-      mobileNo: '0849725128',
+      mobileNo: '0891230892',
     }
   };
 
@@ -192,7 +192,7 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
       key_sim: false
     };
     this.transaction = this.transactionService.load();
-    if (this.data.simCard.mobileN) {
+    if (this.data.simCard.mobileNo) {
       this.startPersoSim(this.transaction);
     }
   }
