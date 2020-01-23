@@ -1,17 +1,17 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_OMNI_NEW_REGISTER } from 'src/app/omni/constants/wizard.constant';
 import { Router } from '@angular/router';
-import { HomeService, CustomerAddress } from 'mychannel-shared-libs';
+import { HomeService, CustomerAddress, Utils } from 'mychannel-shared-libs';
 import {
   ROUTE_OMNI_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE, ROUTE_OMNI_NEW_REGISTER_SUMMARY_PAGE
 } from 'src/app/omni/omni-new-register/constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
-import { Transaction } from 'src/app/shared/models/transaction.model';
-import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { NgxResource, LocalStorageService } from 'ngx-store';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { TransactionService } from 'src/app/omni/omni-shared/services/transaction.service';
+import { Transaction } from 'src/app/omni/omni-shared/models/transaction.model';
 
 @Component({
   selector: 'app-omni-new-register-ebilling-address-page',
@@ -42,52 +42,18 @@ export class OmniNewRegisterEbillingAddressPageComponent implements OnInit, OnDe
     private transactionService: TransactionService,
     private http: HttpClient,
     private localStorageService: LocalStorageService,
-    private translation: TranslateService
+    private translation: TranslateService,
+    private utils: Utils,
   ) {
-    // this.transaction = this.transactionService.load();
+    this.transaction = this.transactionService.load();
   }
 
   ngOnInit(): void {
     this.callService();
-    // this.translationSubscribe = this.translation.onLangChange.pipe(debounceTime(750)).subscribe(() => {
-    //   this.callService();
-    //   this.amphurs = [];
-    //   this.tumbols = [];
-    //   this.zipCodes = [];
-    //   this.customerAddress.amphur = null;
-    //   this.customerAddress.tumbol = null;
-    //   this.customerAddress.province = null;
-    // });
   }
 
   callService(): void {
-    // const billingInformation = this.transaction.data.billingInformation || {};
-    // const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
-    const customer = {
-      firstName: 'Thanita',
-      lastName: 'Anantaphaiboon',
-      birthdate: '19/03/2535',
-      gender: 'F',
-      expireDate: '18/03/2567',
-      nationality: 'Other',
-      issuingCountry: 'ENG',
-      caNumber: '1101500737451',
-      mainMobile: '0855555555',
-      billCycle: '13',
-      homeNo: '12',
-      moo: '1',
-      mooBan: '',
-      room: '1',
-      floor: '4',
-      buildingName: 'A',
-      soi: '-',
-      street: '-',
-      tumbol: 'บึง',
-      amphur: 'ศรีราชา',
-      province: 'ชลบุรี',
-      zipCode: '20230',
-      titleName: 'Ms.',
-    };
+    const customer = this.transaction.data.customer;
     this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {
       this.allZipCodes = resp.data.zipcodes || [];
     });
@@ -130,11 +96,11 @@ export class OmniNewRegisterEbillingAddressPageComponent implements OnInit, OnDe
     const province = this.getProvinceByName(params.provinceName);
     const req = {
       provinceId: province.id,
-      // zipcode: params.zipCode
+      zipcode: params.zipCode
     };
-    // if (!params.zipCode) {
-    //   delete req.zipcode;
-    // }
+    if (!params.zipCode) {
+      delete req.zipcode;
+    }
 
     this.http.get('/api/customerportal/newRegister/queryAmphur', {
       params: req
@@ -150,11 +116,11 @@ export class OmniNewRegisterEbillingAddressPageComponent implements OnInit, OnDe
     const req = {
       provinceId: province.id,
       amphurName: params.amphurName,
-      // zipcode: params.zipCode
+      zipcode: params.zipCode
     };
-    // if (!params.zipCode) {
-    //   delete req.zipcode;
-    // }
+    if (!params.zipCode) {
+      delete req.zipcode;
+    }
 
     this.http.get('/api/customerportal/newRegister/queryTumbol', {
       params: req
@@ -208,16 +174,36 @@ export class OmniNewRegisterEbillingAddressPageComponent implements OnInit, OnDe
   onBack(): void {
     this.router.navigate([ROUTE_OMNI_NEW_REGISTER_SUMMARY_PAGE]);
   }
+  getFullAddress(customerAddressTemp: any): any {
+    const customerAddress = this.utils.getCurrentAddress({
+      homeNo: this.customerAddressTemp.homeNo,
+      moo: this.customerAddressTemp.moo,
+      mooBan: this.customerAddressTemp.mooBan,
+      room: this.customerAddressTemp.room,
+      floor: this.customerAddressTemp.floor,
+      buildingName: this.customerAddressTemp.buildingName,
+      soi: this.customerAddressTemp.soi,
+      street: this.customerAddressTemp.street,
+      tumbol: this.customerAddressTemp.tumbol,
+      amphur: this.customerAddressTemp.amphur,
+      province: this.customerAddressTemp.province,
+      zipCode: this.customerAddressTemp.zipCode
+    }
+    );
+    return customerAddress;
+  }
 
   onNext(): void {
-    // const billingInformation = this.transaction.data.billingInformation || {};
-    // const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
-    // this.transactionService.update(this.transaction);
-    // this.transaction.data.billingInformation.billDeliveryAddress = Object.assign(
-    //   Object.assign({}, customer),
-    //   this.customerAddressTemp
-    // );
+    const customer = this.transaction.data.customer;
+    const shipaddress = this.getFullAddress(this.transaction.data.customer);
+    this.transaction.data.billingInformation.billCycleData[0] = Object.assign(
+      Object.assign({}, customer),
+      this.customerAddressTemp
+    );
+    this.transaction.data.billingInformation.billCycleData[0].billAddressText = shipaddress;
+    this.transactionService.update(this.transaction);
     this.router.navigate([ROUTE_OMNI_NEW_REGISTER_SUMMARY_PAGE]);
+
   }
 
   onHome(): void {
@@ -225,7 +211,6 @@ export class OmniNewRegisterEbillingAddressPageComponent implements OnInit, OnDe
   }
 
   ngOnDestroy(): void {
-    // this.translationSubscribe.unsubscribe();
-    // this.transactionService.update(this.transaction);
+    this.transactionService.update(this.transaction);
   }
 }

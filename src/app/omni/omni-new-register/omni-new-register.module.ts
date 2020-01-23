@@ -23,6 +23,7 @@ import { OmniNewRegisterEcontactPageComponent } from './containers/omni-new-regi
 import { OmniNewRegisterSummarySellerCodeComponent } from './containers/omni-new-register-summary-seller-code/omni-new-register-summary-seller-code.component';
 import { OmniNewRegisterBillingInfoComponent } from './containers/omni-new-register-billing-info/omni-new-register-billing-info.component';
 import { OmniNewRegisterValidateCustomerPageComponent } from './containers/omni-new-register-validate-customer-page/omni-new-register-validate-customer-page.component';
+import { OmniNewRegisterEbillingPageComponent } from './containers/omni-new-register-ebilling-page/omni-new-register-ebilling-page.component';
 
 @NgModule({
   imports: [
@@ -53,6 +54,7 @@ import { OmniNewRegisterValidateCustomerPageComponent } from './containers/omni-
     OmniNewRegisterSummarySellerCodeComponent,
     OmniNewRegisterBillingInfoComponent,
     OmniNewRegisterValidateCustomerPageComponent,
+    OmniNewRegisterEbillingPageComponent
   ],
 })
 export class OmniNewRegisterModule { }

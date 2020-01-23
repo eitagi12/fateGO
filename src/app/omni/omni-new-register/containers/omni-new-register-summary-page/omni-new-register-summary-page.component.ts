@@ -3,7 +3,8 @@ import { WIZARD_OMNI_NEW_REGISTER } from 'src/app/omni/constants/wizard.constant
 import {
   ROUTE_OMNI_NEW_REGISTER_FACE_CONFIRM_PAGE,
   ROUTE_OMNI_NEW_REGISTER_ECONTRACT_PAGE,
-  ROUTE_OMNI_NEW_REGISTER_ฺBILLING_INFO_PAGE
+  ROUTE_OMNI_NEW_REGISTER_ฺBILLING_INFO_PAGE,
+  ROUTE_OMNI_NEW_REGISTER_FACE_COMPARE_PAGE
 } from 'src/app/omni/omni-new-register/constants/route-path.constant';
 import { Router } from '@angular/router';
 
@@ -14,7 +15,7 @@ import * as moment from 'moment';
 import { HttpClient } from '@angular/common/http';
 import { OmniNewRegisterSummarySellerCodeComponent } from '../omni-new-register-summary-seller-code/omni-new-register-summary-seller-code.component';
 import { BillingInfo } from '../omni-new-register-billing-info/omni-new-register-billing-info.component';
-import { HomeService, AlertService, ConfirmCustomerInfo, MailBillingInfo, TelNoBillingInfo } from 'mychannel-shared-libs';
+import { HomeService, AlertService, ConfirmCustomerInfo, MailBillingInfo, TelNoBillingInfo, Utils } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/omni/omni-shared/services/transaction.service';
 import { Transaction } from 'src/app/omni/omni-shared/models/transaction.model';
 const Moment = moment;
@@ -35,13 +36,15 @@ export class OmniNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
   translationSubscribe: Subscription;
   seller: Seller;
   isMailBillingInfoValid: boolean;
+  isTelNoBillingValid: boolean;
 
   constructor(
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
     private alertService: AlertService,
-    private http: HttpClient
+    private http: HttpClient,
+    private utils: Utils,
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -50,7 +53,6 @@ export class OmniNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
     const customer = this.transaction.data.customer;
     const mainPackage = this.transaction.data.mainPackage;
     const billingInformation = this.transaction.data.billingInformation;
-    const billCycleData = billingInformation.billCycles[0];
     const simCard = this.transaction.data.simCard;
     const billCycle = billingInformation.billCycles[0];
     this.getBllingCycle((billCycle ? billCycle.bill : null) || customer.billCycle
@@ -58,13 +60,31 @@ export class OmniNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
       console.log('billCycleText', billCycleText);
       this.billingInfo.billingCycle.text = billCycleText;
     });
+    const billCycleData = billingInformation.billCycleData[0];
+    console.log('billCycleData.billAddressText', billCycleData.billAddressText);
+    const customerAddress = this.utils.getCurrentAddress({
+      homeNo: customer.homeNo,
+      moo: customer.moo,
+      mooBan: customer.mooBan,
+      room: customer.room,
+      floor: customer.floor,
+      buildingName: customer.buildingName,
+      soi: customer.soi,
+      street: customer.street,
+      tumbol: customer.tumbol,
+      amphur: customer.amphur,
+      province: customer.province,
+      zipCode: customer.zipCode
+    }
+    );
+    console.log('customerAddress', customerAddress);
 
     this.confirmCustomerInfo = {
       titleName: customer.titleName,
       firstName: customer.firstName,
       lastName: customer.lastName,
       idCardNo: customer.idCardNo,
-      mobileNo: simCard.mobileNo,
+      mobileNo: this.transaction.data.cusMobileNo,
       mainPackage: mainPackage.mainPackageName,
       onTopPackage: '',
       packageDetail: mainPackage.mainPackageDesc,
@@ -73,30 +93,24 @@ export class OmniNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
 
     this.billingInfo = {
       billingAddress: {
-        text: billCycleData.billingAddr
+        text: (billCycleData ? billCycleData.billAddressText : !null) || customerAddress
       },
       billingCycle: {
-        text: billCycleData.bill
+        text: billCycle.bill
       },
     };
-
-    // this.mailBillingInfo = {
-    //   mobileNo: simCard.mobileNo,
-    //   email: '',
-    //   address: billCycleData.billingAddr,
-    //   billChannel: billCycleData.billChannel
-    // };
+    console.log('billCycleData.email', billCycleData.email);
 
     this.mailBillingInfo = {
-      mobileNo: '0994480011',
-      email: 'sssssssss@aaaaa.ccc',
-      address: '11 billCycleData',
-      billChannel: 'eBill'
+      mobileNo: simCard.mobileNo,
+      email: (billCycleData ? billCycleData.email : null) || 'test@test.com',
+      address: billCycleData.billingAddr,
+      billChannel: billCycleData.billChannel
     };
 
     this.telNoBillingInfo = {
-      mobileNo: simCard.mobileNo,
-      phoneNo: simCard.mobileNo,
+      mobileNo: billCycleData.mobileNo,
+      phoneNo: billCycleData.phoneNo || '',
     };
   }
 
@@ -132,7 +146,12 @@ export class OmniNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_OMNI_NEW_REGISTER_FACE_CONFIRM_PAGE]);
+    if (this.transaction.data.faceRecognition.kyc = true) {
+      this.router.navigate([ROUTE_OMNI_NEW_REGISTER_FACE_CONFIRM_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_OMNI_NEW_REGISTER_FACE_COMPARE_PAGE]);
+
+    }
   }
   onNext(): void {
     // const seller: Seller = this.summarySellerCode.setASCCode();
@@ -156,19 +175,21 @@ export class OmniNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   onMailBillingInfoCompleted(mailBillingInfo: any): void {
+    console.log('mailBillingInfo', this.mailBillingInfo.email);
+
     if (!mailBillingInfo) {
       return;
     }
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData || {};
 
-    billCycleData.email = mailBillingInfo.email;
+    billCycleData.email = this.mailBillingInfo.email || null;
     billCycleData.billChannel = mailBillingInfo.billChannel;
     billCycleData.billMedia = mailBillingInfo.billMedia;
     billCycleData.receiveBillMethod = mailBillingInfo.receiveBillMethod;
 
     this.transaction.data.billingInformation.billCycleData = billCycleData;
-    billCycleData.email = this.mailBillingInfo.email;
+    billCycleData.email = this.mailBillingInfo.email || '-';
     billCycleData.billChannel = this.mailBillingInfo.billChannel;
     billCycleData.billMedia = '';
     billCycleData.receiveBillMethod = '';
@@ -202,6 +223,20 @@ export class OmniNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
 
   onEditAddress(): void {
     this.router.navigate([ROUTE_OMNI_NEW_REGISTER_ฺBILLING_INFO_PAGE]);
+  }
+
+  onTelNoBillingCompleted(telNoBilling: any): void {
+    const billingInformation = this.transaction.data.billingInformation;
+    const billCycleData = billingInformation.billCycleData || {};
+
+    billCycleData.mobileNoContact = telNoBilling.mobileNo;
+    billCycleData.phoneNoContact = telNoBilling.phoneNo;
+
+    this.transaction.data.billingInformation.billCycleData = billCycleData;
+  }
+
+  onTelNoBillingError(valid: boolean): void {
+    this.isTelNoBillingValid = valid;
   }
 
   ngOnDestroy(): void {

@@ -1,4 +1,4 @@
-import { OmniNewRegisterRoutingModule } from './omni-new-register.module';
+import { OmniNewRegisterRoutingModule } from './omni-new-register-routing.module';
 
 describe('OmniNewRegisterModule', () => {
   let omniNewRegisterRoutingModule: OmniNewRegisterRoutingModule;

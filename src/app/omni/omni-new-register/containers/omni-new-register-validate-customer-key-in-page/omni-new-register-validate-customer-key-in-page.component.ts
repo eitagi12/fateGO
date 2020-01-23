@@ -28,7 +28,7 @@ export class OmniNewRegisterValidateCustomerKeyInPageComponent implements OnInit
     private utils: Utils,
     private translation: TranslateService
   ) {
-    this.transactionService.setDataMockup();
+    // this.transactionService.setDataMockup();
     this.transaction = this.transactionService.load();
   }
 

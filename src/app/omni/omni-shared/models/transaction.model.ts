@@ -75,6 +75,8 @@ export interface TransactionData {
   productDiscount?: any;
   productNetPrice?: any;
   cardId?: string;
+  cusMobileNo?: string;
+  packageName?: string;
 }
 
 export interface Omise {

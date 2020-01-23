@@ -17,6 +17,7 @@ import { OmniNewRegisterResultPageComponent } from './containers/omni-new-regist
 import { OmniNewRegisterEapplicationPageComponent } from './containers/omni-new-register-eapplication-page/omni-new-register-eapplication-page.component';
 import { OmniNewRegisterEcontactPageComponent } from './containers/omni-new-register-econtract-page/omni-new-register-econtact-page.component';
 import { OmniNewRegisterValidateCustomerPageComponent } from './containers/omni-new-register-validate-customer-page/omni-new-register-validate-customer-page.component';
+import { OmniNewRegisterEbillingPageComponent } from './containers/omni-new-register-ebilling-page/omni-new-register-ebilling-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'validate-customer-key-in', pathMatch: 'full' },
@@ -30,6 +31,7 @@ const routes: Routes = [
   { path: 'merge-billing', component: OmniNewRegisterMergeBillingPageComponent },
   { path: 'confirm-user-information', component: OmniNewRegisterConfirmUserInformationPageComponent },
   { path: 'ebilling-address', component: OmniNewRegisterEbillingAddressPageComponent },
+  { path: 'ebilling', component: OmniNewRegisterEbillingPageComponent },
   { path: 'summary', component: OmniNewRegisterSummaryPageComponent },
   { path: 'agreement-sign', component: OmniNewRegisterAgreementSignPageComponent },
   { path: 'perso-sim', component: OmniNewRegisterPersoSimPageComponent },

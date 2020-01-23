@@ -5,6 +5,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
 import { ROUTE_OMNI_NEW_REGISTER_EBILLING_ADDRESS_PAGE } from '../../constants/route-path.constant';
+
 const Moment = moment;
 export interface BillingInfo {
   billingAddress: BillingInfoOptions;
@@ -40,8 +41,8 @@ export class OmniNewRegisterBillingInfoComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.mobileNoMember = this.transaction.data.simCard.mobileNoMember;
   }
+
   getBillCycleText(bill: string): any {
     const bills = bill.split(' ');
     if (this.translation.currentLang === 'TH') {
