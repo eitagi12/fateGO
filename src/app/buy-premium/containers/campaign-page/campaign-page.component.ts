@@ -67,7 +67,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
     this.activatedRoute.queryParams.subscribe((params: any) => {
       this.params = params;
-      console.log('params:' + JSON.stringify(this.params));
       this.callService(
         params.brand,
         params.model,
@@ -89,7 +88,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('params:' + JSON.stringify(this.params));
     this.priceOption.queryParams = Object.assign({}, this.params);
     this.priceOptionService.save(this.priceOption);
   }
@@ -98,7 +96,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
   callService(
     brand: string, model: string,
     productType?: string, productSubtype?: string): void {
-    console.log('callService');
     const user: User = this.tokenService.getUser();
 
     // clear
@@ -110,7 +107,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
       productType: productType || PRODUCT_TYPE,
       productSubtype: productSubtype || PRODUCT_SUB_TYPE
     }).then((resp: any) => {
-      console.log('DEBUG productDetail response Info:' + resp);
 
       // เก็บข้อมูลไว้ไปแสดงหน้าอื่นโดยไม่เปลี่ยนแปลงค่าข้างใน
       this.priceOption.productDetail = resp.data || {};
@@ -146,7 +142,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
           return product;
         }).sort((a, b) => a.stock.qty - b.stock.qty);
 
-        console.log(`DEBUG after productDetail.products:${JSON.stringify(this.productDetail.products)}`);
         // default selected
         let defaultProductSelected;
         if (this.priceOption.productStock && this.priceOption.productStock.colorName) {
@@ -191,7 +186,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     this.colorForm.valueChanges.pipe(debounceTime(1000)).subscribe(obs => {
       const stock = obs.stock;
       this.priceOption.productStock = stock;
-      console.log('DEBUG createForm Info:' + this.priceOption.productDetail.products);
       const product = (this.priceOption.productDetail.products || []).find((p: any) => {
         return p.colorName === stock.color;
       });
@@ -208,7 +202,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
   onNext(): void {
     this.priceOption.queryParams = Object.assign({}, this.params);
     this.priceOption.productDetail.price = this.params.maxNormalPrice;
-    console.log('DEBUG onNext():' + JSON.stringify(this.priceOption));
     this.priceOptionService.save(this.priceOption);
     this.router.navigate([ROUTE_SHOP_PREMIUM_PAYMENT_PAGE]);
   }
