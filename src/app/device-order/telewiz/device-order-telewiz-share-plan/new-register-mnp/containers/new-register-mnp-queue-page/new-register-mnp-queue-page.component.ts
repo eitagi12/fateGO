@@ -24,6 +24,7 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
   transaction: Transaction;
   priceOption: PriceOption;
   queueFrom: FormGroup;
+  locationCode: string;
 
   constructor(
     private fb: FormBuilder,
@@ -39,6 +40,7 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
+    this.locationCode = tokenService.getUser().locationCode;
   }
 
   ngOnInit(): void {
@@ -92,6 +94,29 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
         });
     }
   }
+
+  // onSkip(): void {
+  //   this.pageLoadingService.openLoading();
+  //   if (this.locationCode) {
+  //     this.queuePageService.getQueueAspAndTelewiz(this.locationCode)
+  //       .then((res: any) => {
+  //         this.transaction.data.queue = {
+  //           queueNo: res.data.queue ? res.data.queue : ''
+  //         };
+  //       })
+  //       .then(() => {
+  //         return this.queuePageService.createDeviceSellingOrderListSPKASP(this.transaction, this.priceOption, this.user)
+  // New Service Que
+  //           .then((res: any) => {
+  //             return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
+  //           });
+  //       })
+  //       .then((res) => {
+  //         this.router.navigate([ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_RESULT_PAGE]);
+  //       })
+  //       .then(() => this.pageLoadingService.closeLoading());
+  //   }
+  // }
 
   onHome(): void {
     this.removeCartService.backToReturnStock('/', this.transaction);

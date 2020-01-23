@@ -9,6 +9,7 @@ import { Transaction, Order, TransactionType, TransactionAction } from 'src/app/
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Subscription } from 'rxjs';
+import { RemoveCartService } from '../../services/remove-cart.service';
 
 @Component({
   selector: 'app-new-register-mnp-validate-customer-page',
@@ -66,7 +67,8 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     private transactionService: TransactionService,
     private utils: Utils,
     private priceOptionService: PriceOptionService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private removeCartService: RemoveCartService
   ) {
     this.placeholder = this.placeholder || 'เลขบัตรประชาชน';
     this.transaction = this.transactionService.load();
@@ -179,6 +181,12 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
         this.alertService.error(error);
       }
     });
+  }
+
+  onBack(): void {
+    const queryParam = this.priceOption.queryParams;
+    const url = `/sales-portal/buy-product/brand/${queryParam.brand}/${queryParam.model}`;
+    this.removeCartService.backToReturnStock(url, this.transaction);
   }
 
   validateCustomer(): any {

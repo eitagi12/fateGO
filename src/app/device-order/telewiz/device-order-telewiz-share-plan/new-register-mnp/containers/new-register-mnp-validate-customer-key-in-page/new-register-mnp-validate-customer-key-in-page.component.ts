@@ -186,9 +186,9 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
     this.transaction.data.customer = this.validateCustomerService.mapCustomer(this.customerKeyinInfo, this.imageReadSmartCard);
   }
 
-  onHome(): void {
-    this.removeCartService.backToReturnStock('/', this.transaction);
-  }
+  // onHome(): void {
+  //   this.removeCartService.backToReturnStock('/', this.transaction);
+  // }
 
   onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_PAGE]);
