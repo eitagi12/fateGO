@@ -104,7 +104,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     // clear
     this.productDetail = {};
     this.salesService.productDetail({
-      brand: brand,
+      brand: 'BRAND-WANSMORM',
       location: user.locationCode,
       model: model,
       productType: productType || PRODUCT_TYPE,
@@ -126,13 +126,9 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
           listLocationCodeDestination: [user.locationCode]
         }).then((respStock: any) => respStock.data.listLocationCodeDestinationOut || []);
       })).subscribe((respStocks: any[]) => {
-        // tslint:disable-next-line: max-line-length
-        const test = {'resultCode': '20000', 'resultDescription': 'Success', 'developerMessage': 'Success', 'data': {'resultFlg': 'Y', 'message': 'Warning :   This location cannot reserve other location.', 'listLocationCodeDestinationOut': [{'company': 'AWN', 'subStock': 'BRN', 'productType': 'PREMIUM', 'productSubType': 'N/A', 'productName': 'เสื้อยืดลาย Thailand ไซส์ 42', 'brand': 'CPVM-TEERACHAI', 'model': 'M02', 'color': 'BLACK', 'location': '1100', 'locationName': 'สาขาอาคารเอไอเอส 2', 'qty': '89', 'flagReserve': 'Y', 'flagWaiting': 'N'}, {'company': 'AWN', 'subStock': 'BRN', 'productType': 'PREMIUM', 'productSubType': 'N/A', 'productName': 'เสื้อยืดลาย Thailand ไซส์ 38', 'brand': 'CPVM-TEERACHAI', 'model': 'M01', 'color': 'BLACK', 'location': '1100', 'locationName': 'สาขาอาคารเอไอเอส 2', 'qty': '32', 'flagReserve': 'Y', 'flagWaiting': 'N'}]}};
-        respStocks = test.data.listLocationCodeDestinationOut;
-        console.log('DEBUG productStock response Info:' + respStocks);
+
         this.productDetail = resp.data || {};
         this.productDetail.products = [];
-        console.log('DEBUG productDetail Info:' + JSON.stringify(this.productDetail));
 
         const productStocks: any[] = respStocks.reduce((previousValue: any[], currentValue: any[]) => {
           return previousValue.concat(currentValue);
@@ -144,7 +140,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             return stock;
           });
 
-        console.log(`DEBUG befor productDetail.products:${JSON.stringify(this.productDetail.products)}`);
         this.productDetail.products = products.map((product: any) => {
           const stock = productStocks.find((productStock: any) => productStock.color === product.colorName) || { qty: 0 };
           product.stock = stock;
