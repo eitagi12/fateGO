@@ -1,0 +1,187 @@
+<div class="mc-flex">
+  <mc-header title="Premium">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+
+  <div class="mc-flex-wrap">
+
+    <div class="card border-0">
+      <div class="container-fluid mt-3 mb-3">
+        <div class="row pl-3 pr-3">
+          <div class="col-12 col-sm-6">
+            <img src="assets/images/icon/icon-person.png" class="icon-img icon-person" />
+            <span id="text-customer-name">
+              {{ transaction?.data?.customer?.titleName }} {{ transaction?.data?.customer?.firstName }}
+              {{ transaction?.data?.customer?.lastName}}
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 text-sm-right" *ngIf="transaction?.data?.receiptInfo?.telNo !== ''">
+            <img src="assets/images/icon/sales_portal_green_phone.png" class="icon-img icon-phone" />
+            <span id="text-mobile-no">{{ transaction?.data?.receiptInfo?.telNo | mobileNo}}</span>
+          </div>
+        </div>
+      </div>
+      <hr class="mt-0 mb-0">
+      <div class="container-fluid mt-3 mb-3">
+        <div class="row pl-3 pr-3">
+          <div class="col-8 col-sm-10 text-left text-brown">
+            <span id="text-name"> {{ priceOption?.productDetail?.name }} </span>
+            <span id="text-color" *ngIf="priceOption?.productStock?.colorName"> สี
+              {{ priceOption?.productStock?.colorName }}</span>
+            <span id="text-amount"> จำนวน 1 ชิ้น</span>
+          </div>
+          <div class="col-4 col-sm-2 text-center text-brown">
+            <img src="assets/images/icon/icon-cart.png" width="35px" class="mb-1" />
+            <h4 class="text-green" id="text-total-price">
+              ฿ {{ price | number }}
+            </h4>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <mc-wizard [wizards]="wizards" active="3"></mc-wizard>
+
+    <div class="mt-3 mb-3">
+      <div class="container-fluid">
+        <!-- สรุปรายการสั่งชื้อสินค้า -->
+        <div class="card mb-3">
+          <div class="card-header bg-pink text-white">{{ 'สรุปรายการสั่งซื้อสินค้า' | translate }}</div>
+          <div class="card-body">
+            
+            <i class="fa fa-circle mr-3 text-lime"></i>
+            <span>
+            <span class="text-grey" id="text-name-summary">
+              {{ priceOption?.productDetail?.name }}
+            </span>
+            <span class="text-grey" id="text-color-summary" *ngIf="priceOption?.productStock?.colorName">
+                    {{ priceOption?.productStock?.colorName?'สี': '' }} {{ priceOption?.productStock?.colorName }} 
+            </span>
+          </span>
+            <span class="pull-right text-green" id="text-model-price">
+              ฿ {{ price | number }}
+            </span>
+          </div>
+          <div class="card-footer bg-transparent text-right">
+            <span>
+             {{ 'รวมยอดชำระ (รวม VAT)' | translate }}
+            </span>
+            <span class="text-green ml-2" id="text-summary-price">
+              ฿ {{ summary([
+                +price
+                ]) | number }}
+            </span>
+          </div>
+        </div>
+
+        <!-- รายละเอียดการชำระ -->
+        <div class="card mb-3">
+          <div class="card-header text-white" style="background: #FF80AB;">
+            {{ 'รายละเอียดการชำระ' | translate }}
+          </div>
+          <div class="card-body">
+            <p>
+              {{ 'ข้อมูลการชำระสินค้า' | translate }}
+            </p>
+            <ng-container
+              *ngIf="!priceOption?.trade?.advancePay || priceOption?.trade?.advancePay?.installmentFlag === 'N'">
+              <p>
+                <i class="fa fa-circle mr-3 text-lime"></i>
+                <span class="text-grey" id="text-name-payment-summary">
+                  {{ priceOption?.productDetail?.name }}
+                </span>
+                <span class="text-grey" id="text-color-summary" *ngIf="priceOption?.productStock?.colorName">
+                  {{ priceOption?.productStock?.colorName?'สี': '' }} {{ priceOption?.productStock?.colorName }}
+                </span>
+                <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'"> :
+                  {{ 'ชำระเต็มจำนวน' | translate }}</span>
+                <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'"> :
+                  {{ 'ผ่อนชำระบัตรเครดิต' | translate }}</span>
+                <span class="pull-right text-green" id="text-price-summary">
+                  ฿ {{ price | number }}
+                </span>
+              </p>
+            </ng-container>
+
+            <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">
+              <span class="text-grey" id="text-credit-summary">
+                (
+                {{ 'ชำระโดย เครดิตธนาคาร' | translate }}
+                {{ transaction?.data?.payment?.paymentMethod?.name }}
+                {{ transaction?.data?.payment?.paymentMethod?.percentage }} %
+                {{ transaction?.data?.payment?.paymentMethod?.month }} เดือน
+                {{ ((+price) + (priceOption?.trade?.advancePay?.installmentFlag === 'N' ? +priceOption?.trade?.advancePay?.amount : 0)) / transaction?.data?.payment?.paymentMethod?.month | number: '1.2-2' }}
+                บาทต่อเดือน
+                )
+              </span>
+            </ng-container>
+            <ng-container
+              *ngIf="transaction?.data?.payment?.paymentForm !== 'INSTALLMENT' && transaction?.data?.payment?.paymentType === 'CREDIT'">
+              <span class="text-grey" id="text-credit-summary">
+                (
+                {{ (transaction?.data?.payment?.paymentOnlineCredit ? 'ชำระโดย ชำระเงินออนไลน์ด้วยบัตรเครดิต' : 'ชำระโดย เครดิตธนาคาร') | translate }}
+                {{ transaction?.data?.payment?.paymentMethod?.name }}
+                {{ transaction?.data?.payment?.paymentBank?.name}}
+                )
+              </span>
+            </ng-container>
+
+            <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">
+              <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType !== 'QR_CODE' && 
+              transaction?.data?.payment?.paymentType !== 'CREDIT'">
+                ({{ 'ชำระโดย' | translate }} {{ 'เงินสด' | translate }})
+              </small>
+              <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType === 'QR_CODE'">
+                (
+                {{ 'ชำระโดย' | translate }}
+                <span *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'THAI_QR'">
+                  Thai QR Promptpay
+                </span>
+                <span *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'LINE_QR'">
+                  Rabbit Line Pay
+                </span>
+                )
+              </small>
+            </ng-container>
+
+          </div>
+          <div class="card-footer bg-transparent ">
+            <p>
+              {{ 'ข้อมูลใบเสร็จรับเงิน' | translate }}
+            </p>
+            <div class="row">
+              <div class="col-12 col-sm-4">
+                <i class="fa fa-circle mr-3 text-lime"></i>
+                <span class="text-grey">
+                  {{ 'ผู้ซื้อ' | translate }}
+                </span>
+              </div>
+              <div class="col-12 col-sm-8">
+                <p class="text-green" id="text-receipt-customer-name">
+                  {{ transaction?.data?.customer?.titleName }} {{ transaction?.data?.customer?.firstName }} {{ transaction?.data?.customer?.lastName
+                  }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- รหัสผู้ขาย -->
+        <app-summary-seller-code></app-summary-seller-code>
+
+
+      </div>
+    </div>
+  </div>
+
+
+  <mc-footer>
+    <button class="btn btn-secondary" id="button-back" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" id="button-next" (click)="onNext()">NEXT</button>
+  </mc-footer>
+</div>
