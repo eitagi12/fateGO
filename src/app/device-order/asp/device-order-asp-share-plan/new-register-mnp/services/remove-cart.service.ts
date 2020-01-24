@@ -38,7 +38,8 @@ export class RemoveCartService {
       if (transaction.data) {
         if (transaction.data.order && transaction.data.order.soId) {
           let order;
-          if (transaction.data.transactionType === TransactionType.DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN && this.user.userType === 'ASP') {
+          if (this.tokenService.isAspUser()) {
+            console.log('ASP');
             order = this.removeCartTDM(transaction).catch(() => Promise.resolve());
           } else {
             order = this.removeCartDT(transaction).catch(() => Promise.resolve());
