@@ -56,7 +56,7 @@ export class CreateEcontractService {
       netPrice: this.transformDecimalPipe(productNetPrice),
       advancePay: this.transformDecimalPipe(advancePay),
       contract: mainPackage.durationContract,
-      packageDetail: mainPackage.mainPackageDesc || mainPackage.mainPackageName,
+      packageDetail: mainPackage.mainPackageDesc,
       airTimeDiscount: 400,
       airTimeMonth:  10,
       // tslint:disable-next-line: radix

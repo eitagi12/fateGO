@@ -37,6 +37,7 @@ export class OmniNewRegisterFaceConfirmPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.createForm();
   }
 
   onBack(): void {
@@ -50,6 +51,12 @@ export class OmniNewRegisterFaceConfirmPageComponent implements OnInit {
 
   onHome(): void {
     this.homeService.goToHome();
+  }
+
+  createForm(): void {
+    this.confirmForm = this.fb.group({
+      password: [null, Validators.required]
+    });
   }
 
   // tslint:disable-next-line: use-life-cycle-interface

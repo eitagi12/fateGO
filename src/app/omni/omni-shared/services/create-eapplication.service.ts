@@ -24,7 +24,7 @@ export class CreateEapplicationService {
   }
 
   getRequestEapplicationV2(transaction: Transaction): any {
-    const customer: any = transaction.data.customer || transaction.data || {};
+    const customer: any = transaction.data.customer;
     // const billingInformation: any = transaction.data.billingInformation || {};
     // const billCycleData: any = transaction.data.billingInformation.billCycles[0] || {};
     const action: any = transaction.data.action;
@@ -36,7 +36,7 @@ export class CreateEapplicationService {
 
     const data: any = {
       fullNameTH: customer.firstName + ' ' + customer.lastName || '',
-      idCard: this.privateIdcard(customer.cardId) || '',
+      idCard: this.privateIdcard(transaction.data.cardId) || '',
       idCardType: customer.idCardType || '',
       birthDate: customer.birthdate || '',
       customerAddress: this.utils.getCurrentAddress({
@@ -53,7 +53,6 @@ export class CreateEapplicationService {
         zipCode: customer.zipCode || ''
       }, 'TH') || '',
       mobileNumber: simCard || '',
-
       mainPackage: {
         name: mainPackage.mainPackageName || '',
         description: mainPackage.mainPackageDesc || ''
@@ -74,22 +73,22 @@ export class CreateEapplicationService {
     //     description: mainPackage.statementEng || mainPackage.detailEN || ''
     //   };
     // } else {
-      // data.billCycle = billCycleData.billCycleText;
-      // data.mainPackage = {
-      //   name: (mainPackage.customAttributes || {}).shortNameThai || mainPackage.title || '',
-      //   description: mainPackage.statementThai || mainPackage.detailTH || ''
-      // };
+    // data.billCycle = billCycleData.billCycleText;
+    // data.mainPackage = {
+    //   name: (mainPackage.customAttributes || {}).shortNameThai || mainPackage.title || '',
+    //   description: mainPackage.statementThai || mainPackage.detailTH || ''
+    // };
     // }
-    if (action === TransactionAction.READ_CARD || action === TransactionAction.READ_CARD_REPI) {
-      data.customerImg = customer.imageReadSmartCard;
+    if (action === TransactionAction.READ_CARD) {
+      data.imageSmartCard = customer.imageReadSmartCard;
     } else {
-      data.customerImgKeyIn = customer.imageSmartCard || customer.imageReadPassport;
+      data.imageSmartCard = customer.imageSmartCard;
     }
 
     return data;
   }
 
-  private privateIdcard(idcardNo: string): string {
-    return idcardNo.replace(/^[0-9]{9}/, 'XXXXXXXXX');
+  private privateIdcard(cardId: string): string {
+    return cardId.replace(/^[0-9]{9}/, 'XXXXXXXXX');
   }
 }
