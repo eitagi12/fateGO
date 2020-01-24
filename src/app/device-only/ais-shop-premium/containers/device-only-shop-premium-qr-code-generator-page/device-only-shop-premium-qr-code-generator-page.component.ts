@@ -245,8 +245,7 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
           }
         });
       } else if (this.isPaid) {
-        this.qrcodePaymentService.updateMpayObjectInTransaction(this.qrCodePrePostMpayModel);
-        this.genQueue();
+        this.updateMpayObjectInTransaction();
       }
     });
   }
@@ -303,8 +302,7 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
   updateMpayDataStatus(): void {
     this.qrcodePaymentService.updatePostMpay(this.qrCodePrePostMpayModel).then(
       (data: any) => {
-        this.qrcodePaymentService.updateMpayObjectInTransaction(this.qrCodePrePostMpayModel);
-        this.genQueue();
+        this.updateMpayObjectInTransaction();
       },
       (error: any) => {
         this.alertService.error(error);
@@ -380,6 +378,12 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
           this.alertService.error(error);
         }
       );
+  }
+
+  async updateMpayObjectInTransaction(): Promise<void> {
+    this.transaction.data.mpayPayment = this.qrCodePrePostMpayModel;
+    await this.transactionService.update(this.transaction);
+    await this.genQueue();
   }
 
   ngOnDestroy(): void {
