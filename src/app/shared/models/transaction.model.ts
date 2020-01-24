@@ -26,7 +26,8 @@ export enum TransactionType {
   DEVICE_ONLY_WEB = 'DeviceOnlyWEB',
   DEVICE_ONLY_KIOSK = 'DeviceOnlyKiosk',
   VAS_PACKAGE_ROM = 'RomAgent',
-  VAS_PACKAGE_CUSTOMER = 'Customer'
+  VAS_PACKAGE_CUSTOMER = 'Customer',
+  SHOP_PREMIUM_AIS = 'ShopPremiumAIS'
 }
 
 export enum TransactionAction {

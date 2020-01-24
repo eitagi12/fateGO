@@ -374,7 +374,7 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
   createTransaction(): void {
     this.transaction = {
       data: {
-        transactionType: TransactionType.DEVICE_ONLY_AIS,
+        transactionType: TransactionType.SHOP_PREMIUM_AIS,
         action: TransactionAction.KEY_IN,
       }
     };
