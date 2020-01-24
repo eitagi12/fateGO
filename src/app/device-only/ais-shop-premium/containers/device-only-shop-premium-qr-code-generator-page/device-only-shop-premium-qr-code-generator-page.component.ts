@@ -1,6 +1,6 @@
 import { Component, OnInit, EventEmitter, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertService, PageActivityService, TokenService } from 'mychannel-shared-libs';
+import { AlertService, PageActivityService, TokenService, PageLoadingService, User } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Transaction, Payment } from 'src/app/shared/models/transaction.model';
@@ -12,6 +12,10 @@ import { Subscription, BehaviorSubject, Observable } from 'rxjs';
 import { interval } from 'rxjs';
 import { ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_ERROR_PAGE } from 'src/app/device-order/ais/device-order-ais-existing/constants/route-path.constant';
 import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
+import { ROUTE_SHOP_PREMIUM_QR_CODE_SUMMARY_PAGE, ROUTE_SHOP_PREMIUM_RESULT_PAGE } from 'src/app/device-only/ais-shop-premium/constants/route-path.constant';
+import { QueueService } from 'src/app/device-only/services/queue.service';
+import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
+import { CreateOrderService } from 'src/app/device-only/services/create-order.service';
 
 export class QRodePrePostMpayModel {
   orderId: string;
@@ -35,6 +39,7 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
   transaction: Transaction;
   priceOption: PriceOption;
   payment: Payment;
+  user: User;
   refreshQRCode: EventEmitter<boolean>;
   // qrcode
   private checkInquiryCallbackMpaySubscribtion$: Subscription;
@@ -68,10 +73,15 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
     private pageActivityService: PageActivityService,
     private homeButtonService: HomeButtonService,
     private qrcodePaymentService: QRCodePaymentService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private createOrderService: CreateOrderService,
+    private queueService: QueueService,
+    private pageLoadingService: PageLoadingService,
+    private sharedTransactionService: SharedTransactionService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
+    this.user = this.tokenService.getUser();
     this.payment = this.transaction.data.payment;
     this.refreshQRCode = new EventEmitter<boolean>();
     this.qrCodePrePostMpayModel = new QRCodePrePostMpayModel();
@@ -120,11 +130,26 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
   }
 
   onBack(): void {
-    this.router.navigate(['']);
+    this.router.navigate([ROUTE_SHOP_PREMIUM_QR_CODE_SUMMARY_PAGE]);
   }
 
-  goToMpayQueuePage(): void {
-    this.router.navigate(['']);
+  genQueue(): void {
+    this.pageLoadingService.openLoading();
+    this.queueService.getQueueZ(this.user.locationCode)
+      .then((resp: any) => {
+        const queueNo = resp.data.queue;
+        this.transaction.data.queue = { queueNo: queueNo };
+        this.createOrderAndupdateTransaction();
+      });
+  }
+
+  createOrderAndupdateTransaction(): void {
+    this.createOrderService.createDeviceSellingOrderShopPremium(this.transaction, this.priceOption).then(() => {
+      this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption, true).then(() => {
+        this.pageLoadingService.closeLoading();
+        this.router.navigate([ROUTE_SHOP_PREMIUM_RESULT_PAGE]);
+      });
+    });
   }
 
   onRefresh(): void {
@@ -214,7 +239,7 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
         this.inquiryMpay().then((isSuccess: boolean) => {
           if (isSuccess) {
             this.updateMpayDataStatus();
-            this.goToMpayQueuePage();
+            this.genQueue();
           } else {
             this.subscription$.unsubscribe();
             this.showPopupMessage('สิ้นสุดระยะเวลาชำระเงิน กรุณากดปุ่ม "REFRESH"' + this.NEW_LINE + 'เพื่อทำรายการใหม่');
@@ -222,7 +247,7 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
         });
       } else if (this.isPaid) {
         this.qrcodePaymentService.updateMpayObjectInTransaction(this.qrCodePrePostMpayModel);
-        this.goToMpayQueuePage();
+        this.genQueue();
       }
     });
   }
@@ -299,7 +324,7 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
       this.inquiryMpay().then((isSuccess: boolean) => {
         if (isSuccess) {
           this.updateMpayDataStatus();
-          this.goToMpayQueuePage();
+          this.genQueue();
         } else {
           this.initialOrderID();
           this.refreshCount = this.refreshCount + 1;
