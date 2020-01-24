@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { TokenService } from 'mychannel-shared-libs';
+import { TokenService, User } from 'mychannel-shared-libs';
 import { Transaction, Payment, Prebooking, Customer, Queue, Omise } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { HttpClient } from '@angular/common/http';
@@ -60,9 +60,21 @@ export class QueuePageService {
     ).toPromise();
   }
 
+  getQueueAspAndTelewiz(locationCode: string): Promise<any> {
+    return this.http.get(`/api/salesportal/device-sell/gen-queue?locationCode=${locationCode}`).pipe(
+      map((response: any) => response || '')
+    ).toPromise();
+  }
+
   createDeviceSellingOrderList(transaction: Transaction, priceOption: PriceOption): Promise<any> { // ตัวที่จะใช้
     return this.http.post('/api/salesportal/dt/create-order-list',
       this.getRequestCreateDeviceSellingOrderList(transaction, priceOption)
+    ).toPromise();
+  }
+
+  createDeviceSellingOrderListSPKASP(transaction: Transaction, priceOption: PriceOption, user: User): Promise<any> {
+    return this.http.post('/api/salesportal/create-device-selling-order',
+      this.mapCreateOrderSpkAsp(transaction, priceOption, user)
     ).toPromise();
   }
 
@@ -225,6 +237,84 @@ export class QueuePageService {
       data.installmentRate = payment.paymentMethod.percentage || 0;
     }
     return data;
+  }
+
+  mapCreateOrderSpkAsp(transaction: Transaction, priceOption: PriceOption, user: User): any {
+    const simCard = transaction.data.simCard;
+    const trade = priceOption.trade;
+    const prebooking = transaction.data.preBooking;
+    const sellerNo = (transaction.data.seller && transaction.data.seller.sellerNo) ? transaction.data.seller.sellerNo : '';
+    const mapInstallmentTerm = transaction.data.payment.paymentMethod.month ? transaction.data.payment.paymentMethod.month : 0;
+    const mapInstallmentRate = transaction.data.payment.paymentMethod.percentage ? transaction.data.payment.paymentMethod.percentage : 0;
+    const mapBankAbb = transaction.data.payment.paymentBank.abb ? transaction.data.payment.paymentBank.abb : '';
+    const mapBankCode = transaction.data.payment.paymentBank.abb ? transaction.data.payment.paymentBank.abb : '';
+    const mapQrTran = transaction.data.mpayPayment ? transaction.data.mpayPayment.tranId : '';
+    const mapQrOrderId = transaction.data.mpayPayment ? transaction.data.mpayPayment.orderId : '';
+    return {
+      soId: transaction.data.order.soId,
+      soCompany: priceOption.productStock.company,
+      locationSource: user.locationCode,
+      locationReceipt: user.locationCode,
+      productType: priceOption.productDetail.productType,
+      productSubType: priceOption.productDetail.productSubtype,
+      brand: priceOption.productStock.brand ? priceOption.productStock.brand : priceOption.productDetail.brand,
+      model: priceOption.productDetail.model,
+      color: priceOption.productStock.colorName || priceOption.productStock.color,
+      matCode: priceOption.productStock.colorCode,
+      priceIncAmt: (+priceOption.trade.normalPrice).toFixed(2),
+      priceDiscountAmt: (+priceOption.trade.priceDiscount).toFixed(2),
+      grandTotalAmt: (+priceOption.trade.normalPrice - +priceOption.trade.priceDiscount).toFixed(2),
+      userId: user.username,
+      saleCode: sellerNo,
+      queueNo: transaction.data.queue.queueNo,
+      cusNameOrder: transaction.data.customer.firstName + ' ' + transaction.data.customer.lastName,
+      taxCardId: transaction.data.customer.idCardNo,
+      cusMobileNoOrder: simCard && simCard.mobileNo || '',
+      customerAddress: this.mapCusAddress(transaction.data.customer),
+      tradeNo: priceOption.trade.tradeNo,
+      ussdCode: priceOption.trade && priceOption.trade.ussdCode || '',
+      returnCode: transaction.data.customer.privilegeCode || '',
+      cashBackFlg: '',
+      matAirTime: '',
+      matCodeFreeGoods: '',
+      tradeDiscountId: trade.discount ? trade.discount.tradeAirtimeId : '',
+      tradeAirtimeId: trade.advancePay ? trade.advancePay.tradeAirtimeId : '',
+      focCode: '',
+      paymentRemark: this.getOrderRemark(transaction, priceOption),
+      installmentTerm: mapInstallmentTerm,
+      installmentRate: mapInstallmentRate,
+      mobileAisFlg: 'Y',
+      paymentMethod: this.getPaymentMethod(transaction),
+      bankCode: mapBankCode,
+      tradeFreeGoodsId: trade.freeGoods[0] ? trade.freeGoods[0].tradeFreegoodsId : '',
+      qrTransId: mapQrTran,
+      bankAbbr: mapBankAbb,
+      qrAmt: this.getQRAmt(priceOption, transaction), // add
+      reqMinimumBalance: transaction.data.simCard ? this.getReqMinimumBalance(transaction, transaction.data.mobileCarePackage) : '',
+      qrOrderId: transaction.transactionId ? transaction.transactionId : '',
+      tradeType: transaction.data.tradeType,
+      preBookingNo: prebooking ? prebooking.preBookingNo : '',
+      depositAmt: prebooking ? prebooking.depositAmt : '',
+      remarkReceipt: ''
+    };
+  }
+
+  mapCusAddress(addressCus: Customer): any {
+    return {
+      addrNo: addressCus ? addressCus.homeNo : '',
+      moo: addressCus ? addressCus.moo : '',
+      mooban: addressCus ? addressCus.mooBan : '',
+      buildingName: addressCus ? addressCus.buildingName : '',
+      floor: addressCus ? addressCus.floor : '',
+      room: addressCus ? addressCus.room : '',
+      soi: addressCus ? addressCus.soi : '',
+      streetName: addressCus ? addressCus.street : '',
+      tumbon: addressCus ? addressCus.tumbol : '',
+      amphur: addressCus ? addressCus.amphur : '',
+      province: addressCus ? addressCus.province : '',
+      postCode: addressCus ? addressCus.zipCode : '',
+      country: 'THA'
+    };
   }
 
   private getOrderRemark(transaction: Transaction, priceOption: PriceOption): string {

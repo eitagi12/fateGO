@@ -42,6 +42,9 @@ export class NewRegisterMnpByPatternPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // let isUser = this.tokenService.isTelewizUser() ? 'Y' : 'N'
+    // console.log('isUser -->', isUser);
+
     if (this.transaction.data.simCard &&
       this.transaction.data.simCard.mobileNo) {
       this.onResereMobileNo(this.transaction.data.simCard.mobileNo, 'Unlock');
@@ -66,7 +69,7 @@ export class NewRegisterMnpByPatternPageComponent implements OnInit, OnDestroy {
             channel: 'MyChannel',
             classifyCode: 'All',
             locationCd: this.user.locationCode,
-            partnerFlg: this.tokenService.isAspUser() ? 'Y' : 'N',
+            partnerFlg: this.tokenService.isTelewizUser() ? 'Y' : 'N',
             refNo: '',
             region: resp.data.regionCode,
           }, mobileNoCondition)).toPromise();
