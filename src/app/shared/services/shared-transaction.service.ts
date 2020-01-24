@@ -216,9 +216,7 @@ export class SharedTransactionService {
         if (data.mainPackage) {
           const mainPackage = data.mainPackage.customAttributes || {};
           const findPromotionByMainPackage = this.findPromotions(advancePay, mainPackage.billingSystem);
-
           params.data.air_time.promotions = [findPromotionByMainPackage] || advancePay.promotions;
-
         } else if (!data.mainPackage && data.currentPackage) {
           const billingSystem = ((data.simCard && data.simCard.billingSystem === 'RTBS')
             ? BillingSystemType.IRB : data.simCard.billingSystem) || BillingSystemType.IRB;
@@ -227,6 +225,18 @@ export class SharedTransactionService {
           params.data.air_time.promotions = [findPromotionByMainPackage] || advancePay.promotions;
         }
       }
+
+      const paymentCode: any = {
+        'payment': {'code': ''}
+      };
+      if (data.advancePayment.paymentType === 'CREDIT') {
+        paymentCode.payment.code = 'CC';
+      } else if (data.advancePayment.paymentType === 'DEBIT') {
+        paymentCode.payment.code = 'CA';
+      } else {
+        paymentCode.payment.code = '';
+      }
+      params.data.air_time['payment'] = paymentCode.payment;
 
     }
 
@@ -277,7 +287,6 @@ export class SharedTransactionService {
     if (data.mpayPayment) {
       params.data.mpay_payment = data.mpayPayment;
     }
-    console.log('params', params);
     return params;
   }
 
