@@ -239,7 +239,6 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
         this.inquiryMpay().then((isSuccess: boolean) => {
           if (isSuccess) {
             this.updateMpayDataStatus();
-            this.genQueue();
           } else {
             this.subscription$.unsubscribe();
             this.showPopupMessage('สิ้นสุดระยะเวลาชำระเงิน กรุณากดปุ่ม "REFRESH"' + this.NEW_LINE + 'เพื่อทำรายการใหม่');
@@ -305,6 +304,7 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
     this.qrcodePaymentService.updatePostMpay(this.qrCodePrePostMpayModel).then(
       (data: any) => {
         this.qrcodePaymentService.updateMpayObjectInTransaction(this.qrCodePrePostMpayModel);
+        this.genQueue();
       },
       (error: any) => {
         this.alertService.error(error);
@@ -324,7 +324,6 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
       this.inquiryMpay().then((isSuccess: boolean) => {
         if (isSuccess) {
           this.updateMpayDataStatus();
-          this.genQueue();
         } else {
           this.initialOrderID();
           this.refreshCount = this.refreshCount + 1;
