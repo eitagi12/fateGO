@@ -39,6 +39,10 @@ export class CreateEapplicationService {
       idCard: this.privateIdcard(transaction.data.cardId) || '',
       idCardType: customer.idCardType || '',
       birthDate: customer.birthdate || '',
+      // imgName: customer.imageReadSmartCard || customer.imageSmartCard || '',
+      today: Date.now(),
+      customerImg: customer.imageReadSmartCard || customer.imageSmartCard || '',
+      customerImgKeyIn: customer.customerImgKeyIn || '',
       customerAddress: this.utils.getCurrentAddress({
         homeNo: customer.homeNo || '',
         moo: customer.moo || '',
@@ -63,27 +67,15 @@ export class CreateEapplicationService {
       fullNameEN: `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}`,
       issueDate: customer.issueDate || '',
       expireDate: customer.expireDate || '',
-      signature: customer.imageSignature || '',
+      signature: customer.imageSignatureSmartCard || customer.imageSignature || '',
       language: 'TH',
     };
-    // if (language === 'EN') {
-    //   data.billCycle = billCycleData.billCycleTextEng;
-    //   data.mainPackage = {
-    //     name: (mainPackage.customAttributes || {}).shortNameEng || mainPackage.title || '',
-    //     description: mainPackage.statementEng || mainPackage.detailEN || ''
-    //   };
+
+    // if (action === TransactionAction.READ_CARD) {
+    //   data.customerImg = 'data:image/jpeg;base64,' + customer.imageReadSmartCard;
     // } else {
-    // data.billCycle = billCycleData.billCycleText;
-    // data.mainPackage = {
-    //   name: (mainPackage.customAttributes || {}).shortNameThai || mainPackage.title || '',
-    //   description: mainPackage.statementThai || mainPackage.detailTH || ''
-    // };
+    //   data.customerImgKeyIn = 'data:image/jpeg;base64,' + customer.imageSmartCard;
     // }
-    if (action === TransactionAction.READ_CARD) {
-      data.imageSmartCard = customer.imageReadSmartCard;
-    } else {
-      data.imageSmartCard = customer.imageSmartCard;
-    }
 
     return data;
   }

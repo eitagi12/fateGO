@@ -698,7 +698,7 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_OMNI_NEW_REGISTER_RESULT_PAGE]);
+    window.location.href = `/sales-portal/reserve-stock/receive-confirm-online`;
   }
 
   onHome(): void {
