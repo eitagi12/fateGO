@@ -17,6 +17,10 @@ export const SharedTransactionStatus = {
   WAITING_PAYMENT: { // Update Step หน้าสุดท้าย รอจ่ายตัง
     code: '002',
     description: 'Waiting Payment'
+  },
+  PAYMENT_COMPLETE: { // กรณีจ่ายตังด้วย QR CODE
+    code: '005',
+    description: 'payment complete'
   }
 };
 
@@ -333,7 +337,7 @@ export class SharedTransactionService {
           employeeId: data.seller && data.seller.employeeId ? data.seller.employeeId : '',
           sharedUser: !!data.seller ? data.seller.sharedUser : ''
         },
-        status: data.status || {}
+        status: data.mpayPayment && data.mpayPayment.status === 'SUCCESS' ?  SharedTransactionStatus.PAYMENT_COMPLETE : data.status || {}
       }
     };
 
