@@ -112,6 +112,7 @@ export class CreateOrderService {
         && transaction.data
         && transaction.data.order
         && transaction.data.order.soId) {
+          console.log('if');
         resolve(transaction);
       } else {
         if (this.tokenService.isTelewizUser()) {
@@ -125,10 +126,12 @@ export class CreateOrderService {
                   resolve(transaction);
                 }
               }).catch((err: any) => {
+                console.log('err createSharedTransaction1 ---> ', err);
                 this.alertService.error(err.error.developerMessage);
               });
             }
           }).catch((err: any) => {
+            console.log('err callAddToCart ---> ', err);
             this.alertService.error(err.error.developerMessage);
           });
         } else {
@@ -142,12 +145,14 @@ export class CreateOrderService {
                   resolve(transaction);
                 }
               }).catch((err: any) => {
+                console.log('err createSharedTransaction2 ---> ', err);
                 this.alertService.error(err.error.developerMessage);
               });
             } else {
               this.alertService.error('Cannot add item to the cart');
             }
           }).catch((err: any) => {
+            console.log('err callAddToCartDT ---> ', err);
             this.alertService.error(err.error.developerMessage);
           });
         }

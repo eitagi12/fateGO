@@ -660,7 +660,9 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
         } else {
           this.router.navigate([ROUTE_DEVICE_ONLY_ASP_SELECT_MOBILE_CARE_PAGE]);
         }
-      });
+      }).catch((err) => {
+        console.log('err ---> ', err);
+    });
   }
 
   isNotFormValid(): boolean {
