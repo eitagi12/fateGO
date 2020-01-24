@@ -56,11 +56,11 @@ export class OmniNewRegisterEapplicationPageComponent implements OnInit, OnDestr
   }
 
   onNext(): void {
-    if (this.transaction.data.simCard.mobileNo) {
-      this.router.navigate([ROUTE_OMNI_NEW_REGISTER_RESULT_PAGE]);
-    } else {
-      this.router.navigate([ROUTE_OMNI_NEW_REGISTER_PERSO_SIM_PAGE]);
-    }
+    // if (this.transaction.data.simCard.mobileNo) {
+    //   this.router.navigate([ROUTE_OMNI_NEW_REGISTER_RESULT_PAGE]);
+    // } else {
+    this.router.navigate([ROUTE_OMNI_NEW_REGISTER_PERSO_SIM_PAGE]);
+    // }
   }
 
   onHome(): void {

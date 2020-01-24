@@ -80,13 +80,13 @@ export class CreateNewRegisterService {
       const mainPackage = transaction.data.mainPackage;
       // const mainPackageOneLove = transaction.data.mainPackageOneLove;
       const onTopPackage = transaction.data.onTopPackage;
-      const simCard = transaction.data.customer.mobileNo;
+      const simCard = transaction.data.simCard;
       const billDeliveryAddress = transaction.data.billingInformation.billDeliveryAddress;
       const billCycleData = billingInformation.billCycleData;
 
       const data: any = {
         isNewCa: !!!customer.caNumber, /*required*/
-        isNewBa: billingInformation.mergeBilling ? false : true, /*required*/
+        isNewBa: false, /*required*/
         imageSignature: customer.imageSignature || '', /*required*/
         ascCode: '',
         idCardType: customer.idCardType, /*required*/
@@ -97,20 +97,16 @@ export class CreateNewRegisterService {
         birthdate: customer.birthdate || '',
         gender: customer.gender || 'M', /*required*/
         mobileNumberContact: billCycleData.mobileNoContact,
-        phoneNumberContact: billCycleData.phoneNoContact || '',
         emailAddress: billCycleData.email || '',
-        receiveBillMethod: billCycleData.receiveBillMethod, /*required*/
-        billCycleEApp: billCycleData.billCycleText, /*required*/
+        receiveBillMethod: billCycleData.receiveBillMethod, /*required gen e-app*/
+        billCycleEApp: billCycleData.billCycleText, /*required gen e-app*/
         orderType: 'New Registration', /*required*/
-        simSerialNo: transaction.data.simCard.simSerial, /*required*/
-        mobileNo: transaction.data.simCard.mobileNo, /*required*/
+        simSerialNo: simCard.simSerial, /*required*/
+        mobileNo: simCard.mobileNo, /*required*/
         locationCode: user.locationCode, /*required*/
-        employeeId: '',
-        baNumber: billingInformation.mergeBilling ? billingInformation.mergeBilling.billAcctNo : '',
-        billMedia: billingInformation.mergeBilling ? billingInformation.mergeBilling.billMedia : billCycleData.billMedia, /*required*/
-        billName: billingInformation.mergeBilling ? billingInformation.mergeBilling.billingName : '',
+        billMedia: billCycleData.billMedia, /*required*/
         // tslint:disable-next-line: max-line-length
-        billCycle: billingInformation.mergeBilling ? billingInformation.mergeBilling.bill : billingInformation.billCycle ? billingInformation.billCycle.bill : customer.billCycle,
+        billCycle: customer.billCycle, /* ค่าเดียวกับ billCycleText หรือเปล่าาาาาา */
         billDeliveryAddress: billingInformation.mergeBilling ? billingInformation.mergeBilling.billingAddr : '',
         billHomeNo: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.homeNo : customer.homeNo || '',
         // tslint:disable-next-line:max-line-length
@@ -141,22 +137,17 @@ export class CreateNewRegisterService {
         amphur: customer.amphur || '',
         province: (customer.province || '').replace(/มหานคร$/, ''),
         zipCode: customer.zipCode || '',
-        isPersoSim: transaction.data.simCard.persoSim,
         mainPackage: {
           packageName: mainPackage.mainPackageName, /*required*/
-          shortNameThai: '',
-          statementThai: '',
-          mainPackageOneLove: [],
           attributeValues: [
-            simCard || ''
+            simCard.mobileNo || ''
           ],
         }, /*required*/
-        onTopPackages: [],
         engFlag: 'N',
       };
 
       data.accountSubCat = 'THA',
-        data.titleName = this.utils.getPrefixName(customer.titleName); /*required*/
+      data.titleName = this.utils.getPrefixName(customer.titleName); /*required*/
 
       // orderVerify
       if (faceRecognition && faceRecognition.kyc) {
@@ -185,7 +176,7 @@ export class CreateNewRegisterService {
       if (action === TransactionAction.KEY_IN) {
         return new ImageUtils().combine([
           // customer.imageReadPassport,
-          customer.imageSignatureSmartCard,
+          customer.imageSmartCard,
           AWS_WATERMARK
         ]).then((imageSmatCard) => {
           data.imageTakePhoto = imageSmatCard;
