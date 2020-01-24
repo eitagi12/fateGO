@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HomeService, TokenService, PageLoadingService, REGEX_MOBILE, AlertService } from 'mychannel-shared-libs';
+import { HomeService, TokenService, PageLoadingService, REGEX_MOBILE, AlertService, User } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -14,6 +14,7 @@ import {
 } from '../../constants/route-path.constant';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { RemoveCartService } from '../../services/remove-cart.service';
+import { map } from 'rxjs/operators';
 @Component({
   selector: 'app-new-register-mnp-queue-page',
   templateUrl: './new-register-mnp-queue-page.component.html',
@@ -23,12 +24,13 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
 
   transaction: Transaction;
   priceOption: PriceOption;
-  queueFrom: FormGroup;
+  _queueFrom: FormGroup;
   locationCode: string;
-
+  user: User;
   constructor(
     private fb: FormBuilder,
     private router: Router,
+    private homeService: HomeService,
     private http: HttpClient,
     private tokenService: TokenService,
     private pageLoadingService: PageLoadingService,
@@ -36,11 +38,13 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
     private priceOptionService: PriceOptionService,
     private queuePageService: QueuePageService,
     private sharedTransactionService: SharedTransactionService,
-    private removeCartService: RemoveCartService
+    private alertService: AlertService,
+    private removeCartService: RemoveCartService,
   ) {
-    this.transaction = this.transactionService.load();
-    this.priceOption = this.priceOptionService.load();
     this.locationCode = tokenService.getUser().locationCode;
+    this.priceOption = priceOptionService.load();
+    this.transaction = this.transactionService.load();
+    this.user = tokenService.getUser();
   }
 
   ngOnInit(): void {
@@ -50,9 +54,8 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
 
   createForm(): void {
     const REGEX_QUEUE = /^[A-Z][0-9]{3}?$/;
-    this.queueFrom = this.fb.group({
-      'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])],
-      'queueNo': ['', Validators.compose([Validators.required, Validators.pattern(REGEX_QUEUE)])],
+    this._queueFrom = new FormGroup({
+      queueNo: new FormControl('', [Validators.required, Validators.pattern(REGEX_QUEUE)])
     });
   }
 
@@ -60,20 +63,35 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
     this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_AGGREGATE_PAGE]);
   }
 
-  onNext(queue: boolean): void {
+  onNext(): Promise<any> {
+    this.transaction.data.queue = {
+      queueNo: this._queueFrom.value.queueNo ? this._queueFrom.value.queueNo : ''
+    };
+    return this.queuePageService.createDeviceSellingOrderListSPKASP(this.transaction, this.priceOption, this.user).then((res: any) => {
+    })
+    .then((res: any) => {
+    return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
+    })
+    .then((res: any) => {
+      this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_RESULT_PAGE]);
+    })
+    .then((res: any) => {
+      this.pageLoadingService.closeLoading();
+    });
+  }
+
+  onSkip(): void {
     this.pageLoadingService.openLoading();
-    if (queue) {
-      this.queuePageService.autoGetQueue(this.queueFrom.value.mobileNo)
-        .then((queueNo: any) => {
-          const data = queueNo || {};
-          return data;
-        })
-        .then((queueNo: string) => {
+    if (this.locationCode) {
+      this.queuePageService.getQueueAspAndTelewiz(this.locationCode)
+        .then((res: any) => {
           this.transaction.data.queue = {
-            queueNo: queueNo
+            queueNo: res.data.queue ? res.data.queue : ''
           };
-          return this.queuePageService.createDeviceSellingOrderList(this.transaction, this.priceOption) // New Service Que
-            .then(() => {
+        })
+        .then(() => {
+          return this.queuePageService.createDeviceSellingOrderListSPKASP(this.transaction, this.priceOption, this.user) // New Service Que
+            .then((res: any) => {
               return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
             });
         })
@@ -81,42 +99,8 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
           this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_RESULT_PAGE]);
         })
         .then(() => this.pageLoadingService.closeLoading());
-    } else {
-      this.transaction.data.queue = {
-        queueNo: this.queueFrom.value.queueNo
-      };
-
-      this.queuePageService.createDeviceSellingOrderList(this.transaction, this.priceOption)
-        .then(() => {
-          return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
-            this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_RESULT_PAGE]);
-          }).then(() => this.pageLoadingService.closeLoading());
-        });
     }
   }
-
-  // onSkip(): void {
-  //   this.pageLoadingService.openLoading();
-  //   if (this.locationCode) {
-  //     this.queuePageService.getQueueAspAndTelewiz(this.locationCode)
-  //       .then((res: any) => {
-  //         this.transaction.data.queue = {
-  //           queueNo: res.data.queue ? res.data.queue : ''
-  //         };
-  //       })
-  //       .then(() => {
-  //         return this.queuePageService.createDeviceSellingOrderListSPKASP(this.transaction, this.priceOption, this.user)
-  // New Service Que
-  //           .then((res: any) => {
-  //             return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
-  //           });
-  //       })
-  //       .then((res) => {
-  //         this.router.navigate([ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_RESULT_PAGE]);
-  //       })
-  //       .then(() => this.pageLoadingService.closeLoading());
-  //   }
-  // }
 
   onHome(): void {
     this.removeCartService.backToReturnStock('/', this.transaction);
@@ -167,4 +151,5 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }
+
 }
