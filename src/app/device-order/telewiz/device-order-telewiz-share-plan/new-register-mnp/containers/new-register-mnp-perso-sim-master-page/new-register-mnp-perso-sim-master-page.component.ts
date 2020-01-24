@@ -10,7 +10,9 @@ import {
   //  KioskControlsPersoSim,
   //  PersoSimError,
   PageLoadingService,
-  AlertService
+  AlertService,
+  TokenService,
+  User
 } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -26,6 +28,10 @@ import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ } from 'src/app/devic
 import { Validators, FormBuilder } from '@angular/forms';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { RemoveCartService } from '../../services/remove-cart.service';
+import { QueuePageService } from 'src/app/device-order/services/queue-page.service';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 
 export interface OptionPersoSim {
   key_sim?: boolean;
@@ -104,6 +110,10 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
   createTxPersoCounter: number = 0;
   minLength: number = 13;
   isNext: boolean = false;
+  locationCode: string;
+
+  priceOption: PriceOption;
+  user: User;
 
   public simSerialForm: any = this.fb.group({
     simSerial: ['', [
@@ -115,22 +125,26 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
 
   constructor(
     private router: Router,
-    private homeService: HomeService,
+    public homeService: HomeService,
     private http: HttpClient,
-    // private tokenService: TokenService,
     private transactionService: TransactionService,
     private alertService: AlertService,
-    // private persoSimService: PersoSimService,
     private shoppingCartService: ShoppingCartService,
-    // private translateService: TranslateService,
     private zone: NgZone,
     private pageLoadingService: PageLoadingService,
     public fb: FormBuilder,
-    private removeCartService: RemoveCartService
+    private removeCartService: RemoveCartService,
+    private queuePageService: QueuePageService,
+    public tokenService: TokenService,
+    public priceOptionService: PriceOptionService,
+    private sharedTransactionService: SharedTransactionService
   ) {
     this.option = { scan_sim: true, key_sim: false };
     this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
     this.transaction = this.transactionService.load();
+    this.locationCode = tokenService.getUser().locationCode;
+    this.priceOption = priceOptionService.load();
+    this.user = tokenService.getUser();
   }
 
   ngOnInit(): void {
@@ -702,7 +716,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
         persoSim: true
       });
     }
-    this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PERSO_SIM_MEMBER_PAGE]);
+    this.createOrderTDM();
   }
 
   onHome(): void {
@@ -737,6 +751,28 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
 
   onSerialNumberChanged(data?: any): void {
     this.statusFixSim = 'waitingForCheck';
+  }
+
+  createOrderTDM(): any {
+    this.pageLoadingService.openLoading();
+    if (this.locationCode) {
+      this.queuePageService.getQueueAspAndTelewiz(this.locationCode)
+        .then((res: any) => {
+          this.transaction.data.queue = {
+            queueNo: res.data.queue ? res.data.queue : ''
+          };
+        })
+        .then(() => {
+          return this.queuePageService.createDeviceSellingOrderListSPKASP(this.transaction, this.priceOption, this.user) // New Service Que
+            .then((res: any) => {
+              return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
+            });
+        })
+        .then((res) => {
+          this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PERSO_SIM_MEMBER_PAGE]);
+        })
+        .then(() => this.pageLoadingService.closeLoading());
+    }
   }
 
 }
