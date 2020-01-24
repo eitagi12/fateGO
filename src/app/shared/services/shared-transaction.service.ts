@@ -229,12 +229,14 @@ export class SharedTransactionService {
       const paymentCode: any = {
         'payment': {'code': ''}
       };
-      if (data.advancePayment.paymentType === 'CREDIT') {
-        paymentCode.payment.code = 'CC';
-      } else if (data.advancePayment.paymentType === 'DEBIT') {
-        paymentCode.payment.code = 'CA';
-      } else {
-        paymentCode.payment.code = '';
+      if (data.advancePayment && data.advancePayment.paymentType) {
+        if (data.advancePayment.paymentType === 'CREDIT') {
+          paymentCode.payment.code = 'CC';
+        } else if (data.advancePayment.paymentType === 'DEBIT') {
+          paymentCode.payment.code = 'CA';
+        } else {
+          paymentCode.payment.code = '';
+        }
       }
       params.data.air_time['payment'] = paymentCode.payment;
 
