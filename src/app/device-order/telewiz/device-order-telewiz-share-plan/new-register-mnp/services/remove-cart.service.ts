@@ -39,7 +39,7 @@ export class RemoveCartService {
         if (transaction.data.order && transaction.data.order.soId) {
           let order;
           // tslint:disable-next-line: max-line-length
-          if (transaction.data.transactionType === TransactionType.DEVICE_ORDER_TELEWIZ_DEVICE_SHARE_PLAN && this.user.userType === 'TELEWIZ') {
+          if (this.tokenService.isTelewizUser()) {
             order = this.removeCartTDM(transaction).catch(() => Promise.resolve());
           } else {
             order = this.removeCartDT(transaction).catch(() => Promise.resolve());
