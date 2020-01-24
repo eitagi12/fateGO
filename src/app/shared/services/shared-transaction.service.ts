@@ -228,6 +228,20 @@ export class SharedTransactionService {
         }
       }
 
+      const paymentCode: any = {
+        'payment': {'code': ''}
+      };
+
+      if (data.advancePayment.paymentType === 'CREDIT') {
+        paymentCode.payment.code = 'CC';
+      } else if (data.advancePayment.paymentType === 'DEBIT') {
+        paymentCode.payment.code = 'CA';
+      } else {
+        paymentCode.payment.code = '';
+      }
+
+      params.data.air_time['payment'] = paymentCode.payment;
+
     }
 
     if (data.existingMobileCare) {
@@ -277,7 +291,7 @@ export class SharedTransactionService {
     if (data.mpayPayment) {
       params.data.mpay_payment = data.mpayPayment;
     }
-    console.log('params', params);
+
     return params;
   }
 
