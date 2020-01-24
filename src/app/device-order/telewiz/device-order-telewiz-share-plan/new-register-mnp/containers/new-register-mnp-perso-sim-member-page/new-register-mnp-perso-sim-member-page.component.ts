@@ -422,7 +422,10 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
           // setTimeout(() => {
           // }, this.duration);
           // this.checkStatusSimCard();
-          this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_AGGREGATE_PAGE]);
+          // this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_AGGREGATE_PAGE]);
+          const baseMyChannelWebURL: any = environment.MYCHANNEL_WEB_URL;
+          const transactionId: string = this.transaction.transactionId;
+          window.location.href = baseMyChannelWebURL + '/' + 'sales-order/pay-advance?transactionId=' + transactionId;
         } else {
           const tenSecond: number = 90000;
           const loop: number = 3;
