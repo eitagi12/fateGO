@@ -64,6 +64,7 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
   }
 
   onNext(): Promise<any> {
+    this.pageLoadingService.openLoading();
     this.transaction.data.queue = {
       queueNo: this._queueFrom.value.queueNo ? this._queueFrom.value.queueNo : ''
     };
