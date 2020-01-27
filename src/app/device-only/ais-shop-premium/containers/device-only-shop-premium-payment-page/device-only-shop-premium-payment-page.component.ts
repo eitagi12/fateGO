@@ -346,7 +346,7 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
       color: color,
       userId: this.user.username,
       cusNameOrder: cusNameOrder,
-      soChannelType: 'CSP',
+      soChannelType: 'MC_KIOSK',
       soDocumentType: 'RESERVED'
     };
 
