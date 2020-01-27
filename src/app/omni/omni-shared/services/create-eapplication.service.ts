@@ -29,18 +29,18 @@ export class CreateEapplicationService {
     const mainPackage: any = transaction.data.mainPackage || {};
     const simCard: any = transaction.data.cusMobileNo || {};
     const billingInformation = transaction.data.billingInformation;
-    const billCycles =  billingInformation.billCycles[0];
     const billCycleData = billingInformation.billCycleData[0] || {};
 
     const data: any = {
+      action: action,
       fullNameTH: customer.firstName + ' ' + customer.lastName || '',
       idCard: this.privateIdcard(transaction.data.cardId) || '',
       idCardType: customer.idCardType || '',
       birthDate: customer.birthdate || '',
       // imgName: customer.imageReadSmartCard || customer.imageSmartCard || '',
       today: Date.now(),
-      customerImg: customer.imageReadSmartCard || customer.imageSmartCard || '',
-      customerImgKeyIn: customer.customerImgKeyIn || '',
+      // customerImg: customer.imageReadSmartCard || customer.imageSmartCard || '',
+      // customerImgKeyIn: customer.customerImgKeyIn || '',
       customerAddress: this.utils.getCurrentAddress({
         homeNo: customer.homeNo || '',
         moo: customer.moo || '',
@@ -59,7 +59,7 @@ export class CreateEapplicationService {
         name: mainPackage.mainPackageName || '',
         description: mainPackage.mainPackageDesc || ''
       },
-      billCycle: billCycles || '',
+      billCycle: billCycleData.billCycleText || '',
       receiveBillMethod: billCycleData.billMedia || '',
       billDeliveryAddress: billCycleData.billAddressText || '',
       fullNameEN: `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}`,
@@ -69,11 +69,11 @@ export class CreateEapplicationService {
       language: 'TH',
     };
 
-    // if (action === TransactionAction.READ_CARD) {
-    //   data.customerImg = 'data:image/jpeg;base64,' + customer.imageReadSmartCard;
-    // } else {
-    //   data.customerImgKeyIn = 'data:image/jpeg;base64,' + customer.imageSmartCard;
-    // }
+    if (action === TransactionAction.READ_CARD) {
+      data.customerImg = 'data:image/jpeg;base64,' + customer.imageReadSmartCard;
+    } else if (action === TransactionAction.KEY_IN) {
+      data.customerImgKeyIn = 'data:image/jpeg;base64,' + customer.imageSmartCard;
+    }
 
     return data;
   }
