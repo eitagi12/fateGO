@@ -61,6 +61,7 @@
                             [ngClass]="{ 'disabled': product?.stock?.qty <= 0 }"
                             (click)="onCheckStock($event, product?.stock)">
                             <small>{{ product?.colorName }}&nbsp;</small>
+                            <span>({{ product?.stock?.qty }})</span>
                           </label>
                           <div class="product-color" [ngStyle]="{ 'background-color': '#' + product?.colorCode }"></div>
                           <small class="d-block text-center text-pink"
