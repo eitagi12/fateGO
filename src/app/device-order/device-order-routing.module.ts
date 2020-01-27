@@ -71,6 +71,10 @@ const routes: Routes = [
       {
         path: 'best-buy',
         loadChildren: 'src/app/device-order/asp/device-order-asp-existing-best-buy/device-order-asp-existing-best-buy.module#DeviceOrderAspExistingBestBuyModule'
+      },
+      {
+        path: 'share-plan',
+        loadChildren: 'src/app/device-order/asp/device-order-asp-share-plan/device-order-asp-share-plan.module#DeviceOrderAspSharePlanModule'
       }
     ]
   },

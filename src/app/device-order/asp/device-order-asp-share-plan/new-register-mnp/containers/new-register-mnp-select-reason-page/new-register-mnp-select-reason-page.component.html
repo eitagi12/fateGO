@@ -1,0 +1,52 @@
+<div class="mc-flex">
+  <mc-header title="{{ 'ย้ายค่ายเบอร์เดิม' | translate }}">
+      <div class="header-icon-left w-25">
+          <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+      </div>
+      <div class="header-icon-right w-25 text-right">
+          <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+      </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+      <div class="my-3">
+          <mc-wizard [wizards]="wizards" active="3"></mc-wizard>
+          <div class="container-fluid">
+              <div class="card mb-3">
+                  <div class="card-header bg-pink text-white" translate>เบอร์ที่ท่านต้องการย้ายค่าย</div>
+                  <div class="card-body">
+                      <div class="text-center text-green">
+                          {{ transaction?.data?.simCard?.memberSimCard[0]?.mobileNo}}
+                      </div>
+                  </div>
+              </div>
+              <form [formGroup]="reasonForm">
+                  <div class="card mb-3">
+                      <div class="card-header bg-pink text-white" translate>เหตุผลที่ลูกค้าย้ายค่าย</div>
+                      <div class="card-body">
+                          <div class="text-center ">
+                              <select class="form-control" formControlName="reasonCode" [ngClass]="{'is-invalid': !reasonForm.controls['reasonCode'].valid && reasonForm.controls['reasonCode'].dirty }">
+                <option [value]="reason?.reasonCode" *ngFor="let reason of reasons">
+                  {{ reason?.reasonName | translate }}
+                </option>
+              </select>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="card mb-3">
+                      <div class="card-header bg-pink text-white" translate>เลือกระบบที่ท่านต้องการ</div>
+                      <div class="card-body">
+                          <div class="text-center">
+                              <input type="radio" id="post-paid" value="Post-paid" formControlName="chargeType">
+                              <label for="post-paid" translate>ระบบรายเดือน</label>
+                          </div>
+                      </div>
+                  </div>
+              </form>
+          </div>
+      </div>
+  </div>
+  <mc-footer>
+      <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+      <button class="btn btn-success" (click)="onNext()" [disabled]="reasonForm.invalid">NEXT</button>
+  </mc-footer>
+</div>
