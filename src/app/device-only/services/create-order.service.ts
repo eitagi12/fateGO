@@ -469,7 +469,7 @@ export class CreateOrderService {
       userId: user.username,
       queueNo: queue.queueNo,
       cusNameOrder: `คุณ ${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
-      soChannelType: 'MC_KIOSK',
+      soChannelType: 'KIOSK',
       soDocumentType: 'RESERVED',
       soCompany: productStock.company,
       grandTotalAmt: (+productDetail.price).toFixed(2),
