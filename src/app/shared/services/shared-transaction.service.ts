@@ -337,7 +337,7 @@ export class SharedTransactionService {
           employeeId: data.seller && data.seller.employeeId ? data.seller.employeeId : '',
           sharedUser: !!data.seller ? data.seller.sharedUser : ''
         },
-        status: data.mpayPayment && data.mpayPayment.status === 'SUCCESS' ?  SharedTransactionStatus.PAYMENT_COMPLETE : data.status || {}
+        status: data.status || {}
       }
     };
 
