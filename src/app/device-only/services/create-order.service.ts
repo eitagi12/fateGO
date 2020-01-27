@@ -157,8 +157,6 @@ export class CreateOrderService {
           });
         }
       }
-    }).catch((err: any) => {
-      this.alertService.error(err.error.developerMessage);
     });
   }
 

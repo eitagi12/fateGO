@@ -661,7 +661,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
           this.router.navigate([ROUTE_DEVICE_ONLY_ASP_SELECT_MOBILE_CARE_PAGE]);
         }
       }).catch((err) => {
-        console.log('err ---> ', err);
+        console.log('check err dv-only-asp onNext ---> ', err);
     });
   }
 
