@@ -44,6 +44,18 @@ export class DeviceOnlyShopPremiumSummaryPageComponent implements OnInit, OnDest
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     this.user = this.tokenService.getUser();
+    this.homeService.callback = () => {
+      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+        .then((response: any) => {
+          if (response.value === true) {
+            this.returnStock().then(() => {
+              this.transaction.data.order = {};
+              this.transactionService.remove();
+              window.location.href = '/';
+            });
+          }
+        });
+    };
   }
 
   ngOnInit(): void {
@@ -93,18 +105,7 @@ export class DeviceOnlyShopPremiumSummaryPageComponent implements OnInit, OnDest
   }
 
   onHome(): void {
-    this.homeService.callback = () => {
-      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
-        .then((response: any) => {
-          if (response.value === true) {
-            this.returnStock().then(() => {
-              this.transaction.data.order = {};
-              this.transactionService.remove();
-              window.location.href = '/';
-            });
-          }
-        });
-    };
+    this.homeService.goToHome();
   }
 
   returnStock(): Promise<void> {

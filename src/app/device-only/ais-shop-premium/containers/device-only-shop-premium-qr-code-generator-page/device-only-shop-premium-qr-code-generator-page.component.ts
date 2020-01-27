@@ -1,6 +1,6 @@
 import { Component, OnInit, EventEmitter, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertService, PageActivityService, TokenService, PageLoadingService, User } from 'mychannel-shared-libs';
+import { AlertService, PageActivityService, TokenService, PageLoadingService, User, HomeService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Transaction, Payment } from 'src/app/shared/models/transaction.model';
@@ -16,6 +16,7 @@ import { ROUTE_SHOP_PREMIUM_QR_CODE_SUMMARY_PAGE, ROUTE_SHOP_PREMIUM_RESULT_PAGE
 import { QueueService } from 'src/app/device-only/services/queue.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { CreateOrderService } from 'src/app/device-only/services/create-order.service';
+import { HttpClient } from '@angular/common/http';
 
 export class QRodePrePostMpayModel {
   orderId: string;
@@ -67,6 +68,7 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
 
   constructor(
     private router: Router,
+    private http: HttpClient,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private alertService: AlertService,
@@ -77,7 +79,8 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
     private createOrderService: CreateOrderService,
     private queueService: QueueService,
     private pageLoadingService: PageLoadingService,
-    private sharedTransactionService: SharedTransactionService
+    private sharedTransactionService: SharedTransactionService,
+    private homeService: HomeService,
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -86,6 +89,18 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
     this.refreshQRCode = new EventEmitter<boolean>();
     this.qrCodePrePostMpayModel = new QRCodePrePostMpayModel();
     this.brannerImagePaymentQrCode = this.qrcodePaymentService.getBrannerImagePaymentQrCodeType(this.payment.paymentQrCodeType);
+    this.homeService.callback = () => {
+      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+        .then((response: any) => {
+          if (response.value === true) {
+            this.returnStock().then(() => {
+              this.transaction.data.order = {};
+              this.transactionService.remove();
+              window.location.href = '/';
+            });
+          }
+        });
+    };
   }
 
   ngOnInit(): void {
@@ -131,6 +146,10 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
 
   onBack(): void {
     this.router.navigate([ROUTE_SHOP_PREMIUM_QR_CODE_SUMMARY_PAGE]);
+  }
+
+  onHome(): void {
+    this.homeService.goToHome();
   }
 
   genQueue(): void {
@@ -378,6 +397,23 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
           this.alertService.error(error);
         }
       );
+  }
+
+  returnStock(): Promise<void> {
+    return new Promise(resolve => {
+      const transaction = this.transactionService.load();
+      const promiseAll = [];
+      if (transaction && transaction.data) {
+        if (transaction.data.order && transaction.data.order.soId) {
+          const order = this.http.post('/api/salesportal/dt/remove-cart', {
+            soId: transaction.data.order.soId,
+            userId: this.user.username
+          }).toPromise().catch(() => Promise.resolve());
+          promiseAll.push(order);
+        }
+      }
+      Promise.all(promiseAll).then(() => resolve());
+    });
   }
 
   async updateMpayObjectInTransaction(): Promise<void> {
