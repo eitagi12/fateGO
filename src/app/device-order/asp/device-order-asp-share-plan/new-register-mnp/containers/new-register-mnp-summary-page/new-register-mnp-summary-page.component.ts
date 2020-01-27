@@ -152,7 +152,8 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
       this.seller$ = {
         sellerName: user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username,
         locationName: response.data.displayName,
-        locationCode: user.locationCode
+        locationCode: user.locationCode,
+        shareUser: user.sharedUser ? user.sharedUser : ''
       };
     }).then(() => {
       this.http.get(`/api/customerportal/newRegister/getEmployeeDetail/username/${user.username}`).toPromise().then((response: any) => {
