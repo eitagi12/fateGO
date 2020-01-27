@@ -25,14 +25,12 @@ export class CreateEapplicationService {
 
   getRequestEapplicationV2(transaction: Transaction): any {
     const customer: any = transaction.data.customer;
-    // const billingInformation: any = transaction.data.billingInformation || {};
-    // const billCycleData: any = transaction.data.billingInformation.billCycles[0] || {};
     const action: any = transaction.data.action;
     const mainPackage: any = transaction.data.mainPackage || {};
     const simCard: any = transaction.data.cusMobileNo || {};
-    // const billCycle = 'วันที่ 16 ถึงวันที่ 15 กุมภาพันธ์';
     const billingInformation = transaction.data.billingInformation;
-    const billCycleData = billingInformation.billCycleData || {};
+    const billCycles =  billingInformation.billCycles[0];
+    const billCycleData = billingInformation.billCycleData[0] || {};
 
     const data: any = {
       fullNameTH: customer.firstName + ' ' + customer.lastName || '',
@@ -61,7 +59,7 @@ export class CreateEapplicationService {
         name: mainPackage.mainPackageName || '',
         description: mainPackage.mainPackageDesc || ''
       },
-      billCycle: billCycleData.billCycleText || '',
+      billCycle: billCycles || '',
       receiveBillMethod: billCycleData.billMedia || '',
       billDeliveryAddress: billCycleData.billAddressText || '',
       fullNameEN: `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}`,
