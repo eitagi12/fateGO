@@ -60,6 +60,7 @@ export class OrderPreToPostAggregatePageComponent implements OnInit, OnDestroy {
       .then((resp: any) => {
 
         this.balance = resp.data || [];
+        this.balance.remainingBalance = Number(this.balance.remainingBalance) / 100;
         return this.http.get(`/api/customerportal/newRegister/${this.mobileNo}/queryCurrentServices`).toPromise();
 
       }).then((resp: any) => {
