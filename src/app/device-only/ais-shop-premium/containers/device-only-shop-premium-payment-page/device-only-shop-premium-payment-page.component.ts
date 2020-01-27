@@ -1,11 +1,7 @@
 import {
   Component,
   OnInit,
-  OnDestroy,
-  Input,
-  Output,
-  EventEmitter
-} from '@angular/core';
+  OnDestroy} from '@angular/core';
 import { Router } from '@angular/router';
 import { WIZARD_DEVICE_ONLY_AIS } from 'src/app/device-only/constants/wizard.constant';
 import {
@@ -28,12 +24,9 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { CreateOrderService } from 'src/app/device-only/services/create-order.service';
 import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
 import {
-  ROUTE_BUY_PREMIUM_CAMPAIGN_PAGE,
-  ROUTE_BUY_PREMIUM_PRODUCT_PAGE
-} from 'src/app/buy-premium/constants/route-path.constant';
+  ROUTE_BUY_PREMIUM_CAMPAIGN_PAGE} from 'src/app/buy-premium/constants/route-path.constant';
 import { ROUTE_SHOP_PREMIUM_SUMMARY_PAGE } from '../../constants/route-path.constant';
 import {
   FormGroup,
@@ -102,7 +95,6 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
     private apiRequestService: ApiRequestService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
-    private createOrderService: CreateOrderService,
     private alertService: AlertService,
     private homeButtonService: HomeButtonService,
     private tokenService: TokenService,
@@ -115,8 +107,8 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
   }
 
   ngOnInit(): void {
-    this.createForm();
     this.createTransaction();
+    this.createForm();
     this.homeButtonService.initEventButtonHome();
     this.apiRequestService.createRequestId();
     let name = this.priceOption.productDetail.name;
@@ -195,7 +187,7 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
     );
 
     this.paymentDetailForm.controls['paymentBank'].valueChanges.subscribe(
-      (obs: any) => {
+      () => {
         this.changePaymentBank(this.paymentDetailForm);
         this.onPaymentDetailCompleted(this.paymentDetailForm.value);
       }
@@ -265,43 +257,52 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
   }
 
   onHome(): void {
-    this.homeService.goToHome();
-  }
-
-  clearstock(): any {
-    this.alertService
-      .question(
-        'ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที',
-        'ตกลง',
-        'ยกเลิก'
-      )
-      .then((response: any) => {
-        if (response.value === true) {
-          this.createOrderService.cancelOrderDT(this.transaction).then(() => {
-            this.transactionService.remove();
-            this.router.navigate([ROUTE_BUY_PREMIUM_PRODUCT_PAGE], {
-              queryParams: this.priceOption.queryParams
+    this.homeService.callback = () => {
+      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+        .then((response: any) => {
+          if (response.value === true) {
+            this.returnStock().then(() => {
+              this.transaction.data.order = {};
+              this.transactionService.remove();
+              window.location.href = '/';
             });
-          });
-        }
-      })
-      .catch(() => {
-        this.transactionService.remove();
-      });
+          }
+        });
+    };
   }
 
-  onBack(): any {
-    this.transactionService.remove();
-    if (
-      this.transaction.data &&
-      this.transaction.data.order &&
-      this.transaction.data.order.soId
-    ) {
-      this.clearstock();
+  returnStock(): Promise<void> {
+    return new Promise(resolve => {
+      const transaction = this.transactionService.load();
+      const promiseAll = [];
+      if (transaction && transaction.data) {
+        if (transaction.data.order && transaction.data.order.soId) {
+          const order = this.http.post('/api/salesportal/dt/remove-cart', {
+            soId: transaction.data.order.soId,
+            userId: this.user.username
+          }).toPromise().catch(() => Promise.resolve());
+          promiseAll.push(order);
+        }
+      }
+      Promise.all(promiseAll).then(() => resolve());
+    });
+  }
+
+  onBack(): void {
+    if (this.priceOption.productDetail && this.priceOption.productStock) {
+      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+        .then((response: any) => {
+          if (response.value === true) {
+              this.returnStock().then(() => {
+              this.transaction.data.order = {};
+              this.transactionService.remove();
+              this.router.navigate([ROUTE_BUY_PREMIUM_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
+            });
+          }
+        });
     } else {
-      this.router.navigate([ROUTE_BUY_PREMIUM_CAMPAIGN_PAGE], {
-        queryParams: this.priceOption.queryParams
-      });
+      this.transactionService.remove();
+      this.router.navigate([ROUTE_BUY_PREMIUM_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
     }
   }
 
