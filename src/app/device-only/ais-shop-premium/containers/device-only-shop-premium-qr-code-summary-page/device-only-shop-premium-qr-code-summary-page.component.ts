@@ -5,9 +5,8 @@ import { ImageBrannerQRCode, QRCodePaymentService } from 'src/app/shared/service
 import { Router } from '@angular/router';
 import { HomeService, AlertService, TokenService, User } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { ROUTE_SHOP_PREMIUM_QR_CODE_GENERATE_PAGE, ROUTE_SHOP_PREMIUM_SUMMARY_PAGE, ROUTE_SHOP_PREMIUM_AGGREGATE } from '../../constants/route-path.constant';
+import { ROUTE_SHOP_PREMIUM_QR_CODE_GENERATE_PAGE, ROUTE_SHOP_PREMIUM_AGGREGATE } from '../../constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -28,7 +27,6 @@ export class DeviceOnlyShopPremiumQrCodeSummaryPageComponent implements OnInit {
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private homeButtonService: HomeButtonService,
     private priceOptionService: PriceOptionService,
     private qrcodePaymentService: QRCodePaymentService,
     private alertService: AlertService,

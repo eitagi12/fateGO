@@ -119,7 +119,7 @@
               </div>
               <div class="col-12 col-sm-8">
                 <input type="text" class="form-control" maxlength="50" mask="T{50}" autocomplete="off"
-                  value="{{ firstName }}" (input)="inputFirstName($event.target.value)" />
+                  value="{{ transaction?.data?.customer?.firstName }}" (input)="inputFirstName($event.target.value)" />
               </div>
             </div>
             <div class="form-group row">
@@ -128,7 +128,7 @@
               </div>
               <div class="col-12 col-sm-8">
                 <input type="text" class="form-control" maxlength="50" mask="T{50}" autocomplete="off"
-                  value="{{ lastName }}" (input)="inputLastName($event.target.value)" />
+                  value="{{ transaction?.data?.customer?.lastName }}" (input)="inputLastName($event.target.value)" />
               </div>
             </div>
             <div class="form-group row">
@@ -137,7 +137,9 @@
               </div>
               <div class="col-12 col-sm-8">
                 <input type="tel" class="form-control" id="idCardNo" maxlength="13" autocomplete="off"
-                  formControlName="idCardNo" (input)="inputTaxid($event.target.value)" [ngClass]="{
+                  formControlName="idCardNo"
+                  value="{{ transaction?.data?.receiptInfo?.taxId }}"
+                  (input)="inputTaxid($event.target.value)" [ngClass]="{
                     'is-invalid':
                       customerAddressForm.controls['idCardNo'].invalid &&
                       customerAddressForm.controls['idCardNo'].dirty
@@ -166,7 +168,7 @@
               </div>
               <div class="col-12 col-sm-8">
                 <input class="form-control" id="telNo" maxlength="10" autofocus autocomplete="off"
-                  formControlName="telNo" value="{{ phoneNumber }}" (input)="inputPhoneNumber($event.target.value)"
+                  formControlName="telNo" value="{{ transaction?.data?.receiptInfo?.telNo }}" (input)="inputPhoneNumber($event.target.value)"
                   [ngClass]="{
                     'is-invalid':
                       customerAddressForm.controls['telNo'].invalid &&

@@ -1,6 +1,6 @@
 import { Component, OnInit, EventEmitter, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertService, PageActivityService, TokenService, PageLoadingService, User, HomeService } from 'mychannel-shared-libs';
+import { AlertService, TokenService, PageLoadingService, User, HomeService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Transaction, Payment } from 'src/app/shared/models/transaction.model';
@@ -8,10 +8,8 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { toDataURL } from 'qrcode';
 import { ImageBrannerQRCode, QRCodeModel, QRCodePaymentService, QRCodePrePostMpayModel } from 'src/app/shared/services/qrcode-payment.service';
 import { environment } from 'src/environments/environment';
-import { Subscription, BehaviorSubject, Observable } from 'rxjs';
+import { Subscription, BehaviorSubject } from 'rxjs';
 import { interval } from 'rxjs';
-import { ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_ERROR_PAGE } from 'src/app/device-order/ais/device-order-ais-existing/constants/route-path.constant';
-import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
 import { ROUTE_SHOP_PREMIUM_QR_CODE_SUMMARY_PAGE, ROUTE_SHOP_PREMIUM_RESULT_PAGE } from 'src/app/device-only/ais-shop-premium/constants/route-path.constant';
 import { QueueService } from 'src/app/device-only/services/queue.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
@@ -44,8 +42,6 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
   refreshQRCode: EventEmitter<boolean>;
   // qrcode
   private checkInquiryCallbackMpaySubscribtion$: Subscription;
-  private subscription: Subscription;
-  private $counter: Observable<number>;
   textQRCode: string;
   qrCodeImageSrc: string;
   mcLoadingQrcodePaymentService: Promise<any>;
@@ -72,8 +68,6 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private alertService: AlertService,
-    private pageActivityService: PageActivityService,
-    private homeButtonService: HomeButtonService,
     private qrcodePaymentService: QRCodePaymentService,
     private tokenService: TokenService,
     private createOrderService: CreateOrderService,
@@ -106,13 +100,12 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
   ngOnInit(): void {
     this.price = this.priceOption.productDetail.price;
     this.initialOrderID();
-    this.homeButtonService.initEventButtonHome();
     if (this.orderID && this.payment.paymentQrCodeType) {
       this.orderID = `${this.orderID}_${this.refreshCount}`;
       this.getQRCode(this.setBodyRequestForGetQRCode());
       this.setBodyRequestForPreMpay();
       this.qrcodePaymentService.insertPreMpay(this.qrCodePrePostMpayModel).then(
-        (data: any) => {
+        () => {
           this.qrcodePaymentService.updateMpayObjectInTransaction(this.qrCodePrePostMpayModel);
         },
         (error: any) => {
@@ -320,7 +313,7 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
 
   updateMpayDataStatus(): void {
     this.qrcodePaymentService.updatePostMpay(this.qrCodePrePostMpayModel).then(
-      (data: any) => {
+      () => {
         this.updateMpayObjectInTransaction();
       },
       (error: any) => {
@@ -348,7 +341,7 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
           this.getQRCode(this.setBodyRequestForGetQRCode());
           this.setBodyRequestForPreMpay();
           this.qrcodePaymentService.updatePostMpay(this.qrCodePrePostMpayModel).then(
-            (data: any) => {
+            () => {
               this.qrcodePaymentService.updateMpayObjectInTransaction(this.qrCodePrePostMpayModel);
             },
             (error: any) => {
