@@ -14,9 +14,6 @@
         <li class="breadcrumb-item">
           <a href="#" routerLink="/buy-premium/brand">Premium</a>
         </li>
-        <li class="breadcrumb-item">
-          <a href="#" routerLink="/buy-premium/product" [queryParams]="{ brand: params?.brand }">{{ params?.brand }}</a>
-        </li>
         <li class="breadcrumb-item active">
           {{ productDetail?.name }}
         </li>
@@ -61,6 +58,7 @@
                             [ngClass]="{ 'disabled': product?.stock?.qty <= 0 }"
                             (click)="onCheckStock($event, product?.stock)">
                             <small>{{ product?.colorName }}&nbsp;</small>
+                            <span>({{ product?.stock?.qty }})</span>
                           </label>
                           <div class="product-color" [ngStyle]="{ 'background-color': '#' + product?.colorCode }"></div>
                           <small class="d-block text-center text-pink"

@@ -1,6 +1,6 @@
 import { Component, OnInit, EventEmitter, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertService, PageActivityService, TokenService, PageLoadingService, User } from 'mychannel-shared-libs';
+import { AlertService, TokenService, PageLoadingService, User, HomeService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Transaction, Payment } from 'src/app/shared/models/transaction.model';
@@ -8,14 +8,13 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { toDataURL } from 'qrcode';
 import { ImageBrannerQRCode, QRCodeModel, QRCodePaymentService, QRCodePrePostMpayModel } from 'src/app/shared/services/qrcode-payment.service';
 import { environment } from 'src/environments/environment';
-import { Subscription, BehaviorSubject, Observable } from 'rxjs';
+import { Subscription, BehaviorSubject } from 'rxjs';
 import { interval } from 'rxjs';
-import { ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_ERROR_PAGE } from 'src/app/device-order/ais/device-order-ais-existing/constants/route-path.constant';
-import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
 import { ROUTE_SHOP_PREMIUM_QR_CODE_SUMMARY_PAGE, ROUTE_SHOP_PREMIUM_RESULT_PAGE } from 'src/app/device-only/ais-shop-premium/constants/route-path.constant';
 import { QueueService } from 'src/app/device-only/services/queue.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { CreateOrderService } from 'src/app/device-only/services/create-order.service';
+import { HttpClient } from '@angular/common/http';
 
 export class QRodePrePostMpayModel {
   orderId: string;
@@ -43,8 +42,6 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
   refreshQRCode: EventEmitter<boolean>;
   // qrcode
   private checkInquiryCallbackMpaySubscribtion$: Subscription;
-  private subscription: Subscription;
-  private $counter: Observable<number>;
   textQRCode: string;
   qrCodeImageSrc: string;
   mcLoadingQrcodePaymentService: Promise<any>;
@@ -67,17 +64,17 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
 
   constructor(
     private router: Router,
+    private http: HttpClient,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private alertService: AlertService,
-    private pageActivityService: PageActivityService,
-    private homeButtonService: HomeButtonService,
     private qrcodePaymentService: QRCodePaymentService,
     private tokenService: TokenService,
     private createOrderService: CreateOrderService,
     private queueService: QueueService,
     private pageLoadingService: PageLoadingService,
-    private sharedTransactionService: SharedTransactionService
+    private sharedTransactionService: SharedTransactionService,
+    private homeService: HomeService,
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -86,18 +83,29 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
     this.refreshQRCode = new EventEmitter<boolean>();
     this.qrCodePrePostMpayModel = new QRCodePrePostMpayModel();
     this.brannerImagePaymentQrCode = this.qrcodePaymentService.getBrannerImagePaymentQrCodeType(this.payment.paymentQrCodeType);
+    this.homeService.callback = () => {
+      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+        .then((response: any) => {
+          if (response.value === true) {
+            this.returnStock().then(() => {
+              this.transaction.data.order = {};
+              this.transactionService.remove();
+              window.location.href = '/';
+            });
+          }
+        });
+    };
   }
 
   ngOnInit(): void {
     this.price = this.priceOption.productDetail.price;
     this.initialOrderID();
-    this.homeButtonService.initEventButtonHome();
     if (this.orderID && this.payment.paymentQrCodeType) {
       this.orderID = `${this.orderID}_${this.refreshCount}`;
       this.getQRCode(this.setBodyRequestForGetQRCode());
       this.setBodyRequestForPreMpay();
       this.qrcodePaymentService.insertPreMpay(this.qrCodePrePostMpayModel).then(
-        (data: any) => {
+        () => {
           this.qrcodePaymentService.updateMpayObjectInTransaction(this.qrCodePrePostMpayModel);
         },
         (error: any) => {
@@ -131,6 +139,10 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
 
   onBack(): void {
     this.router.navigate([ROUTE_SHOP_PREMIUM_QR_CODE_SUMMARY_PAGE]);
+  }
+
+  onHome(): void {
+    this.homeService.goToHome();
   }
 
   genQueue(): void {
@@ -301,7 +313,7 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
 
   updateMpayDataStatus(): void {
     this.qrcodePaymentService.updatePostMpay(this.qrCodePrePostMpayModel).then(
-      (data: any) => {
+      () => {
         this.updateMpayObjectInTransaction();
       },
       (error: any) => {
@@ -329,7 +341,7 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
           this.getQRCode(this.setBodyRequestForGetQRCode());
           this.setBodyRequestForPreMpay();
           this.qrcodePaymentService.updatePostMpay(this.qrCodePrePostMpayModel).then(
-            (data: any) => {
+            () => {
               this.qrcodePaymentService.updateMpayObjectInTransaction(this.qrCodePrePostMpayModel);
             },
             (error: any) => {
@@ -378,6 +390,23 @@ export class DeviceOnlyShopPremiumQrCodeGeneratorPageComponent implements OnInit
           this.alertService.error(error);
         }
       );
+  }
+
+  returnStock(): Promise<void> {
+    return new Promise(resolve => {
+      const transaction = this.transactionService.load();
+      const promiseAll = [];
+      if (transaction && transaction.data) {
+        if (transaction.data.order && transaction.data.order.soId) {
+          const order = this.http.post('/api/salesportal/dt/remove-cart', {
+            soId: transaction.data.order.soId,
+            userId: this.user.username
+          }).toPromise().catch(() => Promise.resolve());
+          promiseAll.push(order);
+        }
+      }
+      Promise.all(promiseAll).then(() => resolve());
+    });
   }
 
   async updateMpayObjectInTransaction(): Promise<void> {

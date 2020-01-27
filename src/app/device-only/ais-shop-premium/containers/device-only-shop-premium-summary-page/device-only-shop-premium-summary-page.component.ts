@@ -6,7 +6,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ROUTE_SHOP_PREMIUM_PAYMENT_PAGE, ROUTE_SHOP_PREMIUM_AGGREGATE } from '../../constants/route-path.constant';
 import { Router } from '@angular/router';
 import { SummarySellerCodeComponent } from 'src/app/device-only/components/summary-seller-code/summary-seller-code.component';
-import { HomeService, AlertService, TokenService, PageLoadingService } from 'mychannel-shared-libs';
+import { HomeService, AlertService, TokenService, PageLoadingService, User } from 'mychannel-shared-libs';
 import { SellerService } from 'src/app/device-only/services/seller.service';
 import { HttpClient } from '@angular/common/http';
 import { ShopCheckSeller } from 'src/app/device-only/models/shopCheckSeller.model';
@@ -28,6 +28,7 @@ export class DeviceOnlyShopPremiumSummaryPageComponent implements OnInit, OnDest
   transaction: Transaction;
   priceOption: PriceOption;
   price: any;
+  user: User;
 
   constructor(
     private http: HttpClient,
@@ -42,6 +43,19 @@ export class DeviceOnlyShopPremiumSummaryPageComponent implements OnInit, OnDest
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
+    this.user = this.tokenService.getUser();
+    this.homeService.callback = () => {
+      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+        .then((response: any) => {
+          if (response.value === true) {
+            this.returnStock().then(() => {
+              this.transaction.data.order = {};
+              this.transactionService.remove();
+              window.location.href = '/';
+            });
+          }
+        });
+    };
   }
 
   ngOnInit(): void {
@@ -92,6 +106,23 @@ export class DeviceOnlyShopPremiumSummaryPageComponent implements OnInit, OnDest
 
   onHome(): void {
     this.homeService.goToHome();
+  }
+
+  returnStock(): Promise<void> {
+    return new Promise(resolve => {
+      const transaction = this.transactionService.load();
+      const promiseAll = [];
+      if (transaction && transaction.data) {
+        if (transaction.data.order && transaction.data.order.soId) {
+          const order = this.http.post('/api/salesportal/dt/remove-cart', {
+            soId: transaction.data.order.soId,
+            userId: this.user.username
+          }).toPromise().catch(() => Promise.resolve());
+          promiseAll.push(order);
+        }
+      }
+      Promise.all(promiseAll).then(() => resolve());
+    });
   }
 
   ngOnDestroy(): void {

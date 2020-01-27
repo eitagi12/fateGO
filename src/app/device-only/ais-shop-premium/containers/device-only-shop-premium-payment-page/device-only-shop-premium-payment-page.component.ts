@@ -1,10 +1,7 @@
 import {
   Component,
   OnInit,
-  OnDestroy,
-  Input,
-  Output,
-  EventEmitter
+  OnDestroy
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { WIZARD_DEVICE_ONLY_AIS } from 'src/app/device-only/constants/wizard.constant';
@@ -14,6 +11,7 @@ import {
   SimCard,
   TransactionType,
   TransactionAction,
+  Customer,
 } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Product } from 'src/app/device-only/models/product.model';
@@ -23,16 +21,14 @@ import {
   AlertService,
   TokenService,
   User,
-  PageLoadingService
+  PageLoadingService,
+  ReceiptInfo
 } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { CreateOrderService } from 'src/app/device-only/services/create-order.service';
-import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
 import {
-  ROUTE_BUY_PREMIUM_CAMPAIGN_PAGE,
-  ROUTE_BUY_PREMIUM_PRODUCT_PAGE
+  ROUTE_BUY_PREMIUM_CAMPAIGN_PAGE
 } from 'src/app/buy-premium/constants/route-path.constant';
 import { ROUTE_SHOP_PREMIUM_SUMMARY_PAGE } from '../../constants/route-path.constant';
 import {
@@ -66,9 +62,6 @@ export interface PaymentDetailBank {
 })
 export class DeviceOnlyShopPremiumPaymentPageComponent
   implements OnInit, OnDestroy {
-  // @Input()
-  // banks: PaymentDetailBank[];
-
   banks: PaymentDetailBank[];
   paymentDetail: PaymentDetail;
   customerAddressForm: FormGroup;
@@ -83,6 +76,8 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
   paymentDetailTemp: any;
   paymentDetailValid: boolean;
   customerInfoTemp: any;
+  customer: Customer;
+  receiptInfo: ReceiptInfo;
   user: User;
   phoneNumber: string;
   taxId: string;
@@ -102,9 +97,7 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
     private apiRequestService: ApiRequestService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
-    private createOrderService: CreateOrderService,
     private alertService: AlertService,
-    private homeButtonService: HomeButtonService,
     private tokenService: TokenService,
     private sharedTransactionService: SharedTransactionService,
     private pageLoadingService: PageLoadingService,
@@ -112,12 +105,25 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     this.user = this.tokenService.getUser();
+    if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      this.homeService.callback = () => {
+        this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+          .then((response: any) => {
+            if (response.value === true) {
+              this.returnStock().then(() => {
+                this.createTransaction();
+                this.transaction.data.order = {};
+                this.transactionService.remove();
+                window.location.href = '/';
+              });
+            }
+          });
+      };
+    }
   }
 
   ngOnInit(): void {
     this.createForm();
-    this.createTransaction();
-    this.homeButtonService.initEventButtonHome();
     this.apiRequestService.createRequestId();
     let name = this.priceOption.productDetail.name;
     const price = this.priceOption.productDetail.price;
@@ -195,7 +201,7 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
     );
 
     this.paymentDetailForm.controls['paymentBank'].valueChanges.subscribe(
-      (obs: any) => {
+      () => {
         this.changePaymentBank(this.paymentDetailForm);
         this.onPaymentDetailCompleted(this.paymentDetailForm.value);
       }
@@ -208,6 +214,7 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
       }
     );
     this.paymentDetailForm.controls['paymentForm'].disable();
+
   }
 
   customValidate(group: FormGroup): any {
@@ -268,40 +275,40 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
     this.homeService.goToHome();
   }
 
-  clearstock(): any {
-    this.alertService
-      .question(
-        'ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที',
-        'ตกลง',
-        'ยกเลิก'
-      )
-      .then((response: any) => {
-        if (response.value === true) {
-          this.createOrderService.cancelOrderDT(this.transaction).then(() => {
-            this.transactionService.remove();
-            this.router.navigate([ROUTE_BUY_PREMIUM_PRODUCT_PAGE], {
-              queryParams: this.priceOption.queryParams
-            });
-          });
+  returnStock(): Promise<void> {
+    return new Promise(resolve => {
+      const transaction = this.transactionService.load();
+      const promiseAll = [];
+      if (transaction && transaction.data) {
+        if (transaction.data.order && transaction.data.order.soId) {
+          const order = this.http.post('/api/salesportal/dt/remove-cart', {
+            soId: transaction.data.order.soId,
+            userId: this.user.username
+          }).toPromise().catch(() => Promise.resolve());
+          promiseAll.push(order);
         }
-      })
-      .catch(() => {
-        this.transactionService.remove();
-      });
+      }
+      Promise.all(promiseAll).then(() => resolve());
+    });
   }
 
-  onBack(): any {
-    this.transactionService.remove();
-    if (
-      this.transaction.data &&
-      this.transaction.data.order &&
-      this.transaction.data.order.soId
-    ) {
-      this.clearstock();
+  onBack(): void {
+    if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+        .then((response: any) => {
+          if (response.value === true) {
+            this.returnStock().then(() => {
+              this.createTransaction();
+              this.transaction.data.order = {};
+              this.transactionService.remove();
+              this.router.navigate([ROUTE_BUY_PREMIUM_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
+            });
+          }
+        });
     } else {
-      this.router.navigate([ROUTE_BUY_PREMIUM_CAMPAIGN_PAGE], {
-        queryParams: this.priceOption.queryParams
-      });
+      this.createTransaction();
+      this.transactionService.remove();
+      this.router.navigate([ROUTE_BUY_PREMIUM_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
     }
   }
 
@@ -339,7 +346,7 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
       color: color,
       userId: this.user.username,
       cusNameOrder: cusNameOrder,
-      soChannelType: 'CSP',
+      soChannelType: 'MC_KIOSK',
       soDocumentType: 'RESERVED'
     };
 
@@ -351,13 +358,13 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
 
   createAddToCartTrasaction(): void {
     const customer: any = {
-      firstName: this.firstName,
-      lastName: this.lastName,
-      idCardNo: this.taxId,
+      firstName: this.firstName ? this.firstName : this.transaction.data.customer.firstName,
+      lastName: this.lastName ? this.lastName : this.transaction.data.customer.lastName,
+      idCardNo: this.taxId ? this.taxId : this.transaction.data.customer.idCardNo,
     };
     const receiptInfo: any = {
-      telNo: this.phoneNumber,
-      taxId: this.taxId,
+      telNo: this.phoneNumber ? this.phoneNumber : this.transaction.data.receiptInfo.telNo,
+      taxId: this.taxId ? this.taxId : this.transaction.data.customer.idCardNo,
     };
     this.transaction.data.seller = { ...this.seller };
     this.transaction.data.payment = { paymentForm: 'FULL', ...this.paymentDetailTemp };
@@ -376,6 +383,8 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
       data: {
         transactionType: TransactionType.SHOP_PREMIUM_AIS,
         action: TransactionAction.KEY_IN,
+        customer: { ...this.customer },
+        receiptInfo: { ...this.receiptInfo },
       }
     };
   }
@@ -391,16 +400,20 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
 
   inputFirstName(firstName: string): void {
     this.firstName = firstName;
+    this.transaction.data.customer.firstName = this.firstName;
   }
   inputLastName(lastName: string): void {
     this.lastName = lastName;
+    this.transaction.data.customer.lastName = this.lastName;
   }
   inputTaxid(taxId: string): void {
     this.taxId = taxId;
+    this.transaction.data.customer.idCardNo = this.taxId;
   }
 
   inputPhoneNumber(phoneNumber: string): void {
     this.phoneNumber = phoneNumber;
+    this.transaction.data.receiptInfo.telNo = this.phoneNumber;
   }
 
   customerValidate(control: AbstractControl): ValidationErrors | null {
@@ -427,17 +440,7 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
   }
 
   isDisableNext(): boolean {
-    if (
-      this.firstName &&
-      this.lastName &&
-      this.paymentDetailTemp && this.phoneNumber && this.taxId
-    ) {
-      const id = this.taxId.length;
-      const tel = this.phoneNumber.length;
-      if (id === 13 && tel === 10 && (this.paymentDetailTemp.paymentQrCodeType !== this.paymentDetailTemp.paymentType)) {
-        return true;
-      }
-    }
+    return true;
   }
 
   ngOnDestroy(): void {
