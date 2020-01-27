@@ -679,8 +679,10 @@ export class CreateOrderService {
         return 'CC';
       } else { // ชำระเต็มจำนวน
         if (payment.paymentType === 'DEBIT') {
+          console.log('เช็คตามโค้ด --> DEBIT return : CA', payment.paymentType);
           return 'CA';
         } else {
+          console.log('เช็คตามโค้ด --> CREDIT return : CC', payment.paymentType);
           return 'CC';
         }
       }
