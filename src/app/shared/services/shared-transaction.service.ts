@@ -277,7 +277,6 @@ export class SharedTransactionService {
     if (data.mpayPayment) {
       params.data.mpay_payment = data.mpayPayment;
     }
-    console.log('params', params);
     return params;
   }
 

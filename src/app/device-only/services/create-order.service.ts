@@ -102,29 +102,24 @@ export class CreateOrderService {
         && transaction.data
         && transaction.data.order
         && transaction.data.order.soId) {
-          console.log('if');
         resolve(transaction);
       } else {
         if (this.tokenService.isTelewizUser()) {
           this.callAddToCart(transaction, priceOption).then((response: any) => {
             if (response) {
-              console.log('response callAddToCart ---> ', response);
               transaction.data.order = {
                 soId: response.soId
               };
               this.sharedTransactionService.createSharedTransaction(transaction, priceOption).then((res: any) => {
-                console.log('res createSharedTransaction ', res);
                 if (res.data.isSuccess === true) {
                   resolve(transaction);
                 }
               }).catch((err: any) => {
-                console.log('err createSharedTransaction1 ---> ', err);
-                // this.alertService.error(err.error.developerMessage);
+                this.alertService.error(err.error.developerMessage);
               });
             }
           }).catch((err: any) => {
-            console.log('err callAddToCart ---> ', err);
-            // this.alertService.error(err.error.developerMessage);
+            this.alertService.error(err.error.developerMessage);
           });
         } else {
           this.callAddToCartDT(transaction, priceOption).then((response: any) => {
@@ -137,14 +132,12 @@ export class CreateOrderService {
                   resolve(transaction);
                 }
               }).catch((err: any) => {
-                console.log('err createSharedTransaction2 ---> ', err);
                 this.alertService.error(err.error.developerMessage);
               });
             } else {
               this.alertService.error('Cannot add item to the cart');
             }
           }).catch((err: any) => {
-            console.log('err callAddToCartDT ---> ', err);
             this.alertService.error(err.error.developerMessage);
           });
         }
