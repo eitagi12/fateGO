@@ -34,17 +34,6 @@
               <div class="col-12" *ngIf="paymentDetailForm?.value?.paymentType === 'QR_CODE'">
                 <div class="row qr-codes">
                   <div class="col-2 p-2">
-                    <input type="radio" id="thai-qr" name="paymentQrCodeType" value="THAI_QR"
-                      formControlName="paymentQrCodeType" />
-                    <label for="thai-qr" class="qr-code" [ngClass]="{
-                        active:
-                          paymentDetailForm?.value?.paymentQrCodeType ===
-                          'THAI_QR'
-                      }">
-                      <ng-container *ngTemplateOutlet="thaiQR"></ng-container>
-                    </label>
-                  </div>
-                  <div class="col-2 p-2">
                     <input type="radio" id="line-qr" name="paymentQrCodeType" value="LINE_QR"
                       formControlName="paymentQrCodeType" />
                     <label for="line-qr" class="qr-code" [ngClass]="{
@@ -53,6 +42,17 @@
                           'LINE_QR'
                       }">
                       <ng-container *ngTemplateOutlet="lineQR"></ng-container>
+                    </label>
+                  </div>
+                  <div class="col-2 p-2">
+                    <input type="radio" id="thai-qr" name="paymentQrCodeType" value="THAI_QR"
+                      formControlName="paymentQrCodeType" />
+                    <label for="thai-qr" class="qr-code" [ngClass]="{
+                        active:
+                          paymentDetailForm?.value?.paymentQrCodeType ===
+                          'THAI_QR'
+                      }">
+                      <ng-container *ngTemplateOutlet="thaiQR"></ng-container>
                     </label>
                   </div>
                 </div>
@@ -136,8 +136,8 @@
                 เลขบัตรประชาชน<span style="color:red">*</span>
               </div>
               <div class="col-12 col-sm-8">
-                <input type="tel" class="form-control" id="idCardNo" maxlength="13"
-                  autocomplete="off" formControlName="idCardNo" (input)="inputTaxid($event.target.value)" [ngClass]="{
+                <input type="tel" class="form-control" id="idCardNo" maxlength="13" autocomplete="off"
+                  formControlName="idCardNo" (input)="inputTaxid($event.target.value)" [ngClass]="{
                     'is-invalid':
                       customerAddressForm.controls['idCardNo'].invalid &&
                       customerAddressForm.controls['idCardNo'].dirty
