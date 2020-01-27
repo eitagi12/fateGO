@@ -108,21 +108,23 @@ export class CreateOrderService {
         if (this.tokenService.isTelewizUser()) {
           this.callAddToCart(transaction, priceOption).then((response: any) => {
             if (response) {
+              console.log('response callAddToCart ---> ', response);
               transaction.data.order = {
                 soId: response.soId
               };
               this.sharedTransactionService.createSharedTransaction(transaction, priceOption).then((res: any) => {
+                console.log('res createSharedTransaction ', res);
                 if (res.data.isSuccess === true) {
                   resolve(transaction);
                 }
               }).catch((err: any) => {
                 console.log('err createSharedTransaction1 ---> ', err);
-                this.alertService.error(err.error.developerMessage);
+                // this.alertService.error(err.error.developerMessage);
               });
             }
           }).catch((err: any) => {
             console.log('err callAddToCart ---> ', err);
-            this.alertService.error(err.error.developerMessage);
+            // this.alertService.error(err.error.developerMessage);
           });
         } else {
           this.callAddToCartDT(transaction, priceOption).then((response: any) => {
