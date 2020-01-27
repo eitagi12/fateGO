@@ -190,14 +190,14 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
       key_sim: false
     };
     this.transaction = this.transactionService.load();
-    if (this.data.cusMobileNo) {
+    if (this.transaction.data.cusMobileNo) {
       this.startPersoSim(this.transaction);
     }
   }
 
   startPersoSim(transaction: Transaction | Partial<Transaction>): void {
     this.errorMessage = '';
-    this.persoSimSubscription = this.onPersoSim(this.data.cusMobileNo).subscribe((value) => {
+    this.persoSimSubscription = this.onPersoSim(transaction.data.cusMobileNo).subscribe((value) => {
       this.isNext = false;
       this.persoSim = value;
       this.title = value.eventName;
@@ -247,7 +247,7 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
   }
 
   onPersoSim(mobileNo: string): Observable<PersoSim> {
-    this.mobileNo = mobileNo;
+    this.mobileNo = this.transaction.data.cusMobileNo;
     if (this.utils.isAisNative()) {
       return this.persoSimFromAisNative();
     } else {
@@ -318,8 +318,8 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
                   //           if (persoMassege[0] === PersoSimCardStatus.EVENT_PERSO_SIM_SUCCESS) {
                   //             this.checkCreatePersoSim(this.referenceNumber).then((crestePersoSim) => {
                   //               observer.next({ progress: 80, eventName: 'กรุณารอสักครู่' }); // ออก order แล้ว
-                  //               this.checkOmniStatusCompleted(this.referenceNumber).then((resOmni) => {
-                  //                 if (resOmni) {
+                  //               this.checkOrderStatusCompleted(this.referenceNumber).then((resOrder) => {
+                  //                 if (resOrder) {
                   //                   observer.next({ progress: 90, eventName: 'กรุณารอสักครู่' }); // order complete แล้ว
                   //                   this.controlSim(ControlSimCard.EVENT_RELEASE_SIM).then(() => {
                   //                     this.controlSim(ControlLED.EVENT_LED_BLINK).then(() => {
@@ -333,7 +333,7 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
                   //                           observer.next({
                   //                             progress: 100,
                   //                             eventName: 'กรุณาดึง SIM CARD ออก',
-                  //                             orderPersoSim: resOmni,
+                  //                             orderPersoSim: resOrder,
                   //                             queryPersoSim: simCommand,
                   //                             simSerial: persoSim.serialNo
                   //                           });
@@ -344,7 +344,7 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
                   //                         observer.next({
                   //                           progress: 100,
                   //                           eventName: 'กรุณาดึง SIM CARD ออก',
-                  //                           orderPersoSim: resOmni,
+                  //                           orderPersoSim: resOrder,
                   //                           queryPersoSim: simCommand,
                   //                           simSerial: persoSim.serialNo
                   //                         });
