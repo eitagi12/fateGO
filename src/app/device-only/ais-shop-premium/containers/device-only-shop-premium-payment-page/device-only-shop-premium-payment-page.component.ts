@@ -124,7 +124,6 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
 
   ngOnInit(): void {
     this.createForm();
-    this.apiRequestService.createRequestId();
     let name = this.priceOption.productDetail.name;
     const price = this.priceOption.productDetail.price;
     if (this.priceOption.productStock.color) {
@@ -320,7 +319,7 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
           this.transaction.data.order = {
             soId: response.soId
           };
-          this.createAddToCartTrasaction();
+          this.createShareTransaction();
         } else {
           this.alertService.error(response.resultMessage);
         }
@@ -346,7 +345,7 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
       color: color,
       userId: this.user.username,
       cusNameOrder: cusNameOrder,
-      soChannelType: 'MC_KIOSK',
+      soChannelType: 'KIOSK',
       soDocumentType: 'RESERVED'
     };
 
@@ -356,7 +355,7 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
       .then((res: any) => res.data);
   }
 
-  createAddToCartTrasaction(): void {
+  createShareTransaction(): void {
     const customer: any = {
       firstName: this.firstName ? this.firstName : this.transaction.data.customer.firstName,
       lastName: this.lastName ? this.lastName : this.transaction.data.customer.lastName,
