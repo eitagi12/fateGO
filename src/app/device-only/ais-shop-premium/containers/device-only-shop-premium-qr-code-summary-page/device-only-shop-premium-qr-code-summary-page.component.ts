@@ -40,11 +40,22 @@ export class DeviceOnlyShopPremiumQrCodeSummaryPageComponent implements OnInit {
     this.payment = this.transaction.data.payment;
     this.brannerImagePaymentQrCode = this.qrcodePaymentService.getBrannerImagePaymentQrCodeType(this.payment.paymentQrCodeType);
     this.user = this.tokenService.getUser();
+    this.homeService.callback = () => {
+      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+        .then((response: any) => {
+          if (response.value === true) {
+            this.returnStock().then(() => {
+              this.transaction.data.order = {};
+              this.transactionService.remove();
+              window.location.href = '/';
+            });
+          }
+        });
+    };
   }
 
   ngOnInit(): void {
     this.price = this.priceOption.productDetail.price;
-    this.homeButtonService.initEventButtonHome();
   }
 
   summary(amount: number[]): number {
@@ -79,18 +90,7 @@ export class DeviceOnlyShopPremiumQrCodeSummaryPageComponent implements OnInit {
   }
 
   onHome(): void {
-      this.homeService.callback = () => {
-      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
-        .then((response: any) => {
-          if (response.value === true) {
-            this.returnStock().then(() => {
-              this.transaction.data.order = {};
-              this.transactionService.remove();
-              window.location.href = '/';
-            });
-          }
-        });
-    };
+    this.homeService.goToHome();
   }
 
 }
