@@ -440,7 +440,24 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
   }
 
   isDisableNext(): boolean {
-    return true;
+    const idCardNo = this.transaction.data.customer.idCardNo;
+    const mobileNo = this.transaction.data.receiptInfo.telNo;
+    const paymentChange = this.paymentDetailTemp ? this.paymentDetailTemp : {};
+    if (
+      this.firstName &&
+      this.lastName &&
+      this.paymentDetailTemp && this.phoneNumber && this.taxId
+    ) {
+      const id = this.taxId.length;
+      const tel = this.phoneNumber.length;
+      if (id === 13 && tel === 10 && (paymentChange.paymentQrCodeType !== paymentChange.paymentType)) {
+        return true;
+      }
+    } else if (idCardNo && mobileNo && (paymentChange.paymentQrCodeType !== paymentChange.paymentType)) {
+      if (idCardNo.length === 13 && mobileNo.length === 10) {
+        return true;
+      }
+    }
   }
 
   ngOnDestroy(): void {
