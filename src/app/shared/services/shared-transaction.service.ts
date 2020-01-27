@@ -319,7 +319,8 @@ export class SharedTransactionService {
           colorCode: productStock.colorCode || '',
           colorName: productStock.color || productStock.colorName || '',
           company: productStock.company || '',
-          name: productDetail.name || ''
+          name: productDetail.name || '',
+          matCode: productStock.matCode[0]
         },
         receipt_information: {
           telNo: !!data.receiptInfo ? data.receiptInfo.telNo : ''

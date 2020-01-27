@@ -58,7 +58,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     this.priceOptionService.remove();
     this.user = this.tokenService.getUser();
     this.transaction = {};
-   }
+  }
 
   ngOnInit(): void {
     this.priceOption = {};
@@ -200,9 +200,17 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
   }
 
   onNext(): void {
+    this.priceOption.productStock.matCode = this.getMatCode();
     this.priceOption.queryParams = Object.assign({}, this.params);
     this.priceOption.productDetail.price = this.params.maxNormalPrice;
     this.priceOptionService.save(this.priceOption);
     this.router.navigate([ROUTE_SHOP_PREMIUM_PAYMENT_PAGE]);
+  }
+
+  getMatCode(): any {
+    const product = (this.priceOption.productDetail.products || []).find((p: any) => {
+      return p.colorName === this.priceOption.productStock.color;
+    });
+    return product && product.sku ? product.sku : [];
   }
 }
