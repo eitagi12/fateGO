@@ -357,6 +357,7 @@ export interface BillingAccountData {
   billCycleText?: string;
   billCycleTextEng?: string;
   billAddressText?: string;
+  customer?: Customer;
 }
 
 export interface ProductInfo {

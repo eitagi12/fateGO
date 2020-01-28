@@ -196,12 +196,13 @@ export class OmniNewRegisterEbillingAddressPageComponent implements OnInit, OnDe
   onNext(): void {
     const customer = this.transaction.data.customer;
     const shipaddress = this.getFullAddress(this.transaction.data.customer);
+    this.transactionService.update(this.transaction);
     this.transaction.data.billingInformation.billCycleData[0] = Object.assign(
-      Object.assign({}, customer),
       this.customerAddressTemp
     );
+    this.transaction.data.billingInformation.billCycleData[0].customer = this.customerAddressTemp;
     this.transaction.data.billingInformation.billCycleData[0].billAddressText = shipaddress;
-    this.transactionService.update(this.transaction);
+
     this.router.navigate([ROUTE_OMNI_NEW_REGISTER_SUMMARY_PAGE]);
 
   }
