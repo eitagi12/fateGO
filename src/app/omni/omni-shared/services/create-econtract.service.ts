@@ -28,11 +28,11 @@ export class CreateEcontractService {
     const campaign: any = transaction.data.campaign || '';
     // const trade: any = priceOption.trade || {};
     // const productStock: any = priceOption.productStock || {};
-    const customer: any = transaction.data.customer || transaction.data  || '';
+    const customer: any = transaction.data.customer || '';
     const simCard: any = transaction.data.cusMobileNo || '';
     const mainPackage: any = (transaction.data.mainPackage || transaction.data.currentPackage) || {};
     // const mobileCarePackage: any = transaction.data.mobileCarePackage || {};
-    // const promotionByMainPackage = this.findPromotionByMainPackage(mainPackage);
+    const promotionByMainPackage = this.findPromotionByMainPackage(mainPackage, transaction);
     // const seller: any = transaction.data.seller.locationDestName || {};
     // const locationFromSeller = (seller && seller.locationName) ? seller.locationName : productStock.locationName;
     const advancePay = transaction.data.mainPackage.payAdvance || {};
@@ -45,7 +45,7 @@ export class CreateEcontractService {
       locationName: this.translateService.instant(locationFromSeller) || '',
       customerType: '',
       idCard: this.transformIDcard(customer.cardId), // this.transformIDcard(customer.idCardNo),
-      fullName: `${customer.cusName}` || `${customer.firstName} ${customer.lastName}`,
+      fullName: `${customer.firstName || ''} ${customer.lastName || ''}`,
       mobileNumber: simCard,
       imei: simCard.imei || '',
       brand: transaction.data.brand,
@@ -53,14 +53,14 @@ export class CreateEcontractService {
       color: transaction.data.color,
       priceIncludeVat: this.transformDecimalPipe(productPrice),
       priceDiscount: this.transformDecimalPipe(productDiscount),
-      netPrice: this.transformDecimalPipe(productNetPrice),
+      netPrice: this.transformDecimalPipe(productPrice - productDiscount),
       advancePay: this.transformDecimalPipe(advancePay),
       contract: mainPackage.durationContract,
       packageDetail: mainPackage.mainPackageDesc,
-      airTimeDiscount: 400,
-      airTimeMonth:  10,
-      // tslint:disable-next-line: radix
-      price: productPrice + productDiscount,
+      airTimeDiscount: this.getAirTimeDiscount(advancePay.amount, promotionByMainPackage
+        ? promotionByMainPackage : advancePay.promotions) || 0,
+      airTimeMonth: this.getAirTimeMonth(promotionByMainPackage ? promotionByMainPackage : advancePay.promotions) || 0,
+      price: this.transformDecimalPipe(+productPrice + (+productDiscount)),
       signature: '',
       mobileCarePackageTitle: '',
       isPayAdvance: this.isAdvancePay(mainPackage.payAdvance) || '',
@@ -69,34 +69,35 @@ export class CreateEcontractService {
     return data;
   }
 
-  getMobileCarePackageTitle(mobileCarePackage: any = {}, langCurrent: any): string {
-    if (langCurrent === 'TH') {
-      return mobileCarePackage.shortNameThai ? `พร้อมใช้บริการ ${mobileCarePackage.shortNameThai}` : '';
-    } else {
-      return mobileCarePackage.shortNameEng ? `Ready to use ${mobileCarePackage.shortNameEng}` : '';
-    }
-  }
+  // getMobileCarePackageTitle(mobileCarePackage: any = {}, langCurrent: any): string {
+  //   if (langCurrent === 'TH') {
+  //     return mobileCarePackage.shortNameThai ? `พร้อมใช้บริการ ${mobileCarePackage.shortNameThai}` : '';
+  //   } else {
+  //     return mobileCarePackage.shortNameEng ? `Ready to use ${mobileCarePackage.shortNameEng}` : '';
+  //   }
+  // }
 
   isAdvancePay(mainPackage: any): boolean {
     const advancePay = mainPackage.payAdvance || {};
     return (advancePay && advancePay.amount > 0);
   }
 
-  // findPromotionByMainPackage(mainPackageCustomAttributes: any): any {
-  //   if (this.transaction.data.mainPackage.payAdvance) {
-  //     // check mainPackage กับเบอร์ที่ทำรายการให้ตรงกับ billingSystem ของเบอร์ที่ทำรายการ
-  //     const advancePay = this.transaction.data.mainPackage.payAdvance || {};
-  //     const billingSystem = (simCard.billingSystem === 'RTBS')
-  //       ? BillingSystemType.IRB : simCard.billingSystem || BillingSystemType.IRB;
-  //     if (advancePay.promotions) {
-  //       return advancePay.promotions
-  //         .find(promotion =>
-  //           (promotion && promotion.billingSystem) === (mainPackageCustomAttributes || billingSystem));
-  //     } else {
-  //       return null;
-  //     }
-  //   }
-  // }
+  findPromotionByMainPackage(mainPackageCustomAttributes: any, transaction: Transaction): any {
+    const advancePay = transaction.data.mainPackage.payAdvance;
+    if (advancePay) {
+      // check mainPackage กับเบอร์ที่ทำรายการให้ตรงกับ billingSystem ของเบอร์ที่ทำรายการ
+      // const advancePay = priceOption.trade.advancePay || {};
+      const billingSystem = (transaction.data.mainPackage.billingSystem === 'RTBS')
+        ? BillingSystemType.IRB : transaction.data.mainPackage.billingSystem || BillingSystemType.IRB;
+      if (advancePay.promotions) {
+        return advancePay.promotions
+          .find(promotion =>
+            (promotion && promotion.billingSystem) === (mainPackageCustomAttributes || billingSystem));
+      } else {
+        return null;
+      }
+    }
+  }
 
   getAirTimeDiscount(amount: number, advancePayPromotions: any): number {
     if (!advancePayPromotions) {

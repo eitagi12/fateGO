@@ -181,9 +181,7 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
   }
 
   data: any = {
-    simCard: {
-      mobileNo: '0891230892',
-    }
+    cusMobileNo: '0891230892'
   };
 
   ngOnInit(): void {
@@ -192,20 +190,20 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
       key_sim: false
     };
     this.transaction = this.transactionService.load();
-    if (this.data.simCard.mobileNo) {
+    if (this.transaction.data.cusMobileNo) {
       this.startPersoSim(this.transaction);
     }
   }
 
   startPersoSim(transaction: Transaction | Partial<Transaction>): void {
     this.errorMessage = '';
-    this.persoSimSubscription = this.onPersoSim(this.data.simCard.mobileNo).subscribe((value) => {
+    this.persoSimSubscription = this.onPersoSim(transaction.data.cusMobileNo).subscribe((value) => {
       this.isNext = false;
       this.persoSim = value;
       this.title = value.eventName;
       if (value.queryPersoSim) {
-        transaction.data.simCard = Object.assign(transaction.data.simCard, {
-          simSerial: value.simSerial
+        transaction.data.cusMobileNo = Object.assign(transaction.data.cusMobileNo, {
+          cusMobileNo: value.simSerial
         });
         this.transactionService.update(transaction);
         this.isNext = true;
@@ -249,7 +247,7 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
   }
 
   onPersoSim(mobileNo: string): Observable<PersoSim> {
-    this.mobileNo = mobileNo;
+    this.mobileNo = this.transaction.data.cusMobileNo;
     if (this.utils.isAisNative()) {
       return this.persoSimFromAisNative();
     } else {
@@ -299,102 +297,104 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
                       sourceSystem: 'MC'
                     };
                     this.requestPersoSim = persoSim;
-                    this.getPersoDataCommand(persoSim.mobileNo, persoSim.serialNo, persoSim.index,
-                      persoSim.simService, persoSim.sourceSystem).then((simCommand) => {
-                        observer.next({ progress: 60, eventName: 'กรุณารอสักครู่' }); // create perso แล้ว
-                        const eCommand = simCommand.data.eCommand;
-                        const field: string[] = simCommand.data.eCommand.split('|||');
-                        const parameter: string =
-                          field[1] + '|||' +
-                          field[2] + '|||' +
-                          field[3] + '|||' +
-                          field[4] + '|||' +
-                          simCommand.data.sk;
-                        this.referenceNumber = simCommand.data.refNo;
-                        this.manageSim(PersoSimCommand.EVENT_PERSO_SIM, parameter)
-                          .then((persoSimCommand: ControlSimResult) => {
-                            observer.next({ progress: 70, eventName: 'กรุณารอสักครู่' }); // ออก perso แล้ว
-                            const persoMassege: string[] = persoSimCommand.result.split('|||');
-                            if (persoMassege[0] === PersoSimCardStatus.EVENT_PERSO_SIM_SUCCESS) {
-                              this.checkCreatePersoSim(this.referenceNumber).then((crestePersoSim) => {
-                                observer.next({ progress: 80, eventName: 'กรุณารอสักครู่' }); // ออก order แล้ว
-                                this.checkOmniStatusCompleted(this.referenceNumber).then((resOmni) => {
-                                  if (resOmni) {
-                                    observer.next({ progress: 90, eventName: 'กรุณารอสักครู่' }); // order complete แล้ว
-                                    this.controlSim(ControlSimCard.EVENT_RELEASE_SIM).then(() => {
-                                      this.controlSim(ControlLED.EVENT_LED_BLINK).then(() => {
-                                        if (this.typeSim === 'pullsim') {
-                                          observer.next({
-                                            progress: 100,
-                                            eventName: 'กรุณาดึง SIM CARD ออก'
-                                          });
-                                          this.checkCardOutted().then(() => {
-                                            this.controlSim(ControlLED.EVENT_LED_OFF);
-                                            observer.next({
-                                              progress: 100,
-                                              eventName: 'กรุณาดึง SIM CARD ออก',
-                                              orderPersoSim: resOmni,
-                                              queryPersoSim: simCommand,
-                                              simSerial: persoSim.serialNo
-                                            });
-                                          }).catch(() => {
-                                            this.controlSim(ControlLED.EVENT_LED_OFF);
-                                          });
-                                        } else {
-                                          observer.next({
-                                            progress: 100,
-                                            eventName: 'กรุณาดึง SIM CARD ออก',
-                                            orderPersoSim: resOmni,
-                                            queryPersoSim: simCommand,
-                                            simSerial: persoSim.serialNo
-                                          });
-                                        }
-                                      });
-                                    });
-                                  } else {
-                                    this.errrorPersoSim(ErrorPerSoSim.ERROR_PERSO).then((err) => observer.next(err));
-                                  }
-                                }).catch(() => {
-                                  // not to do
-                                });
-                              }).catch(() => {
-                                this.errrorPersoSim(ErrorPerSoSim.ERROR_PERSO).then((err) => observer.next(err));
-                              });
-                            } else {
-                              this.errrorPersoSim(ErrorPerSoSim.ERROR_CMD).then((err) => observer.next(err));
-                            }
-                          });
-                      }).catch((err) => {
-                        if (err) {
-                          if (err.error) {
-                            if (err.error.errors) {
-                              if (err.error.errors.returnCode === '004') {
-                                this.errrorPersoSim(ErrorPerSoSim.ERROR_SIM).then((error) => observer.next(error));
-                              } else if (err.error.errors.returnCode === '006' || err.error.errors.returnCode === '003') {
-                                if (err.error.errors.returnMessage.search('Serial No')) {
-                                  this.errrorPersoSim(ErrorPerSoSim.ERROR_SIM).then((error) => observer.next(error));
-                                } else if (err.error.errors.returnMessage.search('Mobile')) {
-                                  this.errrorPersoSim(ErrorPerSoSim.ERROR_PERSO).then((error) => observer.next(error));
-                                } else {
-                                  this.errrorPersoSim(ErrorPerSoSim.ERROR_CMD).then((error) => observer.next(error));
-                                }
-                              } else {
-                                this.errrorPersoSim(ErrorPerSoSim.ERROR_CMD).then((error) => observer.next(error));
-                              }
-                            } else {
-                              this.errrorPersoSim(ErrorPerSoSim.ERROR_CMD).then((error) => observer.next(error));
-                            }
-                          } else {
-                            this.errrorPersoSim(ErrorPerSoSim.ERROR_CMD).then((error) => observer.next(error));
-                          }
-                        } else {
-                          this.errrorPersoSim(ErrorPerSoSim.ERROR_CMD).then((error) => observer.next(error));
-                        }
-                      });
-
-                  } else {
-                    this.errrorPersoSim(ErrorPerSoSim.ERROR_PRIVATE_KEY).then((err) => observer.next(err));
+                    this.openPopup(this.requestPersoSim);
                   }
+                  //   this.getPersoDataCommand(persoSim.mobileNo, persoSim.serialNo, persoSim.index,
+                  //     persoSim.simService, persoSim.sourceSystem).then((simCommand) => {
+                  //       observer.next({ progress: 60, eventName: 'กรุณารอสักครู่' }); // create perso แล้ว
+                  //       const eCommand = simCommand.data.eCommand;
+                  //       const field: string[] = simCommand.data.eCommand.split('|||');
+                  //       const parameter: string =
+                  //         field[1] + '|||' +
+                  //         field[2] + '|||' +
+                  //         field[3] + '|||' +
+                  //         field[4] + '|||' +
+                  //         simCommand.data.sk;
+                  //       this.referenceNumber = simCommand.data.refNo;
+                  //       this.manageSim(PersoSimCommand.EVENT_PERSO_SIM, parameter)
+                  //         .then((persoSimCommand: ControlSimResult) => {
+                  //           observer.next({ progress: 70, eventName: 'กรุณารอสักครู่' }); // ออก perso แล้ว
+                  //           const persoMassege: string[] = persoSimCommand.result.split('|||');
+                  //           if (persoMassege[0] === PersoSimCardStatus.EVENT_PERSO_SIM_SUCCESS) {
+                  //             this.checkCreatePersoSim(this.referenceNumber).then((crestePersoSim) => {
+                  //               observer.next({ progress: 80, eventName: 'กรุณารอสักครู่' }); // ออก order แล้ว
+                  //               this.checkOrderStatusCompleted(this.referenceNumber).then((resOrder) => {
+                  //                 if (resOrder) {
+                  //                   observer.next({ progress: 90, eventName: 'กรุณารอสักครู่' }); // order complete แล้ว
+                  //                   this.controlSim(ControlSimCard.EVENT_RELEASE_SIM).then(() => {
+                  //                     this.controlSim(ControlLED.EVENT_LED_BLINK).then(() => {
+                  //                       if (this.typeSim === 'pullsim') {
+                  //                         observer.next({
+                  //                           progress: 100,
+                  //                           eventName: 'กรุณาดึง SIM CARD ออก'
+                  //                         });
+                  //                         this.checkCardOutted().then(() => {
+                  //                           this.controlSim(ControlLED.EVENT_LED_OFF);
+                  //                           observer.next({
+                  //                             progress: 100,
+                  //                             eventName: 'กรุณาดึง SIM CARD ออก',
+                  //                             orderPersoSim: resOrder,
+                  //                             queryPersoSim: simCommand,
+                  //                             simSerial: persoSim.serialNo
+                  //                           });
+                  //                         }).catch(() => {
+                  //                           this.controlSim(ControlLED.EVENT_LED_OFF);
+                  //                         });
+                  //                       } else {
+                  //                         observer.next({
+                  //                           progress: 100,
+                  //                           eventName: 'กรุณาดึง SIM CARD ออก',
+                  //                           orderPersoSim: resOrder,
+                  //                           queryPersoSim: simCommand,
+                  //                           simSerial: persoSim.serialNo
+                  //                         });
+                  //                       }
+                  //                     });
+                  //                   });
+                  //                 } else {
+                  //                   this.errrorPersoSim(ErrorPerSoSim.ERROR_PERSO).then((err) => observer.next(err));
+                  //                 }
+                  //               }).catch(() => {
+                  //                 // not to do
+                  //               });
+                  //             }).catch(() => {
+                  //               this.errrorPersoSim(ErrorPerSoSim.ERROR_PERSO).then((err) => observer.next(err));
+                  //             });
+                  //           } else {
+                  //             this.errrorPersoSim(ErrorPerSoSim.ERROR_CMD).then((err) => observer.next(err));
+                  //           }
+                  //         });
+                  //     }).catch((err) => {
+                  //       if (err) {
+                  //         if (err.error) {
+                  //           if (err.error.errors) {
+                  //             if (err.error.errors.returnCode === '004') {
+                  //               this.errrorPersoSim(ErrorPerSoSim.ERROR_SIM).then((error) => observer.next(error));
+                  //             } else if (err.error.errors.returnCode === '006' || err.error.errors.returnCode === '003') {
+                  //               if (err.error.errors.returnMessage.search('Serial No')) {
+                  //                 this.errrorPersoSim(ErrorPerSoSim.ERROR_SIM).then((error) => observer.next(error));
+                  //               } else if (err.error.errors.returnMessage.search('Mobile')) {
+                  //                 this.errrorPersoSim(ErrorPerSoSim.ERROR_PERSO).then((error) => observer.next(error));
+                  //               } else {
+                  //                 this.errrorPersoSim(ErrorPerSoSim.ERROR_CMD).then((error) => observer.next(error));
+                  //               }
+                  //             } else {
+                  //               this.errrorPersoSim(ErrorPerSoSim.ERROR_CMD).then((error) => observer.next(error));
+                  //             }
+                  //           } else {
+                  //             this.errrorPersoSim(ErrorPerSoSim.ERROR_CMD).then((error) => observer.next(error));
+                  //           }
+                  //         } else {
+                  //           this.errrorPersoSim(ErrorPerSoSim.ERROR_CMD).then((error) => observer.next(error));
+                  //         }
+                  //       } else {
+                  //         this.errrorPersoSim(ErrorPerSoSim.ERROR_CMD).then((error) => observer.next(error));
+                  //       }
+                  //     });
+
+                  // } else {
+                  //   this.errrorPersoSim(ErrorPerSoSim.ERROR_PRIVATE_KEY).then((err) => observer.next(err));
+                  // }
                 });
               }).catch(() => {
                 this.errrorPersoSim(ErrorPerSoSim.ERROR_SIM_EMPTY).then((err) => observer.next(err));
@@ -703,6 +703,11 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
 
   onHome(): void {
     this.homeService.goToHome();
+  }
+
+  private openPopup(requestPersoSim: any): void {
+    this.alertService.info(requestPersoSim);
+    // this.alertService.openPopup(requestPersoSim);
   }
 
   ngOnDestroy(): void {
