@@ -69,6 +69,7 @@ export class OrderPreToPostCurrentInfoPageComponent implements OnInit, OnDestroy
       });
     Promise.all([getBalancePromise, queryCurrentServicesPromise]).then((res: any[]) => {
       this.balance = res[0].data || {};
+      this.balance.remainingBalance = Number(this.balance.remainingBalance) / 100;
       const currentServices = res[1].data || [];
       this.serviceChange = currentServices.services.filter(service => service.canTransfer);
       this.serviceAfterChanged = currentServices.services.filter(service => !service.canTransfer);
