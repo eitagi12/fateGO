@@ -305,11 +305,10 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
 
   returnStock(): Promise<void> {
     return new Promise(resolve => {
-      const transaction = this.transactionService.load();
       const promiseAll = [];
-        if (transaction.data.order && transaction.data.order.soId) {
+        if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
           const order = this.http.post('/api/salesportal/dt/remove-cart', {
-            soId: transaction.data.order.soId,
+            soId: this.transaction.data.order.soId,
             userId: this.user.username
           }).toPromise().catch(() => Promise.resolve());
           promiseAll.push(order);
@@ -319,7 +318,7 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
   }
 
   onBack(): void {
-    if (this.transaction.data.order && this.transaction.data.order.soId) {
+    if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
       this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
         .then((response: any) => {
           if (response.value === true) {
