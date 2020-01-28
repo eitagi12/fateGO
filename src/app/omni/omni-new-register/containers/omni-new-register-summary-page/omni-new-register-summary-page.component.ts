@@ -177,7 +177,7 @@ export class OmniNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
           phoneNoContact: billCycleData.phoneNoContact,
           billCycleText: this.billingInfo.billingCycle.text,
           billAddressText: this.billingInfo.billingAddress.text,
-          customer: billCycleData[0].customer
+          customer: (billCycleData ? billCycleData[0].customer : null) || this.transaction.data.customer
         };
         this.router.navigate([ROUTE_OMNI_NEW_REGISTER_ECONTRACT_PAGE]);
       } else {
