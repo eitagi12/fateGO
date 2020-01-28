@@ -3,7 +3,6 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { User, TokenService, SalesService, ProductStock, ProductStockBrandAndModel, HomeService } from 'mychannel-shared-libs';
 import { PRODUCT_TYPE, PRODUCT_SUB_TYPE, SUB_STOCK_DESTINATION } from '../../constants/premium.constant';
 import { ROUTE_BUY_PREMIUM_BRAND_PAGE, ROUTE_BUY_PREMIUM_CAMPAIGN_PAGE } from '../../constants/route-path.constant';
-import { ROUTE_DEASHBOARD_PROMOTION_PAGE } from 'src/app/dashboard/constants/route-path.constant';
 
 @Component({
   selector: 'app-product-page',
@@ -167,7 +166,7 @@ export class ProductPageComponent implements OnInit {
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEASHBOARD_PROMOTION_PAGE]);
+    window.location.href = `/sales-portal/dashboard`;
   }
 
   onHome(): void {
