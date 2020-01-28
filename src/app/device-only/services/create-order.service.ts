@@ -280,10 +280,10 @@ export class CreateOrderService {
   }
 
   createDeviceSellingOrderList(transaction: Transaction, priceOption: PriceOption): Promise<any> {
-    return this.http.post('/api/salesportal/dt/create-order-list',
-      this.getRequestCreateDeviceSellingOrderList(transaction, priceOption)
+    return this.http.post('/api/salesportal/dt/create-order-list', this.getRequestCreateDeviceSellingOrderList(transaction, priceOption)
     ).toPromise();
   }
+
   private getRequestCreateDeviceSellingOrderList(transaction: Transaction, priceOption: PriceOption): any {
     const user = this.tokenService.getUser();
     const productStock = priceOption.productStock;
@@ -441,6 +441,68 @@ export class CreateOrderService {
       data.installmentTerm = payment.paymentMethod.month || 0;
       data.installmentRate = payment.paymentMethod.percentage || 0;
     }
+    return data;
+  }
+
+  createDeviceSellingOrderShopPremium(transaction: Transaction, priceOption: PriceOption): Promise<any> {
+    return this.http.post('/api/salesportal/dt/create-order', this.getRequestCreateDeviceSellingShopPremium(transaction, priceOption)
+    ).toPromise();
+  }
+
+  private getRequestCreateDeviceSellingShopPremium(transaction: Transaction, priceOption: PriceOption): any {
+    const user = this.tokenService.getUser();
+    const productStock = priceOption.productStock;
+    const productDetail = priceOption.productDetail;
+    const transactionData = transaction.data;
+    const customer = transactionData.customer;
+    const order = transactionData.order;
+    const queue: any = transactionData.queue || {};
+    const seller = transactionData.seller || {};
+    const payment = transactionData.payment;
+    const mpayPayment: any = transactionData.mpayPayment || {};
+    const receiptInfo: any = transactionData.receiptInfo || {};
+
+    const data: any = {
+      soId: order.soId,
+      locationSource: user.locationCode,
+      locationReceipt: user.locationCode,
+      userId: user.username,
+      queueNo: queue.queueNo,
+      cusNameOrder: `คุณ ${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
+      soChannelType: 'CSP',
+      soDocumentType: 'RESERVED',
+      soCompany: productStock.company,
+      grandTotalAmt: (+productDetail.price).toFixed(2),
+      saleCode: this.tokenService.isAisUser() ? (seller.sellerNo || '') : (seller.sellerNo || user.ascCode),
+      taxCardId: customer.idCardNo,
+      cusMobileNoOrder: receiptInfo.telNo,
+      paymentMethod: this.getPaymentMethod(transaction),
+      installmentTerm: 0,
+      installmentRate: 0,
+      bankAbbr: payment && payment.paymentBank ? payment.paymentBank.abb : '',
+      productType: productStock.productType || productDetail.productType,
+      productSubType: productStock.productSubType || productDetail.productSubtype,
+      brand: productStock.brand || productDetail.brand,
+      model: productStock.model || productDetail.model,
+      color: productStock.color || productStock.colorName,
+      priceIncAmt: (+productDetail.price).toFixed(2),
+      matCode: productStock.matCode[0]
+    };
+
+    // payment with QR code
+    if (payment && payment.paymentType === 'QR_CODE') {
+      if (mpayPayment && mpayPayment.mpayStatus && mpayPayment.mpayStatus.orderIdDevice) {
+        data.qrOrderId = mpayPayment.mpayStatus.orderIdDevice;
+      } else {
+        data.qrOrderId = mpayPayment && mpayPayment.orderId ? mpayPayment.orderId : null;
+      }
+      // QR code for device
+      if (payment && payment.paymentType === 'QR_CODE') {
+        data.qrTransId = payment.paymentType === 'QR_CODE' ? mpayPayment.tranId : null;
+        data.qrAmt = payment.paymentType === 'QR_CODE' && mpayPayment.tranId ? (+productDetail.price).toFixed(2) : null;
+      }
+    }
+
     return data;
   }
 
