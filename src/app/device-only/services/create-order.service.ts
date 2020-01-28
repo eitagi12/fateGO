@@ -469,7 +469,7 @@ export class CreateOrderService {
       userId: user.username,
       queueNo: queue.queueNo,
       cusNameOrder: `คุณ ${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
-      soChannelType: 'MC_KIOSK',
+      soChannelType: 'CSP',
       soDocumentType: 'RESERVED',
       soCompany: productStock.company,
       grandTotalAmt: (+productDetail.price).toFixed(2),
@@ -485,7 +485,8 @@ export class CreateOrderService {
       brand: productStock.brand || productDetail.brand,
       model: productStock.model || productDetail.model,
       color: productStock.color || productStock.colorName,
-      priceIncAmt: (+productDetail.price).toFixed(2)
+      priceIncAmt: (+productDetail.price).toFixed(2),
+      matCodeFreeGoods: productStock.matCode[0]
     };
 
     // payment with QR code

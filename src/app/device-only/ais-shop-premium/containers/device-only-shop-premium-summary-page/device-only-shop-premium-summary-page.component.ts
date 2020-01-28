@@ -101,7 +101,7 @@ export class DeviceOnlyShopPremiumSummaryPageComponent implements OnInit, OnDest
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_SHOP_PREMIUM_PAYMENT_PAGE]);
+    this.router.navigate([ROUTE_SHOP_PREMIUM_PAYMENT_PAGE], { queryParams: { customer: true } });
   }
 
   onHome(): void {

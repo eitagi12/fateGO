@@ -118,8 +118,9 @@
                 ชื่อ<span style="color:red">*</span>
               </div>
               <div class="col-12 col-sm-8">
-                <input type="text" class="form-control" maxlength="50" mask="T{50}" autocomplete="off"
-                  value="{{ transaction?.data?.customer?.firstName }}" (input)="inputFirstName($event.target.value)" />
+                <input type="text" class="form-control" id="firstName" formControlName="firstName"
+                maxlength="50" mask="T{50}" autocomplete="off"
+                [value]="firstName"/>
               </div>
             </div>
             <div class="form-group row">
@@ -127,8 +128,9 @@
                 นามสกุล<span style="color:red">*</span>
               </div>
               <div class="col-12 col-sm-8">
-                <input type="text" class="form-control" maxlength="50" mask="T{50}" autocomplete="off"
-                  value="{{ transaction?.data?.customer?.lastName }}" (input)="inputLastName($event.target.value)" />
+                  <input type="text" class="form-control" id="lastName" formControlName="lastName"
+                  maxlength="50" mask="T{50}" autocomplete="off"
+                  [value]="lastName"/>
               </div>
             </div>
             <div class="form-group row">
@@ -138,8 +140,8 @@
               <div class="col-12 col-sm-8">
                 <input type="tel" class="form-control" id="idCardNo" maxlength="13" autocomplete="off"
                   formControlName="idCardNo"
-                  value="{{ transaction?.data?.receiptInfo?.taxId }}"
-                  (input)="inputTaxid($event.target.value)" [ngClass]="{
+                  value="{{ idCardNo }}"
+                  [ngClass]="{
                     'is-invalid':
                       customerAddressForm.controls['idCardNo'].invalid &&
                       customerAddressForm.controls['idCardNo'].dirty
@@ -168,7 +170,7 @@
               </div>
               <div class="col-12 col-sm-8">
                 <input class="form-control" id="telNo" maxlength="10" autofocus autocomplete="off"
-                  formControlName="telNo" value="{{ transaction?.data?.receiptInfo?.telNo }}" (input)="inputPhoneNumber($event.target.value)"
+                  formControlName="telNo" value="{{ telNo }}"
                   [ngClass]="{
                     'is-invalid':
                       customerAddressForm.controls['telNo'].invalid &&
