@@ -3,7 +3,7 @@ import {
   OnInit,
   OnDestroy
 } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { WIZARD_DEVICE_ONLY_AIS } from 'src/app/device-only/constants/wizard.constant';
 import {
   Transaction,
@@ -79,8 +79,8 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
   customer: Customer;
   receiptInfo: ReceiptInfo;
   user: User;
-  phoneNumber: string;
-  taxId: string;
+  telNo: string;
+  idCardNo: string;
   firstName: string;
   lastName: string;
   seller: Seller;
@@ -101,6 +101,7 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
     private tokenService: TokenService,
     private sharedTransactionService: SharedTransactionService,
     private pageLoadingService: PageLoadingService,
+    private route: ActivatedRoute,
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -123,6 +124,11 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
   }
 
   ngOnInit(): void {
+     this.route.queryParams.subscribe(params => {
+      if (!params.customer) {
+         this.createTransaction();
+      }
+    });
     this.createForm();
     let name = this.priceOption.productDetail.name;
     const price = this.priceOption.productDetail.price;
@@ -164,6 +170,8 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
 
   createForm(): void {
     this.customerAddressForm = this.fb.group({
+      firstName: ['', []],
+      lastName: ['', []],
       idCardNo: [
         '',
         [
@@ -181,6 +189,27 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
         ]
       ]
     });
+
+    this.customerAddressForm.valueChanges.subscribe((value) => {
+      this.firstName = value.firstName;
+      this.lastName = value.lastName;
+      this.idCardNo = value.idCardNo;
+      this.telNo = value.telNo;
+    });
+
+    if (this.transaction.data.customer) {
+      this.customerAddressForm.patchValue({
+        firstName: this.transaction.data.customer.firstName || '',
+        lastName: this.transaction.data.customer.lastName || '',
+        idCardNo: this.transaction.data.customer.idCardNo || '',
+      });
+    }
+
+    if (this.transaction.data.receiptInfo) {
+      this.customerAddressForm.patchValue({
+        telNo: this.transaction.data.receiptInfo.telNo || '',
+      });
+    }
 
     this.paymentDetailForm = this.fb.group(
       {
@@ -278,7 +307,6 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
     return new Promise(resolve => {
       const transaction = this.transactionService.load();
       const promiseAll = [];
-      if (transaction && transaction.data) {
         if (transaction.data.order && transaction.data.order.soId) {
           const order = this.http.post('/api/salesportal/dt/remove-cart', {
             soId: transaction.data.order.soId,
@@ -286,33 +314,31 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
           }).toPromise().catch(() => Promise.resolve());
           promiseAll.push(order);
         }
-      }
       Promise.all(promiseAll).then(() => resolve());
     });
   }
 
   onBack(): void {
-    if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+    if (this.transaction.data.order && this.transaction.data.order.soId) {
       this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
         .then((response: any) => {
           if (response.value === true) {
-            this.returnStock().then(() => {
-              this.createTransaction();
+           this.returnStock().then(() => {
               this.transaction.data.order = {};
               this.transactionService.remove();
               this.router.navigate([ROUTE_BUY_PREMIUM_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
-            });
+           });
           }
         });
     } else {
-      this.createTransaction();
       this.transactionService.remove();
       this.router.navigate([ROUTE_BUY_PREMIUM_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
     }
   }
 
   onNext(): void {
-    this.pageLoadingService.openLoading();
+   this.pageLoadingService.openLoading();
+   this.transaction.data.customer = this.customer;
     this.callAddToCart(this.priceOption)
       .then(response => {
         if (response.resultCode === 'S') {
@@ -359,11 +385,11 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
     const customer: any = {
       firstName: this.firstName ? this.firstName : this.transaction.data.customer.firstName,
       lastName: this.lastName ? this.lastName : this.transaction.data.customer.lastName,
-      idCardNo: this.taxId ? this.taxId : this.transaction.data.customer.idCardNo,
+      idCardNo: this.idCardNo ? this.idCardNo : this.transaction.data.customer.idCardNo,
     };
     const receiptInfo: any = {
-      telNo: this.phoneNumber ? this.phoneNumber : this.transaction.data.receiptInfo.telNo,
-      taxId: this.taxId ? this.taxId : this.transaction.data.customer.idCardNo,
+      telNo: this.telNo ? this.telNo : this.transaction.data.receiptInfo.telNo,
+      idCardNo: this.idCardNo ? this.idCardNo : this.transaction.data.customer.idCardNo,
     };
     this.transaction.data.seller = { ...this.seller };
     this.transaction.data.payment = { paymentForm: 'FULL', ...this.paymentDetailTemp };
@@ -397,24 +423,6 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
     this.paymentDetailValid = valid;
   }
 
-  inputFirstName(firstName: string): void {
-    this.firstName = firstName;
-    this.transaction.data.customer.firstName = this.firstName;
-  }
-  inputLastName(lastName: string): void {
-    this.lastName = lastName;
-    this.transaction.data.customer.lastName = this.lastName;
-  }
-  inputTaxid(taxId: string): void {
-    this.taxId = taxId;
-    this.transaction.data.customer.idCardNo = this.taxId;
-  }
-
-  inputPhoneNumber(phoneNumber: string): void {
-    this.phoneNumber = phoneNumber;
-    this.transaction.data.receiptInfo.telNo = this.phoneNumber;
-  }
-
   customerValidate(control: AbstractControl): ValidationErrors | null {
     const value = control.value;
     const length: number = control.value.length;
@@ -439,16 +447,16 @@ export class DeviceOnlyShopPremiumPaymentPageComponent
   }
 
   isDisableNext(): boolean {
-    const idCardNo = this.transaction.data.customer.idCardNo;
-    const mobileNo = this.transaction.data.receiptInfo.telNo;
+    const idCardNo = this.transaction.data.receiptInfo.taxId ? this.transaction.data.receiptInfo.taxId : '';
+    const mobileNo = this.transaction.data.receiptInfo.telNo ? this.transaction.data.receiptInfo.telNo : '';
     const paymentChange = this.paymentDetailTemp ? this.paymentDetailTemp : {};
     if (
       this.firstName &&
       this.lastName &&
-      this.paymentDetailTemp && this.phoneNumber && this.taxId
+      this.paymentDetailTemp && this.telNo && this.idCardNo
     ) {
-      const id = this.taxId.length;
-      const tel = this.phoneNumber.length;
+      const id = this.idCardNo.length;
+      const tel = this.telNo.length;
       if (id === 13 && tel === 10 && (paymentChange.paymentQrCodeType !== paymentChange.paymentType)) {
         return true;
       }
