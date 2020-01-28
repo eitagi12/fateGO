@@ -486,7 +486,7 @@ export class CreateOrderService {
       model: productStock.model || productDetail.model,
       color: productStock.color || productStock.colorName,
       priceIncAmt: (+productDetail.price).toFixed(2),
-      matCodeFreeGoods: productStock.matCode[0]
+      matCode: productStock.matCode[0]
     };
 
     // payment with QR code
