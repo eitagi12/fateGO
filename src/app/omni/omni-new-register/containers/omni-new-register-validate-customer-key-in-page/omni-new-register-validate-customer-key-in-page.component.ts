@@ -91,7 +91,7 @@ export class OmniNewRegisterValidateCustomerKeyInPageComponent implements OnInit
     };
     this.transaction.data.customer = profile;
 
-    this.transaction.data.billingInformation = {};
+    // this.transaction.data.billingInformation = {};
 
   }
 
