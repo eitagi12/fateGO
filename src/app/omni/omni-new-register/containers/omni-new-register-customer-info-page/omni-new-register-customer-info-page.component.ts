@@ -32,8 +32,6 @@ export class OmniNewRegisterCustomerInfoPageComponent implements OnInit, OnDestr
   }
 
   ngOnInit(): void {
-    console.log('this.transaction.data', this.transaction.data);
-
     const customer: Customer = this.transaction.data.customer;
     this.customerInfo = {
       titleName: customer.titleName,

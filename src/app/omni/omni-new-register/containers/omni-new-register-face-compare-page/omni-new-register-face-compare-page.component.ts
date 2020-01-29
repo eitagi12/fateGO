@@ -34,7 +34,7 @@ export class OmniNewRegisterFaceComparePageComponent implements OnInit, OnDestro
 
   ngOnInit(): void {
      // tslint:disable-next-line: comment-format
-     //const faceImage = this.faceRecognitionService.getFaceImage();
+    //  const faceImage = this.faceRecognitionService.getFaceImage();
   }
 
   onBack(): void {
@@ -47,7 +47,7 @@ export class OmniNewRegisterFaceComparePageComponent implements OnInit, OnDestro
     const faceRecognition: FaceRecognition = this.transaction.data.faceRecognition;
 
     this.http.post('/api/facerecog/facecompare', {
-      cardBase64Imgs: this.isReadCard() ? customer.imageReadSmartCard : (customer.imageSmartCard || customer.imageReadPassport),
+      cardBase64Imgs: this.isReadCard() ? customer.imageReadSmartCard : customer.imageSmartCard,
       selfieBase64Imgs: faceRecognition.imageFaceUser
     }).toPromise().then((resp: any) => {
       this.transaction.data.faceRecognition.kyc = !resp.data.match;
@@ -74,6 +74,6 @@ export class OmniNewRegisterFaceComparePageComponent implements OnInit, OnDestro
   }
 
   ngOnDestroy(): void {
-    // this.transactionService.update(this.transaction);
+    this.transactionService.update(this.transaction);
   }
 }

@@ -30,8 +30,6 @@ export class CreateEapplicationService {
     const simCard: any = transaction.data.cusMobileNo || {};
     const billingInformation = transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData[0] || {};
-    console.log('============> imageReadSmartCard', customer.imageReadSmartCard);
-    console.log('============> imageSmartCard', customer.imageSmartCard);
     const data: any = {
       // action: action || 'KEY_MOBILE',
       fullNameTH: customer.firstName + ' ' + customer.lastName || '',
@@ -63,7 +61,7 @@ export class CreateEapplicationService {
       billCycle: billCycleData.billCycleText || '',
       receiveBillMethod: billCycleData.billMedia || '',
       billDeliveryAddress: billCycleData.billAddressText || '',
-      fullNameEN: `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}`,
+      fullNameEN: `${(customer.firstNameEn || '-')} ${(customer.lastNameEn || '')}`,
       issueDate: customer.issueDate || '',
       expireDate: customer.expireDate || '',
       signature: customer.imageSignatureSmartCard || customer.imageSignature || '',
