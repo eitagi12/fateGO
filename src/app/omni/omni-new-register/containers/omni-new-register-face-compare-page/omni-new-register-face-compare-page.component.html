@@ -19,9 +19,9 @@
             <div class="card">
               <div class="card-header text-center" translate>ข้อมูลใบหน้าจาก {{transaction?.data?.customer?.idCardType}}</div>
               <div class="card-body">
-                <img [src]="'data:image/png;base64,' + transaction?.data?.customer?.imageReadSmartCard" *ngIf="transaction?.data?.action === 'READ_CARD'">
-                <img [src]="'data:image/png;base64,' + transaction?.data?.customer?.imageSmartCard" *ngIf="transaction?.data?.action === 'KEY_IDCARD'">
-                <!-- <img [src]="'data:image/png;base64,' + transaction?.data?.customer?.imageReadPassport" *ngIf="data?.action === 'READ_PASSPORT'"> -->
+                <img [src]="'data:image/jpeg;base64,' + transaction?.data?.customer?.imageReadSmartCard" *ngIf="transaction?.data?.action === 'READ_CARD'">
+                <img [src]="'data:image/jpeg;base64,' + transaction?.data?.customer?.imageSmartCard" *ngIf="transaction?.data?.action === 'KEY_IDCARD'">
+                <!-- <img [src]="'data:image/jpeg;base64,' + transaction?.data?.customer?.imageReadPassport" *ngIf="data?.action === 'READ_PASSPORT'"> -->
               </div>
             </div>
           </div>
@@ -30,7 +30,7 @@
             <div class="card">
               <div class="card-header text-center" translate>ข้อมูลใบหน้าจากรูปถ่าย</div>
               <div class="card-body">
-                <img [src]="'data:image/png;base64,' + transaction?.data?.faceRecognition?.imageFaceUser">
+                <img [src]="'data:image/jpeg;base64,' + transaction?.data?.faceRecognition?.imageFaceUser">
               </div>
             </div>
           </div>

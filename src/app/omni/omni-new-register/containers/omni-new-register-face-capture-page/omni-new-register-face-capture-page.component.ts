@@ -30,6 +30,7 @@ export class OmniNewRegisterFaceCapturePageComponent implements OnInit, OnDestro
     private transactionService: TransactionService,
     private alertService: AlertService,
     private utils: Utils,
+    private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -82,7 +83,7 @@ export class OmniNewRegisterFaceCapturePageComponent implements OnInit, OnDestro
   }
 
   onCameraError(error: string): void {
-    this.alertService.error(error);
+    this.alertService.error(this.translation.instant(error));
   }
 
   onClearIdCardImage(): void {

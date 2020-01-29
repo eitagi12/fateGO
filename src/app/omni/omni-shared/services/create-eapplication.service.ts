@@ -30,17 +30,18 @@ export class CreateEapplicationService {
     const simCard: any = transaction.data.cusMobileNo || {};
     const billingInformation = transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData[0] || {};
-
+    console.log('============> imageReadSmartCard', customer.imageReadSmartCard);
+    console.log('============> imageSmartCard', customer.imageSmartCard);
     const data: any = {
-      action: action,
+      // action: action || 'KEY_MOBILE',
       fullNameTH: customer.firstName + ' ' + customer.lastName || '',
       idCard: this.privateIdcard(transaction.data.cardId) || '',
       idCardType: customer.idCardType || '',
       birthDate: customer.birthdate || '',
-      // imgName: customer.imageReadSmartCard || customer.imageSmartCard || '',
       today: Date.now(),
       // customerImg: customer.imageReadSmartCard || customer.imageSmartCard || '',
-      // customerImgKeyIn: customer.customerImgKeyIn || '',
+      // customerImgKeyIn: customer.imageSmartCard || '',
+      customerImg: customer.imageReadSmartCard || customer.imageSmartCard || '',
       customerAddress: this.utils.getCurrentAddress({
         homeNo: customer.homeNo || '',
         moo: customer.moo || '',
@@ -72,9 +73,8 @@ export class CreateEapplicationService {
     if (action === TransactionAction.READ_CARD) {
       data.customerImg = 'data:image/jpeg;base64,' + customer.imageReadSmartCard;
     } else if (action === TransactionAction.KEY_IN) {
-      data.customerImgKeyIn = 'data:image/jpeg;base64,' + customer.imageSmartCard;
+      data.customerImg = 'data:image/jpeg;base64,' + customer.imageSmartCard;
     }
-
     return data;
   }
 

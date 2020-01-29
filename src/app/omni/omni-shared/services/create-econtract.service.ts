@@ -32,7 +32,7 @@ export class CreateEcontractService {
     const simCard: any = transaction.data.cusMobileNo || '';
     const mainPackage: any = (transaction.data.mainPackage || transaction.data.currentPackage) || {};
     // const mobileCarePackage: any = transaction.data.mobileCarePackage || {};
-    const promotionByMainPackage = this.findPromotionByMainPackage(mainPackage, transaction);
+    const promotionByMainPackage = mainPackage;
     // const seller: any = transaction.data.seller.locationDestName || {};
     // const locationFromSeller = (seller && seller.locationName) ? seller.locationName : productStock.locationName;
     const advancePay = transaction.data.mainPackage.payAdvance || {};
@@ -82,22 +82,22 @@ export class CreateEcontractService {
     return (advancePay && advancePay.amount > 0);
   }
 
-  findPromotionByMainPackage(mainPackageCustomAttributes: any, transaction: Transaction): any {
-    const advancePay = transaction.data.mainPackage.payAdvance;
-    if (advancePay) {
-      // check mainPackage กับเบอร์ที่ทำรายการให้ตรงกับ billingSystem ของเบอร์ที่ทำรายการ
-      // const advancePay = priceOption.trade.advancePay || {};
-      const billingSystem = (transaction.data.mainPackage.billingSystem === 'RTBS')
-        ? BillingSystemType.IRB : transaction.data.mainPackage.billingSystem || BillingSystemType.IRB;
-      if (advancePay.promotions) {
-        return advancePay.promotions
-          .find(promotion =>
-            (promotion && promotion.billingSystem) === (mainPackageCustomAttributes || billingSystem));
-      } else {
-        return null;
-      }
-    }
-  }
+  // findPromotionByMainPackage(mainPackageCustomAttributes: any, transaction: Transaction): any {
+  //   const advancePay = transaction.data.mainPackage.payAdvance;
+  //   if (advancePay) {
+  //     // check mainPackage กับเบอร์ที่ทำรายการให้ตรงกับ billingSystem ของเบอร์ที่ทำรายการ
+  //     // const advancePay = priceOption.trade.advancePay || {};
+  //     const billingSystem = (transaction.data.mainPackage.billingSystem === 'RTBS')
+  //       ? BillingSystemType.IRB : transaction.data.mainPackage.billingSystem || BillingSystemType.IRB;
+  //     if (advancePay.promotions) {
+  //       return advancePay.promotions
+  //         .find(promotion =>
+  //           (promotion && promotion.billingSystem) === (mainPackageCustomAttributes || billingSystem));
+  //     } else {
+  //       return null;
+  //     }
+  //   }
+  // }
 
   getAirTimeDiscount(amount: number, advancePayPromotions: any): number {
     if (!advancePayPromotions) {
