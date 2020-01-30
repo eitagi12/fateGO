@@ -38,6 +38,7 @@ export class OmniNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
   isMailBillingInfoValid: boolean;
   isTelNoBillingValid: boolean;
   eBill: boolean;
+  isNext: boolean = false;
 
   constructor(
     private router: Router,
@@ -112,6 +113,7 @@ export class OmniNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
       mobileNo: this.transaction.data.cusMobileNo,
       phoneNo: billCycleData.phoneNo || '',
     };
+    this.isCheckBilling();
   }
 
   getBllingCycle(billCycle: string): Promise<string> {
@@ -256,4 +258,11 @@ export class OmniNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
   onHome(): void {
     this.homeService.goToHome();
   }
+
+  isCheckBilling(): boolean {
+    if (this.billingInfo.billingAddress.text) {
+      return this.isNext = true;
+    }
+  }
+
 }
