@@ -9,7 +9,7 @@ import {
 import { HomeService, PageLoadingService } from 'mychannel-shared-libs';
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { Transaction } from 'src/app/omni/omni-shared/models/transaction.model';
+import { Transaction, TransactionAction } from 'src/app/omni/omni-shared/models/transaction.model';
 import { CreateEapplicationService } from 'src/app/omni/omni-shared/services/create-eapplication.service';
 import { TransactionService } from 'src/app/omni/omni-shared/services/transaction.service';
 
@@ -41,9 +41,22 @@ export class OmniNewRegisterEapplicationPageComponent implements OnInit, OnDestr
     // this.translationSubscribe = this.translateService.onLangChange.subscribe(language => {
     // this.callService();
     // });
+    if (this.transaction.data.action === TransactionAction.KEY_IN) {
+      this.callService(this.transaction);
+    } else {
+      this.callServiceV2(this.transaction);
+    }
   }
 
   callService(transaction: Transaction): void {
+    this.createEapplicationService.createEapplication(transaction).then(res => {
+      this.getDataBase64Eapp = 'data:image/jpeg;base64,' + res.data;
+    }).then(() => {
+      this.pageLoadingService.closeLoading();
+    });
+  }
+
+  callServiceV2(transaction: Transaction): void {
     this.createEapplicationService.createEapplicationV2(transaction).then(res => {
       this.getDataBase64Eapp = 'data:image/jpeg;base64,' + res.data;
     }).then(() => {
@@ -57,9 +70,9 @@ export class OmniNewRegisterEapplicationPageComponent implements OnInit, OnDestr
 
   onNext(): void {
     if (this.transaction.data.cusMobileNo) {
-    //   this.router.navigate([ROUTE_OMNI_NEW_REGISTER_RESULT_PAGE]);
-    // } else {
-    this.router.navigate([ROUTE_OMNI_NEW_REGISTER_PERSO_SIM_PAGE]);
+      //   this.router.navigate([ROUTE_OMNI_NEW_REGISTER_RESULT_PAGE]);
+      // } else {
+      this.router.navigate([ROUTE_OMNI_NEW_REGISTER_PERSO_SIM_PAGE]);
     }
   }
 

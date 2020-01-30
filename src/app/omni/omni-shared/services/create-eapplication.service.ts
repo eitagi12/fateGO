@@ -16,11 +16,63 @@ export class CreateEapplicationService {
     // private translation: TranslateService
   ) { }
 
+  createEapplication(transaction: Transaction): Promise<any> {
+    return this.http.post(
+      '/api/salesportal/generate-e-document-eapplication',
+      this.getRequestEapplication(transaction)
+    ).toPromise();
+  }
+
   createEapplicationV2(transaction: Transaction): Promise<any> {
     return this.http.post(
       '/api/salesportal/v2/generate-e-document-eapplication',
       this.getRequestEapplicationV2(transaction)
     ).toPromise();
+  }
+
+  getRequestEapplication(transaction: Transaction): any {
+    const customer: any = transaction.data.customer;
+    const action: any = transaction.data.action;
+    const mainPackage: any = transaction.data.mainPackage || {};
+    const simCard: any = transaction.data.cusMobileNo || {};
+    const billingInformation = transaction.data.billingInformation;
+    const billCycleData = billingInformation.billCycleData[0] || {};
+
+    const data: any = {
+      fullNameTH: customer.firstName + ' ' + customer.lastName || '',
+      idCard: customer.idCardNo || '',
+      birthDate: customer.birthdate || '',
+      customerPincode: '',
+      chargeType: '',
+      customerImgKeyIn: customer.imageSmartCard || customer.imageSignatureWithWaterMark || '',
+      customerAddress: this.utils.getCurrentAddress({
+        homeNo: customer.homeNo || '',
+        moo: customer.moo || '',
+        room: customer.room || '',
+        floor: customer.floor || '',
+        buildingName: customer.buildingName || '',
+        soi: customer.soi || '',
+        street: customer.street || '',
+        tumbol: customer.tumbol || '',
+        amphur: customer.amphur || '',
+        province: customer.province || '',
+        zipCode: customer.zipCode || ''
+      }, 'TH') || '',
+      mobileNumber: transaction.data.simCard.mobileNo || '',
+      mainPackage: {
+        name: mainPackage.mainPackageName || '',
+        description: mainPackage.mainPackageDesc || ''
+      },
+      billCycle: billCycleData.billCycleText || '',
+      receiveBillMethod: billCycleData.billMedia || '',
+      billDeliveryAddress: billCycleData.billAddressText || '',
+      fullNameEN: `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}`,
+      issueDate: customer.issueDate || '',
+      expireDate: customer.expireDate || '',
+      signature: '',
+    };
+
+    return data;
   }
 
   getRequestEapplicationV2(transaction: Transaction): any {
@@ -39,7 +91,7 @@ export class CreateEapplicationService {
       today: Date.now(),
       // customerImg: customer.imageReadSmartCard || customer.imageSmartCard || '',
       // customerImgKeyIn: customer.imageSmartCard || '',
-      customerImg: customer.imageReadSmartCard || customer.imageSmartCard || '',
+      // customerImg: customer.imageReadSmartCard || '',
       customerAddress: this.utils.getCurrentAddress({
         homeNo: customer.homeNo || '',
         moo: customer.moo || '',
@@ -68,12 +120,18 @@ export class CreateEapplicationService {
       language: 'TH',
     };
 
-    if (action === TransactionAction.READ_CARD) {
-      data.customerImg = customer.imageReadSmartCard;
-    } else if (action === TransactionAction.KEY_IN) {
-      data.customerImg = customer.imageSmartCard;
-    }
-    return data;
+    // if (action === TransactionAction.READ_CARD) {
+    //   data.customerImg = customer.imageReadSmartCard;
+    // } else if (action === TransactionAction.KEY_IN) {
+    //   data.customerImg = customer.imageSmartCard;
+    // }
+
+    // if (action === TransactionAction.READ_CARD ) {
+    //   data.customerImg = customer.imageReadSmartCard || customer.imageSmartCard;
+    // } else {
+    //   data.customerImgKeyIn = customer.imageSmartCard ? customer.imageSignatureWithWaterMark : customer.imageReadPassport;
+    // }
+    // return data;
   }
 
   private privateIdcard(cardId: string): string {
