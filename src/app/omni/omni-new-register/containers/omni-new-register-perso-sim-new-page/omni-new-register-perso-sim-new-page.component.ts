@@ -121,15 +121,6 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  setSimCard(): SimCard {
-    return Object.assign({
-      mobileNo: this.transaction.data.cusMobileNo,
-      simSerial: this.transaction.data.simCard.simSerial,
-      perso: this.transaction.data.simCard.persoSim,
-    });
-
-  }
-
   createForm(): void {
     this.simSerialForm = this.fb.group({
       simSerial: ['', [
@@ -665,6 +656,14 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
   onBack(): void {
     this.router.navigate([ROUTE_OMNI_NEW_REGISTER_EAPPLICATION_PAGE]);
   }
+  setSimCard(): SimCard {
+    return Object.assign({
+      mobileNo: this.transaction.data.cusMobileNo,
+      simSerial: this.simSerialForm.value.simSerial,
+      perso: '',
+    });
+
+  }
 
   onNext(): void {
 
@@ -677,7 +676,6 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
       persoSim: simCard.persoSim,
     };
     this.transactionService.update(this.transaction);
-
     if (!this.transaction.data.simCard.simSerial) {
       this.transaction.data.simCard = Object.assign(this.transaction.data.simCard, {
         simSerial: this.simSerialForm.controls.simSerial.value
