@@ -26,15 +26,11 @@ export class CreateEcontractService {
 
   getRequestEContractV2(transaction: Transaction, condition: any): Promise<any> {
     const campaign: any = transaction.data.campaign || '';
-    // const trade: any = priceOption.trade || {};
-    // const productStock: any = priceOption.productStock || {};
     const customer: any = transaction.data.customer || '';
+    const idCard: any = transaction.data.cardId || '';
     const simCard: any = transaction.data.cusMobileNo || '';
     const mainPackage: any = (transaction.data.mainPackage || transaction.data.currentPackage) || {};
-    // const mobileCarePackage: any = transaction.data.mobileCarePackage || {};
     const promotionByMainPackage = mainPackage;
-    // const seller: any = transaction.data.seller.locationDestName || {};
-    // const locationFromSeller = (seller && seller.locationName) ? seller.locationName : productStock.locationName;
     const advancePay = transaction.data.mainPackage.payAdvance || {};
     const productPrice = transaction.data.productPrice;
     const productDiscount = transaction.data.productDiscount;
@@ -44,7 +40,7 @@ export class CreateEcontractService {
       campaignName: campaign.campaignName,
       locationName: this.translateService.instant(locationFromSeller) || '',
       customerType: '',
-      idCard: this.transformIDcard(customer.cardId), // this.transformIDcard(customer.idCardNo),
+      idCard: this.transformIDcard(idCard), // this.transformIDcard(customer.idCardNo),
       fullName: `${customer.firstName || ''} ${customer.lastName || ''}`,
       mobileNumber: simCard,
       imei: simCard.imei || '',
@@ -68,14 +64,6 @@ export class CreateEcontractService {
     };
     return data;
   }
-
-  // getMobileCarePackageTitle(mobileCarePackage: any = {}, langCurrent: any): string {
-  //   if (langCurrent === 'TH') {
-  //     return mobileCarePackage.shortNameThai ? `พร้อมใช้บริการ ${mobileCarePackage.shortNameThai}` : '';
-  //   } else {
-  //     return mobileCarePackage.shortNameEng ? `Ready to use ${mobileCarePackage.shortNameEng}` : '';
-  //   }
-  // }
 
   isAdvancePay(mainPackage: any): boolean {
     const advancePay = mainPackage.payAdvance || {};

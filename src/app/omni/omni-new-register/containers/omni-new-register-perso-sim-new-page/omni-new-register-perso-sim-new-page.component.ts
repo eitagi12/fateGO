@@ -86,15 +86,6 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const simCard: SimCard = this.setSimCard();
-    this.transaction.data.simCard = {
-      ...this.transaction.data.simCard,
-      mobileNo: simCard.mobileNo,
-      simSerial: simCard.simSerial,
-      persoSim: simCard.persoSim,
-    };
-    this.transactionService.update(this.transaction);
-
     this.createForm();
     this.simSerialForm.controls.simSerial.valueChanges.subscribe((value) => {
       if (value && value.length === 13) {
@@ -121,7 +112,7 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
 
     this.checkOrderCounter = 0;
     this.getCommandCounter = false;
-    this.cusMobileNo = this.transaction.data.simCard.mobileNo;
+    this.cusMobileNo = this.transaction.data.cusMobileNo;
 
     if (typeof this.aisNative !== 'undefined') {
       const disConnectReadIdCard: number = 1;
@@ -132,7 +123,7 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
 
   setSimCard(): SimCard {
     return Object.assign({
-      mobileNo: this.transaction.data.simCard.mobileNo,
+      mobileNo: this.transaction.data.cusMobileNo,
       simSerial: this.transaction.data.simCard.simSerial,
       perso: this.transaction.data.simCard.persoSim,
     });
@@ -676,15 +667,24 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
   }
 
   onNext(): void {
+
+    const simCard: SimCard = this.setSimCard();
+    const sim = this.simSerialForm.value.simSerial;
+    this.transaction.data.simCard = {
+      ...this.transaction.data.simCard,
+      mobileNo: simCard.mobileNo,
+      simSerial: sim,
+      persoSim: simCard.persoSim,
+    };
+    this.transactionService.update(this.transaction);
+
     if (!this.transaction.data.simCard.simSerial) {
       this.transaction.data.simCard = Object.assign(this.transaction.data.simCard, {
         simSerial: this.simSerialForm.controls.simSerial.value
       });
-      // this.router.navigate([ROUTE_OMNI_NEW_REGISTER_RESULT_PAGE]);
-      // window.location.href = `/sales-portal/reserve-stock/receive-confirm-online`;
+      window.location.href = `/sales-portal/reserve-stock/receive-confirm-online`;
     }
-    // window.location.href = `/sales-portal/reserve-stock/receive-confirm-online`;
-    // this.router.navigate([ROUTE_OMNI_NEW_REGISTER_RESULT_PAGE]);
+    window.location.href = `/sales-portal/reserve-stock/receive-confirm-online`;
   }
 
   onSerialNumberChanged(data?: any): void {
