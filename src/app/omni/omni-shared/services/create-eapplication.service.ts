@@ -37,6 +37,7 @@ export class CreateEapplicationService {
     const simCard: any = transaction.data.cusMobileNo || {};
     const billingInformation = transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData[0] || {};
+    const currentAddress = billingInformation.billCycleData[0].customer || {};
 
     const data: any = {
       fullNameTH: customer.firstName + ' ' + customer.lastName || '',
@@ -45,20 +46,20 @@ export class CreateEapplicationService {
       customerPincode: '',
       chargeType: '',
       customerImgKeyIn: customer.imageSmartCard || customer.imageSignatureWithWaterMark || '',
-      customerAddress: this.utils.getCurrentAddress({
-        homeNo: customer.homeNo || '',
-        moo: customer.moo || '',
-        room: customer.room || '',
-        floor: customer.floor || '',
-        buildingName: customer.buildingName || '',
-        soi: customer.soi || '',
-        street: customer.street || '',
-        tumbol: customer.tumbol || '',
-        amphur: customer.amphur || '',
-        province: customer.province || '',
-        zipCode: customer.zipCode || ''
-      }, 'TH') || '',
-      mobileNumber: transaction.data.simCard.mobileNo || '',
+      customerAddress: {
+        homeNo: currentAddress.homeNo || '',
+        moo: currentAddress.moo || '',
+        room: currentAddress.room || '',
+        floor: currentAddress.floor || '',
+        buildingName: currentAddress.buildingName || '',
+        soi: currentAddress.soi || '',
+        street: currentAddress.street || '',
+        tumbol: currentAddress.tumbol || '',
+        amphur: currentAddress.amphur || '',
+        province: currentAddress.province || '',
+        zipCode: currentAddress.zipCode || ''
+      } || '',
+      mobileNumber: simCard || '',
       mainPackage: {
         name: mainPackage.mainPackageName || '',
         description: mainPackage.mainPackageDesc || ''
@@ -69,7 +70,7 @@ export class CreateEapplicationService {
       fullNameEN: `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}`,
       issueDate: customer.issueDate || '',
       expireDate: customer.expireDate || '',
-      signature: '',
+      signature: customer.imageSignature || '',
     };
 
     return data;
@@ -82,29 +83,27 @@ export class CreateEapplicationService {
     const simCard: any = transaction.data.cusMobileNo || {};
     const billingInformation = transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData[0] || {};
+    const currentAddress = billingInformation.billCycleData[0].customer || {};
+
     const data: any = {
-      // action: action || 'KEY_MOBILE',
       fullNameTH: customer.firstName + ' ' + customer.lastName || '',
       idCard: this.privateIdcard(transaction.data.cardId) || '',
       idCardType: customer.idCardType || '',
       birthDate: customer.birthdate || '',
       today: Date.now(),
-      // customerImg: customer.imageReadSmartCard || customer.imageSmartCard || '',
-      // customerImgKeyIn: customer.imageSmartCard || '',
-      // customerImg: customer.imageReadSmartCard || '',
-      customerAddress: this.utils.getCurrentAddress({
-        homeNo: customer.homeNo || '',
-        moo: customer.moo || '',
-        room: customer.room || '',
-        floor: customer.floor || '',
-        buildingName: customer.buildingName || '',
-        soi: customer.soi || '',
-        street: customer.street || '',
-        tumbol: customer.tumbol || '',
-        amphur: customer.amphur || '',
-        province: customer.province || '',
-        zipCode: customer.zipCode || ''
-      }, 'TH') || '',
+      customerAddress: {
+        homeNo: currentAddress.homeNo || '',
+        moo: currentAddress.moo || '',
+        room: currentAddress.room || '',
+        floor: currentAddress.floor || '',
+        buildingName: currentAddress.buildingName || '',
+        soi: currentAddress.soi || '',
+        street: currentAddress.street || '',
+        tumbol: currentAddress.tumbol || '',
+        amphur: currentAddress.amphur || '',
+        province: currentAddress.province || '',
+        zipCode: currentAddress.zipCode || ''
+      } || '',
       mobileNumber: simCard || '',
       mainPackage: {
         name: mainPackage.mainPackageName || '',
@@ -116,7 +115,7 @@ export class CreateEapplicationService {
       fullNameEN: `${(customer.firstNameEn || '-')} ${(customer.lastNameEn || '')}`,
       issueDate: customer.issueDate || '',
       expireDate: customer.expireDate || '',
-      signature: customer.imageSignatureSmartCard || customer.imageSignature || '',
+      signature: customer.imageSignatureSmartCard || '',
       language: 'TH',
     };
 
@@ -131,7 +130,7 @@ export class CreateEapplicationService {
     // } else {
     //   data.customerImgKeyIn = customer.imageSmartCard ? customer.imageSignatureWithWaterMark : customer.imageReadPassport;
     // }
-    // return data;
+    return data;
   }
 
   private privateIdcard(cardId: string): string {
