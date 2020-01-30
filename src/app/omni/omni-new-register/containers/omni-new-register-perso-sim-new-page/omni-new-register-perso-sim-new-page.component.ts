@@ -65,7 +65,7 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
   simSerialKeyIn: string;
   statusFixSim: string;
   orderType: string = 'New Registation';
-  mobileNo: string = '0891232519';
+  cusMobileNo: string;
   checktSimInfoFn: any;
   mockData: any = [];
   getSerialNo: string;
@@ -121,7 +121,7 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
 
     this.checkOrderCounter = 0;
     this.getCommandCounter = false;
-    this.mobileNo = this.transaction.data.simCard.mobileNo;
+    this.cusMobileNo = this.transaction.data.simCard.mobileNo;
 
     if (typeof this.aisNative !== 'undefined') {
       const disConnectReadIdCard: number = 1;
@@ -400,7 +400,7 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
     let returnMessage: string;
     let errMegFixSim: string;
     if (this.simSerialForm.controls['simSerial'].valid && this.orderType) {
-      this.checktSimInfoFn = this.getChecktSimInfo(this.mobileNo, barcode);
+      this.checktSimInfoFn = this.getChecktSimInfo(this.cusMobileNo, barcode);
       this.checktSimInfoFn.then((simInfo: any) => {
         this.pageLoadingService.openLoading();
         errorCode = simInfo.data.returnCode;
@@ -416,7 +416,7 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
         } else if (errorCode === '006') {
           this.pageLoadingService.closeLoading();
           errMegFixSim = 'ซิมใบนี้ไม่สามารถทำรายการได้ เนื่องจาก Region ซิมไม่ตรงกับเบอร์ที่เลือก เบอร์ '
-            + this.mobileNo + ' กรุณาเปลี่ยนซิมใหม่';
+            + this.cusMobileNo + ' กรุณาเปลี่ยนซิมใหม่';
           this.popupControl('errorFixSim', errMegFixSim);
         } else if (errorCode === '008') {
           this.simSerialForm.controls.simSerial.valueChanges.subscribe((value) => {
@@ -448,7 +448,7 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
     let returnMessage: string;
     let errMegFixSim: string;
 
-    this.checktSimInfoFn = this.getChecktSimInfo(this.mobileNo, serialNo);
+    this.checktSimInfoFn = this.getChecktSimInfo(this.cusMobileNo, serialNo);
     this.checktSimInfoFn.then((simInfo: any) => {
       errorCode = simInfo.data.returnCode;
       returnMessage = simInfo.data.returnMessage;
@@ -462,7 +462,7 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
       } else if (errorCode === '006') {
         this.pageLoadingService.closeLoading();
         errMegFixSim = 'ซิมใบนี้ไม่สามารถทำรายการได้ เนื่องจาก Region ซิมไม่ตรงกับเบอร์ที่เลือก เบอร์ '
-          + this.mobileNo + ' กรุณาเปลี่ยนซิมใหม่';
+          + this.cusMobileNo + ' กรุณาเปลี่ยนซิมใหม่';
         this.popupControl('errorFixSim', errMegFixSim);
       } else if (errorCode === '008') {
         // Progess 100%
