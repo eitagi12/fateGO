@@ -91,6 +91,7 @@ export class CreateEapplicationService {
       idCardType: customer.idCardType || '',
       birthDate: customer.birthdate || '',
       today: Date.now(),
+      customerImg: customer.imageReadSmartCard || '',
       customerAddress: this.utils.getCurrentAddress({
         homeNo: customer.homeNo || '',
         moo: customer.moo || '',

@@ -17,3 +17,4 @@ export const ROUTE_OMNI_NEW_REGISTER_RESULT_PAGE = '/omni/new-register/result';
 export const ROUTE_OMNI_NEW_REGISTER_EAPPLICATION_PAGE = '/omni/new-register/eapplication';
 export const ROUTE_OMNI_NEW_REGISTER_ECONTRACT_PAGE = '/omni/new-register/econtract';
 export const ROUTE_OMNI_NEW_REGISTER_ฺBILLING_INFO_PAGE = '/omni-new-register-billing-info';
+export const ROUTE_OMNI_NEW_REGISTER_AGREEMENT_SIGN_KEY_IN_PAGE = '/omni/new-register/agreement-sign-key-in';

@@ -14,7 +14,7 @@ import { OmniNewRegisterMergeBillingPageComponent } from './containers/omni-new-
 import { OmniNewRegisterConfirmUserInformationPageComponent } from './containers/omni-new-register-confirm-user-information-page/omni-new-register-confirm-user-information-page.component';
 import { OmniNewRegisterEbillingAddressPageComponent } from './containers/omni-new-register-ebilling-address-page/omni-new-register-ebilling-address-page.component';
 import { OmniNewRegisterSummaryPageComponent } from './containers/omni-new-register-summary-page/omni-new-register-summary-page.component';
-import { OmniNewRegisterAgreementSignPageComponent } from './containers/omni-new-register-agreement-sign-page/omni-new-register-agreement-sign-page.component';
+import { OmniNewRegisterAgreementSignKeyInPageComponent } from './containers/omni-new-register-agreement-sign-key-in-page/omni-new-register-agreement-sign-key-in.component';
 import { OmniNewRegisterResultPageComponent } from './containers/omni-new-register-result-page/omni-new-register-result-page.component';
 import { OmniNewRegisterEapplicationPageComponent } from './containers/omni-new-register-eapplication-page/omni-new-register-eapplication-page.component';
 import { TranslateModule } from '@ngx-translate/core';
@@ -24,6 +24,7 @@ import { OmniNewRegisterBillingInfoComponent } from './containers/omni-new-regis
 import { OmniNewRegisterValidateCustomerPageComponent } from './containers/omni-new-register-validate-customer-page/omni-new-register-validate-customer-page.component';
 import { OmniNewRegisterEbillingPageComponent } from './containers/omni-new-register-ebilling-page/omni-new-register-ebilling-page.component';
 import { OmniNewRegisterPersoSimPageComponent } from './containers/omni-new-register-perso-sim-new-page/omni-new-register-perso-sim-new-page.component';
+import { OmniNewRegisterAgreementSignPageComponent } from './containers/omni-new-register-agreement-sign-page/omni-new-register-agreement-sign-page.component';
 
 @NgModule({
   imports: [
@@ -47,6 +48,7 @@ import { OmniNewRegisterPersoSimPageComponent } from './containers/omni-new-regi
     OmniNewRegisterEbillingAddressPageComponent,
     OmniNewRegisterSummaryPageComponent,
     OmniNewRegisterAgreementSignPageComponent,
+    OmniNewRegisterAgreementSignKeyInPageComponent,
     OmniNewRegisterPersoSimPageComponent,
     OmniNewRegisterResultPageComponent,
     OmniNewRegisterEapplicationPageComponent,

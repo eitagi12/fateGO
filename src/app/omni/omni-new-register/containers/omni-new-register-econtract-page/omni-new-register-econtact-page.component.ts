@@ -7,9 +7,9 @@ import { Subscription } from 'rxjs';
 // import { CreateEcontractService } from 'src/app/shared/services/create-econtract.service';
 // import { TranslateService } from '@ngx-translate/core';
 import { WIZARD_OMNI_NEW_REGISTER } from 'src/app/omni/constants/wizard.constant';
-import { ROUTE_OMNI_NEW_REGISTER_SUMMARY_PAGE, ROUTE_OMNI_NEW_REGISTER_AGREEMENT_SIGN_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_OMNI_NEW_REGISTER_SUMMARY_PAGE, ROUTE_OMNI_NEW_REGISTER_AGREEMENT_SIGN_PAGE, ROUTE_OMNI_NEW_REGISTER_AGREEMENT_SIGN_KEY_IN_PAGE } from '../../constants/route-path.constant';
 import { CreateEcontractService } from 'src/app/omni/omni-shared/services/create-econtract.service';
-import { Transaction } from 'src/app/omni/omni-shared/models/transaction.model';
+import { Transaction, TransactionAction } from 'src/app/omni/omni-shared/models/transaction.model';
 import { TransactionService } from 'src/app/omni/omni-shared/services/transaction.service';
 
 @Component({
@@ -61,7 +61,11 @@ export class OmniNewRegisterEcontactPageComponent implements OnInit, OnDestroy {
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_OMNI_NEW_REGISTER_AGREEMENT_SIGN_PAGE]);
+    if (this.transaction.data.action === TransactionAction.KEY_IN) {
+      this.router.navigate([ROUTE_OMNI_NEW_REGISTER_AGREEMENT_SIGN_KEY_IN_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_OMNI_NEW_REGISTER_AGREEMENT_SIGN_PAGE]);
+    }
   }
 
   onHome(): void {
@@ -89,10 +93,7 @@ export class OmniNewRegisterEcontactPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // if (this.translateSubscription) {
-    //   this.translateSubscription.unsubscribe();
-    // }
-    // this.transactionService.update(this.transaction);
+    this.transactionService.update(this.transaction);
   }
 
 }

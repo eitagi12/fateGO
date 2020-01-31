@@ -11,13 +11,14 @@ import { OmniNewRegisterMergeBillingPageComponent } from './containers/omni-new-
 import { OmniNewRegisterConfirmUserInformationPageComponent } from './containers/omni-new-register-confirm-user-information-page/omni-new-register-confirm-user-information-page.component';
 import { OmniNewRegisterEbillingAddressPageComponent } from './containers/omni-new-register-ebilling-address-page/omni-new-register-ebilling-address-page.component';
 import { OmniNewRegisterSummaryPageComponent } from './containers/omni-new-register-summary-page/omni-new-register-summary-page.component';
-import { OmniNewRegisterAgreementSignPageComponent } from './containers/omni-new-register-agreement-sign-page/omni-new-register-agreement-sign-page.component';
+import { OmniNewRegisterAgreementSignKeyInPageComponent } from './containers/omni-new-register-agreement-sign-key-in-page/omni-new-register-agreement-sign-key-in.component';
 import { OmniNewRegisterResultPageComponent } from './containers/omni-new-register-result-page/omni-new-register-result-page.component';
 import { OmniNewRegisterEapplicationPageComponent } from './containers/omni-new-register-eapplication-page/omni-new-register-eapplication-page.component';
 import { OmniNewRegisterEcontactPageComponent } from './containers/omni-new-register-econtract-page/omni-new-register-econtact-page.component';
 import { OmniNewRegisterValidateCustomerPageComponent } from './containers/omni-new-register-validate-customer-page/omni-new-register-validate-customer-page.component';
 import { OmniNewRegisterEbillingPageComponent } from './containers/omni-new-register-ebilling-page/omni-new-register-ebilling-page.component';
 import { OmniNewRegisterPersoSimPageComponent } from './containers/omni-new-register-perso-sim-new-page/omni-new-register-perso-sim-new-page.component';
+import { OmniNewRegisterAgreementSignPageComponent } from './containers/omni-new-register-agreement-sign-page/omni-new-register-agreement-sign-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'validate-customer-key-in', pathMatch: 'full' },
@@ -34,6 +35,7 @@ const routes: Routes = [
   { path: 'ebilling', component: OmniNewRegisterEbillingPageComponent },
   { path: 'summary', component: OmniNewRegisterSummaryPageComponent },
   { path: 'agreement-sign', component: OmniNewRegisterAgreementSignPageComponent },
+  { path: 'agreement-sign-key-in', component: OmniNewRegisterAgreementSignKeyInPageComponent },
   { path: 'perso-sim', component: OmniNewRegisterPersoSimPageComponent },
   { path: 'result', component: OmniNewRegisterResultPageComponent },
   { path: 'eapplication', component: OmniNewRegisterEapplicationPageComponent },
