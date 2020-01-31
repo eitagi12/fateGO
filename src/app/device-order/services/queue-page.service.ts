@@ -707,7 +707,7 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
       total += +(onTopPackage.priceIncludeVat || 0);
     }
 
-    if (mobileCarePackage) {
+    if (mobileCarePackage && mobileCarePackage.customAttributes) {
       const customAttributes = mobileCarePackage.customAttributes;
       total += +(customAttributes.priceInclVat || 0);
     }

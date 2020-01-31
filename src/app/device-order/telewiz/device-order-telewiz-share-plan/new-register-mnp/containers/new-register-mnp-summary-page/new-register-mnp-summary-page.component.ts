@@ -154,22 +154,25 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
       this.seller$ = {
         sellerName: user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username,
         locationName: response.data.displayName,
-        locationCode: user.locationCode
+        locationCode: user.locationCode,
+        shareUser: user.sharedUser ? user.sharedUser : ''
       };
     }).then(() => {
-      this.http.get(`/api/customerportal/newRegister/getEmployeeDetail/username/${user.username}`).toPromise().then((response: any) => {
-        if (response && response.data) {
-          this.sellerCode = response.data.pin;
-          this.employeeDetailForm.patchValue({ ascCode: this.sellerCode });
-        }
-      }).then(() => {
-        this.priceOption.productStock.locationName = this.seller$.locationName;
-        this.transaction.data.seller = this.seller$;
-        this.pageLoadingService.closeLoading();
-      }).catch(() => {
-        this.sellerCode = '';
-        this.pageLoadingService.closeLoading();
-      });
+      this.sellerCode = this.tokenService.getUser().ascCode ? this.tokenService.getUser().ascCode  : '';
+      this.employeeDetailForm.patchValue({ ascCode: this.sellerCode });
+
+      this.priceOption.productStock.locationName = this.seller$.locationName;
+      this.transaction.data.seller = this.seller$;
+      this.pageLoadingService.closeLoading();
+
+      // this.http.get(`/api/customerportal/newRegister/getEmployeeDetail/username/${user.username}`).toPromise().then((response: any) => {
+      //   if (response && response.data) {
+      //   }
+      // }).then(() => {
+      // }).catch(() => {
+      //   this.sellerCode = '';
+      //   this.pageLoadingService.closeLoading();
+      // });
     });
   }
 

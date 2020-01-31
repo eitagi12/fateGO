@@ -64,20 +64,22 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
   }
 
   onNext(): Promise<any> {
+    this.pageLoadingService.openLoading();
     this.transaction.data.queue = {
       queueNo: this._queueFrom.value.queueNo ? this._queueFrom.value.queueNo : ''
     };
     return this.queuePageService.createDeviceSellingOrderListSPKASP(this.transaction, this.priceOption, this.user).then((res: any) => {
-    })
-    .then((res: any) => {
-    return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
-    })
-    .then((res: any) => {
-      this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_RESULT_PAGE]);
-    })
-    .then((res: any) => {
-      this.pageLoadingService.closeLoading();
-    });
+    }).then((res: any) => {
+        return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
+      }).then((res: any) => {
+        this.pageLoadingService.closeLoading();
+        this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_RESULT_PAGE]);
+      }).catch((err) => {
+        this.pageLoadingService.closeLoading();
+        if (err.error && err.error.developerMessage) {
+          this.alertService.error(err.error.developerMessage);
+        }
+      });
   }
 
   onSkip(): void {

@@ -105,7 +105,8 @@ export class SharedTransactionService {
           isAscCode: !this.tokenService.isAisUser(),
           sellerNo: !!data.seller ? data.seller.sellerNo : '',
           employeeId: data.seller && data.seller.employeeId ? data.seller.employeeId : '',
-          sharedUser: !!data.seller ? data.seller.sharedUser : ''
+          sharedUser: !!data.seller ? data.seller.sharedUser : '',
+          shareUser: !!data.seller ? data.seller.shareUser : ''
         },
         status: data.status || {}
       }
@@ -127,7 +128,7 @@ export class SharedTransactionService {
     params.data.main_promotion = {
       campaign: priceOption.campaign,
       privilege: priceOption.privilege,
-      trade: priceOption.trade
+      trade: this.setPaymentMethod(data.payment || {}, priceOption.trade)
     };
 
     if (data.billingInformation) {
@@ -311,4 +312,34 @@ export class SharedTransactionService {
     return transactionId;
   }
 
+  public setPaymentMethod(payment: any, trade: any): void {
+    // const trade = priceOption.trade;
+    // const payment = transaction.data.payment;
+
+    if (trade.payments[0].method === 'CC/CA') {
+      if (!payment || (payment && !payment.paymentType)) {
+        return trade;
+      }
+
+      if (payment.paymentType === 'DEBIT') {
+        trade.payments[0].method = 'CA';
+        return trade;
+      } else {
+        trade.payments[0].method = 'CC';
+        const result = trade.banks.filter((bank) => {
+          return bank.abb === payment.paymentBank.abb;
+        });
+        trade.banks = result;
+        return trade;
+      }
+    } else if (trade.payments[0].method === 'CA') {
+      return trade;
+    } else {
+      const result = trade.banks.filter((bank) => {
+        return bank.abb === payment.paymentBank.abb;
+      });
+      trade.banks = result;
+      return trade;
+    }
+  }
 }
