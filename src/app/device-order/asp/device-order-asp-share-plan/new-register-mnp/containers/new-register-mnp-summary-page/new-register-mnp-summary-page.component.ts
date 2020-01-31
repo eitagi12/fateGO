@@ -153,7 +153,7 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
         sellerName: user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username,
         locationName: response.data.displayName,
         locationCode: user.locationCode,
-        sharedUser: user.sharedUser ? user.sharedUser : ''
+        shareUser: user.sharedUser ? user.sharedUser : ''
       };
     }).then(() => {
       this.sellerCode = this.tokenService.getUser().ascCode ? this.tokenService.getUser().ascCode  : '';
