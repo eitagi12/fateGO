@@ -29,14 +29,14 @@ export class OmniNewRegisterSummarySellerCodeComponent implements OnInit {
   }
 
   getLocation(): void {
-    this.locationCode = 'this.tokenService.getUser().locationCode';
+    this.locationCode = this.tokenService.getUser().locationCode;
     this.http.get(`/api/salesportal/location-by-code?code=${this.locationCode}`).toPromise().then((response: any) => {
       this.locationName = response.data.displayName;
     });
   }
 
   getASCCode(): any {
-    this.username = this.tokenService.getUser().username;
+     this.username = this.tokenService.getUser().username;
     this.http.get(`/api/customerportal/newRegister/getEmployeeDetail/${'username'}/${this.username}`).toPromise().then((response: any) => {
       this.ascCode = response.data.pin;
     });
