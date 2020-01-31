@@ -45,7 +45,7 @@ export class CreateEapplicationService {
       birthDate: customer.birthdate || '',
       customerPincode: '',
       chargeType: '',
-      customerImgKeyIn: customer.imageSmartCard || customer.imageSignatureWithWaterMark || '',
+      customerImgKeyIn: 'data:image/jpeg;base64,' + customer.imageSignatureWithWaterMark || '',
       customerAddress: {
         homeNo: currentAddress.homeNo || '',
         moo: currentAddress.moo || '',
@@ -70,7 +70,7 @@ export class CreateEapplicationService {
       fullNameEN: `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}`,
       issueDate: customer.issueDate || '',
       expireDate: customer.expireDate || '',
-      signature: customer.imageSignature || '',
+      signature: 'data:image/jpeg;base64,' + customer.imageSignature || '',
     };
 
     return data;
@@ -91,19 +91,19 @@ export class CreateEapplicationService {
       idCardType: customer.idCardType || '',
       birthDate: customer.birthdate || '',
       today: Date.now(),
-      customerAddress: {
-        homeNo: currentAddress.homeNo || '',
-        moo: currentAddress.moo || '',
-        room: currentAddress.room || '',
-        floor: currentAddress.floor || '',
-        buildingName: currentAddress.buildingName || '',
-        soi: currentAddress.soi || '',
-        street: currentAddress.street || '',
-        tumbol: currentAddress.tumbol || '',
-        amphur: currentAddress.amphur || '',
-        province: currentAddress.province || '',
-        zipCode: currentAddress.zipCode || ''
-      } || '',
+      customerAddress: this.utils.getCurrentAddress({
+        homeNo: customer.homeNo || '',
+        moo: customer.moo || '',
+        room: customer.room || '',
+        floor: customer.floor || '',
+        buildingName: customer.buildingName || '',
+        soi: customer.soi || '',
+        street: customer.street || '',
+        tumbol: customer.tumbol || '',
+        amphur: customer.amphur || '',
+        province: customer.province || '',
+        zipCode: customer.zipCode || ''
+      }, 'TH') || '',
       mobileNumber: simCard || '',
       mainPackage: {
         name: mainPackage.mainPackageName || '',

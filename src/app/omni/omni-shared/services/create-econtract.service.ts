@@ -31,10 +31,10 @@ export class CreateEcontractService {
     const simCard: any = transaction.data.cusMobileNo || '';
     const mainPackage: any = (transaction.data.mainPackage || transaction.data.currentPackage) || {};
     const promotionByMainPackage = mainPackage;
-    const advancePay = transaction.data.mainPackage.payAdvance || {};
+    const advancePay = transaction.data.mainPackage.payAdvance || '';
     const productPrice = transaction.data.productPrice;
     const productDiscount = transaction.data.productDiscount;
-    const productNetPrice = transaction.data.productNetPrice;
+    const payAdvanceDiscount = transaction.data.mainPackage.payAdvanceDiscount;
     const locationFromSeller = transaction.data.locationDestName;
     const data: any = {
       campaignName: campaign.campaignName,
@@ -42,20 +42,19 @@ export class CreateEcontractService {
       customerType: '',
       idCard: this.transformIDcard(idCard), // this.transformIDcard(customer.idCardNo),
       fullName: `${customer.firstName || ''} ${customer.lastName || ''}`,
-      mobileNumber: simCard,
+      mobileNumber: simCard || '',
       imei: simCard.imei || '',
       brand: transaction.data.brand,
       model: transaction.data.model,
       color: transaction.data.color,
-      priceIncludeVat: this.transformDecimalPipe(productPrice),
-      priceDiscount: this.transformDecimalPipe(productDiscount),
-      netPrice: this.transformDecimalPipe(productPrice - productDiscount),
-      advancePay: this.transformDecimalPipe(advancePay),
-      contract: mainPackage.durationContract,
+      priceIncludeVat: this.transformDecimalPipe(productPrice) || '',
+      priceDiscount: this.transformDecimalPipe(productDiscount) || '',
+      netPrice: this.transformDecimalPipe(productPrice - productDiscount) || '',
+      advancePay: advancePay,
+      contract: '10',
       packageDetail: mainPackage.mainPackageDesc,
-      airTimeDiscount: this.getAirTimeDiscount(advancePay.amount, promotionByMainPackage
-        ? promotionByMainPackage : advancePay.promotions) || 0,
-      airTimeMonth: this.getAirTimeMonth(promotionByMainPackage ? promotionByMainPackage : advancePay.promotions) || 0,
+      airTimeDiscount: payAdvanceDiscount,
+      airTimeMonth: '12',
       price: this.transformDecimalPipe(+productPrice + (+productDiscount)),
       signature: '',
       mobileCarePackageTitle: '',

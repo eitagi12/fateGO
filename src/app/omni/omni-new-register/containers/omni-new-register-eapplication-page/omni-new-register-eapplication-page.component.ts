@@ -22,7 +22,6 @@ export class OmniNewRegisterEapplicationPageComponent implements OnInit, OnDestr
 
   transaction: Transaction;
   getDataBase64Eapp: string;
-  // translationSubscribe: Subscription;
 
   constructor(
     private router: Router,
@@ -37,10 +36,6 @@ export class OmniNewRegisterEapplicationPageComponent implements OnInit, OnDestr
 
   ngOnInit(): void {
     this.pageLoadingService.openLoading();
-    this.callService(this.transaction);
-    // this.translationSubscribe = this.translateService.onLangChange.subscribe(language => {
-    // this.callService();
-    // });
     if (this.transaction.data.action === TransactionAction.KEY_IN) {
       this.callService(this.transaction);
     } else {
@@ -70,8 +65,6 @@ export class OmniNewRegisterEapplicationPageComponent implements OnInit, OnDestr
 
   onNext(): void {
     if (this.transaction.data.cusMobileNo) {
-      //   this.router.navigate([ROUTE_OMNI_NEW_REGISTER_RESULT_PAGE]);
-      // } else {
       this.router.navigate([ROUTE_OMNI_NEW_REGISTER_PERSO_SIM_PAGE]);
     }
   }
@@ -81,7 +74,6 @@ export class OmniNewRegisterEapplicationPageComponent implements OnInit, OnDestr
   }
 
   ngOnDestroy(): void {
-    // this.translationSubscribe.unsubscribe();
     this.transactionService.save(this.transaction);
   }
 }
