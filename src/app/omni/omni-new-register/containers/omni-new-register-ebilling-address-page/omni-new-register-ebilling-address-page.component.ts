@@ -201,6 +201,10 @@ export class OmniNewRegisterEbillingAddressPageComponent implements OnInit, OnDe
       Object.assign({}, customer),
       this.customerAddressTemp
     );
+    this.transaction.data.customer = Object.assign(
+      Object.assign({}, customer),
+      this.customerAddressTemp
+    );
     this.transaction.data.billingInformation.billCycleData[0].customer = this.customerAddressTemp;
     this.transaction.data.billingInformation.billCycleData[0].billAddressText = shipaddress;
 
