@@ -1,22 +1,20 @@
 <div class="mc-flex">
-    <mc-header title="{{ 'เครื่องพร้อมเปิดเบอร์ใหม่' | translate }}">
+  <mc-header title="{{ 'เครื่องพร้อมเปิดเบอร์ใหม่' | translate }}">
     <div class="header-icon-left">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
     <div class="header-icon-right">
-        <!-- <mc-dropdown-language></mc-dropdown-language> -->
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
   <div class="mc-flex-wrap">
-    <!-- <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart> -->
     <div class="my-3">
       <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
-      
+
       <div class="container">
         <div class="card" *ngIf="eContactSrc">
           <div class="card-body">
-            <img [src]="'data:image/jpeg;base64,'+eContactSrc" class="img-fluid mx-auto d-block" />
+            <img [src]="'data:image/png;base64,'+eContactSrc" class="img-fluid mx-auto d-block" />
             <div class="my-3 text-center">
               <input type="checkbox" name="agree" id="agree" [value]="true" [(ngModel)]="agreement">
               <label for="agree" translate>

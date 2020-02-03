@@ -19,7 +19,7 @@
                   *ngIf="signatureText !== 'แก้ไขลายเซ็น'" />
               </div>
               <div *ngIf="transaction?.data?.customer?.imageSignature" class="signed">
-                <img [src]="'data:image/jpeg;base64,' + transaction?.data?.customer?.imageSignature"
+                <img [src]="'data:image/png;base64,' + transaction?.data?.customer?.imageSignature"
                   *ngIf="signatureText !== 'แก้ไขลายเซ็น'">
               </div>
             </div>

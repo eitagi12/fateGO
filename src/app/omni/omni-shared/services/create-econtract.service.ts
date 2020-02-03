@@ -10,6 +10,9 @@ import { TransactionService } from './transaction.service';
   providedIn: 'root'
 })
 export class CreateEcontractService {
+
+  amount: number = 12;
+
   constructor(
     private http: HttpClient,
     private decimalPipe: DecimalPipe,
@@ -42,6 +45,7 @@ export class CreateEcontractService {
       customerType: '',
       idCard: this.transformIDcard(idCard), // this.transformIDcard(customer.idCardNo),
       fullName: `${customer.firstName || ''} ${customer.lastName || ''}`,
+      fullNameEN: `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}`,
       mobileNumber: simCard || '',
       imei: simCard.imei || '',
       brand: transaction.data.brand,
@@ -54,7 +58,7 @@ export class CreateEcontractService {
       contract: '10',
       packageDetail: mainPackage.mainPackageDesc,
       airTimeDiscount: payAdvanceDiscount,
-      airTimeMonth: '12',
+      airTimeMonth: this.amount,
       price: this.transformDecimalPipe(+productPrice + (+productDiscount)),
       signature: '',
       mobileCarePackageTitle: '',
@@ -69,43 +73,26 @@ export class CreateEcontractService {
     return (advancePay && advancePay.amount > 0);
   }
 
-  // findPromotionByMainPackage(mainPackageCustomAttributes: any, transaction: Transaction): any {
-  //   const advancePay = transaction.data.mainPackage.payAdvance;
-  //   if (advancePay) {
-  //     // check mainPackage กับเบอร์ที่ทำรายการให้ตรงกับ billingSystem ของเบอร์ที่ทำรายการ
-  //     // const advancePay = priceOption.trade.advancePay || {};
-  //     const billingSystem = (transaction.data.mainPackage.billingSystem === 'RTBS')
-  //       ? BillingSystemType.IRB : transaction.data.mainPackage.billingSystem || BillingSystemType.IRB;
-  //     if (advancePay.promotions) {
-  //       return advancePay.promotions
-  //         .find(promotion =>
-  //           (promotion && promotion.billingSystem) === (mainPackageCustomAttributes || billingSystem));
-  //     } else {
-  //       return null;
-  //     }
-  //   }
-  // }
-
-  getAirTimeDiscount(amount: number, advancePayPromotions: any): number {
-    if (!advancePayPromotions) {
+  getAirTimeDiscount(amount: number, payAdvanceDiscount: any): number {
+    if (!payAdvanceDiscount) {
       return 0;
     }
-    if (Array.isArray(advancePayPromotions)) {
-      return advancePayPromotions.length > 0 ? +(amount / advancePayPromotions[0].month).toFixed(2) : 0;
+    if (Array.isArray(payAdvanceDiscount)) {
+      return payAdvanceDiscount.length > 0 ? +(amount / payAdvanceDiscount[0].month).toFixed(2) : 0;
     } else {
-      return (amount / advancePayPromotions.month) ? +(amount / advancePayPromotions.month).toFixed(2) : 0;
+      return (amount / payAdvanceDiscount.month) ? +(amount / payAdvanceDiscount.month).toFixed(2) : 0;
     }
   }
 
-  getAirTimeMonth(advancePayPromotions: any): number {
-    if (!advancePayPromotions) {
+  getAirTimeMonth(payAdvanceDiscount: any): number {
+    if (!payAdvanceDiscount) {
       return 0;
     }
 
-    if (Array.isArray(advancePayPromotions)) {
-      return advancePayPromotions.length > 0 ? advancePayPromotions[0].month : 0;
+    if (Array.isArray(payAdvanceDiscount)) {
+      return payAdvanceDiscount.length > 0 ? payAdvanceDiscount[0].month : 0;
     } else {
-      return advancePayPromotions.month;
+      return payAdvanceDiscount.month;
     }
   }
 
