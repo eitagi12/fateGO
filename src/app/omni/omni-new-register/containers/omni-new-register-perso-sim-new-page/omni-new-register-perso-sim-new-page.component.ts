@@ -64,7 +64,7 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
   getBarcode: any;
   simSerialKeyIn: string;
   statusFixSim: string;
-  orderType: string = 'New Registation';
+  orderType: string = 'Normal';
   cusMobileNo: string;
   checktSimInfoFn: any;
   mockData: any = [];
@@ -83,6 +83,13 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
     private utils: Utils
   ) {
     this.transaction = this.transactionService.load();
+    const simCard: any = {
+      mobileNo: this.transaction.data.cusMobileNo,
+      simSerial: '',
+      persoSim: false,
+    };
+    this.setAction(simCard);
+    this.transactionService.save(this.transaction);
   }
 
   ngOnInit(): void {
@@ -112,7 +119,7 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
 
     this.checkOrderCounter = 0;
     this.getCommandCounter = false;
-    this.cusMobileNo = this.transaction.data.cusMobileNo;
+    this.cusMobileNo = this.transaction.data.simCard.mobileNo;
 
     if (typeof this.aisNative !== 'undefined') {
       const disConnectReadIdCard: number = 1;
@@ -291,7 +298,7 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
           this.persoSimCard(simCommand.data.refNo, parameter);
         }, delayTime);
       }
-    }).catch(() => {
+    }).catch((err: any) => {
       if (!this.getCommandCounter) {
         this.popupControl('errorCmd', '');
         this.getCommandCounter = true;
@@ -659,8 +666,8 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
   setSimCard(): SimCard {
     return Object.assign({
       mobileNo: this.transaction.data.cusMobileNo,
-      simSerial: this.simSerialForm.value.simSerial,
-      perso: '',
+      simSerial: '',
+      perso: false,
     });
 
   }
@@ -724,4 +731,10 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
     clearTimeout(this.timeoutPersoSim);
   }
 
+  public setAction(simCard: any): void {
+    this.transaction.data = {
+      ...this.transaction.data,
+      simCard: simCard
+    };
+  }
 }

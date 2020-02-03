@@ -221,7 +221,7 @@ export interface SelectedLocation {
 export interface SimCard {
   mobileNo?: string;
   simSerial?: string;
-  persoSim?: string;
+  persoSim?: boolean;
 }
 
 export interface MainPackage {
