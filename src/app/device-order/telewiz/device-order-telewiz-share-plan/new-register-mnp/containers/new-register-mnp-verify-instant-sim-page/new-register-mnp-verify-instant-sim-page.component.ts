@@ -168,15 +168,19 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
         }
       })
       .catch((resp) => {
-        const error = resp.error || [];
+        let errMessage: string;
+        if (resp.error && resp.error.developerMessage) {
+            errMessage = 'หมายเลขนี้ ไม่สามารถทำรายการได้ กรุณาเลือกหมายเลขใหม่';
+        }
         this.pageLoadingService.closeLoading();
         this.simSerialValid = false;
         this.simSerial = undefined;
         this.clearData();
-        this.alertService.notify({
-          type: 'error',
-          html: this.translationService.instant(error.resultDescription.replace(/<br>/, ' '))
-        });
+        this.alertService.error(errMessage);
+        // this.alertService.notify({
+        //   type: 'error',
+        //   html: this.translationService.instant(error.resultDescription.replace(/<br>/, ' '))
+        // });
       });
   }
 
@@ -205,28 +209,28 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
 
     this.verifyInstantSimService.verifyInstantSim(selectedSimSerialNo).then((resp) => {
       const data = resp.data;
-        if (data.mobileStatus === 'Registered') {
-          this.clearData();
-          this.pageLoadingService.closeLoading();
-          this.alertService.error('หมายเลข ' + data.mobileNo + ' มีผู้ใช้งานแล้ว กรุณาเลือกหมายเลขใหม่');
-        } else if (data.mobileStatus !== 'Registered' && data.mobileStatus !== 'Reserved') {
-          this.clearData();
-          this.pageLoadingService.closeLoading();
-          this.alertService.error('สถานะหมายเลข ' + data.mobileNo + ' ไม่พร้อมทำรายการ กรุณาเลือกหมายเลขใหม่');
-        } else {
-          this.simSerialValid = true;
-          this.simSerial = {
-            mobileNo: data.mobileNo,
-            simSerial: selectedSimSerialNo
-          };
-          this.transaction.data.simCard = {
-            mobileNo: this.simSerial.mobileNo,
-            simSerial: this.simSerial.simSerial,
-            persoSim: false
-          };
-          this.pageLoadingService.closeLoading();
-        }
-      })
+      if (data.mobileStatus === 'Registered') {
+        this.clearData();
+        this.pageLoadingService.closeLoading();
+        this.alertService.error('หมายเลข ' + data.mobileNo + ' มีผู้ใช้งานแล้ว กรุณาเลือกหมายเลขใหม่');
+      } else if (data.mobileStatus !== 'Registered' && data.mobileStatus !== 'Reserved') {
+        this.clearData();
+        this.pageLoadingService.closeLoading();
+        this.alertService.error('สถานะหมายเลข ' + data.mobileNo + ' ไม่พร้อมทำรายการ กรุณาเลือกหมายเลขใหม่');
+      } else {
+        this.simSerialValid = true;
+        this.simSerial = {
+          mobileNo: data.mobileNo,
+          simSerial: selectedSimSerialNo
+        };
+        this.transaction.data.simCard = {
+          mobileNo: this.simSerial.mobileNo,
+          simSerial: this.simSerial.simSerial,
+          persoSim: false
+        };
+        this.pageLoadingService.closeLoading();
+      }
+    })
       .catch((err) => {
         this.clearData();
         const error = err.error || [];
