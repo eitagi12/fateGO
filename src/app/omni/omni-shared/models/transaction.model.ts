@@ -60,7 +60,7 @@ export interface TransactionData {
   mpayPayment?: QrCodePrePostMpayModel;
   status?: Status;
   device?: Device;
-  knoxguard?: KnoxGuard;
+  knoxGuard?: KnoxGuard;
   tradeType?: string;
   // Rom Agent
   romAgent?: RomAgent;
@@ -561,6 +561,7 @@ export interface KnoxGuard {
   duration?: string;
   orderReason?: string;
   userName?: string;
+  knoxGuardFlag?: string ;
 }
 
 export interface RomAgent {

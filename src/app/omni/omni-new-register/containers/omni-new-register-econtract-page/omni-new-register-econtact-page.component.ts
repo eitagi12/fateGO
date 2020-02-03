@@ -77,6 +77,14 @@ export class OmniNewRegisterEcontactPageComponent implements OnInit, OnDestroy {
     const user = this.tokenService.getUser();
     const campaign: any = this.transaction.data.campaign || {};
     // const trade: any = this.priceOption.trade || {};
+    if (this.transaction.data.knoxGuard.knoxGuardFlag === 'Y') {
+      campaign.conditionCode = 'CODITION_3';
+    } else if (this.transaction.data.mainPackage.matAirtime !== '') {
+      campaign.conditionCode = 'CODITION_2';
+    } else {
+      campaign.conditionCode = 'CODITION_1';
+    }
+
     this.pageLoadingService.openLoading();
     this.http.post('/api/salesportal/promotion-shelves/promotion/condition', {
       conditionCode: campaign.conditionCode,
