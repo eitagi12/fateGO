@@ -567,7 +567,12 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_AGGREGATE_PAGE]);
+    const baseMyChannelWebURL: any = environment.MYCHANNEL_WEB_URL;
+    const transactionId: string = this.transactionService.load().transactionId;
+    if (transactionId) {
+      window.location.href = baseMyChannelWebURL + '/' + 'sales-order/pay-advance?transactionId=' + transactionId;
+    }
+    // this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_AGGREGATE_PAGE]);
   }
 
   onHome(): void {
