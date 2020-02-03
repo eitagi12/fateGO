@@ -104,7 +104,7 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
       birthDay: ['', [Validators.required]],
       birthMonth: ['', [Validators.required]],
       birthYear: ['', [Validators.required]],
-      gender: ['', [Validators.required]]
+      gender: ['M', [Validators.required]]
     });
 
     this.validateCustomerKeyInForm.valueChanges.subscribe((value: any) => {
