@@ -1,41 +1,127 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { Subscription, Observable, of } from 'rxjs';
-import {
-  ShoppingCart,
-  HomeService,
-  //  TokenService,
-  //  AlertService,
-  //  PersoSimService,
-  //  ChannelType,
-  //  KioskControlsPersoSim,
-  //  PersoSimError,
-  PageLoadingService,
-  AlertService,
-  TokenService,
-  User,
-  PersoSimService,
-  PersoSimConfig
-} from 'mychannel-shared-libs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { HomeService, Utils, AlertService, TokenService, ChannelType } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
-// import { TranslateService } from '@ngx-translate/core';
+import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ } from 'src/app/device-order/constants/wizard.constant';
 import {
   ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_EAPPLICATION_PAGE,
-  ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PERSO_SIM_MEMBER_PAGE
+  ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PERSO_SIM_MEMBER_PAGE,
+  ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_BY_PATTERN_PAGE
 } from '../../constants/route-path.constant';
-// import { environment } from 'src/environments/environment';
-import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ } from 'src/app/device-order/constants/wizard.constant';
-import { Validators, FormBuilder } from '@angular/forms';
+import { Observable, Subscription } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { Transaction } from 'src/app/shared/models/transaction.model';
-import { RemoveCartService } from '../../services/remove-cart.service';
-import { QueuePageService } from 'src/app/device-order/services/queue-page.service';
-import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
+import { environment } from 'src/environments/environment';
 import { TranslateService } from '@ngx-translate/core';
+import { Validators, FormBuilder } from '@angular/forms';
 
+export enum PersoSimCommand {
+  EVENT_CONNECT_LIB = 9000,
+  EVENT_CHECK_CARD_STATUS = 0,
+  EVENT_CONNECT_SIM_READER = 1,
+  EVENT_READ_SIM = 4,
+  EVENT_PERSO_SIM = 5
+}
+
+export enum PersoSimEvent {
+  EVENT_CARD_LOAD_LIB = 'Load SIM library success',
+  EVENT_CARD_PRESENT = 'Present',
+  EVENT_CARD_CONNECTED = 'Connected',
+  EVENT_CARD_DISCONNECTED = 'Disconnected'
+}
+
+export enum PersoSimCardStatus {
+  EVENT_PERSO_SIM_SUCCESS = 'TRUE',
+  EVENT_PERSO_SIM_FAIL = 'FALSE'
+}
+
+export enum ReadSimCardStatus {
+  EVENT_READ_SIM_SUCCESS = 'TRUE',
+  EVENT_READ_SIM_FAIL = 'FALSE'
+}
+
+export enum ControlSimCard {
+  EVENT_CHECK_SIM_INVENTORY = 'GetSIMInventory',
+  EVENT_CHECK_SIM_STATE = 'GetCardState',
+  EVENT_CHECK_BIN_STATE = 'GetBinState',
+  EVENT_LOAD_SIM_STACKER1 = 'LoadSIM|STACKER1',
+  EVENT_LOAD_SIM_STACKER2 = 'LoadSIM|STACKER2',
+  EVENT_KEEP_SIM = 'KeepCard',
+  EVENT_RELEASE_SIM = 'ReleaseSIM'
+}
+
+export enum SIMCardStatus {
+  INVENTORY_1_HAVE_CARD = 'Card Stacker 1 is unknown status',
+  INVENTORY_2_HAVE_CARD = 'Card Stacker 2 is unknown status',
+  INVENTORY_1_LESS_CARD = 'Card Stacker 1 is less card',
+  INVENTORY_2_LESS_CARD = 'Card Stacker 2 is less card',
+  INVENTORY_1_EMPTY_CARD = 'Card Stacker 1 is empty',
+  INVENTORY_2_EMPTY_CARD = 'Card Stacker 2 is empty',
+  STATUS_IN_IC = 'Card in IC position',
+  STATUS_NO_CARD = 'No card inside reader unit',
+}
+
+export enum ControlLED {
+  EVENT_LED_ON = 'ControlLED|On',
+  EVENT_LED_OFF = 'ControlLED|Off',
+  EVENT_LED_BLINK = 'ControlLED|Blink',
+}
+
+export enum ErrorPerSoSim {
+  ERROR_SIM = 'errorSim',
+  ERROR_CMD = 'errorCmd',
+  ERROR_PERSO = 'errPerso',
+  ERROR_ORDER = 'errorOrder',
+  ERROR_PRIVATE_KEY = 'errorCanNotGetPrivateKey',
+  ERROR_WEB_SOCKET = 'errorWebSocket',
+  ERROR_SIM_EMPTY = 'errorSimEmpty'
+}
+
+export enum ErrorPerSoSimMessage {
+  ERROR_SIM_MESSAGE = 'กรุณารอสักครู่ ระบบกำลังทำรายการ',
+  ERROR_CMD_MESSAGE = 'ไม่สามารถให้บริการได้ กรุณาติดต่อพนักงานเพื่อดำเนินการ ขออภัยในความไม่สะดวก',
+  ERROR_PERSO_MESSAGE = 'เบอร์นี้ถูกเลือกแล้ว กรุณาเลือกเบอร์ใหม่ เพื่อทำรายการ',
+  ERROR_ORDER_MESSAGE = 'ไม่สามารถให้บริการได้ กรุณาติดต่อพนักงานเพื่อดำเนินการ ขออภัยในความไม่สะดวก',
+  ERROR_PRIVATE_KEY_MESSAGE = 'ไม่สามารถให้บริการได้ กรุณาติดต่อพนักงานเพื่อดำเนินการ ขออภัยในความไม่สะดวก',
+  ERROR_WEB_SOCKET_MESSAGE = 'ไม่สามารถให้บริการได้ กรุณาติดต่อพนักงานเพื่อดำเนินการ ขออภัยในความไม่สะดวก',
+  ERROR_SIM_EMPTY_MESSAGE = 'ไม่สามารถให้บริการได้ กรุณาติดต่อพนักงานเพื่อดำเนินการ ขออภัยในความไม่สะดวก'
+}
+export interface PersoSim {
+  progress?: number;
+  queryPersoSim?: QueryPersoSim;
+  orderPersoSim?: OrderPersoSim;
+  error?: any;
+  eventName?: string;
+  simSerial?: string;
+}
+
+export interface RequestPersoSim {
+  mobileNo: string;
+  serialNo: string;
+  index: string;
+  simService: string;
+  sourceSystem: string;
+}
+
+export interface QueryPersoSim {
+  simSerialNo: string;
+  eCommand: string;
+  sk: string;
+  refNo: string;
+}
+
+export interface ControlSimResult {
+  data?: any;
+  result?: string;
+  isSuccess?: boolean;
+}
+
+export interface OrderPersoSim {
+  transactionNo?: string;
+  transactionStatus?: string;
+  orderNo?: string;
+  orderStatus?: 'Submitted' | 'Completed';
+}
 export interface OptionPersoSim {
   key_sim?: boolean;
   scan_sim?: boolean;
@@ -51,72 +137,36 @@ declare let window: any;
 export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDestroy {
 
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
-  aisNative: any = window.aisNative;
-
   title: string;
+  isControlSim: boolean;
   isManageSim: boolean;
   persoSimSubscription: Subscription;
+  typeSim: 'pullsim' | 'insert';
+  onStatusSim: any;
   errorMessage: string;
-  persoSim: any;
 
-  transaction: Transaction;
-  option: OptionPersoSim;
-  persoSimConfig: PersoSimConfig;
-  shoppingCart: ShoppingCart;
-
-  koiskApiFn: any;
-  readonly ERROR_PERSO: string = 'ไม่สามารถให้บริการได้ กรุณาติดต่อพนักงานเพื่อดำเนินการ ขออภัยในความไม่สะดวก';
-  readonly ERROR_PERSO_PC: string = 'ไม่สามารถ Perso Sim ได้';
-  masterSimCard: any;
-
-  xmlDoc: any;
-  getBarcode: any;
-  checkOrderCounter: number = 0;
-  check: number = 0;
-  getCommandCounter: boolean = false;
-
-  scanBarcodePC$: Observable<boolean> = of(true);
-
-  public disableBack: any = false;
-  command: number = 2;
-
-  simSerialKeyIn: string;
+  persoSim: PersoSim;
   mobileNo: string;
-
-  lastStatus: boolean;
-  gotCardData: boolean;
-  readSimStatus: string;
-  persoSimInterval: any;
-  statusFixSim: string = 'waitingForCheck';
-  serialbarcode: string;
-  checktSimInfoFn: any;
-  simInfoAPI: string;
-  persoSimAPI: string;
-  checkCreatePersoSimAPI: string;
-  orderType: string = 'New Registation';
-  cardStatus: string;
-  currentStatus: boolean;
-  timeoutReadSim: any;
+  serialSim: string;
+  requestPersoSim: RequestPersoSim;
   referenceNumber: string;
-  timeoutCheckOrderStatus: any;
-  timeoutCreatePersoSim: any;
-  timeoutPersoSim: any;
-  isStateStatus: string = 'waitingFixSim';
-  getSerialNo: string;
-  queryPersoDataFn: any;
-  eCommand: any;
-  showCommand: any;
-  checkOrderStatusFn: any;
-  duration: 250;
-  persoSimCounter: boolean;
-  checkCreatedPersoSimFn: any;
-  createTxPersoCounter: number = 0;
-  minLength: number = 13;
-  isNext: boolean = false;
-  locationCode: string;
+  transaction: Transaction;
+  isNext: boolean;
+  option: OptionPersoSim;
+  checkCardPresent: boolean = false;
 
-  priceOption: PriceOption;
-  user: User;
+  // WebSocket
+  wsControlSim: any;
+  wsManageSim: any;
+
+  // onerror  ใส่ error ว่าให้ error ได้กี่ครั้ง
+  checkErrSim: number = 0;
+  errSimOut: number = 3;
+  checkErrCmd: number = 3;
+  errCmd: number = 0;
+
+  minLength: number = 13;
+
   public simSerialForm: any = this.fb.group({
     simSerial: ['', [
       Validators.minLength(this.minLength),
@@ -126,628 +176,528 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
   });
 
   constructor(
+    public fb: FormBuilder,
     private router: Router,
-    public homeService: HomeService,
+    private homeService: HomeService,
+    private utils: Utils,
     private http: HttpClient,
+    private tokenService: TokenService,
     private transactionService: TransactionService,
     private alertService: AlertService,
-    private shoppingCartService: ShoppingCartService,
-    private zone: NgZone,
-    private pageLoadingService: PageLoadingService,
-    public fb: FormBuilder,
-    private removeCartService: RemoveCartService,
-    private queuePageService: QueuePageService,
-    public tokenService: TokenService,
-    public priceOptionService: PriceOptionService,
-    private sharedTransactionService: SharedTransactionService,
-    private persoSimService: PersoSimService,
-    private translateService: TranslateService
+    private translation: TranslateService,
   ) {
-    this.option = { scan_sim: true, key_sim: false };
-    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
-    this.transaction = this.transactionService.load();
-    this.locationCode = tokenService.getUser().locationCode;
-    this.priceOption = priceOptionService.load();
-    this.user = tokenService.getUser();
+    if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
+      this.typeSim = 'pullsim';
+    } else {
+      this.typeSim = 'insert';
+    }
   }
 
   ngOnInit(): void {
-
-    this.masterSimCard = this.transaction.data.simCard;
-    this.createForm();
-
-    this.simSerialForm.controls.simSerial.valueChanges.subscribe((value) => {
-      if (value && value.length === 13) {
-        this.verifySimSerialByBarcode(value);
-      }
-    });
-
-    console.log('Start read sim on PC');
-    if (this.transaction.data.simCard.mobileNo) {
-      this.setConfigPersoSim().then((res: any) => {
-        console.log('res -->', res);
-        this.persoSimWebsocket();
-      });
-    }
-  }
-
-  persoSimWebsocket(): void {
-    console.log('Start read sim on PC');
-    // for pc
-    this.title = 'กรุณาเสียบ Sim Card';
-    this.persoSimSubscription = this.persoSimService.onPersoSim(this.persoSimConfig).subscribe((persoSim: any) => {
-      console.log('persoSim-->', persoSim);
-      this.persoSim = persoSim;
-      if (persoSim.persoData && persoSim.persoData.simSerial) {
-        console.log('If1');
-        this.title = 'กรุณาดึงซิมการ์ด';
-        this.transaction.data.simCard.simSerial = persoSim.persoData.simSerial;
-        // this.onNext();
-      }
-      if (persoSim.error) {
-        console.log('If2');
-        this.persoSimSubscription.unsubscribe();
-        this.errorMessage = this.ERROR_PERSO;
-        this.persoSimWebsocket();
-        console.log(this.errorMessage);
-        // this.alertService.error(this.translateService.instant(this.ERROR_PERSO));
-      }
-    });
-  }
-
-  async setConfigPersoSim(): Promise<any> {
-    return this.persoSimConfig = await {
-      serviceGetPrivateKey: () => {
-        return this.http.post('/api/customerportal/newRegister/getPrivateKeyCommand', {
-          params: {}
-        }).toPromise();
-      },
-      serviceGetPersoDataCommand: (serialNo: string, indexNo: string) => {
-        return this.http.get('/api/customerportal/newRegister/queryPersoData', {
-          params: {
-            indexNo: indexNo,
-            serialNo: serialNo,
-            mobileNo: this.transaction.data.simCard.mobileNo,
-            simService: 'Normal'
-          }
-        }).toPromise();
-      },
-      serviceCreateOrderPersoSim: (refNo: string) => {
-        return this.http.get('/api/customerportal/newRegister/createPersoSim', {
-          params: {
-            refNo: refNo
-          }
-        }).toPromise();
-      },
-      serviceCheckOrderPersoSim: (refNo: string) => {
-        return this.http.get('/api/customerportal/newRegister/checkOrderStatus', {
-          params: {
-            refNo: refNo
-          }
-        }).toPromise();
-      }
+    this.option = {
+      scan_sim: true,
+      key_sim: false
     };
-  }
-
-  verifySimSerialByBarcode(barcode: string): void {
-    this.simSerialKeyIn = barcode;
-    this.checkBarcode(this.simSerialKeyIn, false);
-  }
-
-  setIntervalSimCard(): void {
-    // this.stateMessageControl('waiting');
-    this.lastStatus = false;
-    this.gotCardData = false;
-    this.persoSim = '';
-    this.readSimStatus = '';
-    this.persoSim = { progress: 0, eventName: 'กรุณารอสักครู่' };
-    // $('.custom').animate({ width: 0 + '%' }, this.duration, () => {/**/ });
-    clearInterval(this.persoSimInterval);
-    const intervalTime: number = 3000;
-    this.persoSimInterval = setInterval(() => {
-      this.checkSimCardStatus();
-    }, intervalTime); // Timer
-  }
-
-  checkBarcode(barcode: string, isScan: boolean): void {
-    let errorCode: string;
-    let returnMessage: string;
-    let errMegFixSim: string;
-    // this.simSerialKeyIn = barcode;
-
-    console.log('Mobile No :  ', this.mobileNo);
-    console.log('Serial NO Insert :  ', barcode);
-
-    if (this.simSerialForm.controls['simSerial'].valid && this.orderType !== 'Port - In') {
-      this.checktSimInfoFn = this.getChecktSimInfo(this.mobileNo, barcode);
-      this.checktSimInfoFn.then((simInfo: any) => {
-        this.pageLoadingService.openLoading();
-        console.log('::: Mobile Info Insert SIM :::', simInfo.data);
-
-        errorCode = simInfo.data.returnCode;
-        returnMessage = simInfo.data.returnMessage;
-
-        if (errorCode === '003' || errorCode === '005') {
-          this.pageLoadingService.closeLoading();
-          this.popupControl('errorSimStatus', '');
-        } else if (errorCode === '004') {
-          this.pageLoadingService.closeLoading();
-          this.statusFixSim = 'WaitingForPerso';
-          this.serialbarcode = barcode;
-          this.onRefreshPageToPerso();
-        } else if (errorCode === '006') {
-          this.pageLoadingService.closeLoading();
-          errMegFixSim = 'ซิมใบนี้ไม่สามารถทำรายการได้ เนื่องจาก Region ซิมไม่ตรงกับเบอร์ที่เลือก เบอร์ '
-            + this.mobileNo + ' กรุณาเปลี่ยนซิมใหม่';
-          this.popupControl('errorFixSim', errMegFixSim);
-        } else if (errorCode === '008') {
-          const simSerial: string = this.simSerialForm.controls.simSerial.value;
-          if (simSerial.length === 13) {
-            this.isNext = true;
-          } else {
-            this.isNext = false;
-          }
-          this.isNext = true;
-          this.checkStatusSimCard();
-          this.pageLoadingService.closeLoading();
-          this.statusFixSim = 'Success';
-        } else if (errorCode === '001' || errorCode === '002' || errorCode === '007') {
-          this.pageLoadingService.closeLoading();
-          errMegFixSim = returnMessage + ' (code : ' + errorCode + ')';
-          this.popupControl('errorFixSim', errMegFixSim);
-        }
-
-      }).catch((err: any) => {
-        this.pageLoadingService.closeLoading();
-        this.popupControl('errorFixSim', err);
-      });
-    } else {
-      this.statusFixSim = 'waitingForCheck';
+    this.transaction = this.transactionService.load();
+    if (this.transaction.data.simCard.mobileNo) {
+      this.startPersoSim(this.transaction);
     }
   }
 
-  checkSimCardStatus(): void {
-    const getCardStatus: number = 1000;
-    const showDialog: number = 1003;
-    this.cardStatus = this.aisNative.sendIccCommand(this.command, getCardStatus, ''); // Get card status
-    if (this.cardStatus === 'Card presented') {
-      this.currentStatus = true;
-      clearInterval(this.persoSimInterval);
-      // this.stateMessageControl('read');
-    } else {
-      this.currentStatus = false;
-    }
-
-    if (this.currentStatus && !this.lastStatus) {
-      // this.aisNative.sendIccCommand(this.command, showDialog, ''); //Show dialogReadSim
-      // On card inserted
-      this.gotCardData = false;
-      this.lastStatus = true;
-    }
-
-    if (this.lastStatus) {
-      if (!this.gotCardData) {
-        const delayTime: number = 1000;
-        this.timeoutReadSim = setTimeout(() => {
-          this.readSimForPerso();
-        }, delayTime);
-      }
-    }
-  }
-
-  checkStatusSimCard(): void {
-    clearInterval(this.persoSimInterval);
-    const intervalTime: number = 3000;
-    this.persoSimInterval = setInterval(() => {
-      this.checkSimStatus();
-    }, intervalTime); // Timer
-  }
-
-  checkSimStatus(): void {
-    const getCardStatus: number = 1000;
-    this.cardStatus = this.aisNative.sendIccCommand(this.command, getCardStatus, ''); // Get card status
-    if (this.cardStatus === 'Card presented') {
+  startPersoSim(transaction: Transaction | Partial<Transaction>): void {
+    this.errorMessage = '';
+    this.persoSimSubscription = this.onPersoSim(transaction.data.simCard.mobileNo).subscribe((value) => {
       this.isNext = false;
-      this.currentStatus = true;
-    } else {
-      this.isNext = true;
-      this.currentStatus = false;
-      clearInterval(this.persoSimInterval);
-    }
-  }
-
-  popupControl(isCase: string, errMsg: string): void {
-
-    switch (isCase) {
-      case 'errorSim': {
-        this.alertService.notify({
-          type: 'error',
-          text: 'เกิดข้อผิดพลาด กรุณาเปลี่ยน SIM CARD ใหม่',
-          confirmButtonText: 'ตกลง',
-          onClose: () => this.setIntervalSimCard()
+      this.persoSim = value;
+      this.title = value.eventName;
+      if (value.queryPersoSim) {
+        transaction.data.simCard = Object.assign(transaction.data.simCard, {
+          simSerial: value.simSerial
         });
-      } break;
-      case 'errorCmd': {
-        this.alertService.notify({
-          type: 'error',
-          text: 'กรุณากด Retry เพื่อเรียกข้อมูลใหม่อีกครั้ง',
-          confirmButtonText: 'RETRY',
-          onClose: () => this.getCommandForPersoSim(this.readSimStatus)
-        });
-      } break;
-      case 'errPerso': {
-        this.alertService.notify({
-          type: 'error',
-          text: 'ไม่สามารถทำการ Perso SIM ได้ กรุณาทำรายการใหม่อีกครั้ง',
-          confirmButtonText: 'MAIN MENU',
-          onClose: () => this.onHome()
-        });
-      } break;
-      case 'errorOrder': {
-        this.alertService.notify({
-          type: 'error',
-          text: 'กรุณากด Retry เพื่อเรียกข้อมูลใหม่อีกครั้ง',
-          confirmButtonText: 'RETRY',
-          onClose: () => this.checkOrderStatus(this.referenceNumber)
-        });
-      } break;
-      case 'errorSmartCard': {
-        this.alertService.notify({
-          type: 'error',
-          text: 'ขออภัยค่ะ ไม่สามารถทำรายการได้ กรุณาเสียบซิมการ์ด',
-          confirmButtonText: 'ตกลง',
-          onClose: () => this.onRefreshPage()
-        });
-      } break;
-      case 'errorSimStatus': {
-        this.alertService.notify({
-          type: 'error',
-          text: 'ซิมใบนี้ถูกใช้ไปแล้ว กรุณาเปลี่ยนซิมใหม่',
-          confirmButtonText: 'ตกลง',
-          onClose: () => this.onRefreshPage()
-        });
-      } break;
-      case 'errorFixSim': {
-        this.alertService.notify({
-          type: 'error',
-          text: errMsg,
-          confirmButtonText: 'ตกลง',
-          onClose: () => this.onRefreshPage()
-        });
-      } break;
-      case 'errorSimSerialNotMacth': {
-        this.alertService.question(errMsg, 'ตกลง', 'ยกเลิก').then((response: any) => {
-          if (response.value === true) {
-            this.onConectToPerso();
-          } else {
-            this.onRefreshPageToPerso();
-          }
-        });
-      } break;
-    }
-  }
-
-  onRefreshPageToPerso(): void {
-    this.simSerialKeyIn = '';
-    this.isStateStatus = 'read';
-    this.setIntervalSimCard();
-  }
-
-  readSimForPerso(): void {
-    const closeDialog: number = 1004;
-    const readSim: number = 4;
-    const cutNoSerialNumber: number = 6;
-    let errMegFixSim: string;
-
-    this.readSimStatus = this.aisNative.sendIccCommand(this.command, readSim, '');  // readSim\\
-    this.gotCardData = true;
-    if (this.readSimStatus) {
-      const simStatus: string[] = this.readSimStatus.split('|||');
-      this.getSerialNo = simStatus[1].slice(cutNoSerialNumber);
-      // this.aisNative.sendIccCommand(this.command, closeDialog, ''); //dismiss dialogReadSim
-      if (this.getSerialNo) {
-        this.transaction.data.simCard = Object.assign(this.transaction.data.simCard, {
-          simSerial: this.getSerialNo,
-          persoSim: true
-        });
-      }
-      if (simStatus[0].toLowerCase() === 'true') {
-        // Progess 20%
-        this.persoSim.progress = 20;
-        // $('.custom').animate({ width: 20 + '%' }, this.duration, () => {/**/ });
-        // this.getCommandForPersoSim(this.readSimStatus);
-        if (this.statusFixSim === 'WaitingForPerso' && this.serialbarcode && this.orderType !== 'Port - In') {
-          if (this.serialbarcode === this.getSerialNo) {
-            this.verifySimRegionForPerso(this.getSerialNo);
-          } else {
-            errMegFixSim = 'เลขที่ซิมการ์ดใบนี้ ไม่ตรงกับที่ระบุ ('
-              + this.serialbarcode + ') ยืนยันใช้ซิมใบนี้หรือไม่ (' + this.getSerialNo + ')';
-            this.popupControl('errorSimSerialNotMacth', errMegFixSim);
-          }
-        } else {
-          if (this.orderType !== 'Port - In') {
-            this.verifySimRegionForPerso(this.getSerialNo);
-          } else {
-            this.getCommandForPersoSim(this.readSimStatus);
-          }
-        }
-
-      } else {
-        this.popupControl('errorSim', '');
-      }
-    }
-  }
-
-  getCommandForPersoSim(serialNo: string): void {
-    const cutNoSerialNumber: number = 6;
-    const indexPosition: number = 3;
-    let getSerialNo: any = serialNo.split('|||');
-    getSerialNo = getSerialNo[1].slice(cutNoSerialNumber);
-    this.queryPersoDataFn = this.getPersoDataCommand(
-      this.transaction.data.simCard.mobileNo,
-      getSerialNo,
-      serialNo.split('|||')[indexPosition],
-      'Port - In' === this.orderType ? 'MNP-AWN' : 'Normal'
-    );
-    this.queryPersoDataFn.then((simCommand: any): void => {
-      if (simCommand) {
-        this.eCommand = simCommand.data.eCommand;
-        const field: string[] = simCommand.data.eCommand.split('|||');
-        const field1: number = 1;
-        const field2: number = 2;
-        const field3: number = 3;
-        const field4: number = 4;
-
-        const parameter: string =
-          field[field1] + '|||' +
-          field[field2] + '|||' +
-          field[field3] + '|||' +
-          field[field4] + '|||' +
-          simCommand.data.sk;
-        this.showCommand = parameter;
-        this.referenceNumber = simCommand.data.refNo;
-        const delayTime: number = 1000;
-        this.timeoutPersoSim = setTimeout(() => {
-          // Progess 40%
-          this.persoSim.progress = 40;
-          // $('.custom').animate({ width: 40 + '%' }, 0, () => {/**/ });
-          this.persoSimCard(simCommand.data.refNo, parameter);
-        }, delayTime);
-      }
-    }).catch((e: any): void => {
-      // const errObj: any = e.json();
-      // console.log('checkstatus errmes', errObj);
-      if (this.check < 3) {
-        if (!this.getCommandCounter) {
-          this.popupControl('errorCmd', '');
-          this.getCommandCounter = true;
-          // console.log(this.popupControl('errorCmd', ''));
-        } else {
-          this.popupControl('errorSim', '');
-          this.getCommandCounter = false;
-          this.check++;
-          // console.log(this.popupControl('errorSim', ''));
-        }
-      } else {
-        this.popupControl('errPerso', '');
-        this.getCommandCounter = false;
-        this.check = 0;
-      }
-    });
-  }
-
-  checkOrderStatus(refNo: string): void {
-    this.checkOrderStatusFn = this.getCheckOrderStatus(refNo);
-    this.checkOrderStatusFn.then((order: any): void => {
-      if (order) {
-        if (order.data.orderStatus === 'Completed' && order.data.transactionStatus === 'Completed') {
-          // Progess 100%
-          this.persoSim.progress = 100;
-          // $('.custom').animate({ width: 100 + '%' }, this.duration, () => {/**/ });
-          setTimeout(() => {
-          }, this.duration);
-          this.checkStatusSimCard();
-        } else {
-          const tenSecond: number = 90000;
-          const loop: number = 3;
-          if (this.checkOrderCounter < loop && this.check < loop) {
-            this.timeoutCheckOrderStatus = setTimeout(() => {
-              this.checkOrderStatus(refNo);
-            }, tenSecond);
-            this.checkOrderCounter++;
-          } else if (this.checkOrderCounter === loop && this.check < loop) {
-            this.popupControl('errorOrder', '');
-            this.check++;
-            this.checkOrderCounter++;
-          } else if (this.check < loop) {
-            this.popupControl('errorSim', '');
-            this.check++;
-            this.checkOrderCounter = 0;
-          } else {
-            this.popupControl('errPerso', '');
-            this.checkOrderCounter = 0;
-            this.check = 0;
-          }
-        }
-      }
-    }).catch((e: any): void => {
-      const tenSecond: number = 90000;
-      const loop: number = 3;
-      if (this.checkOrderCounter < loop && this.check < loop) {
-        this.timeoutCheckOrderStatus = setTimeout(() => {
-          this.checkOrderStatus(refNo);
-        }, tenSecond);
-        this.checkOrderCounter++;
-      } else if (this.checkOrderCounter === loop && this.check < loop) {
-        this.popupControl('errorOrder', '');
-        this.check++;
-        this.checkOrderCounter++;
-      } else if (this.check < loop) {
-        this.popupControl('errorSim', '');
-        this.check++;
-        this.checkOrderCounter = 0;
-      } else {
-        this.popupControl('errPerso', '');
-        this.checkOrderCounter = 0;
-        this.check = 0;
-      }
-    });
-  }
-
-  createForm(): void {
-    this.simSerialForm = this.fb.group({
-      simSerial: ['', [
-        Validators.minLength(13),
-        Validators.maxLength(13),
-        Validators.pattern('^[0-9]*$')
-      ]]
-    });
-  }
-
-  onBackSign(): void {
-    clearInterval(this.persoSimInterval);
-    clearTimeout(this.timeoutCheckOrderStatus);
-    clearTimeout(this.timeoutCreatePersoSim);
-    clearTimeout(this.timeoutReadSim);
-    clearTimeout(this.timeoutPersoSim);
-    this.onBack();
-  }
-
-  onRefreshPage(): void {
-    this.simSerialKeyIn = '';
-    this.statusFixSim = 'waitingForCheck';
-    this.isStateStatus = 'waitingFixSim';
-    this.setIntervalSimCard();
-  }
-
-  onConectToPerso(): void {
-    this.verifySimRegionForPerso(this.getSerialNo);
-  }
-
-  verifySimRegionForPerso(serialNo: string): void {
-    let errorCode: string;
-    let returnMessage: string;
-    let errMegFixSim: string;
-
-    this.checktSimInfoFn = this.getChecktSimInfo(this.mobileNo, serialNo);
-    this.checktSimInfoFn.then((simInfo: any) => {
-      // this.pageLoadingService.openLoading();
-      console.log('::: Mobile Info Read SIM ::: ', simInfo.data);
-
-      errorCode = simInfo.data.returnCode;
-      returnMessage = simInfo.data.returnMessage;
-
-      if (errorCode === '003' || errorCode === '005') {
-        this.pageLoadingService.closeLoading();
-        this.popupControl('errorSimStatus', '');
-      } else if (errorCode === '004') {
-        this.pageLoadingService.closeLoading();
-        console.log('Go to get command for Perso SIM');
-        this.getCommandForPersoSim(this.readSimStatus);
-      } else if (errorCode === '006') {
-        this.pageLoadingService.closeLoading();
-        errMegFixSim = 'ซิมใบนี้ไม่สามารถทำรายการได้ เนื่องจาก Region ซิมไม่ตรงกับเบอร์ที่เลือก เบอร์ '
-          + this.mobileNo + ' กรุณาเปลี่ยนซิมใหม่';
-        this.popupControl('errorFixSim', errMegFixSim);
-      } else if (errorCode === '008') {
-        // Progess 100%
-        this.persoSim.progress = 100;
-        // $('.custom').animate({ width: 100 + '%' }, this.duration, () => {/**/ });
-        this.pageLoadingService.closeLoading();
+        this.transactionService.update(transaction);
         this.isNext = true;
-        this.checkStatusSimCard();
-        this.statusFixSim = 'Success';
-      } else if (errorCode === '001' || errorCode === '002' || errorCode === '007') {
-        this.pageLoadingService.closeLoading();
-        errMegFixSim = returnMessage + ' (code : ' + errorCode + ')';
-        this.popupControl('errorFixSim', errMegFixSim);
+        this.onNext();
       }
-    }).catch((err: any) => {
-      this.pageLoadingService.closeLoading();
-      this.popupControl('errorFixSim', err);
+      // on error
+      if (value.error) {
+        console.log(value.error);
+        if (value.error.errorCase === ErrorPerSoSim.ERROR_SIM) {
+          this.checkErrSim++;
+          if (this.checkErrSim < 3) {
+            this.startPersoSim(this.transaction);
+          } else {
+            this.persoSimSubscription.unsubscribe();
+            this.alertService.error(this.translation.instant(ErrorPerSoSimMessage.ERROR_ORDER_MESSAGE));
+            this.errorMessage = ErrorPerSoSimMessage.ERROR_ORDER_MESSAGE;
+          }
+        } else
+          if (value.error.errorCase === ErrorPerSoSim.ERROR_PERSO) {
+            this.alertService.question(this.translation.instant(value.error.messages), this.translation.instant('ตกลง')).then((res) => {
+              if (res.value) {
+                this.persoSimSubscription.unsubscribe();
+                this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_BY_PATTERN_PAGE]);
+              }
+            });
+          } else if (value.error.errorCase === ErrorPerSoSim.ERROR_CMD) {
+            this.checkErrCmd++;
+            if (this.errCmd < this.checkErrCmd) {
+              this.startPersoSim(this.transaction);
+            } else {
+              this.persoSimSubscription.unsubscribe();
+              this.alertService.error(this.translation.instant(ErrorPerSoSimMessage.ERROR_CMD_MESSAGE));
+              this.errorMessage = ErrorPerSoSimMessage.ERROR_CMD_MESSAGE;
+            }
+          } else {
+            this.alertService.error(this.translation.instant(value.error.messages));
+          }
+        this.errorMessage = this.translation.instant(value.error.messages);
+      }
     });
   }
 
-  persoSimCard(refNo: string, parameter: string): void {
-    const perso: number = 5;
-    const showDialog: number = 1001;
-    const closeDialog: number = 1002;
-    // this.aisNative.sendIccCommand(this.command, showDialog, ''); //show dialog Perso
-    const persoSimza = this.aisNative.sendIccCommand(this.command, perso, parameter); // perso Sim+
-    // this.aisNative.sendIccCommand(this.command, closeDialog, ''); //dismiss dialog Perso
-    const persoSimStatus: string[] = persoSimza.split('|||');
-    this.persoSim.progress = 60;
-    if (persoSimStatus[0].toLowerCase() === 'true') {
-      this.createdPersoSim(refNo);
+  onPersoSim(mobileNo: string): Observable<PersoSim> {
+    this.mobileNo = mobileNo;
+    if (this.utils.isAisNative()) {
+      return this.persoSimFromAisNative();
     } else {
-      if (!this.persoSimCounter) {
-        this.persoSimCounter = true;
-        this.getCommandForPersoSim(this.readSimStatus);
-      } else {
-        this.popupControl('errorSim', '');
-      }
+      this.controlSim('Connect').then((res: ControlSimResult) => {
+        if (res.isSuccess) {
+          this.typeSim = 'pullsim';
+          this.loadSimCard();
+        } else {
+          this.typeSim = 'insert';
+        }
+      }).catch(() => {
+        this.typeSim = 'insert';
+      });
+      return this.persoSimFromWebSocket();
     }
   }
 
-  createdPersoSim(refNo: string): void {
-    this.checkCreatedPersoSimFn = this.checkCreatePersoSim(refNo);
-    this.checkCreatedPersoSimFn.then((create: any): void => {
-      if (create) {
-        if (create.data.success) {
-          // Progess 80%
-          this.persoSim.progress = 80;
-          // $('.custom').animate({ width: 80 + '%' }, this.duration, () => {/**/ });
-          this.checkOrderStatus(refNo);
-        } else {
-          const tenSecond: number = 60000;
-          const loop: number = 3;
-          if (this.createTxPersoCounter < loop) {
-            this.timeoutCreatePersoSim = setTimeout(() => {
-              this.createdPersoSim(refNo);
-            }, tenSecond);
-            this.createTxPersoCounter++;
-          } else {
-            this.popupControl('errorSim', '');
-          }
-        }
+  persoSimFromWebSocket(): Observable<PersoSim> {
+    return new Observable(observer => {
+      if (!WebSocket) {
+        observer.next({
+          error: 'เว็บเบราว์เซอร์นี้ไม่รองรับการ perso sim'
+        });
+        return;
       }
-    }).catch((e: any): void => {
-      // const errObj: any = e.json();
-      // console.log('full error :', errObj);
-      // console.log('error :', errObj.errors);
-      // console.log('data :', errObj.errors.data);
-      const tenSecond: number = 60000;
-      const loop: number = 3;
-      if (this.createTxPersoCounter < loop) {
-        this.timeoutCreatePersoSim = setTimeout(() => {
-          this.createdPersoSim(refNo);
-        }, tenSecond);
-        this.createTxPersoCounter++;
-      } else {
-        this.popupControl('errorSim', '');
+
+      const simMaseage = 'กำลังเตรียมซิมใหม่';
+      observer.next({ progress: 0, eventName: simMaseage });
+
+      this.getPrivateKeyCommand().then((privateKey: any) => {
+        observer.next({ progress: 0, eventName: simMaseage }); // โหลดเอา key มาอ่านซิม
+        if (privateKey.data.statusCode === '001') {
+          this.manageSim(PersoSimCommand.EVENT_CONNECT_LIB, privateKey.data.privateKey).then((res: ControlSimResult) => {
+            if (res.isSuccess) {
+              observer.next({ progress: 0, eventName: simMaseage }); // connect เครื่องอ่านซิม
+              this.checkSimCardPresent().then((resCardStatus: ControlSimResult) => {
+                observer.next({ progress: 20, eventName: 'กำลังอ่านซิม' }); // ซิมถูกเสียบ
+                this.manageSim(PersoSimCommand.EVENT_READ_SIM, '').then((dataSim: ControlSimResult) => {
+                  observer.next({ progress: 40, eventName: 'กรุณารอสักครู่' }); // อ่านซิมเสร็จแล้ว
+                  const serialSim = dataSim.result.split('|||');
+                  if (serialSim[0] === ReadSimCardStatus.EVENT_READ_SIM_SUCCESS) {
+                    const persoSim: RequestPersoSim = {
+                      mobileNo: this.mobileNo,
+                      serialNo: serialSim[1].slice(6),
+                      index: serialSim[3],
+                      simService: 'Normal',
+                      sourceSystem: 'MC-KIOSK'
+                    };
+                    this.requestPersoSim = persoSim;
+                    this.getPersoDataCommand(persoSim.mobileNo, persoSim.serialNo, persoSim.index,
+                      persoSim.simService, persoSim.sourceSystem).then((simCommand) => {
+                        observer.next({ progress: 60, eventName: 'กรุณารอสักครู่' }); // create perso แล้ว
+                        const eCommand = simCommand.data.eCommand;
+                        const field: string[] = simCommand.data.eCommand.split('|||');
+                        const parameter: string =
+                          field[1] + '|||' +
+                          field[2] + '|||' +
+                          field[3] + '|||' +
+                          field[4] + '|||' +
+                          simCommand.data.sk;
+                        this.referenceNumber = simCommand.data.refNo;
+                        this.manageSim(PersoSimCommand.EVENT_PERSO_SIM, parameter)
+                          .then((persoSimCommand: ControlSimResult) => {
+                            observer.next({ progress: 70, eventName: 'กรุณารอสักครู่' }); // ออก perso แล้ว
+                            const persoMassege: string[] = persoSimCommand.result.split('|||');
+                            if (persoMassege[0] === PersoSimCardStatus.EVENT_PERSO_SIM_SUCCESS) {
+                              this.checkCreatePersoSim(this.referenceNumber).then((crestePersoSim) => {
+                                observer.next({ progress: 80, eventName: 'กรุณารอสักครู่' }); // ออก order แล้ว
+                                this.checkOrderStatusCompleted(this.referenceNumber).then((resOrder) => {
+                                  if (resOrder) {
+                                    observer.next({ progress: 90, eventName: 'กรุณารอสักครู่' }); // order complete แล้ว
+                                    this.controlSim(ControlSimCard.EVENT_RELEASE_SIM).then(() => {
+                                      this.controlSim(ControlLED.EVENT_LED_BLINK).then(() => {
+                                        if (this.typeSim === 'pullsim') {
+                                          observer.next({
+                                            progress: 100,
+                                            eventName: 'กรุณาดึง SIM CARD ออก'
+                                          });
+                                          this.checkCardOutted().then(() => {
+                                            this.controlSim(ControlLED.EVENT_LED_OFF);
+                                            observer.next({
+                                              progress: 100,
+                                              eventName: 'กรุณาดึง SIM CARD ออก',
+                                              orderPersoSim: resOrder,
+                                              queryPersoSim: simCommand,
+                                              simSerial: persoSim.serialNo
+                                            });
+                                          }).catch(() => {
+                                            this.controlSim(ControlLED.EVENT_LED_OFF);
+                                          });
+                                        } else {
+                                          observer.next({
+                                            progress: 100,
+                                            eventName: 'กรุณาดึง SIM CARD ออก',
+                                            orderPersoSim: resOrder,
+                                            queryPersoSim: simCommand,
+                                            simSerial: persoSim.serialNo
+                                          });
+                                        }
+                                      });
+                                    });
+                                  } else {
+                                    this.errrorPersoSim(ErrorPerSoSim.ERROR_PERSO).then((err) => observer.next(err));
+                                  }
+                                }).catch(() => {
+                                  // not to do
+                                });
+                              }).catch(() => {
+                                this.errrorPersoSim(ErrorPerSoSim.ERROR_PERSO).then((err) => observer.next(err));
+                              });
+                            } else {
+                              this.errrorPersoSim(ErrorPerSoSim.ERROR_CMD).then((err) => observer.next(err));
+                            }
+                          });
+                      }).catch((err) => {
+                        if (err) {
+                          if (err.error) {
+                            if (err.error.errors) {
+                              if (err.error.errors.returnCode === '004') {
+                                this.errrorPersoSim(ErrorPerSoSim.ERROR_SIM).then((error) => observer.next(error));
+                              } else if (err.error.errors.returnCode === '006' || err.error.errors.returnCode === '003') {
+                                if (err.error.errors.returnMessage.search('Serial No')) {
+                                  this.errrorPersoSim(ErrorPerSoSim.ERROR_SIM).then((error) => observer.next(error));
+                                } else if (err.error.errors.returnMessage.search('Mobile')) {
+                                  this.errrorPersoSim(ErrorPerSoSim.ERROR_PERSO).then((error) => observer.next(error));
+                                } else {
+                                  this.errrorPersoSim(ErrorPerSoSim.ERROR_CMD).then((error) => observer.next(error));
+                                }
+                              } else {
+                                this.errrorPersoSim(ErrorPerSoSim.ERROR_CMD).then((error) => observer.next(error));
+                              }
+                            } else {
+                              this.errrorPersoSim(ErrorPerSoSim.ERROR_CMD).then((error) => observer.next(error));
+                            }
+                          } else {
+                            this.errrorPersoSim(ErrorPerSoSim.ERROR_CMD).then((error) => observer.next(error));
+                          }
+                        } else {
+                          this.errrorPersoSim(ErrorPerSoSim.ERROR_CMD).then((error) => observer.next(error));
+                        }
+                      });
+
+                  } else {
+                    this.errrorPersoSim(ErrorPerSoSim.ERROR_PRIVATE_KEY).then((err) => observer.next(err));
+                  }
+                });
+              }).catch(() => {
+                this.errrorPersoSim(ErrorPerSoSim.ERROR_SIM_EMPTY).then((err) => observer.next(err));
+              });
+            } else {
+              this.errrorPersoSim(ErrorPerSoSim.ERROR_WEB_SOCKET).then((err) => observer.next(err));
+            }
+          }).catch(() => {
+            this.errrorPersoSim(ErrorPerSoSim.ERROR_WEB_SOCKET).then((err) => observer.next(err));
+          });
+        } else {
+          this.errrorPersoSim(ErrorPerSoSim.ERROR_PRIVATE_KEY).then((err) => observer.next(err));
+        }
+      }).catch(() => {
+        this.errrorPersoSim(ErrorPerSoSim.ERROR_PRIVATE_KEY).then((err) => observer.next(err));
+      });
+
+      return () => {
+        // this.closeWsAll();
+      };
+
+    });
+  }
+
+  private checkCardOutted(): Promise<any> {
+    return new Promise((resolve) => {
+      const checkCard = setInterval(() => {
+        this.controlSim(ControlSimCard.EVENT_CHECK_SIM_STATE).then((resp: ControlSimResult) => {
+          if (resp.result === SIMCardStatus.STATUS_NO_CARD) {
+            clearInterval(checkCard);
+            this.controlSim(ControlLED.EVENT_LED_OFF);
+            resolve(true);
+          }
+        });
+      }, 1000);
+    });
+  }
+
+  private errrorPersoSim(errrorCase: string, messages?: string): Promise<any> {
+    return new Promise((resolve) => {
+      let errNext = {
+        progress: 0,
+        eventName: '',
+        error: { errorCase: errrorCase, messages: messages ? messages : '' }
+      };
+      switch (errrorCase) {
+        case ErrorPerSoSim.ERROR_SIM:
+          this.controlSim(ControlSimCard.EVENT_KEEP_SIM).then(() => {
+            this.controlSim(ControlLED.EVENT_LED_OFF).then(() => {
+              // this.closeWsAll();
+              errNext = {
+                progress: 0,
+                eventName: '',
+                error: { errorCase: errrorCase, messages: messages ? messages : ErrorPerSoSimMessage.ERROR_SIM_MESSAGE }
+              };
+              resolve(errNext);
+            });
+          });
+          break;
+        case ErrorPerSoSim.ERROR_PERSO:
+          this.controlSim(ControlSimCard.EVENT_KEEP_SIM).then(() => {
+            this.controlSim(ControlLED.EVENT_LED_OFF).then(() => {
+              // this.closeWsAll();
+              errNext = {
+                progress: 0,
+                eventName: '',
+                error: { errorCase: errrorCase, messages: messages ? messages : ErrorPerSoSimMessage.ERROR_PERSO_MESSAGE }
+              };
+              resolve(errNext);
+            });
+          });
+          break;
+        case ErrorPerSoSim.ERROR_WEB_SOCKET:
+          this.controlSim(ControlSimCard.EVENT_KEEP_SIM).then(() => {
+            this.controlSim(ControlLED.EVENT_LED_OFF).then(() => {
+              // this.closeWsAll();
+              errNext = {
+                progress: 0,
+                eventName: '',
+                error: { errorCase: errrorCase, messages: messages ? messages : ErrorPerSoSimMessage.ERROR_WEB_SOCKET_MESSAGE }
+              };
+              resolve(errNext);
+            });
+          });
+          break;
+        case ErrorPerSoSim.ERROR_SIM_EMPTY:
+          this.controlSim(ControlSimCard.EVENT_KEEP_SIM).then(() => {
+            this.controlSim(ControlLED.EVENT_LED_OFF).then(() => {
+              // this.closeWsAll();
+              errNext = {
+                progress: 0,
+                eventName: '',
+                error: { errorCase: errrorCase, messages: messages ? messages : ErrorPerSoSimMessage.ERROR_SIM_EMPTY_MESSAGE }
+              };
+              resolve(errNext);
+            });
+          });
+          break;
+        default:
+          this.controlSim(ControlSimCard.EVENT_KEEP_SIM).then(() => {
+            this.controlSim(ControlLED.EVENT_LED_OFF).then(() => {
+              // this.closeWsAll();
+              errNext = {
+                progress: 0,
+                eventName: '',
+                error: { errorCase: ErrorPerSoSim.ERROR_ORDER, messages: messages ? messages : ErrorPerSoSimMessage.ERROR_ORDER_MESSAGE }
+              };
+              resolve(errNext);
+            });
+          });
+          break;
       }
     });
   }
 
-  getChecktSimInfo(mobileNo: string, serialNo: string): Promise<any> {
-    this.simInfoAPI = '/api/customerportal/newRegister/getCheckSimInfo';
-    return this.http.post(this.simInfoAPI, { mobileNo: mobileNo, serialNo: serialNo }).toPromise();
+  closeWsAll(): void {
+    if (this.wsControlSim) {
+      this.wsControlSim.close();
+      this.wsControlSim = false;
+    }
+    if (this.wsManageSim) {
+      this.wsManageSim.close();
+      this.wsManageSim = false;
+    }
   }
 
-  getPersoDataCommand(mobileNo: string, serialNo: string, index: string, simService?: string): any {
-    this.persoSimAPI = '/api/customerportal/newRegister/queryPersoData?mobileNo=' + mobileNo + '&serialNo='
-      + serialNo + '&indexNo=' + index + '&simService=' + simService;
-    return this.http.get(this.persoSimAPI).toPromise();
+  private checkOrderStatusCompleted(referenceNumber: string): Promise<any> {
+    return new Promise((resolve) => {
+      let nubCount = 0;
+      const checkOrder = setInterval(() => {
+        this.checkOrderStatus(referenceNumber).then((respone) => {
+          if (respone.data.orderStatus === 'Completed') {
+            clearInterval(checkOrder);
+            resolve(respone);
+          } else {
+            nubCount++;
+            if (nubCount > 20) {
+              clearInterval(checkOrder);
+              resolve(false);
+            }
+          }
+        });
+      }, 2000);
+    });
   }
 
-  getCheckOrderStatus(refNo: string): any {
+  private controlSim(event: string): Promise<any> {
+    return new Promise((resolve) => {
+      const result: ControlSimResult = {
+        data: null,
+        result: null,
+        isSuccess: false
+      };
+      if (!this.wsControlSim && event === 'Connect') {
+        this.wsControlSim = new WebSocket(`${environment.WEB_CONNECT_URL}/VendingAPI`);
+        this.wsControlSim.onopen = () => {
+          result.isSuccess = true;
+          this.isControlSim = true;
+          resolve(result);
+        };
+      } else if (this.isControlSim && event !== 'Connect') {
+        this.wsControlSim.send(event);
+        this.wsControlSim.onmessage = (evt) => {
+          const resultOnmessage = JSON.parse(evt.data);
+          result.isSuccess = true;
+          result.data = resultOnmessage;
+          result.result = resultOnmessage.Result;
+          resolve(result);
+        };
+        this.wsControlSim.onerror = () => {
+          this.isControlSim = false;
+          result.isSuccess = false;
+          resolve(result);
+        };
+      } else {
+        resolve(result);
+      }
+    });
+  }
+
+  private manageSim(Command: number, Parameter: string): Promise<any> {
+    return new Promise((resolve) => {
+      const result: ControlSimResult = {
+        data: null,
+        result: null,
+        isSuccess: false
+      };
+      const packet = {
+        Command: Command,
+        Parameter: Parameter
+      };
+      if (!this.wsManageSim && Command === 9000) {
+        this.wsManageSim = new WebSocket(`${environment.WEB_CONNECT_URL}/SIMManager`);
+        this.wsManageSim.onopen = () => {
+          result.isSuccess = true;
+          this.isManageSim = true;
+          this.wsManageSim.send(JSON.stringify(packet));
+          resolve(result);
+        };
+        this.wsManageSim.onerror = () => {
+          this.isManageSim = false;
+          result.isSuccess = false;
+          resolve(result);
+        };
+      } else if (this.isManageSim && Command !== 9000) {
+        this.wsManageSim.send(JSON.stringify(packet));
+        this.wsManageSim.onmessage = (evt) => {
+          const resultOnmessage = JSON.parse(evt.data);
+          result.isSuccess = true;
+          result.data = resultOnmessage;
+          result.result = resultOnmessage.Result;
+          resolve(result);
+        };
+        this.wsManageSim.onerror = () => {
+          this.isManageSim = false;
+          result.isSuccess = false;
+          resolve(result);
+        };
+      } else {
+        resolve(result);
+      }
+    });
+  }
+
+  loadSimCard(): void {
+    this.controlSim(ControlSimCard.EVENT_CHECK_SIM_INVENTORY).then((res: ControlSimResult) => {
+      const statusInventory = res.result.split(' | ');
+      if (statusInventory[0] !== SIMCardStatus.INVENTORY_1_EMPTY_CARD
+        || statusInventory[1] !== SIMCardStatus.INVENTORY_2_EMPTY_CARD) {
+        this.controlSim(ControlSimCard.EVENT_CHECK_SIM_STATE).then((resCheckSim: ControlSimResult) => {
+          if (resCheckSim.result === SIMCardStatus.STATUS_IN_IC) {
+            this.controlSim(ControlLED.EVENT_LED_ON);
+            this.checkCardPresent = true;
+            return resCheckSim.isSuccess;
+          } else {
+            this.controlSim(ControlSimCard.EVENT_LOAD_SIM_STACKER1).then((resLoadSim: ControlSimResult) => {
+              this.controlSim(ControlLED.EVENT_LED_ON);
+              if (resLoadSim.result === 'Success') {
+                this.checkCardPresent = true;
+              }
+              return resLoadSim.isSuccess;
+            });
+          }
+        });
+      } else {
+        this.checkCardPresent = false;
+        return false;
+      }
+    });
+  }
+
+  checkSimCardPresent(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const timeout = 5;
+      let checkTimeOut = 0;
+      const intervalCheckSimCard = setInterval(() => {
+        checkTimeOut++;
+        if (checkTimeOut > timeout) {
+          clearInterval(intervalCheckSimCard);
+          reject(false);
+        }
+        this.manageSim(PersoSimCommand.EVENT_CONNECT_SIM_READER, '').then((resCheckCard: ControlSimResult) => {
+          if ((resCheckCard.result === 'Present' || resCheckCard.result === 'Connected') && this.checkCardPresent) {
+            clearInterval(intervalCheckSimCard);
+            setTimeout(() => {
+              resolve(resCheckCard);
+            }, 3000);
+          }
+        });
+      }, 2000);
+    });
+  }
+
+  private persoSimFromAisNative(): Observable<PersoSim> {
+    return;
+  }
+
+  getPersoDataCommand(mobileNo: string, serialNo: string, index: string, simService?: string, sourceSystem?: string): Promise<any> {
+    const persoSimAPI = '/api/customerportal/newRegister/queryPersoData?mobileNo='
+      + mobileNo + '&serialNo=' + serialNo + '&indexNo=' + index + '&simService=' + simService + '&sourceSystem=' + sourceSystem;
+    return this.http.get(persoSimAPI).toPromise();
+  }
+
+  checkCreatePersoSim(refNo: string): Promise<any> {
+    const checkCreatePersoSimAPI = '/api/customerportal/newRegister/createPersoSim?refNo=' + refNo;
+    return this.http.get(checkCreatePersoSimAPI).toPromise();
+  }
+
+  checkOrderStatus(refNo: string): Promise<any> {
     const checkOrderStatusAPI = '/api/customerportal/newRegister/checkOrderStatus?refNo=' + refNo;
     return this.http.get(checkOrderStatusAPI).toPromise();
   }
 
-  checkCreatePersoSim(refNo: string): any {
-    this.checkCreatePersoSimAPI = '/api/customerportal/newRegister/createPersoSim?refNo=' + refNo;
-    return this.http.get(this.checkCreatePersoSimAPI).toPromise();
+  getPrivateKeyCommand(): Promise<any> {
+    const getPrivateKeyCommandAPI = '/api/customerportal/newRegister/getPrivateKeyCommand';
+    return this.http.post(getPrivateKeyCommandAPI, '').toPromise();
   }
 
   onBack(): void {
@@ -755,73 +705,20 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
   }
 
   onNext(): void {
-    if (!this.transaction.data.simCard.simSerial) {
-      this.transaction.data.simCard = Object.assign(this.transaction.data.simCard, {
-        simSerial: this.simSerialForm.controls.simSerial.value,
-        persoSim: true
-      });
-    }
-    this.createOrderTDM();
+    this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PERSO_SIM_MEMBER_PAGE]);
   }
 
   onHome(): void {
-    this.removeCartService.backToReturnStock('/', this.transaction);
+    this.homeService.goToHome();
   }
 
   ngOnDestroy(): void {
+    this.controlSim(ControlSimCard.EVENT_KEEP_SIM).then(() => {
+      this.controlSim(ControlLED.EVENT_LED_OFF).then(() => {
+        this.closeWsAll();
+      });
+    });
     this.transactionService.update(this.transaction);
-    clearInterval(this.persoSimInterval);
-    clearTimeout(this.timeoutCheckOrderStatus);
-    clearTimeout(this.timeoutCreatePersoSim);
-    clearTimeout(this.timeoutReadSim);
-    clearTimeout(this.timeoutPersoSim);
-  }
-
-  onOpenScanBarcode(): void {
-    window.aisNative.scanBarcode();
-    this.getBarcode = '';
-    window.onBarcodeCallback = (barcode: any): void => {
-      if (barcode && barcode.length > 0) {
-        this.zone.run(() => {
-          const parser: any = new DOMParser();
-          barcode = '<data>' + barcode + '</data>';
-          const xmlDoc = parser.parseFromString(barcode, 'text/xml');
-          this.getBarcode = xmlDoc.getElementsByTagName('barcode')[0].firstChild.nodeValue;
-          this.simSerialForm.controls.simSerial.setValue(this.getBarcode);
-          this.verifySimSerialByBarcode(this.getBarcode);
-        });
-      }
-    };
-  }
-
-  onSerialNumberChanged(data?: any): void {
-    this.statusFixSim = 'waitingForCheck';
-  }
-
-  createOrderTDM(): any {
-    this.pageLoadingService.openLoading();
-    if (this.locationCode) {
-      this.queuePageService.getQueueAspAndTelewiz(this.locationCode)
-        .then((res: any) => {
-          this.transaction.data.queue = {
-            queueNo: res.data.queue ? res.data.queue : ''
-          };
-          console.log('getQueueAspAndTelewiz   ', res);
-        })
-        .then((res) => {
-          return this.queuePageService.createDeviceSellingOrderListSPKASP(this.transaction, this.priceOption, this.user) // New Service Que
-            .then((ress: any) => {
-              console.log('createDeviceSellingOrderListSPKASP', ress);
-              return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
-            });
-        })
-        .then((res) => {
-          this.pageLoadingService.closeLoading();
-          this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PERSO_SIM_MEMBER_PAGE]);
-        }).catch((err) => {
-          console.log(err);
-        });
-    }
   }
 
 }
