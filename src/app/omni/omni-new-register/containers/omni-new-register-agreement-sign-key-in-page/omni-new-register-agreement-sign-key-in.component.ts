@@ -1,7 +1,17 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, EventEmitter } from '@angular/core';
 import { WIZARD_OMNI_NEW_REGISTER } from 'src/app/omni/constants/wizard.constant';
 import { Router } from '@angular/router';
-import { HomeService, AisNativeService, User, TokenService, ChannelType, AlertService, CaptureAndSign, Utils, CaptureSignedWithCard, AWS_WATERMARK } from 'mychannel-shared-libs';
+import {
+  HomeService,
+  AisNativeService,
+  User,
+  TokenService,
+  ChannelType,
+  AlertService,
+  CaptureAndSign,
+  Utils,
+  CaptureSignedWithCard,
+  AWS_WATERMARK } from 'mychannel-shared-libs';
 import {
   ROUTE_OMNI_NEW_REGISTER_EAPPLICATION_PAGE,
   ROUTE_OMNI_NEW_REGISTER_ECONTRACT_PAGE
@@ -40,7 +50,6 @@ export class OmniNewRegisterAgreementSignKeyInPageComponent implements OnInit, O
   apiSigned: 'SignaturePad' | 'OnscreenSignpad';
   isDrawingSignature: boolean = false;
   imageSigned: boolean;
-  watermark: string = AWS_WATERMARK;
 
   constructor(
     private router: Router,
@@ -132,15 +141,15 @@ export class OmniNewRegisterAgreementSignKeyInPageComponent implements OnInit, O
 
     // โหลดรูปภาพบัตรปชช.ที่ได้จากการวาด
     imageCard.onload = () => {
-      this.drawIdCardWithSign(imageCard, signImage);
+      this.drawIdCardWithSign(imageCard, signImage, watermarkImage);
     };
     // โหลดรูปภาพเซ็นลายเซ็นที่ได้จากการวาด
     signImage.onload = () => {
-      this.drawIdCardWithSign(imageCard, signImage);
+      this.drawIdCardWithSign(imageCard, signImage, watermarkImage);
     };
   }
 
-  drawIdCardWithSign(imageCard: any, signImage: any): void {
+  drawIdCardWithSign(imageCard: any, signImage: any, watermark?: any): void {
     // สร้างตัวแปรเก็บชนิดรูปจากบัตรปชช./รูปลายเซ็นเป็น Canvas เพื่อให้เรียกใช้อันเดียวกับแท็กบน html
     // สร้างตัวแปรเก็บตำแหน่ง แกน x, y ของรูปบัตรปชช./รูปลายเซ็น
     const canvas: HTMLCanvasElement = (<HTMLCanvasElement>this.signImage.nativeElement);
@@ -180,6 +189,14 @@ export class OmniNewRegisterAgreementSignKeyInPageComponent implements OnInit, O
 
         ctx.globalCompositeOperation = 'multiply';                            // ทำให้รูปลายเซ็นทับรูปถ่ายบัตรปชช.
         ctx.drawImage(signImage, dxs, dys, signImageWidth, signImageHeight);  // เริ่มวาดรูปตั้งแต่จุดเริ่มต้นของภาพ
+        if (this.captureAndSign.imageSignature) {
+          const watermarkRatio: number = (watermark.width / watermark.height);
+          const watermarkHeight: number = watermark.height > signImage.height ? signImage.height : watermark.height;
+          const watermarkWidth: number = watermarkHeight * watermarkRatio;
+          const dxw = (canvas.width - watermarkWidth) / 2;
+          const dyw = (canvas.height - watermarkHeight) / 2;
+          ctx.drawImage(watermark, dxw + 230, dyw + 160, watermarkWidth / 2.5, watermarkHeight / 2.5);
+        }
       }
     }
     // ได้รูปภาพทีมีรูปถ่ายจากบัตรปชช.พร้อมลายเซ็นที่ทับกัน
