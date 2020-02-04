@@ -3,8 +3,7 @@ import { Router } from '@angular/router';
 import {
   ROUTE_OMNI_NEW_REGISTER_AGREEMENT_SIGN_PAGE,
   ROUTE_OMNI_NEW_REGISTER_PERSO_SIM_PAGE,
-  ROUTE_OMNI_NEW_REGISTER_SUMMARY_PAGE,
-  ROUTE_OMNI_NEW_REGISTER_RESULT_PAGE
+  ROUTE_OMNI_NEW_REGISTER_AGREEMENT_SIGN_KEY_IN_PAGE
 } from 'src/app/omni/omni-new-register/constants/route-path.constant';
 import { HomeService, PageLoadingService } from 'mychannel-shared-libs';
 import { Subscription } from 'rxjs';
@@ -28,7 +27,6 @@ export class OmniNewRegisterEapplicationPageComponent implements OnInit, OnDestr
     private createEapplicationService: CreateEapplicationService,
     private transactionService: TransactionService,
     private homeService: HomeService,
-    private translateService: TranslateService,
     private pageLoadingService: PageLoadingService,
   ) {
     this.transaction = this.transactionService.load();
@@ -60,7 +58,11 @@ export class OmniNewRegisterEapplicationPageComponent implements OnInit, OnDestr
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_OMNI_NEW_REGISTER_AGREEMENT_SIGN_PAGE]);
+    if (this.transaction.data.action === TransactionAction.KEY_IN) {
+      this.router.navigate([ROUTE_OMNI_NEW_REGISTER_AGREEMENT_SIGN_KEY_IN_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_OMNI_NEW_REGISTER_AGREEMENT_SIGN_PAGE]);
+    }
   }
 
   onNext(): void {

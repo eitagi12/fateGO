@@ -13,18 +13,19 @@
           <h5 class="card-header bg-transparent text-center">{{ 'ถ่ายรูปผู้ขอใช้บริการ' | translate }}</h5>
           <div class="card-body">
             <div class="camera-width">
-              <div *ngIf="!openCamera && !transaction?.data?.faceRecognition?.imageFaceUser" class="camera-pc"></div>
-              <div [hidden]="!(openCamera && !transaction?.data?.faceRecognition?.imageFaceUser)" class="position-relative">
-                <mc-camera 
-                  [flip]="false"
-                  [onTakePhoto]="camera" 
-                  (completed)="onCameraCompleted($event)"
+              <div *ngIf="!openCamera && !transaction?.data?.faceRecognition?.imageFaceUser" class="camera-pc">
+                <img src="assets/images/icon/icon_people.png" class="icon-people" />
+              </div>
+              <div [hidden]="!(openCamera && !transaction?.data?.faceRecognition?.imageFaceUser)"
+                class="position-relative">
+                <mc-camera [flip]="false" [onTakePhoto]="camera" (completed)="onCameraCompleted($event)"
                   (error)="onCameraError($event)">
                 </mc-camera>
               </div>
               <div [hidden]="!transaction?.data?.faceRecognition?.imageFaceUser">
                 <div class="text-center">
-                  <img class="img-result" [src]="'data:image/png;base64,'+ transaction?.data?.faceRecognition?.imageFaceUser" />
+                  <img class="img-result"
+                    [src]="'data:image/png;base64,'+ transaction?.data?.faceRecognition?.imageFaceUser" />
                 </div>
               </div>
             </div>
@@ -59,6 +60,7 @@
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]="!transaction?.data?.faceRecognition?.imageFaceUser">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()"
+      [disabled]="!transaction?.data?.faceRecognition?.imageFaceUser">NEXT</button>
   </mc-footer>
 </div>
