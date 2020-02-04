@@ -187,16 +187,8 @@ export class OmniNewRegisterAgreementSignKeyInPageComponent implements OnInit, O
         const dxs = ((canvas.width - signImageWidth) / 2);
         const dys = ((canvas.height - signImageHeight) / 2) / 6;
 
-        ctx.globalCompositeOperation = 'multiply';                            // ทำให้รูปลายเซ็นทับรูปถ่ายบัตรปชช.
-        ctx.drawImage(signImage, dxs, dys, signImageWidth, signImageHeight);  // เริ่มวาดรูปตั้งแต่จุดเริ่มต้นของภาพ
-        if (this.captureAndSign.imageSignature) {
-          const watermarkRatio: number = (watermark.width / watermark.height);
-          const watermarkHeight: number = watermark.height > signImage.height ? signImage.height : watermark.height;
-          const watermarkWidth: number = watermarkHeight * watermarkRatio;
-          const dxw = (canvas.width - watermarkWidth) / 2;
-          const dyw = (canvas.height - watermarkHeight) / 2;
-          ctx.drawImage(watermark, dxw + 230, dyw + 160, watermarkWidth / 2.5, watermarkHeight / 2.5);
-        }
+         ctx.globalCompositeOperation = 'multiply';                            // ทำให้รูปลายเซ็นทับรูปถ่ายบัตรปชช.
+         ctx.drawImage(signImage, dxs, dys, signImageWidth, signImageHeight);  // เริ่มวาดรูปตั้งแต่จุดเริ่มต้นของภาพ
       }
     }
     // ได้รูปภาพทีมีรูปถ่ายจากบัตรปชช.พร้อมลายเซ็นที่ทับกัน
