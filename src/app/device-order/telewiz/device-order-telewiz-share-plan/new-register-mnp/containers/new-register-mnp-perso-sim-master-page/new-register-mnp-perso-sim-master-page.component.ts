@@ -194,6 +194,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
   }
 
   ngOnInit(): void {
+    // this.createForm();
     this.option = {
       scan_sim: true,
       key_sim: false
@@ -202,6 +203,17 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
     if (this.transaction.data.simCard.mobileNo) {
       this.startPersoSim(this.transaction);
     }
+    this.checkCardOutted();
+  }
+
+  createForm(): void {
+    this.simSerialForm = this.fb.group({
+      simSerial: ['', [
+        Validators.minLength(13),
+        Validators.maxLength(13),
+        Validators.pattern('^[0-9]*$')
+      ]]
+    });
   }
 
   startPersoSim(transaction: Transaction | Partial<Transaction>): void {
@@ -430,6 +442,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
     return new Promise((resolve) => {
       const checkCard = setInterval(() => {
         this.controlSim(ControlSimCard.EVENT_CHECK_SIM_STATE).then((resp: ControlSimResult) => {
+          console.log('resp = ', resp);
           if (resp.result === SIMCardStatus.STATUS_NO_CARD) {
             clearInterval(checkCard);
             this.controlSim(ControlLED.EVENT_LED_OFF);
