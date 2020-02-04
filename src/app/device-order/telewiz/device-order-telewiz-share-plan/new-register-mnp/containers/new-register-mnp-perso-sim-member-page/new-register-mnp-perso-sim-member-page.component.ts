@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription, Observable } from 'rxjs';
-import { ShoppingCart, HomeService, TokenService, AlertService, PersoSimService, ChannelType, KioskControlsPersoSim, PersoSimError, PageLoadingService } from 'mychannel-shared-libs';
+import { ShoppingCart, HomeService, TokenService, AlertService, PersoSimService, ChannelType, KioskControlsPersoSim, PersoSimError, PageLoadingService, PersoSimConfig } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -40,7 +40,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
 
   transaction: Transaction;
   option: OptionPersoSim;
-  persoSimConfig: any;
+  persoSimConfig: PersoSimConfig;
   shoppingCart: ShoppingCart;
 
   koiskApiFn: any;
@@ -136,6 +136,27 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
       //   onClose: () => this.onRefreshPage()
       // });
     }
+
+    this.persoSimWebsocket();
+  }
+
+  persoSimWebsocket(): void {
+    console.log('Start read sim on PC');
+    // for pc
+    this.title = 'กรุณาเสียบ Sim Card';
+    this.persoSimSubscription = this.persoSimService.onPersoSim(this.persoSimConfig).subscribe((persoSim: any) => {
+      console.log('persoSim-->', persoSim);
+      this.persoSim = persoSim;
+      if (persoSim.persoData && persoSim.persoData.simSerial) {
+        this.title = 'กรุณาดึงซิมการ์ด';
+        this.transaction.data.simCard.simSerial = persoSim.persoData.simSerial;
+        this.onNext();
+      }
+      if (persoSim.error) {
+        this.errorMessage = this.ERROR_PERSO;
+        this.alertService.error(this.translateService.instant(this.ERROR_PERSO));
+      }
+    });
   }
 
   setIntervalSimCard(): void {

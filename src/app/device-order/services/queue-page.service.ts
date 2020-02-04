@@ -73,6 +73,9 @@ export class QueuePageService {
   }
 
   createDeviceSellingOrderListSPKASP(transaction: Transaction, priceOption: PriceOption, user: User): Promise<any> {
+    console.log('transaction -->', transaction);
+    console.log('priceOption -->', priceOption);
+    console.log('user -->', user);
     return this.http.post('/api/salesportal/create-device-selling-order',
       this.mapCreateOrderSpkAsp(transaction, priceOption, user)
     ).toPromise();

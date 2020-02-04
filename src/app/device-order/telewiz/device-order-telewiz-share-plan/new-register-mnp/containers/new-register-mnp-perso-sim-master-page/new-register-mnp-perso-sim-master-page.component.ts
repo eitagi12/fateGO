@@ -12,7 +12,9 @@ import {
   PageLoadingService,
   AlertService,
   TokenService,
-  User
+  User,
+  PersoSimService,
+  PersoSimConfig
 } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -32,6 +34,7 @@ import { QueuePageService } from 'src/app/device-order/services/queue-page.servi
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
+import { TranslateService } from '@ngx-translate/core';
 
 export interface OptionPersoSim {
   key_sim?: boolean;
@@ -58,7 +61,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
 
   transaction: Transaction;
   option: OptionPersoSim;
-  persoSimConfig: any;
+  persoSimConfig: PersoSimConfig;
   shoppingCart: ShoppingCart;
 
   koiskApiFn: any;
@@ -114,7 +117,6 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
 
   priceOption: PriceOption;
   user: User;
-
   public simSerialForm: any = this.fb.group({
     simSerial: ['', [
       Validators.minLength(this.minLength),
@@ -137,7 +139,9 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
     private queuePageService: QueuePageService,
     public tokenService: TokenService,
     public priceOptionService: PriceOptionService,
-    private sharedTransactionService: SharedTransactionService
+    private sharedTransactionService: SharedTransactionService,
+    private persoSimService: PersoSimService,
+    private translateService: TranslateService
   ) {
     this.option = { scan_sim: true, key_sim: false };
     this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
@@ -148,40 +152,81 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
   }
 
   ngOnInit(): void {
+
     this.masterSimCard = this.transaction.data.simCard;
     this.createForm();
+
     this.simSerialForm.controls.simSerial.valueChanges.subscribe((value) => {
       if (value && value.length === 13) {
         this.verifySimSerialByBarcode(value);
       }
     });
-    if (typeof window.aisNative !== 'undefined') {
-      this.scanBarcodePC$ = of(true);
-      window.onBarcodeCallback = (barcode: any): void => {
-        if (barcode && barcode.length > 0) {
-          this.zone.run(() => {
-            const parser: any = new DOMParser();
-            barcode = '<data>' + barcode + '</data>';
-            this.xmlDoc = parser.parseFromString(barcode, 'text/xml');
-            this.getBarcode = this.xmlDoc.getElementsByTagName('barcode')[0].firstChild.nodeValue;
-            this.verifySimSerialByBarcode(this.getBarcode);
-          });
-        }
-      };
-    } else {
-      this.scanBarcodePC$ = of(false);
-    }
 
-    this.checkOrderCounter = 0;
-    this.getCommandCounter = false;
-    this.mobileNo = this.masterSimCard.mobileNo;
-
-    if (typeof this.aisNative !== 'undefined') {
-      this.disableBack = true;
-      const disConnectReadIdCard: number = 1;
-      this.aisNative.sendIccCommand(this.command, disConnectReadIdCard, ''); // connect sim and disconnect smartCard
-      this.setIntervalSimCard();
+    console.log('Start read sim on PC');
+    if (this.transaction.data.simCard.mobileNo) {
+      this.setConfigPersoSim().then((res: any) => {
+        console.log('res -->', res);
+        this.persoSimWebsocket();
+      });
     }
+  }
+
+  persoSimWebsocket(): void {
+    console.log('Start read sim on PC');
+    // for pc
+    this.title = 'กรุณาเสียบ Sim Card';
+    this.persoSimSubscription = this.persoSimService.onPersoSim(this.persoSimConfig).subscribe((persoSim: any) => {
+      console.log('persoSim-->', persoSim);
+      this.persoSim = persoSim;
+      if (persoSim.persoData && persoSim.persoData.simSerial) {
+        console.log('If1');
+        this.title = 'กรุณาดึงซิมการ์ด';
+        this.transaction.data.simCard.simSerial = persoSim.persoData.simSerial;
+        // this.onNext();
+      }
+      if (persoSim.error) {
+        console.log('If2');
+        this.persoSimSubscription.unsubscribe();
+        this.errorMessage = this.ERROR_PERSO;
+        this.persoSimWebsocket();
+        console.log(this.errorMessage);
+        // this.alertService.error(this.translateService.instant(this.ERROR_PERSO));
+      }
+    });
+  }
+
+  async setConfigPersoSim(): Promise<any> {
+    return this.persoSimConfig = await {
+      serviceGetPrivateKey: () => {
+        return this.http.post('/api/customerportal/newRegister/getPrivateKeyCommand', {
+          params: {}
+        }).toPromise();
+      },
+      serviceGetPersoDataCommand: (serialNo: string, indexNo: string) => {
+        return this.http.get('/api/customerportal/newRegister/queryPersoData', {
+          params: {
+            indexNo: indexNo,
+            serialNo: serialNo,
+            mobileNo: this.transaction.data.simCard.mobileNo,
+            simService: 'Normal'
+          }
+        }).toPromise();
+      },
+      serviceCreateOrderPersoSim: (refNo: string) => {
+        return this.http.get('/api/customerportal/newRegister/createPersoSim', {
+          params: {
+            refNo: refNo
+          }
+        }).toPromise();
+      },
+      serviceCheckOrderPersoSim: (refNo: string) => {
+        return this.http.get('/api/customerportal/newRegister/checkOrderStatus', {
+          params: {
+            refNo: refNo
+          }
+        }).toPromise();
+      }
+    };
   }
 
   verifySimSerialByBarcode(barcode: string): void {
@@ -761,17 +806,21 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
           this.transaction.data.queue = {
             queueNo: res.data.queue ? res.data.queue : ''
           };
+          console.log('getQueueAspAndTelewiz   ', res);
         })
-        .then(() => {
+        .then((res) => {
           return this.queuePageService.createDeviceSellingOrderListSPKASP(this.transaction, this.priceOption, this.user) // New Service Que
-            .then((res: any) => {
+            .then((ress: any) => {
+              console.log('createDeviceSellingOrderListSPKASP', ress);
               return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
             });
         })
         .then((res) => {
+          this.pageLoadingService.closeLoading();
           this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PERSO_SIM_MEMBER_PAGE]);
-        })
-        .then(() => this.pageLoadingService.closeLoading());
+        }).catch((err) => {
+          console.log(err);
+        });
     }
   }
 
