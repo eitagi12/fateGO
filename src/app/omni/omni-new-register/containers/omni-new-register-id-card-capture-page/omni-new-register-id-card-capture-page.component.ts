@@ -43,11 +43,19 @@ export class OmniNewRegisterIdCardCapturePageComponent implements OnInit, OnDest
   }
 
   ngOnInit(): void {
-
+    const customer: Customer = this.transaction.data.customer;
+    this.captureAndSign = {
+      allowCapture: true,
+      imageSmartCard: customer.imageSmartCard,
+      imageSignature: customer.imageSignatureSmartCard
+    };
   }
 
   onCompleted(captureAndSign: CaptureAndSign): void {
-    this.transaction.data.customer.imageSmartCard = captureAndSign.imageSmartCard;
+    // this.transaction.data.customer.imageSmartCard = captureAndSign.imageSmartCard;
+  const customer: Customer = this.transaction.data.customer;
+    customer.imageSignatureSmartCard = captureAndSign.imageSignature;
+    customer.imageSmartCard = captureAndSign.imageSmartCard;
   }
 
   onError(valid: boolean): void {
