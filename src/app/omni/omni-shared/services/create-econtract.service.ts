@@ -39,6 +39,9 @@ export class CreateEcontractService {
     const productDiscount = transaction.data.productDiscount;
     const payAdvanceDiscount = transaction.data.mainPackage.payAdvanceDiscount;
     const locationFromSeller = transaction.data.locationDestName;
+    console.log('=================> ', this.amount);
+    console.log('======payAdvanceDiscount > ', payAdvanceDiscount);
+
     const data: any = {
       campaignName: campaign.campaignName,
       locationName: this.translateService.instant(locationFromSeller) || '',
@@ -55,9 +58,9 @@ export class CreateEcontractService {
       priceDiscount: this.transformDecimalPipe(productDiscount) || '',
       netPrice: this.transformDecimalPipe(productPrice - productDiscount) || '',
       advancePay: advancePay,
-      contract: '10',
+      contract: mainPackage.durationContract,
       packageDetail: mainPackage.mainPackageDesc,
-      airTimeDiscount: payAdvanceDiscount,
+      airTimeDiscount: this.getAirTimeDiscount(this.amount, payAdvanceDiscount) || 0,
       airTimeMonth: this.amount,
       price: this.transformDecimalPipe(+productPrice + (+productDiscount)),
       signature: '',
@@ -73,16 +76,19 @@ export class CreateEcontractService {
     return (advancePay && advancePay.amount > 0);
   }
 
-  getAirTimeDiscount(amount: number, payAdvanceDiscount: any): number {
-    if (!payAdvanceDiscount) {
-      return 0;
-    }
-    if (Array.isArray(payAdvanceDiscount)) {
-      return payAdvanceDiscount.length > 0 ? +(amount / payAdvanceDiscount[0].month).toFixed(2) : 0;
-    } else {
-      return (amount / payAdvanceDiscount.month) ? +(amount / payAdvanceDiscount.month).toFixed(2) : 0;
-    }
+  getAirTimeDiscount(amount: number, payAdvanceDiscount: any): any {
+    return (payAdvanceDiscount / amount).toFixed(2);
   }
+  // getAirTimeDiscount(amount: number, payAdvanceDiscount: any): number {
+  //   if (!payAdvanceDiscount) {
+  //     return 0;
+  //   }
+  //   if (Array.isArray(payAdvanceDiscount)) {
+  //     return payAdvanceDiscount.length > 0 ? +(amount / payAdvanceDiscount[0].month).toFixed(2) : 0;
+  //   } else {
+  //     return (amount / payAdvanceDiscount.month) ? +(amount / payAdvanceDiscount.month).toFixed(2) : 0;
+  //   }
+  // }
 
   getAirTimeMonth(payAdvanceDiscount: any): number {
     if (!payAdvanceDiscount) {
