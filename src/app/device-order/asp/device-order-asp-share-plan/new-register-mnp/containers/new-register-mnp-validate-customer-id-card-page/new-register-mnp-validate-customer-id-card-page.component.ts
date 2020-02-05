@@ -146,15 +146,16 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                   .then(() => this.pageLoadingService.closeLoading());
               });
           }).catch((err) => {
+            console.log('000000', err);
             this.pageLoadingService.closeLoading();
-            const developerMessage = err.error.developerMessage;
+            const developerMessage =  err.error ? err.error.developerMessage : '';
             const messageError = err.error ? err.error.errors : '';
             if (err.error && err.error.resultCode === 'MYCHN00150006') {
               this.alertService.error(developerMessage);
             } else if (messageError) {
               this.alertService.error(messageError[0]);
             } else {
-              this.alertService.error(messageError);
+              this.alertService.error(err);
             }
           });
       });
@@ -194,7 +195,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                       const body: any = this.validateCustomerService
                         .getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption,
                           { customer: this.transaction.data.customer });
-                      return this.validateCustomerService.addDeviceSellingCartSharePlan(body).then((response: any) => {
+                      return this.validateCustomerService.addDeviceSellingCartSharePlanASP(body).then((response: any) => {
                         this.transaction.data = {
                           ...this.transaction.data,
                           order: { soId: response.data }
