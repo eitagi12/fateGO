@@ -35,10 +35,19 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { TranslateService } from '@ngx-translate/core';
+import { environment } from 'src/environments/environment';
 
 export interface OptionPersoSim {
   key_sim?: boolean;
   scan_sim?: boolean;
+}
+
+export enum PersoSimCommandEvent {
+  EVENT_CONNECT_LIB = '9000',
+  EVENT_CHECK_CARD_STATUS = '0',
+  EVENT_CONNECT_SIM_READER = '1',
+  EVENT_READ_SIM = '4',
+  EVENT_PERSO_SIM = '5'
 }
 
 declare let window: any;
@@ -52,6 +61,8 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
 
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
   aisNative: any = window.aisNative;
+
+  intervalCheckSimPresent: any;
 
   title: string;
   isManageSim: boolean;
@@ -109,6 +120,8 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
   locationCode: string;
   priceOption: PriceOption;
   user: User;
+
+  simPresentSubscription: Subscription;
   // isPersoCompelete: boolean = false;
 
   public simSerialForm: any = this.fb.group({
@@ -174,12 +187,13 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
       this.persoSim = persoSim;
       if (persoSim.persoData && persoSim.persoData.simSerial) {
         // this.isPersoCompelete = true;
-        console.log('If1');
         this.title = 'กรุณาดึงซิมการ์ด';
         this.transaction.data.simCard.simSerial = persoSim.persoData.simSerial;
-        // this.onNext();
       }
       if (persoSim.error) {
+        // this.simPresentSubscription = this.checkSimPresent().subscribe((present: any) => {
+        //   console.log('present ==>', present);
+        // });
         console.log('If2');
         this.persoSimSubscription.unsubscribe();
         this.errorMessage = this.ERROR_PERSO;
@@ -222,6 +236,58 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
         }).toPromise();
       }
     };
+  }
+
+  checkSimPresent(): Observable<boolean> {
+    const ws = new WebSocket(`${environment.WEB_CONNECT_URL}/SIMManager`);
+    return new Observable((obs) => {
+      const cardStateInterval = setInterval(() => {
+        // ws.send(PersoSimCommandEvent.EVENT_CONNECT_SIM_READER);
+        let isNoCardInside;
+        ws.onmessage = (event: any) => {
+          const msg = JSON.parse(event.data);
+          isNoCardInside = msg && msg.Result === 'No card inside reader unit';
+          if (isNoCardInside) {
+            clearInterval(cardStateInterval);
+          }
+          obs.next(isNoCardInside);
+        };
+        if (isNoCardInside) {
+          obs.complete();
+          clearInterval(cardStateInterval);
+        }
+      }, 1000);
+    });
+
+    // return this.intervalCheckSimPresent = setInterval(() => {
+    //     ws.send(
+    //       JSON.stringify({
+    //         Command: PersoSimCommandEvent.EVENT_CONNECT_SIM_READER,
+    //         Parameter: ''
+    //       })
+    //     );
+    // }, 3000);
+
+    // removedState: (): Observable<boolean> => {
+    //   return new Observable((obs) => {
+    //     const cardStateInterval = setInterval(() => {
+    //       ws.send(KioskControlsPersoSim.GET_CARD_STATE);
+    //       let isNoCardInside;
+    //       ws.onmessage = (event: any) => {
+    //         const msg = JSON.parse(event.data);
+    //         isNoCardInside = msg && msg.Result === 'No card inside reader unit';
+    //         if (isNoCardInside) {
+    //           clearInterval(cardStateInterval);
+    //         }
+    //         obs.next(isNoCardInside);
+    //       };
+    //       if (isNoCardInside) {
+    //         obs.complete();
+    //         clearInterval(cardStateInterval);
+    //       }
+    //     }, 1000);
+    //   });
+    // }
   }
 
   verifySimSerialByBarcode(barcode: string): void {
