@@ -58,31 +58,24 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
   persoSimSubscription: Subscription;
   errorMessage: string;
   persoSim: any;
-
   transaction: Transaction;
   option: OptionPersoSim;
   persoSimConfig: PersoSimConfig;
   shoppingCart: ShoppingCart;
-
   koiskApiFn: any;
   readonly ERROR_PERSO: string = 'ไม่สามารถให้บริการได้ กรุณาติดต่อพนักงานเพื่อดำเนินการ ขออภัยในความไม่สะดวก';
   readonly ERROR_PERSO_PC: string = 'ไม่สามารถ Perso Sim ได้';
   masterSimCard: any;
-
   xmlDoc: any;
   getBarcode: any;
   checkOrderCounter: number = 0;
   check: number = 0;
   getCommandCounter: boolean = false;
-
   scanBarcodePC$: Observable<boolean> = of(true);
-
   public disableBack: any = false;
   command: number = 2;
-
   simSerialKeyIn: string;
   mobileNo: string;
-
   lastStatus: boolean;
   gotCardData: boolean;
   readSimStatus: string;
@@ -114,9 +107,10 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
   minLength: number = 13;
   isNext: boolean = false;
   locationCode: string;
-
   priceOption: PriceOption;
   user: User;
+  // isPersoCompelete: boolean = false;
+
   public simSerialForm: any = this.fb.group({
     simSerial: ['', [
       Validators.minLength(this.minLength),
@@ -179,6 +173,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
       console.log('persoSim-->', persoSim);
       this.persoSim = persoSim;
       if (persoSim.persoData && persoSim.persoData.simSerial) {
+        // this.isPersoCompelete = true;
         console.log('If1');
         this.title = 'กรุณาดึงซิมการ์ด';
         this.transaction.data.simCard.simSerial = persoSim.persoData.simSerial;
