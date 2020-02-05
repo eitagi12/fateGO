@@ -1,53 +1,57 @@
 .camera-width {
-    max-width: 768px;
-    width: 100%;
-    margin: 0 auto;
+  max-width: 768px;
+  width: 100%;
+  margin: 0 auto;
+
+  img {
+      width: 100%;
+  }
 }
 
 //รูปลายเซ็น
 .signature {
-    background-color: #b0a799;
-    color: #fff;
-    text-align: center;
-    font-size: 15px;
-    padding: 5px;
-    border-top-width: 1px;
+  background-color: #b0a799;
+  color: #fff;
+  text-align: center;
+  font-size: 15px;
+  padding: 5px;
+  border-top-width: 1px;
 }
 
 //รูปลายน้ำ
 .capture-and-sign {
-    position: absolute;
-    left: 0;
-    top: 0;
-  
-    &.capture {
-      z-index: 1;
-      width: 100%;
-    }
-  
-    &.signed {
-      z-index: 2;
-      left: 50%;
-      top: 50%;
-      width: 70% !important;
-      transform: translate(-50%, -50%);
-    }
-  
-    &.watermark {
-      z-index: 3;
-      height: 376px !important; 
-      width: 60%;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-    }
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  &.capture {
+    z-index: 1;
+    width: 100%;
+  }
+
+  &.signed {
+    z-index: 2;
+    left: 50%;
+    top: 50%;
+    width: 70% !important;
+    transform: translate(-50%, -50%);
+  }
+
+  &.watermark {
+    z-index: 3;
+    height: 376px !important; 
+    width: 60%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
 }
 
 //ขนาด, ตำแหน่งของรูปบัตรปชช.
 canvas.captured-image {
-    display: block;
-    width: 100%;
-    height: 576px;
-    object-fit: contain;  //ปรับขนาดรูปให้เหมาะสมกับขนาดหน้าจอ ซึ่งทำให้ภาพไม่ถูกยืดหรือหดลงขณะย่อหน้าจอ
-    text-align: center;
+  display: block;
+  width: 100%;
+  height: 576px;
+  object-fit: contain;  //ปรับขนาดรูปให้เหมาะสมกับขนาดหน้าจอ ซึ่งทำให้ภาพไม่ถูกยืดหรือหดลงขณะย่อหน้าจอ
+  text-align: center;
 }
