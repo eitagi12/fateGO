@@ -149,7 +149,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
             this.pageLoadingService.closeLoading();
             const developerMessage = err.error.developerMessage;
             const messageError = err.error.errors;
-            if (err.error.resultCode === 'MYCHN00150006') {
+            if (err.error && err.error.resultCode === 'MYCHN00150006') {
               this.alertService.error(developerMessage);
             } else {
               this.alertService.error(messageError[0]);
