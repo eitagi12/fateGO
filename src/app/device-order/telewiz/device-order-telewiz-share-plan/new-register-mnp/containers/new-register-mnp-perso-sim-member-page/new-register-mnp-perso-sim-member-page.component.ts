@@ -137,7 +137,13 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
       // });
     }
 
-    this.persoSimWebsocket();
+    console.log('Start read sim on PC');
+    if (this.transaction.data.simCard.mobileNo) {
+      this.setConfigPersoSim().then((res: any) => {
+        console.log('res -->', res);
+        this.persoSimWebsocket();
+      });
+    }
   }
 
   persoSimWebsocket(): void {
@@ -157,6 +163,40 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
         this.alertService.error(this.translateService.instant(this.ERROR_PERSO));
       }
     });
+  }
+
+  async setConfigPersoSim(): Promise<any> {
+    return this.persoSimConfig = await {
+      serviceGetPrivateKey: () => {
+        return this.http.post('/api/customerportal/newRegister/getPrivateKeyCommand', {
+          params: {}
+        }).toPromise();
+      },
+      serviceGetPersoDataCommand: (serialNo: string, indexNo: string) => {
+        return this.http.get('/api/customerportal/newRegister/queryPersoData', {
+          params: {
+            indexNo: indexNo,
+            serialNo: serialNo,
+            mobileNo: this.transaction.data.simCard.mobileNo,
+            simService: 'Normal'
+          }
+        }).toPromise();
+      },
+      serviceCreateOrderPersoSim: (refNo: string) => {
+        return this.http.get('/api/customerportal/newRegister/createPersoSim', {
+          params: {
+            refNo: refNo
+          }
+        }).toPromise();
+      },
+      serviceCheckOrderPersoSim: (refNo: string) => {
+        return this.http.get('/api/customerportal/newRegister/checkOrderStatus', {
+          params: {
+            refNo: refNo
+          }
+        }).toPromise();
+      }
+    };
   }
 
   setIntervalSimCard(): void {

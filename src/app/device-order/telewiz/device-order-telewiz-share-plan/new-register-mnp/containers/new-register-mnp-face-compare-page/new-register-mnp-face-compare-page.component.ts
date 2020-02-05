@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
-import { ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_FACE_COMPARE_PAGE, ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CONFIRM_PAGE, ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_EAPPLICATION_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_FACE_COMPARE_PAGE, ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CONFIRM_PAGE, ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_EAPPLICATION_PAGE, ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CAPTURE_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction, Customer, FaceRecognition, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { RemoveCartService } from '../../services/remove-cart.service';
@@ -42,7 +42,7 @@ export class NewRegisterMnpFaceComparePageComponent implements OnInit, OnDestroy
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_FACE_COMPARE_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CAPTURE_PAGE]);
   }
 
   onNext(): void {
