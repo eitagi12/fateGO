@@ -1,70 +1,42 @@
 <div class="mc-flex">
-    <mc-header title="{{'รายการสินค้า'| translate}}">
-        <div class="header-icon-left">
-            <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
-        </div>
-        <div class="header-icon-right">
-            <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
-        </div>
+    <mc-header title="{{ 'เปิดเบอร์ใหม่' | translate }}">
+      <div class="header-icon-left w-25">
+        <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+      </div>
+      <div class="header-icon-right w-25 text-right"></div>
     </mc-header>
     <div class="mc-flex-wrap">
-        <div class="mb-3 mt-3">
-            <mc-wizard [wizards]="wizards" active="5"></mc-wizard>
-            <div class="container-fluid">
-                <!-- <div class="card p-3">
-                  <hr>
-                  <div>{{ conditionText | translate }}</div>
-                  <hr>
-              </div> -->
-                <div class="card">
-                    <h5 class="card-header bg-transparent text-center" *ngIf="!isReadCard">
-                        {{'กรุณาเซ็นลายเซ็น' | translate }}
-                    </h5>
-                    <div class="card-body">
-                        <div class="camera-width">
-                            <div [hidden]="!isAllowCapture() || hasImageSmartCard()">
-                                <mc-camera [crop]="true" [onTakePhoto]="camera" (completed)="onCameraCompleted($event)"
-                                    (error)="onCameraError($event)">
-                                </mc-camera>
-                            </div>
-
-                            <div [hidden]="!(!isAllowCapture() || hasImageSmartCard())">
-                                <div class="img-result">
-                                    <div *ngIf="!isReadCard">
-                                        <canvas #signImage [class]="'captured-image'"></canvas>
-                                        <!-- <img *ngIf="captureAndSign.imageSignature && isDrawing " class="capture-and-sign " alt=" " /> -->
-                                    </div>
-                                    <div *ngIf="isReadCard">
-                                        <img *ngIf="captureAndSign?.imageSignature " class="capture-and-sign signed "
-                                            alt=" "
-                                            [src]=" 'data:image/png;base64,' + captureAndSign?.imageSignature " />
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <div class="card-footer signature " [hidden]="!(!isAllowCapture() || hasImageSmartCard()) ">
-                        {{ 'กรุณาเซ็นลายเซ็น' | translate }}
-                    </div>
-                    <div class="card-footer bg-transparent text-center p-0 ">
-                        <div class="row ">
-                            <div class="p-3 col-12 "
-                                [ngClass]="{ 'd-none': !(!isAllowCapture() || hasImageSmartCard()) } ">
-                                <!-- WEB Step -->
-                                <a href="# " (click)="$event.preventDefault(); onSigned() " class="text-pink ">
-                                    <span *ngIf="!hasImageSignature() ">{{ 'เซ็นลายเซ็น' | translate }}</span>
-                                    <span *ngIf="hasImageSignature() ">{{ 'เซ็นลายเซ็นใหม่' | translate }}</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+      <div class="mt-3">
+        <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
+        <div class="card-body bg-white">
+          <div class="container-fluid">
+            <p class="text-center mt-2 mb-4">เซ็นยืนยันข้อมูล</p>
+            <hr>
+            <div class="text-grey">
+              <p>{{ contractText }}</p>
+              <p>กรุณาเซ็นลงในช่อง</p>
             </div>
+            <div class="mt-4">
+              <div class="card embed-responsive embed-responsive-4by3 position-relative">
+                <div class="embed-responsive-item center my-auto">
+                  <img class="w-100 h-auto" src="" name="imgPhoto" id="imgPhoto" [hidden]="!signature" />
+                </div>
+              </div>
+              <div class="row my-4">
+                <div class="col-6" id="lblShrSignWriterContractInfoDate">
+                  {{ currentDate }}
+                </div>
+                <div class="col-6 text-right">
+                  <button id="btnShrSignWriterSign" class="btn btn-success"(click)="openSignature()">{{ signatureText }}</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
     <mc-footer>
-        <button class="btn btn-secondary " (click)="onBack()">BACK</button>
-        <button class="btn btn-success " (click)="onNext()" [disabled]="!hasImageSignature()">NEXT</button>
+      <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+      <button class="btn btn-success" (click)="onNext()" [disabled]="!isSuccess">NEXT</button>
     </mc-footer>
-</div>
+  </div>
