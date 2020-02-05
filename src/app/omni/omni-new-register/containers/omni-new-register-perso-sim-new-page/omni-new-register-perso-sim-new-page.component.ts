@@ -236,6 +236,7 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
       const simStatus: string[] = this.readSimStatus.split('|||');
       this.getSerialNo = simStatus[1].slice(cutNoSerialNumber);
       if (this.getSerialNo) {
+        this.simSerialKeyIn = this.getSerialNo;
         this.transaction.data.simCard = Object.assign(this.transaction.data.simCard, {
           simSerial: this.getSerialNo
         });
@@ -673,19 +674,10 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
   }
 
   onNext(): void {
-
-    const simCard: SimCard = this.setSimCard();
-    const sim = this.simSerialForm.value.simSerial;
-    this.transaction.data.simCard = {
-      ...this.transaction.data.simCard,
-      mobileNo: simCard.mobileNo,
-      simSerial: sim,
-      persoSim: simCard.persoSim,
-    };
     this.transactionService.update(this.transaction);
     if (!this.transaction.data.simCard.simSerial) {
       this.transaction.data.simCard = Object.assign(this.transaction.data.simCard, {
-        simSerial: this.simSerialForm.controls.simSerial.value
+        simSerial: this.simSerialKeyIn
       });
       window.location.href = `/sales-portal/reserve-stock/receive-confirm-online`;
     }
