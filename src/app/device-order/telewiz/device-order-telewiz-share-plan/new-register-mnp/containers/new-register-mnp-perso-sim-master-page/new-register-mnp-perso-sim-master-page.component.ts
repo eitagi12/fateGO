@@ -122,7 +122,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
   user: User;
 
   simPresentSubscription: Subscription;
-  // isPersoCompelete: boolean = false;
+  ws: WebSocket = new WebSocket(`${environment.WEB_CONNECT_URL}/SIMManager`);
 
   public simSerialForm: any = this.fb.group({
     simSerial: ['', [
@@ -169,10 +169,8 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
       }
     });
 
-    console.log('Start read sim on PC');
     if (this.transaction.data.simCard.mobileNo) {
       this.setConfigPersoSim().then((res: any) => {
-        console.log('res -->', res);
         this.persoSimWebsocket();
       });
     }
@@ -181,20 +179,15 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
   persoSimWebsocket(): void {
     console.log('Start read sim on PC');
     // for pc
-    this.title = 'กรุณาเสียบ Sim Card';
     this.persoSimSubscription = this.persoSimService.onPersoSim(this.persoSimConfig).subscribe((persoSim: any) => {
       console.log('persoSim-->', persoSim);
       this.persoSim = persoSim;
       if (persoSim.persoData && persoSim.persoData.simSerial) {
-        // this.isPersoCompelete = true;
-        this.title = 'กรุณาดึงซิมการ์ด';
         this.transaction.data.simCard.simSerial = persoSim.persoData.simSerial;
+        this.currentStatus = false;
+        this.isNext = !this.currentStatus;
       }
       if (persoSim.error) {
-        // this.simPresentSubscription = this.checkSimPresent().subscribe((present: any) => {
-        //   console.log('present ==>', present);
-        // });
-        console.log('If2');
         this.persoSimSubscription.unsubscribe();
         this.errorMessage = this.ERROR_PERSO;
         this.persoSimWebsocket();
@@ -236,58 +229,6 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
         }).toPromise();
       }
     };
-  }
-
-  checkSimPresent(): Observable<boolean> {
-    const ws = new WebSocket(`${environment.WEB_CONNECT_URL}/SIMManager`);
-    return new Observable((obs) => {
-      const cardStateInterval = setInterval(() => {
-        // ws.send(PersoSimCommandEvent.EVENT_CONNECT_SIM_READER);
-        let isNoCardInside;
-        ws.onmessage = (event: any) => {
-          const msg = JSON.parse(event.data);
-          isNoCardInside = msg && msg.Result === 'No card inside reader unit';
-          if (isNoCardInside) {
-            clearInterval(cardStateInterval);
-          }
-          obs.next(isNoCardInside);
-        };
-        if (isNoCardInside) {
-          obs.complete();
-          clearInterval(cardStateInterval);
-        }
-      }, 1000);
-    });
-
-    // return this.intervalCheckSimPresent = setInterval(() => {
-    //     ws.send(
-    //       JSON.stringify({
-    //         Command: PersoSimCommandEvent.EVENT_CONNECT_SIM_READER,
-    //         Parameter: ''
-    //       })
-    //     );
-    // }, 3000);
-
-    // removedState: (): Observable<boolean> => {
-    //   return new Observable((obs) => {
-    //     const cardStateInterval = setInterval(() => {
-    //       ws.send(KioskControlsPersoSim.GET_CARD_STATE);
-    //       let isNoCardInside;
-    //       ws.onmessage = (event: any) => {
-    //         const msg = JSON.parse(event.data);
-    //         isNoCardInside = msg && msg.Result === 'No card inside reader unit';
-    //         if (isNoCardInside) {
-    //           clearInterval(cardStateInterval);
-    //         }
-    //         obs.next(isNoCardInside);
-    //       };
-    //       if (isNoCardInside) {
-    //         obs.complete();
-    //         clearInterval(cardStateInterval);
-    //       }
-    //     }, 1000);
-    //   });
-    // }
   }
 
   verifySimSerialByBarcode(barcode: string): void {

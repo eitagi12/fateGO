@@ -103,39 +103,9 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
   ngOnInit(): void {
     this.memberSimCard = this.transaction.data.simCard.memberSimCard[0];
 
-    // if (typeof window.aisNative !== 'undefined') {
-    //   this.scanBarcodePC$ = of(true);
-    //   window.onBarcodeCallback = (barcode: any): void => {
-    //     if (barcode && barcode.length > 0) {
-    //       this.zone.run(() => {
-    //         const parser: any = new DOMParser();
-    //         barcode = '<data>' + barcode + '</data>';
-    //         this.xmlDoc = parser.parseFromString(barcode, 'text/xml');
-    //         this.getBarcode = this.xmlDoc.getElementsByTagName('barcode')[0].firstChild.nodeValue;
-    //         this.verifySimSerialByBarcode(this.getBarcode);
-    //       });
-    //     }
-    //   };
-    // } else {
-    //   this.scanBarcodePC$ = of(false);
-    // }
-
     this.checkOrderCounter = 0;
     this.getCommandCounter = false;
     this.mobileNo = this.memberSimCard.mobileNo;
-
-    if (typeof this.aisNative !== 'undefined') {
-      this.disableBack = true;
-      const disConnectReadIdCard: number = 1;
-      this.aisNative.sendIccCommand(this.command, disConnectReadIdCard, ''); // connect sim and disconnect smartCard
-      this.setIntervalSimCard();
-      // this.alertService.notify({
-      //   type: 'error',
-      //   text: 'ทดสอบ simCard',
-      //   confirmButtonText: 'ตกลง',
-      //   onClose: () => this.onRefreshPage()
-      // });
-    }
 
     console.log('Start read sim on PC');
     if (this.transaction.data.simCard.mobileNo) {
