@@ -54,8 +54,9 @@ export class OmniNewRegisterFaceConfirmPageComponent implements OnInit {
   }
 
   createForm(): void {
+    const password = '1234';
     this.confirmForm = this.fb.group({
-      password: [null, Validators.required]
+      password: [password, Validators.required]
     });
   }
 
