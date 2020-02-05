@@ -107,10 +107,8 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
     this.getCommandCounter = false;
     this.mobileNo = this.memberSimCard.mobileNo;
 
-    console.log('Start read sim on PC');
     if (this.transaction.data.simCard.mobileNo) {
       this.setConfigPersoSim().then((res: any) => {
-        console.log('res -->', res);
         this.persoSimWebsocket();
       });
     }
@@ -119,17 +117,16 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
   persoSimWebsocket(): void {
     console.log('Start read sim on PC');
     // for pc
-    this.title = 'กรุณาเสียบ Sim Card';
     this.persoSimSubscription = this.persoSimService.onPersoSim(this.persoSimConfig).subscribe((persoSim: any) => {
       console.log('persoSim-->', persoSim);
       this.persoSim = persoSim;
       if (persoSim.persoData && persoSim.persoData.simSerial) {
-        this.title = 'กรุณาดึงซิมการ์ด';
         this.transaction.data.simCard.simSerial = persoSim.persoData.simSerial;
         this.onNext();
       }
       if (persoSim.error) {
-        this.errorMessage = this.ERROR_PERSO;
+        this.persoSimSubscription.unsubscribe();
+        this.persoSimWebsocket();
         this.alertService.error(this.translateService.instant(this.ERROR_PERSO));
       }
     });
