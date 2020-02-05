@@ -148,11 +148,13 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
           }).catch((err) => {
             this.pageLoadingService.closeLoading();
             const developerMessage = err.error.developerMessage;
-            const messageError = err.error.errors;
+            const messageError = err.error ? err.error.errors : '';
             if (err.error && err.error.resultCode === 'MYCHN00150006') {
               this.alertService.error(developerMessage);
-            } else {
+            } else if (messageError) {
               this.alertService.error(messageError[0]);
+            } else {
+              this.alertService.error(messageError);
             }
           });
       });
@@ -162,7 +164,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol).then((zipCode: string) => {
         const transactionType = TransactionType.DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN; // New
         return this.validateCustomerService
-        .checkValidateCustomerHandleErrorMessages(this.profile.idCardNo, this.profile.idCardType, transactionType)
+          .checkValidateCustomerHandleErrorMessages(this.profile.idCardNo, this.profile.idCardType, transactionType)
           .then((res) => {
             const data = res.data || {};
             return {
