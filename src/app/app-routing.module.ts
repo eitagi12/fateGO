@@ -87,7 +87,15 @@ const routes: Routes = [
   {
     path: 'buy-premium',
     loadChildren: 'src/app/buy-premium/buy-premium.module#BuyPremiumModule',
-    canActivate: [AuthGuard, ApiRequestGuard]
+    canActivate: [AuthGuard, ApiRequestGuard],
+  },
+  {
+    path: 'omni',
+    loadChildren: 'src/app/omni/omni.module#OmniModule',
+    canActivate: [AuthGuard, ApiRequestGuard],
+    resolve: {
+      i18n: I18nService
+    }
   }
 ];
 

@@ -1,49 +1,20 @@
 import { ChargeType } from 'mychannel-shared-libs';
 
 export enum TransactionType {
-  DEVICE_ORDER_NEW_REGISTER_AIS = 'NewRegisterAIS',
-  DEVICE_ORDER_NEW_REGISTER_ASP = 'NewRegisterASP',
-  DEVICE_ORDER_PRE_TO_POST_AIS = 'ConvertPreToPostAIS',
-  DEVICE_ORDER_PRE_TO_POST_ASP = 'ConvertPreToPostASP',
-  DEVICE_ORDER_MNP_AIS = 'Port-InAIS',
-  DEVICE_ORDER_MNP_ASP = 'Port-InASP',
-  DEVICE_ORDER_EXISTING_AIS = 'ExistingAIS',
-  DEVICE_ORDER_EXISTING_ASP = 'ExistingASP',
-  DEVICE_ORDER_EXISTING_GADGET_AIS = 'ExistingGadgetAIS',
-  DEVICE_ORDER_PREPAID_HOTDEAL_AIS = 'PrepaidHotDealAIS',
-  DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN = 'NewRegisterMNPAIS',
-  // pure
-  ORDER_NEW_REGISTER = 'NewRegister',
-  ORDER_PRE_TO_POST = 'ConvertPreToPost',
-  ORDER_MNP = 'Port-In',
-  ORDER_EXISTING = 'Existing',
-  RESERVE_WITH_DEPOSIT = 'ReserveWithDeposit',
-  ORDER_NEW_SHARE_PLAN_MNP = 'NewSharePlanMNP',
-
-  // device only
-  DEVICE_ONLY_AIS = 'DeviceOnlyAIS',
-  DEVICE_ONLY_ASP = 'DeviceOnlyASP',
-  DEVICE_ONLY_WEB = 'DeviceOnlyWEB',
-  DEVICE_ONLY_KIOSK = 'DeviceOnlyKiosk',
-  VAS_PACKAGE_ROM = 'RomAgent',
-  VAS_PACKAGE_CUSTOMER = 'Customer',
-  SHOP_PREMIUM_AIS = 'ShopPremiumAIS'
+  OMNI_NEW_REGISTER = 'OmniNewRegister',
+  OMNI_NEW_SHARE_PLAN_MNP = 'OmniNewSharePlanMNP'
 }
 
 export enum TransactionAction {
   READ_CARD = 'READ_CARD',
   READ_CARD_PI = 'READ_CARD_PI',
   READ_CARD_REPI = 'READ_CARD_REPI',
-  KEY_IN = 'KEY_IN',
+  KEY_IN = 'KEY_IDCARD',
   KEY_IN_FBB = 'KEY_IN_FBB',
   KEY_IN_MOBILE_NO = 'KEY_IN_MOBILE_NO',
   KEY_IN_PI = 'KEY_IN_PI',
   KEY_IN_REPI = 'KEY_IN_REPI',
-  READ_PASSPORT = 'READ_PASSPORT',
-  READ_PASSPORT_REPI = 'READ_PASSPORT_REPI',
-  SEARCH = 'SEARCH',
-  VAS_PACKAGE_ROM = 'VaspackageRom',
-  VAS_PACKAGE_ROM_OTP = 'VaspackageRomOTP'
+  READ_PASSPORT = 'READ_PASSPORT'
 }
 
 export interface Transaction {
@@ -59,7 +30,7 @@ export interface Transaction {
 export interface TransactionData {
   transactionType: TransactionType;
   action: TransactionAction;
-  mainPromotion?: MainPromotion;
+  campaign?: Campaign;
   airTime?: AirTime;
   customer?: Customer;
   simCard?: SimCard;
@@ -69,9 +40,9 @@ export interface TransactionData {
   onTopPackage?: OnTopPackage;
   deleteOntopPackage?: DeleteOntopPackage[];
   mainPackageOneLove?: any[];
-  mobileCarePackage?: MobileCarePackage;
+  // mobileCarePackage?: MobileCarePackage;
   faceRecognition?: FaceRecognition;
-  existingMobileCare?: ExistingMobileCare;
+  // existingMobileCare?: ExistingMobileCare;
   order?: Order;
   reasonCode?: string;
   billingInformation?: BillingInformation;
@@ -89,13 +60,23 @@ export interface TransactionData {
   mpayPayment?: QrCodePrePostMpayModel;
   status?: Status;
   device?: Device;
-  knoxguard?: KnoxGuard;
+  knoxGuard?: KnoxGuard;
   tradeType?: string;
   // Rom Agent
   romAgent?: RomAgent;
   romTransaction?: RomTransactionData;
   // Omise
-  omise?: Omise;
+  // omise?: Omise;
+  locationDestName?: any;
+  brand?: any;
+  model?: any;
+  color?: any;
+  productPrice?: any;
+  productDiscount?: any;
+  productNetPrice?: any;
+  cardId?: string;
+  cusMobileNo?: string;
+  packageName?: string;
 }
 
 export interface Omise {
@@ -143,10 +124,10 @@ export interface Payment {
   paymentOnlineCredit?: any;
 }
 
-export interface MainPromotion {
-  campaign?: any;
-  privilege?: any;
-  trade?: any;
+export interface Campaign {
+  campaignName?: any;
+  campaignDesc?: any;
+  conditionCode?: any;
 }
 
 // tslint:disable-next-line:no-empty-interface
@@ -218,6 +199,8 @@ export interface Customer {
   requestNo?: string;
   laserCode?: string;
   isBlockChain?: boolean;
+  campaign: string;
+  locationDestName: string;
 }
 
 export interface Recipientinformation {
@@ -236,39 +219,36 @@ export interface SelectedLocation {
 }
 
 export interface SimCard {
-  mobileNo: string;
-  mobileNoMember?: string;
+  mobileNo?: string;
   simSerial?: string;
-  simSerialMember?: string;
-  imei?: string;
-  billingSystem?: string;
-  moblieNoTypeA?: string;
-  chargeType?: ChargeType;
   persoSim?: boolean;
-  privilegeCode?: string;
-  nType?: string;
-  memberSimCard?: Array<any>;
-  mobileNoStatus?: 'Active' | 'Suspended' | 'Enroll';
-  forceEnrollFlag?: 'Y' | 'N';
-  registerDate?: string;
 }
 
 export interface MainPackage {
+  // duration?: string;
+  // itemId: string;
+  // itemsPriority?: string;
+  // numberOfMobile?: string;
+  // packageType?: string;
+  // productPkg?: string;
+  // promotionPackage?: string;
+  // shortNameThai: string;
+  // statementThai?: string;
+  // shortNameEng?: string;
+  // statementEng?: string;
+  // parameters?: any;
+  // [key: string]: any;
+  // memberMainPackage?: Array<any>;
+
   billingSystem?: string;
-  duration?: string;
-  itemId: string;
-  itemsPriority?: string;
-  numberOfMobile?: string;
-  packageType?: string;
-  productPkg?: string;
-  promotionPackage?: string;
-  shortNameThai: string;
-  statementThai?: string;
-  shortNameEng?: string;
-  statementEng?: string;
-  parameters?: any;
-  [key: string]: any;
-  memberMainPackage?: Array<any>;
+  mainPackageCode?: any;
+  mainPackageName?: any;
+  mainPackageDesc?: any;
+  matAirtime?: any;
+  promotionPrice?: any;
+  payAdvance?: any;
+  payAdvanceDiscount?: any;
+  durationContract?: any;
 }
 
 export interface MainPackageMember {
@@ -377,6 +357,7 @@ export interface BillingAccountData {
   billCycleText?: string;
   billCycleTextEng?: string;
   billAddressText?: string;
+  customer?: Customer;
 }
 
 export interface ProductInfo {
@@ -417,7 +398,7 @@ export interface BillDeliveryAddress {
 export interface Seller {
   isAscCode?: boolean;
   sellerName?: string;
-  locationName?: string;
+  locationDestName?: string;
   locationCode?: string;
   sellerNo?: string;
   shareUser?: string;
@@ -580,6 +561,7 @@ export interface KnoxGuard {
   duration?: string;
   orderReason?: string;
   userName?: string;
+  knoxGuardFlag?: string ;
 }
 
 export interface RomAgent {

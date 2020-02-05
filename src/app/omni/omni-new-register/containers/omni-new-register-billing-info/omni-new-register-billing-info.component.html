@@ -1,0 +1,26 @@
+<div class="container-fluid">
+  <div class="card mb-3">
+    <div class="card-header bg-light-blue text-white">{{ 'ข้อมูลลูกค้า' }}</div>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        <p>
+          <i class="fa fa-circle text-lime mr-2"></i>
+          <span>{{ 'ที่อยู่จัดส่งเอกสาร' | translate }}</span>
+          <span class="text-red"> *</span>
+          <a href="#" class="pull-right" (click)="$event.preventDefault(); onEditAddress()">Edit</a>
+        </p>
+        <div class="text-grey">{{ billingInfo?.billingAddress?.text }}</div>
+      </li>
+      <li class="list-group-item">
+        <p>
+          <i class="fa fa-circle text-lime mr-2"></i>
+          <span translate>รอบบิล</span>
+          <!-- <a href="#" class="pull-right" (click)="$event.preventDefault(); billingInfo?.billingCycle?.onEditAddress()">Edit</a> -->
+          <!-- <br>
+          <a href="#" class="pull-right" [hidden]="view" *ngIf="billingInfo?.billingCycle?.isDelete" (click)="$event.preventDefault(); billingInfo?.billingCycle?.onDelete()">Delete</a> -->
+        </p>
+        <div class="text-grey" [innerHTML]="getBillCycleText(billingInfo?.billingCycle?.text)"></div>
+      </li>
+    </ul>
+  </div>
+</div>

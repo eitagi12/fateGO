@@ -1,0 +1,23 @@
+<div class="mc-flex">
+    <mc-header title="{{ 'เปิดเบอร์ใหม่' | translate }}">
+        <div class="header-icon-left w-25">
+          <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+        </div>
+        <div class="header-icon-right w-25 text-right">
+       
+          <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+        </div>
+      </mc-header>
+  <div class="mc-flex-wrap">
+    <div class="mb-3 mt-3">
+      <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
+
+      <mc-merge-billing [billingCyles]="billingCyles" [mergeBilling]="mergeBilling" (completed)="onCompleted($event)"></mc-merge-billing>
+
+    </div>
+  </div>
+  <mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!mergeBilling">NEXT</button>
+  </mc-footer>
+</div>
