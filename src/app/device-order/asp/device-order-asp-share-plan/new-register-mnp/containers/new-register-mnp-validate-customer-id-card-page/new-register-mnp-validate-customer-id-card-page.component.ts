@@ -161,7 +161,8 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
       this.transaction.data.customer = mapCustomer;
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol).then((zipCode: string) => {
         const transactionType = TransactionType.DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN; // New
-        return this.validateCustomerService.checkValidateCustomer(this.profile.idCardNo, this.profile.idCardType, transactionType)
+        return this.validateCustomerService
+        .checkValidateCustomerHandleErrorMessages(this.profile.idCardNo, this.profile.idCardType, transactionType)
           .then((res) => {
             const data = res.data || {};
             return {
