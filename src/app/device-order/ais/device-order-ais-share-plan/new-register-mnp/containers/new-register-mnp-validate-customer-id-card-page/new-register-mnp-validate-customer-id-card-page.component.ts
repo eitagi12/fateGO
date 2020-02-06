@@ -204,7 +204,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                     if (!this.soId) {
                       // tslint:disable-next-line: max-line-length
                       const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: this.transaction.data.customer });
-                      return this.validateCustomerService.addDeviceSellingCartSharePlan(body).then((response: any) => {
+                      return this.validateCustomerService.addDeviceSellingCartSharePlanASP(body).then((response: any) => {
                         this.transaction.data = {
                           ...this.transaction.data,
                           order: { soId: response.data }

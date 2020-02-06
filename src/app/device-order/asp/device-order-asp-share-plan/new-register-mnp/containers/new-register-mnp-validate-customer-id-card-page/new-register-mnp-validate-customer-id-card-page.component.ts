@@ -13,7 +13,7 @@ import {
   ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_PAGE
 } from '../../constants/route-path.constant';
 import { ValidateCustomerService } from 'src/app/shared/services/validate-customer.service';
-import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionType, TransactionAction, Order } from 'src/app/shared/models/transaction.model';
 import { RemoveCartService } from '../../services/remove-cart.service';
 @Component({
   selector: 'app-new-register-mnp-validate-customer-id-card-page',
@@ -29,6 +29,8 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
   user: User;
   progressReadCard: number;
   soId: string;
+  order: Order;
+  transactionId: string;
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
 
@@ -55,6 +57,8 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
     if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
       this.soId = this.transaction.data.order.soId;
     }
+
+    // this.createTransaction();
   }
 
   onProgress(progress: number): void {
@@ -134,7 +138,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                           ...this.transaction.data,
                           order: { soId: response.data.soId }
                         };
-                        return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+                        // return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
                       });
                     } else {
                       this.transaction.data = {
@@ -142,13 +146,15 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                         order: { soId: this.soId }
                       };
                     }
-                  }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]))
-                  .then(() => this.pageLoadingService.closeLoading());
+                  }).then(() => {
+                    this.setTransaction(this.transaction.data.customer);
+                    this.router.navigate([ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
+                  }).then(() => this.pageLoadingService.closeLoading());
               });
           }).catch((err) => {
             console.log('000000', err);
             this.pageLoadingService.closeLoading();
-            const developerMessage =  err.error ? err.error.developerMessage : '';
+            const developerMessage = err.error ? err.error.developerMessage : '';
             const messageError = err.error ? err.error.errors : '';
             if (err.error && err.error.resultCode === 'MYCHN00150006') {
               this.alertService.error(developerMessage);
@@ -193,15 +199,16 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                     }
                     if (!this.soId) {
                       const body: any = this.validateCustomerService
-                        .getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption,
+                        .getRequestAddDeviceSellingCartSharePlanASP(this.user, this.transaction, this.priceOption,
                           { customer: this.transaction.data.customer });
                       return this.validateCustomerService.addDeviceSellingCartSharePlanASP(body).then((response: any) => {
                         this.transaction.data = {
                           ...this.transaction.data,
                           order: { soId: response.data }
                         };
-                        return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+                        // return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
                       }).then(() => {
+                        this.setTransaction(this.transaction.data.customer);
                         this.router.navigate([ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
                         this.pageLoadingService.closeLoading();
                       });
@@ -210,6 +217,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                         ...this.transaction.data,
                         order: { soId: this.soId }
                       };
+                      this.setTransaction(this.transaction.data.customer);
                       this.router.navigate([ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
                       this.pageLoadingService.closeLoading();
                     }
@@ -287,14 +295,32 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
     });
   }
 
+  // createTransaction(): void {
+  //   this.transaction = {
+  //     data: {
+  //       transactionType: TransactionType.DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN, // Share
+  //       action: TransactionAction.READ_CARD,
+  //     },
+  //     transactionId: this.transaction.transactionId ? this.transaction.transactionId : '-'
+  //   };
+  // }
+
   createTransaction(): void {
-    this.transaction = {
-      data: {
-        transactionType: TransactionType.DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN, // Share
-        action: TransactionAction.READ_CARD,
-      },
-      transactionId: this.transaction.transactionId ? this.transaction.transactionId : ''
-    };
+    if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      this.transactionId = this.transaction.transactionId;
+      this.order = this.transaction.data.order;
+      this.transaction.data.action = TransactionAction.READ_CARD;
+    } else {
+      this.transaction = {
+        data: {
+          transactionType: TransactionType.DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN, // Share
+          action: TransactionAction.READ_CARD,
+          order: this.order
+        },
+        transactionId: this.transaction.transactionId
+      };
+    }
+    delete this.transaction.data.customer;
   }
 
   getZipCode(province: string, amphur: string, tumbol: string): Promise<string> {
@@ -383,5 +409,43 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
 
   isDevelopMode(): boolean {
     return environment.name === 'LOCAL';
+  }
+
+  setTransaction(customer: any): void {
+    console.log('customer -->', customer);
+    this.transaction.data.customer = this.mapCustomer(customer);
+    if (this.transaction.transactionId) {
+      console.log('1');
+      this.pageLoadingService.closeLoading();
+      this.router.navigate([ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
+    } else {
+      console.log('2');
+      const transactionObject: any = this.validateCustomerService.buildTransaction({
+        transaction: this.transaction,
+        transactionType: TransactionType.DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN // Share
+      });
+
+      this.transaction.transactionId = transactionObject.transactionId;
+      this.transaction.issueBy = transactionObject.issueBy;
+      this.transaction.createBy = transactionObject.create_by;
+      this.transaction.createDate = transactionObject.createDate;
+      console.log(' this.transaction.transactionId', this.transaction.transactionId);
+      console.log('transactionObject', transactionObject);
+      this.validateCustomerService.createTransaction(transactionObject).then((response: any) => {
+        this.pageLoadingService.closeLoading();
+        if (response.data.isSuccess) {
+          console.log('3');
+          this.transaction = transactionObject;
+          // this.createTransaction(transactionObject);
+          this.router.navigate([ROUTE_DEVICE_ORDER_ASP_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
+        } else {
+          console.log('4');
+          this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+        }
+      }).catch((error: any) => {
+        this.pageLoadingService.closeLoading();
+        this.alertService.error(error);
+      });
+    }
   }
 }
