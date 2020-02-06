@@ -1,0 +1,83 @@
+<div class="mc-flex">
+  <mc-header title="{{ 'เปิดเบอร์ใหม่' | translate }}">
+      <div class="header-icon-left w-25">
+        <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+      </div>
+      <div class="header-icon-right w-25 text-right">
+     
+        <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+      </div>
+    </mc-header>
+<div class="mc-flex-wrap">
+  <div class="mb-3 mt-3">
+    <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
+    <div class="container-fluid">
+      <div class="card">
+        <h5 class="card-header bg-transparent text-center">
+          ถ่ายรูปบัตรประชาชน
+        </h5>
+        <div class="card-body ">
+          <div class="camera-width">
+            <div *ngIf="!openCamera">
+              <img src="assets/images/icon/icon_people.png" class="icon-people" />
+            </div>
+            <div [hidden]="!(openCamera && !transaction?.data?.customer?.imageSmartCard)" class="position-relative">
+              <mc-camera [crop]="true" [onTakePhoto]="camera" (completed)="onCameraCompleted($event)"
+                (error)="onCameraError($event)">
+              </mc-camera>
+            </div>
+            <div class="embed-responsive embed-responsive-4by3 position-relative"
+              [hidden]="!transaction?.data?.customer?.imageSmartCard">
+              <div class="embed-responsive-item center">
+                <img class="img-result"
+                  [src]="'data:image/png;base64,'+ transaction?.data?.customer?.imageSmartCard" />
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="card-footer bg-transparent text-center p-0">
+          <div class="row">
+            <div class="border-right p-3 col-12">
+              <!-- WEB Step -->
+              <div *ngIf="!isAisNative()">
+                <a href="#" (click)="$event.preventDefault(); onOpenCamera();" class="text-pink"
+                  *ngIf="!transaction?.data?.customer?.imageSmartCard && !openCamera">
+                  <img src="assets/images/icon/icon-camera.png" class="icon-camera">
+                  <br>
+                  <p>กรุณากดปุ่มถ่ายรูป</p>
+                </a>
+                <a href="#" (click)="$event.preventDefault(); onOpenCamera(); camera.next();" class="text-pink"
+                  *ngIf="!transaction?.data?.customer?.imageSmartCard && openCamera">
+                  <img src="assets/images/icon/icon-camera.png" class="icon-camera">
+                  <br>
+                  <p>กรุณากดปุ่มถ่ายรูป</p>
+                </a>
+                <a href="#" (click)="$event.preventDefault(); onClearIdCardImage()" class="text-pink"
+                  *ngIf="transaction?.data?.customer?.imageSmartCard">
+                  ถ่ายรูปใหม่
+                </a>
+              </div>
+              <!-- Native Step -->
+              <div *ngIf="isAisNative()">
+                <a href="#" (click)="$event.preventDefault(); camera.next();" class="text-pink"
+                  *ngIf="!transaction?.data?.customer?.imageSmartCard">
+                  <span *ngIf="!transaction?.data?.customer?.imageSmartCard">ถ่ายรูป</span>
+                </a>
+                <a href="#" (click)="$event.preventDefault(); onClearIdCardImage()" class="text-pink"
+                  *ngIf="transaction?.data?.customer?.imageSmartCard">
+                  ถ่ายรูปใหม่
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<mc-footer>
+  <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+  <button class="btn btn-success" (click)="onNext()" [disabled]="!!!transaction.data.customer.imageSmartCard">NEXT</button>
+</mc-footer>
+</div>

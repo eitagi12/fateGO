@@ -1,0 +1,57 @@
+<div class="mc-flex">
+    <mc-header title="{{ 'เปิดเบอร์ใหม่' | translate }}">
+        <div class="header-icon-left w-25">
+          <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+        </div>
+        <div class="header-icon-right w-25 text-right">
+       
+          <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+        </div>
+      </mc-header>
+  <div class="mc-flex-wrap">
+    <div class="mb-3 mt-3">
+      <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
+
+      <div class="container-fluid">
+
+        <div class="card mb-3">
+          <div class="card-body">
+            <img src="assets/images/icon/icon-red-alert-circle.png" class="icon">
+            <div class="text-center text-pink">
+              <p translate>การลงทะเบียนด้วยระบบอัตลักษณ์ไม่สมบูรณ์</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-header bg-light-blue text-white" translate>สำหรับพนักงาน</div>
+          <div class="card-body">
+            <form [formGroup]="confirmForm">
+              <div class="form-row">
+                <!-- <div class="col-2 col-sm-4 text-right" style="margin-top:15px">
+                  <label translate>ตรวจสอบโดย</label>
+                </div> -->
+                <!-- <div class="col-5 col-sm-5" style="margin-top:10px">
+                  <input mcVirtualKeyboard type="text" id="username" class="form-control text-center" placeholder="username"
+                    formControlName="username" />
+                </div> -->
+                <div class="col-2 col-sm-4 text-right" style="margin-top:15px">
+                  <label translate>รหัสผ่าน</label>
+                </div>
+                <div class="col-5 col-sm-5" style="margin-top:10px">
+                  <input mcVirtualKeyboard type="password" id="password" class="form-control text-center" placeholder="password"
+                    formControlName="password" />
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="confirmForm.invalid">NEXT</button>
+  </mc-footer>
+</div>
