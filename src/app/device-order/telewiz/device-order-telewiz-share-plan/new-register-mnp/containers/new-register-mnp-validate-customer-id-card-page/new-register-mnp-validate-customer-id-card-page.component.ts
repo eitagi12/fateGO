@@ -4,7 +4,7 @@ import { ChannelType, AlertService, ReadCardProfile, User, ReadCard, ValidateCus
 import * as moment from 'moment';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { Transaction, Prebooking, Customer, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { Transaction, Prebooking, Customer, TransactionType, TransactionAction, Order } from 'src/app/shared/models/transaction.model';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ } from 'src/app/device-order/constants/wizard.constant';
 import { ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_PAGE, ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE } from '../../constants/route-path.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
@@ -28,7 +28,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
   kioskApi: boolean;
   isTelewiz: boolean = this.tokenService.isTelewizUser();
 
-  // wizards: any = this.tokenService.isTelewizUser() ? WIZARD_DEVICE_ORDER_ASP : WIZARD_DEVICE_ORDER_AIS;
+  wizards: any = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
   // active: number = this.isTelewiz ? 2 : 1;
 
   transaction: Transaction;
@@ -50,6 +50,10 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
   progress: number;
   error: any;
   soId: string;
+
+  order: Order;
+  transactionId: string;
+
   constructor(
     private router: Router,
     private http: HttpClient,
@@ -139,7 +143,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                           ...this.transaction.data,
                           order: { soId: response.data.soId }
                         };
-                        return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+                        // return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
                       });
                     } else {
                       this.transaction.data = {
@@ -147,8 +151,10 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                         order: { soId: this.soId }
                       };
                     }
-                  }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]))
-                  .then(() => this.pageLoadingService.closeLoading());
+                  }).then(() => {
+                    this.setTransaction(this.transaction.data.customer);
+                    this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
+                  }).then(() => this.pageLoadingService.closeLoading());
               });
           }).catch((err) => {
             this.pageLoadingService.closeLoading();
@@ -195,14 +201,15 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                     }
                     if (!this.soId) {
                       // tslint:disable-next-line: max-line-length
-                      const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: this.transaction.data.customer });
-                      return this.validateCustomerService.addDeviceSellingCartSharePlan(body).then((response: any) => {
+                      const body: any = this.validateCustomerService.getRequestAddDeviceSellingCartSharePlanASP(this.user, this.transaction, this.priceOption, { customer: this.transaction.data.customer });
+                      return this.validateCustomerService.addDeviceSellingCartSharePlanASP(body).then((response: any) => {
                         this.transaction.data = {
                           ...this.transaction.data,
                           order: { soId: response.data }
                         };
-                        return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+                        // return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
                       }).then(() => {
+                        this.setTransaction(this.transaction.data.customer);
                         this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
                         this.pageLoadingService.closeLoading();
                       });
@@ -211,6 +218,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                         ...this.transaction.data,
                         order: { soId: this.soId }
                       };
+                      this.setTransaction(this.transaction.data.customer);
                       this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
                       this.pageLoadingService.closeLoading();
                     }
@@ -222,13 +230,22 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
   }
 
   createTransaction(): void {
-    this.transaction = {
-      data: {
-        transactionType: TransactionType.DEVICE_ORDER_TELEWIZ_DEVICE_SHARE_PLAN, // Share
-        action: TransactionAction.READ_CARD,
-      },
-      transactionId: this.transaction.transactionId ? this.transaction.transactionId : ''
-    };
+    if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      this.transactionId = this.transaction.transactionId;
+      this.order = this.transaction.data.order;
+      this.transaction.data.action = TransactionAction.READ_CARD;
+    } else {
+      this.transaction = {
+        data: {
+          transactionType: TransactionType.DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN, // Share
+          action: TransactionAction.READ_CARD,
+          order: this.order
+        },
+        transactionId: this.transaction.transactionId
+      };
+    }
+    delete this.transaction.data.customer;
+
   }
 
   conditionIdentityValid(): Promise<string> {
@@ -414,4 +431,43 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
   onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_PAGE]);
   }
+
+  setTransaction(customer: any): void {
+    console.log('customer -->', customer);
+    this.transaction.data.customer = this.mapCustomer(customer);
+    if (this.transaction.transactionId) {
+      console.log('1');
+      this.pageLoadingService.closeLoading();
+      this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
+    } else {
+      console.log('2');
+      const transactionObject: any = this.validateCustomerService.buildTransaction({
+        transaction: this.transaction,
+        transactionType: TransactionType.DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN // Share
+      });
+
+      this.transaction.transactionId = transactionObject.transactionId;
+      this.transaction.issueBy = transactionObject.issueBy;
+      this.transaction.createBy = transactionObject.create_by;
+      this.transaction.createDate = transactionObject.createDate;
+      console.log(' this.transaction.transactionId', this.transaction.transactionId);
+      console.log('transactionObject', transactionObject);
+      this.validateCustomerService.createTransaction(transactionObject).then((response: any) => {
+        this.pageLoadingService.closeLoading();
+        if (response.data.isSuccess) {
+          console.log('3');
+          this.transaction = transactionObject;
+          // this.createTransaction(transactionObject);
+          this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
+        } else {
+          console.log('4');
+          this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+        }
+      }).catch((error: any) => {
+        this.pageLoadingService.closeLoading();
+        this.alertService.error(error);
+      });
+    }
+  }
+
 }
