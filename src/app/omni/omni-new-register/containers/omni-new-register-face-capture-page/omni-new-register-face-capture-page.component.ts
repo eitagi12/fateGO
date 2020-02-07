@@ -41,7 +41,12 @@ export class OmniNewRegisterFaceCapturePageComponent implements OnInit, OnDestro
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_OMNI_NEW_REGISTER_ID_CARD_CAPTURE_PAGE]);
+    const action = this.transaction.data.action;
+    if (action === 'READ_CARD') {
+      window.location.href = `/sales-portal/reserve-stock/verify-omni-new-register`;
+    } else {
+      this.router.navigate([ROUTE_OMNI_NEW_REGISTER_ID_CARD_CAPTURE_PAGE]);
+    }
   }
 
   async onNext(): Promise<void> {
