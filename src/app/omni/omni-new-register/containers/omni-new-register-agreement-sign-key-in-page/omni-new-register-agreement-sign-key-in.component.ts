@@ -50,6 +50,7 @@ export class OmniNewRegisterAgreementSignKeyInPageComponent implements OnInit, O
   apiSigned: 'SignaturePad' | 'OnscreenSignpad';
   isDrawingSignature: boolean = false;
   imageSigned: boolean;
+  watermark: string = AWS_WATERMARK;
 
   constructor(
     private router: Router,
@@ -189,6 +190,7 @@ export class OmniNewRegisterAgreementSignKeyInPageComponent implements OnInit, O
 
          ctx.globalCompositeOperation = 'multiply';                            // ทำให้รูปลายเซ็นทับรูปถ่ายบัตรปชช.
          ctx.drawImage(signImage, dxs, dys, signImageWidth, signImageHeight);  // เริ่มวาดรูปตั้งแต่จุดเริ่มต้นของภาพ
+         ctx.drawImage(watermark, dxs, dys, signImageWidth, signImageHeight);
       }
     }
     // ได้รูปภาพทีมีรูปถ่ายจากบัตรปชช.พร้อมลายเซ็นที่ทับกัน
