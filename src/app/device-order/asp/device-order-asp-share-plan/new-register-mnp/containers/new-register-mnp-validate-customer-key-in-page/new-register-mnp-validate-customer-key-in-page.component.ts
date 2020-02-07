@@ -231,14 +231,15 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
             });
           }
         }).catch((err: any) => {
-          console.log('err', err);
           this.pageLoadingService.closeLoading();
-          const developerMessage = err.error.developerMessage;
-          const messageError = err.error.errors;
-          if (err.error.resultCode === 'MYCHN00150006') {
+          const developerMessage = err.error ? err.error.developerMessage : '';
+          const messageError = err.error ? err.error.errors : err;
+          if (err.error && err.error.resultCode === 'MYCHN00150006') {
             this.alertService.error(developerMessage);
-          } else {
+          } else if (messageError) {
             this.alertService.error(messageError[0]);
+          } else {
+            this.alertService.error(messageError);
           }
         });
     } else {

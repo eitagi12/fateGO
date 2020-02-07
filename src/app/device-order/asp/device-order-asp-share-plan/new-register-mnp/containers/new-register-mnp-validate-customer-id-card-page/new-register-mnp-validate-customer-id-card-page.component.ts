@@ -154,13 +154,13 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
           }).catch((err) => {
             this.pageLoadingService.closeLoading();
             const developerMessage = err.error ? err.error.developerMessage : '';
-            const messageError = err.error ? err.error.errors : '';
+            const messageError = err.error ? err.error.errors : err;
             if (err.error && err.error.resultCode === 'MYCHN00150006') {
               this.alertService.error(developerMessage);
             } else if (messageError) {
               this.alertService.error(messageError[0]);
             } else {
-              this.alertService.error(err);
+              this.alertService.error(messageError);
             }
           });
       });
