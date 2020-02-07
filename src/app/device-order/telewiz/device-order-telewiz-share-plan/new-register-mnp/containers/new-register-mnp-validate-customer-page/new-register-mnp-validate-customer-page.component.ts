@@ -36,7 +36,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
 
   identityFormSubscripe: Subscription;
 
-  private formErrors: any = {
+  public formErrors: any = {
     identity: ''
   };
 

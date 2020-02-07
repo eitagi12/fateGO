@@ -10,7 +10,7 @@
     <div class="mt-5 pt-4">
         <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
     </div>
-    <div class="start-container bg-white" [ngClass]="{'extendWhiteBackground': disabledKeyIn}">
+    <div class="start-container bg-white">
         <div class="row read-card">
             <div class="col-md-12 read-card-title">ระบุข้อมูลลูกค้า</div>
             <div class="col-md-3 text-center">
@@ -24,7 +24,7 @@
                 </div>
             </div>
             <div class="col-md-2">
-                <div *ngIf="!disabledKeyIn" class="middile-line"></div>
+                <!-- <div *ngIf="!disabledKeyIn" class="middile-line"></div> -->
             </div>
             <div class="col-md-4 text-left">
                 <div *ngIf="progress === 100" class="otherid-container-pc" style="color:#614e47;">
