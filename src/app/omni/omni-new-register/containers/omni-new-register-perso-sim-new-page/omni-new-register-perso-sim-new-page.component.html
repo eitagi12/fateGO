@@ -63,4 +63,5 @@
     <button class="btn btn-secondary" (click)="onBack()" [disabled]="disableBack">BACK</button>
     <button class="btn btn-success" (click)="onNext()" [disabled]="!(persoSim?.progress === 100) && !isNext">NEXT</button>
   </mc-footer>
+  <canvas #drawWatermark class="watermark"></canvas>
 </div>

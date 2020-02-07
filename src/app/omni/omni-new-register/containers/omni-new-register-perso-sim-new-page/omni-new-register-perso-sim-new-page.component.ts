@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { PageLoadingService, AlertService, Utils } from 'mychannel-shared-libs';
 import { Observable, of } from 'rxjs';
@@ -9,6 +9,7 @@ import { Transaction, SimCard } from 'src/app/omni/omni-shared/models/transactio
 import { WIZARD_OMNI_NEW_REGISTER } from 'src/app/omni/constants/wizard.constant';
 import { TransactionService } from 'src/app/omni/omni-shared/services/transaction.service';
 import { ROUTE_OMNI_NEW_REGISTER_EAPPLICATION_PAGE, ROUTE_OMNI_NEW_REGISTER_RESULT_PAGE } from '../../constants/route-path.constant';
+import { RECEIVE_WATERMARK } from '../../constants/receive-watermark';
 
 declare let $: any;
 declare let window: any;
@@ -71,7 +72,8 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
   getSerialNo: string;
   simSerialForm: FormGroup;
   isNext: boolean = false;
-
+  @ViewChild('drawWatermark') drawWatermark: ElementRef;
+  imageWithDraw: any;
   constructor(
     private router: Router,
     private transactionService: TransactionService,
@@ -93,6 +95,7 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.createCanvas();
     this.createForm();
     this.simSerialForm.controls.simSerial.valueChanges.subscribe((value) => {
       if (value && value.length === 13) {
@@ -728,5 +731,42 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
       ...this.transaction.data,
       simCard: simCard
     };
+  }
+
+  createCanvas(): void {
+    const imageCard = new Image();
+    const watermarkImage = new Image();
+
+    imageCard.src = 'data:image/png;base64,' + this.transaction.data.customer.imageSmartCard;
+    watermarkImage.src = 'data:image/png;base64,' + RECEIVE_WATERMARK;
+
+    imageCard.onload = () => {
+      this.drawIdCard(imageCard, watermarkImage);
+    };
+  }
+
+  clearCanvas(): void {
+    const canvas: HTMLCanvasElement = (<HTMLCanvasElement>this.drawWatermark.nativeElement);
+    const ctx: CanvasRenderingContext2D = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.restore();
+  }
+
+  drawIdCard(imageCard?: any, watermark?: any): void {
+    const canvas: HTMLCanvasElement = (<HTMLCanvasElement>this.drawWatermark.nativeElement);
+    const ctx: CanvasRenderingContext2D = canvas.getContext('2d');
+    if (ctx) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    if (new RegExp('data:image/png;base64,').test(imageCard.src)) {
+      canvas.width = imageCard.width;
+      canvas.height = imageCard.height;
+      ctx.drawImage(imageCard, 0, 0);
+      ctx.drawImage(watermark, 0, 0, canvas.width, canvas.height);
+    }
+
+    this.transaction.data.customer.imageIdCardWithReceive = canvas.toDataURL('image/jpeg').replace(/^data:image\/jpeg;base64,/, '');
+    this.transactionService.update(this.transaction);
   }
 }

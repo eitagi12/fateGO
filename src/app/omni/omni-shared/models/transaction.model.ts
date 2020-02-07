@@ -201,6 +201,7 @@ export interface Customer {
   isBlockChain?: boolean;
   campaign: string;
   locationDestName: string;
+  imageIdCardWithReceive?: any;
 }
 
 export interface Recipientinformation {
