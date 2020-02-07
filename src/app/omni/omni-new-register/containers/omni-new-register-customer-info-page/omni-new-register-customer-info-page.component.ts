@@ -45,7 +45,8 @@ export class OmniNewRegisterCustomerInfoPageComponent implements OnInit, OnDestr
   }
 
   onBack(): any {
-    window.location.href = `/sales-portal/reserve-stock/verify`;
+    // window.location.href = `/sales-portal/reserve-stock/verify`;
+    window.location.href = `/sales-portal/reserve-stock/verify-omni-new-register`;
   }
 
   onNext(): void {
