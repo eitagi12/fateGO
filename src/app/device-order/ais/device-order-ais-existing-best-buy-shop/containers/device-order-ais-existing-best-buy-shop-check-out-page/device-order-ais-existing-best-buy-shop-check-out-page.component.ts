@@ -40,9 +40,6 @@ export class DeviceOrderAisExistingBestBuyShopCheckOutPageComponent implements O
   onNext(): void {
     if (this.isQrCodePayment()) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_QR_CODE_SUMMARY_PAGE]);
-    } else if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment') ||
-      this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'advancePayment')) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_OMISE_SUMMARY_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_QUEUE_PAGE]);
     }
