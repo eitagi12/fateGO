@@ -128,7 +128,9 @@ export class SharedTransactionService {
     params.data.main_promotion = {
       campaign: priceOption.campaign,
       privilege: priceOption.privilege,
-      trade: this.setPaymentMethod(data.payment || {}, priceOption.trade)
+      trade:
+        transaction.data.transactionType.toLowerCase().includes('asp')
+          ? this.setPaymentMethod(data.payment || {}, priceOption.trade, transaction.data.transactionType) : priceOption.trade
     };
 
     if (data.billingInformation) {
@@ -311,33 +313,48 @@ export class SharedTransactionService {
     return transactionId;
   }
 
-  public setPaymentMethod(payment: any, trade: any): void {
+  public setPaymentMethod(payment: any, trade: any, transactionType: string): void {
     // const trade = priceOption.trade;
     // const payment = transaction.data.payment;
+    if (trade.payments && trade.payments.length > 0) {
+      if (trade.payments[0].method === 'CC/CA') {
+        if (!payment || (payment && !payment.paymentType)) {
+          return trade;
+        }
 
-    if (trade.payments[0].method === 'CC/CA') {
-      if (!payment || (payment && !payment.paymentType)) {
-        return trade;
-      }
-
-      if (payment.paymentType === 'DEBIT') {
-        trade.payments[0].method = 'CA';
+        if (payment.paymentType === 'DEBIT') {
+          trade.payments[0].method = 'CA';
+          return trade;
+        } else {
+          trade.payments[0].method = 'CC';
+          const result = trade.banks.filter((bank) => {
+            return bank.abb === payment.paymentBank.abb;
+          });
+          trade.banks = result;
+          return trade;
+        }
+      } else if (trade.payments[0].method === 'CA') {
         return trade;
       } else {
-        trade.payments[0].method = 'CC';
         const result = trade.banks.filter((bank) => {
-          return bank.abb === payment.paymentBank.abb;
+          if (transactionType === 'NewRegisterMNPASP') {
+            if (bank.abb === payment.paymentBank.abb) {
+              bank.abb = payment.paymentBank.abb;
+              for (const value in bank.installmentDatas) {
+                if (bank.installmentDatas[value] && bank.installmentDatas[value].installmentMounth === payment.paymentBank.month) {
+                  bank.installmentDatas = [bank.installmentDatas[value]];
+                  return bank;
+                }
+              }
+            }
+          } else {
+            return bank.abb === payment.paymentBank.abb;
+          }
         });
         trade.banks = result;
         return trade;
       }
-    } else if (trade.payments[0].method === 'CA') {
-      return trade;
     } else {
-      const result = trade.banks.filter((bank) => {
-        return bank.abb === payment.paymentBank.abb;
-      });
-      trade.banks = result;
       return trade;
     }
   }
