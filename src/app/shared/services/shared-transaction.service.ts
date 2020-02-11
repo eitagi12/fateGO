@@ -338,10 +338,10 @@ export class SharedTransactionService {
       } else {
         const result = trade.banks.filter((bank) => {
           if (transactionType === 'NewRegisterMNPASP') {
-            if (bank.abb === payment.paymentBank.abb) {
-              bank.abb = payment.paymentBank.abb;
+            if (bank.abb === payment.paymentMethod.abb) {
+              bank.abb = payment.paymentMethod.abb;
               for (const value in bank.installmentDatas) {
-                if (bank.installmentDatas[value] && bank.installmentDatas[value].installmentMounth === payment.paymentBank.month) {
+                if (bank.installmentDatas[value] && bank.installmentDatas[value].installmentMounth === payment.paymentMethod.month) {
                   bank.installmentDatas = [bank.installmentDatas[value]];
                   return bank;
                 }
