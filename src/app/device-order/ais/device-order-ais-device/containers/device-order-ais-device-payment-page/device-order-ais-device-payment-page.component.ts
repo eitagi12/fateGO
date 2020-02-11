@@ -524,10 +524,14 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
       this.getRequestAddDeviceSellingCart()
     ).toPromise()
       .then((resp: any) => {
-        this.transaction.data.order = { soId: resp.data.soId };
-        return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-      }).then(() => {
-        this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE]);
+        if (resp.data && resp.data.resultCode === 'S') {
+          this.transaction.data.order = { soId: resp.data.soId };
+          this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+          this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE]);
+        } else {
+          const msg = resp.data && resp.data.resultMessage ? resp.data.resultMessage : 'ระบบไม่สามารถทำรายการได้ในขณะนี้';
+          this.alertService.error(msg);
+        }
       }).catch((error) => this.alertService.error(error));
   }
 
@@ -544,7 +548,6 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
       brand: productStock.brand || productDetail.brand,
       model: productStock.model || productDetail.model,
       qty: '1',
-
       color: productStock.color || productStock.colorName,
       matCode: '',
       priceIncAmt: '',
@@ -564,7 +567,6 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
       soChannelType: 'CSP',
       soDocumentType: 'RESERVED',
       productList: [product],
-
       grandTotalAmt: '',
       preBookingNo: '',
       depositAmt: '',
