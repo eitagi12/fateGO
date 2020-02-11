@@ -69,7 +69,7 @@ export class AppComponent {
     let devAccessToken = '';
     if (this.isDeveloperMode()) {
       // tslint:disable-next-line:max-line-length
-      devAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik1DIiwidGltZXN0YW1wIjoiMjAxOTA5MjAxMDMxIiwibG9jYXRpb25Db2RlIjoiMTEwMCIsImlhdCI6MTU2ODk1MDMzOCwiZXhwIjoyMzY4OTUzOTM4fQ.jlkoOA15SrXnokh9t09q9CGKrhtMBvEWEHwEyV6Gns0';
+      devAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkNIQVRDSEFJSyIsInRpbWVzdGFtcCI6IjIwMTgwNDI2MTUxOCIsImxvY2F0aW9uQ29kZSI6Ijk3NDM5IiwiZW1haWwiOiIiLCJmaXJzdG5hbWUiOiJQYW5pdGFyIiwibGFzdG5hbWUiOiJMT0wiLCJzaGFyZWRVc2VyIjoiUEFOSVRBUiIsInVzZXJUeXBlIjoiQVNQIiwicm9sZSI6IkFTUCIsImNoYW5uZWxUeXBlIjoibXljaGFubmVsLWFwcCIsImFzY0NvZGUiOiIiLCJtb2JpbGVObyI6IiIsImlhdCI6MTUyNDczMDU4MSwiZXhwIjoxNjY3MzIyNTgxfQ.vI0XVEdh-CavTokkUKDVbEXr23wUElm5fjZxRQcTRCM';
     }
     this.tokenService.checkTokenExpired(devAccessToken);
   }

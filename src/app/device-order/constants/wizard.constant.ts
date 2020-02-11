@@ -14,3 +14,8 @@ export const WIZARD_DEVICE_ODER_AIS_DEVICE = [
 export const WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN = [
     'ข้อมูลชำระเงิน', 'เปิดเบอร์ใหม่', 'ระบุข้อมูลย้ายค่าย', 'สินค้าและบริการอื่น', 'สรุปรายการ'
 ];
+
+export const WIZARD_DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN = [
+    // tslint:disable-next-line: max-line-length
+    'สินค้าและโครงการ', 'ตรวจสอบสิทธิ', 'เบอร์และแพ็กเกจ', 'ระบุข้อมูลย้ายค่าย', 'สินค้าและบริการอื่น', 'สรุปรายการ', 'ชำระสินค้า', 'บันทึกการขาย'
+];

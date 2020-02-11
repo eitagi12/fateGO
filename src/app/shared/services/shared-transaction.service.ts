@@ -120,7 +120,8 @@ export class SharedTransactionService {
           isAscCode: !this.tokenService.isAisUser(),
           sellerNo: !!data.seller ? data.seller.sellerNo : '',
           employeeId: data.seller && data.seller.employeeId ? data.seller.employeeId : '',
-          sharedUser: !!data.seller ? data.seller.sharedUser : ''
+          sharedUser: !!data.seller ? data.seller.sharedUser : '',
+          shareUser: !!data.seller ? data.seller.shareUser : ''
         },
         status: data.status || {}
       }
@@ -142,7 +143,9 @@ export class SharedTransactionService {
     params.data.main_promotion = {
       campaign: priceOption.campaign,
       privilege: priceOption.privilege,
-      trade: priceOption.trade
+      trade:
+        transaction.data.transactionType.toLowerCase().includes('asp')
+          ? this.setPaymentMethod(data.payment || {}, priceOption.trade, transaction.data.transactionType) : priceOption.trade
     };
 
     if (data.billingInformation) {
@@ -231,9 +234,7 @@ export class SharedTransactionService {
         if (data.mainPackage) {
           const mainPackage = data.mainPackage.customAttributes || {};
           const findPromotionByMainPackage = this.findPromotions(advancePay, mainPackage.billingSystem);
-
           params.data.air_time.promotions = [findPromotionByMainPackage] || advancePay.promotions;
-
         } else if (!data.mainPackage && data.currentPackage) {
           const billingSystem = ((data.simCard && data.simCard.billingSystem === 'RTBS')
             ? BillingSystemType.IRB : data.simCard.billingSystem) || BillingSystemType.IRB;
@@ -242,6 +243,20 @@ export class SharedTransactionService {
           params.data.air_time.promotions = [findPromotionByMainPackage] || advancePay.promotions;
         }
       }
+
+      const paymentCode: any = {
+        'payment': { 'code': '' }
+      };
+      if (data.advancePayment && data.advancePayment.paymentType) {
+        if (data.advancePayment.paymentType === 'CREDIT') {
+          paymentCode.payment.code = 'CC';
+        } else if (data.advancePayment.paymentType === 'DEBIT') {
+          paymentCode.payment.code = 'CA';
+        } else {
+          paymentCode.payment.code = '';
+        }
+      }
+      params.data.air_time['payment'] = paymentCode.payment;
 
     }
 
@@ -292,7 +307,6 @@ export class SharedTransactionService {
     if (data.mpayPayment) {
       params.data.mpay_payment = data.mpayPayment;
     }
-    console.log('params', params);
     return params;
   }
 
@@ -373,4 +387,49 @@ export class SharedTransactionService {
     return transactionId;
   }
 
+  public setPaymentMethod(payment: any, trade: any, transactionType: string): void {
+    // const trade = priceOption.trade;
+    // const payment = transaction.data.payment;
+    if (trade.payments && trade.payments.length > 0) {
+      if (trade.payments[0].method === 'CC/CA') {
+        if (!payment || (payment && !payment.paymentType)) {
+          return trade;
+        }
+
+        if (payment.paymentType === 'DEBIT') {
+          trade.payments[0].method = 'CA';
+          return trade;
+        } else {
+          trade.payments[0].method = 'CC';
+          const result = trade.banks.filter((bank) => {
+            return bank.abb === payment.paymentBank.abb;
+          });
+          trade.banks = result;
+          return trade;
+        }
+      } else if (trade.payments[0].method === 'CA') {
+        return trade;
+      } else {
+        const result = trade.banks.filter((bank) => {
+          if (transactionType === 'NewRegisterMNPASP') {
+            if (bank.abb === payment.paymentMethod.abb) {
+              bank.abb = payment.paymentMethod.abb;
+              for (const value in bank.installmentDatas) {
+                if (bank.installmentDatas[value] && bank.installmentDatas[value].installmentMounth === payment.paymentMethod.month) {
+                  bank.installmentDatas = [bank.installmentDatas[value]];
+                  return bank;
+                }
+              }
+            }
+          } else {
+            return bank.abb === payment.paymentBank.abb;
+          }
+        });
+        trade.banks = result;
+        return trade;
+      }
+    } else {
+      return trade;
+    }
+  }
 }
