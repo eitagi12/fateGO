@@ -36,10 +36,18 @@ export class OmniNewRegisterSummarySellerCodeComponent implements OnInit {
   }
 
   getASCCode(): any {
-     this.username = this.tokenService.getUser().username;
-    this.http.get(`/api/customerportal/newRegister/getEmployeeDetail/${'username'}/${this.username}`).toPromise().then((response: any) => {
-      this.ascCode = response.data.pin;
-    });
+    this.username = this.tokenService.getUser().username;
+    const ascCode = this.tokenService.getUser().ascCode;
+    const isAisUser = this.tokenService.isAisUser();
+    if (isAisUser) {
+      this.http.get(`/api/customerportal/newRegister/getEmployeeDetail/${'username'}/${this.username}`).toPromise()
+        .then((response: any) => {
+          this.ascCode = response.data.pin;
+        });
+    } else {
+      this.ascCode = ascCode;
+    }
+
   }
 
   setASCCode(): Seller {
