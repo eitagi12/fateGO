@@ -141,11 +141,16 @@ export class DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent imp
                     '/api/salesportal/dt/add-cart-list',
                     this.getRequestAddDeviceSellingCart()
                   ).toPromise().then((response: any) => {
-                    this.transaction.data.order = { soId: response.data.soId };
-                    return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-                  }).then(() => {
-                    this.pageLoadingService.closeLoading();
-                    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CUSTOMER_INFO_PAGE]);
+                    if (response.data && response.data.resultCode === 'S') {
+                      this.transaction.data.order = { soId: response.data.soId };
+                      this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+                      this.pageLoadingService.closeLoading();
+                      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CUSTOMER_INFO_PAGE]);
+                    } else {
+                      const msg = response.data && response.data.resultMessage ? response.data.resultMessage
+                        : 'ระบบไม่สามารถทำรายการได้ในขณะนี้';
+                      this.alertService.error(msg);
+                    }
                   });
                 });
               });

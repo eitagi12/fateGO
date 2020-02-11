@@ -192,11 +192,15 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
       this.getRequestAddDeviceSellingCart()
     ).toPromise()
       .then((resp: any) => {
-        this.transaction.data.order = { soId: resp.data.soId };
-        return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-      }).then(() => {
-        this.transaction.data.action = TransactionAction.KEY_IN;
-        this.checkRoutePath();
+        if (resp.data && resp.data.resultCode === 'S') {
+          this.transaction.data.order = { soId: resp.data.soId };
+          this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+          this.transaction.data.action = TransactionAction.KEY_IN;
+          this.checkRoutePath();
+        } else {
+          const msg = resp.data && resp.data.resultMessage ? resp.data.resultMessage : 'ระบบไม่สามารถทำรายการได้ในขณะนี้';
+          this.alertService.error(msg);
+        }
       });
   }
 
@@ -224,7 +228,6 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
       brand: productDetail.brand || productStock.brand,
       model: productDetail.model || productStock.model,
       qty: '1',
-
       color: productStock.color || productStock.colorName,
       matCode: '',
       priceIncAmt: '' + trade.normalPrice,
@@ -244,7 +247,6 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
       soChannelType: 'CSP',
       soDocumentType: 'RESERVED',
       productList: [product],
-
       grandTotalAmt: '',
       preBookingNo: '',
       depositAmt: '',
