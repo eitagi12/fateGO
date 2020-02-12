@@ -57,7 +57,7 @@ export class CreateEcontractService {
       contract: mainPackage.durationContract,
       packageDetail: mainPackage.mainPackageDesc,
       airTimeDiscount: this.getAirTimeDiscount(amount, payAdvanceDiscount) || 0,
-      airTimeMonth: mainPackage.amount || '',
+      airTimeMonth: amount || '',
       price: this.transformDecimalPipe(+productPrice + (+productDiscount)),
       signature: '',
       mobileCarePackageTitle: '',
