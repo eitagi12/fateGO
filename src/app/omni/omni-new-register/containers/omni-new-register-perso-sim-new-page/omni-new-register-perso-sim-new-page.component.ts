@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { Transaction, SimCard } from 'src/app/omni/omni-shared/models/transaction.model';
+import { Transaction, SimCard, TransactionAction } from 'src/app/omni/omni-shared/models/transaction.model';
 import { WIZARD_OMNI_NEW_REGISTER } from 'src/app/omni/constants/wizard.constant';
 import { TransactionService } from 'src/app/omni/omni-shared/services/transaction.service';
 import { ROUTE_OMNI_NEW_REGISTER_EAPPLICATION_PAGE, ROUTE_OMNI_NEW_REGISTER_RESULT_PAGE } from '../../constants/route-path.constant';
@@ -737,7 +737,12 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
     const imageCard = new Image();
     const watermarkImage = new Image();
 
-    imageCard.src = 'data:image/png;base64,' + this.transaction.data.customer.imageSmartCard;
+    if (this.transaction.data.action === TransactionAction.KEY_IN) {
+      imageCard.src = 'data:image/png;base64,' + this.transaction.data.customer.imageSmartCard;
+    } else {
+      imageCard.src = this.transaction.data.customer.imageReadSmartCard;
+    }
+
     watermarkImage.src = 'data:image/png;base64,' + RECEIVE_WATERMARK;
 
     imageCard.onload = () => {
