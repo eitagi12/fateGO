@@ -7,10 +7,10 @@ import { Router } from '@angular/router';
 import {
   ROUTE_OMNI_NEW_REGISTER_VALIDATE_CUSTOMER_PAGE,
   ROUTE_OMNI_NEW_REGISTER_ID_CARD_CAPTURE_PAGE,
+  ROUTE_OMNI_NEW_REGISTER_FACE_CAPTURE_PAGE,
 } from 'src/app/omni/omni-new-register/constants/route-path.constant';
 import { TransactionService } from 'src/app/omni/omni-shared/services/transaction.service';
-import { Transaction } from 'src/app/omni/omni-shared/models/transaction.model';
-
+import { Transaction, TransactionAction } from 'src/app/omni/omni-shared/models/transaction.model';
 @Component({
   selector: 'app-omni-new-register-customer-info-page',
   templateUrl: './omni-new-register-customer-info-page.component.html',
@@ -50,7 +50,11 @@ export class OmniNewRegisterCustomerInfoPageComponent implements OnInit, OnDestr
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_OMNI_NEW_REGISTER_ID_CARD_CAPTURE_PAGE]);
+    if (this.transaction.data.action === TransactionAction.KEY_IN) {
+      this.router.navigate([ROUTE_OMNI_NEW_REGISTER_ID_CARD_CAPTURE_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_OMNI_NEW_REGISTER_FACE_CAPTURE_PAGE]);
+    }
   }
 
   onHome(): void {

@@ -62,7 +62,11 @@ export class OmniNewRegisterValidateCustomerKeyInPageComponent implements OnInit
 
   onNext(): void {
     if (this.checkBusinessLogic()) {
-      this.router.navigate([ROUTE_OMNI_NEW_REGISTER_ID_CARD_CAPTURE_PAGE]);
+      if (this.transaction.data.action === TransactionAction.KEY_IN) {
+        this.router.navigate([ROUTE_OMNI_NEW_REGISTER_ID_CARD_CAPTURE_PAGE]);
+      } else {
+        this.router.navigate([ROUTE_OMNI_NEW_REGISTER_FACE_CAPTURE_PAGE]);
+      }
     }
   }
 
