@@ -169,7 +169,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
       }
     });
 
-    if (this.transaction.data.simCard.mobileNo) {
+    if (this.transaction.data.simCard.mobileNo && this.transaction.data.simCard.persoSim === true) {
       this.setConfigPersoSim().then((res: any) => {
         this.persoSimWebsocket();
       });
@@ -188,9 +188,10 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
         this.isNext = !this.currentStatus;
       }
       if (persoSim.error) {
-        this.persoSimSubscription.unsubscribe();
-        this.persoSimWebsocket();
-        this.alertService.error(this.translateService.instant(this.ERROR_PERSO));
+        this.alertService.error(this.translateService.instant(this.ERROR_PERSO)).then(() => {
+          this.persoSimSubscription.unsubscribe();
+          this.persoSimWebsocket();
+        });
       }
     });
   }
