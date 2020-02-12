@@ -770,6 +770,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
 
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
+    this.persoSimSubscription.unsubscribe();
     clearInterval(this.persoSimInterval);
     clearTimeout(this.timeoutCheckOrderStatus);
     clearTimeout(this.timeoutCreatePersoSim);
