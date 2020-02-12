@@ -37,7 +37,7 @@ export class ValidateCustomerService {
       params: {
         identity: idCardNo,
         idCardType: idCardType,
-        transactionType: 'NewRegisterAIS'
+        transactionType: transactionType
       }
     }).toPromise();
   }
