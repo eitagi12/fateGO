@@ -70,13 +70,13 @@ export class DeviceOrderAisExistingBestBuyShopMobileDetailPageComponent implemen
     const mobileNo = this.transaction.data.simCard.mobileNo;
     this.http.get(`/api/customerportal/mobile-detail/${mobileNo}`).toPromise().then((response: any) => {
       const mobileDetail = response.data || {};
-      const serviceYear = mobileDetail.serviceYear;
+      const serviceYear = mobileDetail.serviceYear || {};
       this.mobileInfo = {
         mobileNo: mobileNo,
         chargeType: this.mapChargeType(mobileDetail.chargeType),
         status: mobileDetail.mobileStatus,
         sagment: mobileDetail.mobileSegment,
-        serviceYear: this.serviceYearWording(serviceYear.year, serviceYear.month, serviceYear.day),
+        serviceYear: this.serviceYearWording(serviceYear.year || '0', serviceYear.month || '0', serviceYear.day || '0'),
         mainPackage: mobileDetail.packageTitle
       };
 
