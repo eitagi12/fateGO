@@ -51,7 +51,7 @@ export class OmniNewRegisterEapplicationPageComponent implements OnInit, OnDestr
 
   callServiceV2(transaction: Transaction): void {
     this.createEapplicationService.createEapplicationV2(transaction).then(res => {
-      this.getDataBase64Eapp = 'data:image/jpeg;base64,' + res.data;
+      this.getDataBase64Eapp = res.data;
     }).then(() => {
       this.pageLoadingService.closeLoading();
     });
