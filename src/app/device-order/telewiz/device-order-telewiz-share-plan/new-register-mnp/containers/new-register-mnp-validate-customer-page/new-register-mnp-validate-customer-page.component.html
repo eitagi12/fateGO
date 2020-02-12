@@ -34,6 +34,7 @@
         </div>
         <mc-footer>
             <button class="btn btn-secondary col-md-2" (click)="onBack()">BACK</button>
-            <button class="btn btn-secondary col-md-2" [disabled]="!activeNextBtn" (click)="onNext()">NEXT</button>
+            <button class="btn btn-secondary col-md-2" *ngIf="!activeNextBtn" [disabled]="!activeNextBtn" (click)="onNext()">NEXT</button>
+            <button class="btn btn-success col-md-2" *ngIf="activeNextBtn" (click)="onNext()">NEXT</button>
         </mc-footer>
     </div>

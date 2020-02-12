@@ -402,11 +402,9 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
   readCardflowPC(): void {
     // this.readCard = { progress: 10 };
     this.readCardSubscription = this.readCardService.onReadCard().subscribe((readCard: ReadCard) => {
-      console.log('find image ----', readCard.progress);
       this.readCard = readCard;
       this.progress = readCard.progress;
       const valid = !!(readCard.progress >= 100 && readCard.profile);
-      console.log('valid', valid);
       if (readCard.error) {
         this.showProgress = false;
         this.profile = null;
@@ -433,14 +431,11 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
   }
 
   setTransaction(customer: any): void {
-    console.log('customer -->', customer);
     this.transaction.data.customer = this.mapCustomer(customer);
     if (this.transaction.transactionId) {
-      console.log('1');
       this.pageLoadingService.closeLoading();
       this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
     } else {
-      console.log('2');
       const transactionObject: any = this.validateCustomerService.buildTransaction({
         transaction: this.transaction,
         transactionType: TransactionType.DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN // Share
@@ -450,17 +445,13 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
       this.transaction.issueBy = transactionObject.issueBy;
       this.transaction.createBy = transactionObject.create_by;
       this.transaction.createDate = transactionObject.createDate;
-      console.log(' this.transaction.transactionId', this.transaction.transactionId);
-      console.log('transactionObject', transactionObject);
       this.validateCustomerService.createTransaction(transactionObject).then((response: any) => {
         this.pageLoadingService.closeLoading();
         if (response.data.isSuccess) {
-          console.log('3');
           this.transaction = transactionObject;
           // this.createTransaction(transactionObject);
           this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
         } else {
-          console.log('4');
           this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
         }
       }).catch((error: any) => {

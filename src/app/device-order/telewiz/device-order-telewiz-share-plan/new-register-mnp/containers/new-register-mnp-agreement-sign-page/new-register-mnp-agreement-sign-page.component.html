@@ -30,7 +30,7 @@
 
                             <div [hidden]="!(!isAllowCapture() || hasImageSmartCard())">
                                 <div class="img-result">
-                                    <div *ngIf="!isReadCard">
+                                    <div * ngIf="!isReadCard">
                                         <canvas #signImage [class]="'captured-image'"></canvas>
                                         <!-- <img *ngIf="captureAndSign.imageSignature && isDrawing " class="capture-and-sign " alt=" " /> -->
                                     </div>
