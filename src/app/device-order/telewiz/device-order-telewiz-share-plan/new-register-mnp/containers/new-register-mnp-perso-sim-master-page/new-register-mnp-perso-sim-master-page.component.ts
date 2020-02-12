@@ -169,7 +169,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
       }
     });
 
-    if (this.transaction.data.simCard.mobileNo) {
+    if (this.transaction.data.simCard.mobileNo && this.transaction.data.simCard.persoSim === true) {
       this.setConfigPersoSim().then((res: any) => {
         this.persoSimWebsocket();
       });
