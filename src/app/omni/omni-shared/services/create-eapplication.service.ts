@@ -32,7 +32,6 @@ export class CreateEapplicationService {
 
   getRequestEapplication(transaction: Transaction): any {
     const customer: any = transaction.data.customer;
-    const action: any = transaction.data.action;
     const mainPackage: any = transaction.data.mainPackage || {};
     const simCard: any = transaction.data.cusMobileNo || {};
     const billingInformation = transaction.data.billingInformation;
@@ -41,7 +40,7 @@ export class CreateEapplicationService {
 
     const data: any = {
       fullNameTH: customer.firstName + ' ' + customer.lastName || '',
-      idCard: customer.idCardNo || '',
+      idCard: this.privateIdcard(customer.idCardNo) || '',
       birthDate: customer.birthdate || '',
       customerPincode: '',
       chargeType: '',
@@ -87,7 +86,7 @@ export class CreateEapplicationService {
 
     const data: any = {
       fullNameTH: customer.firstName + ' ' + customer.lastName || '',
-      idCard: this.privateIdcard(transaction.data.cardId) || '',
+      idCard: this.privateIdcard(customer.idCardNo) || '',
       idCardType: customer.idCardType || '',
       birthDate: customer.birthdate || '',
       today: Date.now(),
@@ -134,7 +133,7 @@ export class CreateEapplicationService {
     return data;
   }
 
-  private privateIdcard(cardId: string): string {
-    return cardId.replace(/^[0-9]{9}/, 'XXXXXXXXX');
+  private privateIdcard(idCardNo: string): string {
+    return idCardNo.replace(/^[0-9]{9}/, 'XXXXXXXXX');
   }
 }

@@ -11,8 +11,6 @@ import { TransactionService } from './transaction.service';
 })
 export class CreateEcontractService {
 
-  amount: number = 12;
-
   constructor(
     private http: HttpClient,
     private decimalPipe: DecimalPipe,
@@ -30,15 +28,15 @@ export class CreateEcontractService {
   getRequestEContractV2(transaction: Transaction, condition: any): Promise<any> {
     const campaign: any = transaction.data.campaign || '';
     const customer: any = transaction.data.customer || '';
-    const idCard: any = transaction.data.cardId || '';
+    const idCard: any = transaction.data.customer.idCardNo || '';
     const simCard: any = transaction.data.cusMobileNo || '';
     const mainPackage: any = (transaction.data.mainPackage || transaction.data.currentPackage) || {};
-    const promotionByMainPackage = mainPackage;
     const advancePay = transaction.data.mainPackage.payAdvance || '';
     const productPrice = transaction.data.productPrice;
     const productDiscount = transaction.data.productDiscount;
     const payAdvanceDiscount = transaction.data.mainPackage.payAdvanceDiscount;
     const locationFromSeller = transaction.data.locationDestName;
+    const amount = transaction.data.mainPackage.durationMonthlyFee;
 
     const data: any = {
       campaignName: campaign.campaignName,
@@ -58,8 +56,8 @@ export class CreateEcontractService {
       advancePay: advancePay,
       contract: mainPackage.durationContract,
       packageDetail: mainPackage.mainPackageDesc,
-      airTimeDiscount: this.getAirTimeDiscount(this.amount, payAdvanceDiscount) || 0,
-      airTimeMonth: this.amount,
+      airTimeDiscount: this.getAirTimeDiscount(amount, payAdvanceDiscount) || 0,
+      airTimeMonth: mainPackage.amount || '',
       price: this.transformDecimalPipe(+productPrice + (+productDiscount)),
       signature: '',
       mobileCarePackageTitle: '',
