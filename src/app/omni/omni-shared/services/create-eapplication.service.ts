@@ -115,7 +115,7 @@ export class CreateEapplicationService {
       fullNameEN: `${(customer.firstNameEn || '-')} ${(customer.lastNameEn || '')}`,
       issueDate: customer.issueDate || '',
       expireDate: customer.expireDate || '',
-      signature: 'data:image/jpeg;base64,' + customer.imageSignature || '',
+      signature: customer.imageSignature || '',
       language: 'TH',
     };
 
