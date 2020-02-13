@@ -740,7 +740,7 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
     if (this.transaction.data.action === TransactionAction.KEY_IN) {
       imageCard.src = 'data:image/png;base64,' + this.transaction.data.customer.imageSmartCard;
     } else {
-      imageCard.src = this.transaction.data.customer.imageReadSmartCard;
+      imageCard.src = 'data:image/png;base64,' + this.transaction.data.customer.imageReadSmartCard;
     }
 
     watermarkImage.src = 'data:image/png;base64,' + RECEIVE_WATERMARK;
