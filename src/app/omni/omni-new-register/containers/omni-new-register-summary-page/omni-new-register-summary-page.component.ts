@@ -4,7 +4,8 @@ import {
   ROUTE_OMNI_NEW_REGISTER_FACE_CONFIRM_PAGE,
   ROUTE_OMNI_NEW_REGISTER_ECONTRACT_PAGE,
   ROUTE_OMNI_NEW_REGISTER_ฺBILLING_INFO_PAGE,
-  ROUTE_OMNI_NEW_REGISTER_FACE_COMPARE_PAGE
+  ROUTE_OMNI_NEW_REGISTER_FACE_COMPARE_PAGE,
+  ROUTE_OMNI_NEW_REGISTER_EBILLING_PAGE
 } from 'src/app/omni/omni-new-register/constants/route-path.constant';
 import { Router } from '@angular/router';
 
@@ -95,10 +96,15 @@ export class OmniNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
 
     this.billingInfo = {
       billingAddress: {
-        text: (billCycleData ? billCycleData.billAddressText : null) || customerAddress
+        text: (billCycleData ? billCycleData.billAddressText : null) || customerAddress,
+        isEdit: true
       },
       billingCycle: {
-        text: billCycle.bill
+        text: billCycle.bill,
+        isEdit: true,
+        onEdit: () => {
+          this.router.navigate([ROUTE_OMNI_NEW_REGISTER_EBILLING_PAGE]);
+        },
       },
     };
 
