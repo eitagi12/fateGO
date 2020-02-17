@@ -122,8 +122,10 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
   user: User;
 
   simPresentSubscription: Subscription;
-  ws: WebSocket = new WebSocket(`${environment.WEB_CONNECT_URL}/SIMManager`);
+  checkStatusSim: string;
+  simProgress: number;
 
+  ws: any = new WebSocket(`${environment.WEB_CONNECT_URL}/SIMManager`);
   public simSerialForm: any = this.fb.group({
     simSerial: ['', [
       Validators.minLength(this.minLength),
@@ -168,30 +170,62 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
         this.verifySimSerialByBarcode(value);
       }
     });
-
     if (this.transaction.data.simCard.mobileNo && this.transaction.data.simCard.persoSim === true) {
       this.setConfigPersoSim().then((res: any) => {
         this.persoSimWebsocket();
       });
     }
+
+    this.onChecSim();
   }
 
   persoSimWebsocket(): void {
+
     console.log('Start read sim on PC');
     // for pc
     this.persoSimSubscription = this.persoSimService.onPersoSim(this.persoSimConfig).subscribe((persoSim: any) => {
       console.log('persoSim-->', persoSim);
+
       this.persoSim = persoSim;
+      this.simProgress = persoSim.progress;
+      console.log('this.simProgress', this.simProgress);
       if (persoSim.persoData && persoSim.persoData.simSerial) {
         this.transaction.data.simCard.simSerial = persoSim.persoData.simSerial;
         this.currentStatus = false;
-        this.isNext = !this.currentStatus;
+        // this.isNext = !this.currentStatus;
+        this.simProgress = persoSim.progress === 100 ? 100 : 100;
+        this.persoSimSubscription.unsubscribe();
       }
       if (persoSim.error) {
-        this.alertService.error(this.translateService.instant(this.ERROR_PERSO)).then(() => {
-          this.persoSimSubscription.unsubscribe();
+        console.log('!!!!! persoSim.error !!!!!!', persoSim.error);
+        this.alertService.error(this.translateService.instant(this.ERROR_PERSO)).then((res) => {
+          console.log('push SUCCESS !!!!', res);
+          // this.persoSimSubscription.unsubscribe();
+          console.log('setConfigPersoSim inside ERROR!!!!!! ');
+          // this.setConfigPersoSim().then(() => {
+          //   console.log('setConfigPersoSim inside ERROR!!!!!! in then')
           this.persoSimWebsocket();
+          //   // this.onChecSim();
+          // });
         });
+      }
+
+      // console.log(' this.simProgress', this.simProgress);
+      // if (this.simProgress == 0) {
+      //   console.log('Set sero')
+      // }
+    });
+    this.onChecSim();
+  }
+
+  onChecSim(): any {
+    console.log('simProgress');
+    this.persoSimFromWebSocket(this.persoSimConfig).subscribe((res) => {
+      console.log('|||||||||||||||::::', res);
+      console.log('PPPPPPP', this.checkStatusSim);
+      if (this.checkStatusSim === 'Connected') {
+        this.isNext = false;
+        console.log('Still connecting...');
       }
     });
   }
@@ -228,6 +262,147 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
         }).toPromise();
       }
     };
+  }
+
+  persoSimFromWebSocket(persoSimConfig: PersoSimConfig): any {
+    return new Observable(observer => {
+      if (!WebSocket) {
+        observer.next({
+          // error: this.ERROR_BROWSER_NOT_SUPPORTED
+        });
+        return;
+      }
+
+      this.persoSimConfig = persoSimConfig;
+
+      const data: any = {
+        progress: 0,
+        persoData: null,
+        error: null,
+        eventName: null
+      };
+
+      // config sim perso
+      const timeOutCardPresent = 15;
+      let checkCardPresent = 0;
+
+      // interval
+      console.log('|||responsefromserver|||', this.ws);
+      this.ws.onmessage = evt => {
+
+        const msg = JSON.parse(evt.data);
+        this.checkStatusSim = msg.Result;
+        console.log('|||evt|||', msg.Result);
+        switch (msg.Command) {
+          case PersoSimCommandEvent.EVENT_CONNECT_LIB:
+            data.progress = 0;
+            data.eventName = PersoSimCommandEvent.EVENT_CONNECT_LIB;
+            this.checkSimPresent(this.ws);
+            break;
+          case PersoSimCommandEvent.EVENT_CONNECT_SIM_READER:
+            data.progress = 0;
+            data.eventName = PersoSimCommandEvent.EVENT_CONNECT_SIM_READER;
+            if (msg.Result === 'Connected' || msg.Result === 'Present') {
+              console.log('IF Connected ...');
+              this.isNext = true;
+              clearInterval(this.intervalCheckSimPresent);
+              observer.next({ progress: 10 });
+              // this.readSim(ws);
+            } else {
+              this.isNext = false;
+              if (++checkCardPresent > timeOutCardPresent) {
+                clearInterval(this.intervalCheckSimPresent);
+                // data.error = PersoSimError.EVENT_CONNECT_SIM_EMTRY + ': SIM CARD not found';
+              }
+            }
+            break;
+          // case PersoSimCommandEvent.EVENT_READ_SIM:
+          //     data.progress = 30;
+          //     data.eventName = PersoSimCommandEvent.EVENT_READ_SIM;
+          //     const serialSim = msg.Result.split('|||');
+          //     if (serialSim[0] === 'TRUE') {
+          //       simSerial = serialSim[1].slice(6);
+          //       this.getPersoDataCommand(serialSim[1].slice(6), serialSim[3])
+          //         .then((dataPerso: any) => {
+          //           sk = dataPerso.sk;
+          //           refNo = dataPerso.refNo;
+          //           eCommand = dataPerso.eCommand;
+          //           this.persoSim(ws, eCommand);
+          //         }).catch((err) => {
+          //           data.error = PersoSimError.ERROR_SERVICE_GET_PERSO_COMMAND + ': ' + err;
+          //           observer.next(data);
+          //         });
+          //     } else {
+          //       data.error = PersoSimError.ERROR_READ_SIM;
+          //     }
+          //   break;
+          // case PersoSimCommandEvent.EVENT_PERSO_SIM:
+          //     data.progress = 60;
+          //     data.eventName = PersoSimCommandEvent.EVENT_PERSO_SIM;
+          //     const persoStatus = msg.Result.split('|||');
+          //     if (persoStatus[0] === 'TRUE') {
+          //       this.getOrderPersoSim(refNo).then(() => {
+          //           data.progress = 80;
+          //           data.eventName = PersoSimCommandEvent.EVENT_PERSO_SIM;
+          //           observer.next(data);
+          //           this.checkOrderPersoSim(refNo).then(() => {
+          //               // persoSim เสร็จ
+          //               data.persoData = { eCommand: eCommand, refNo: refNo, simSerial: simSerial, sk: sk};
+          //               data.progress = 100;
+          //               data.eventName = PersoSimCommandEvent.EVENT_PERSO_SIM;
+          //               observer.next(data);
+
+          //             }).catch(() => {
+          //               data.error = PersoSimError.ERROR_SERVICE_CHECK_ORDER;
+          //             });
+          //         }).catch((err) => {
+          //           data.eventName = PersoSimCommandEvent.EVENT_PERSO_SIM;
+          //           data.error = PersoSimError.ERROR_SERVICE_CREATE_ORDER + ': ' + err;
+          //           observer.next(data);
+          //         });
+          //     } else {
+          //       data.error = PersoSimError.ERROR_WRITE_SIM;
+          //     }
+          //   break;
+        }
+
+        observer.next(data);
+      };
+
+      this.ws.onopen = () => {
+        this.persoSimConfig.serviceGetPrivateKey()
+          .then((result: any) => {
+            // Connect lib
+            this.ws.send(
+              JSON.stringify({
+                Command: PersoSimCommandEvent.EVENT_CONNECT_LIB,
+                Parameter: result.data.privateKey
+              })
+            );
+          })
+          .catch((err) => {
+            const errRespon = err.error.developerMessage || '';
+            // data.error = PersoSimError.ERROR_SERVICE_GET_PRIVATE_KEY + ': ' + errRespon;
+            observer.next(data);
+          });
+      };
+
+      this.ws.onerror = evt => {
+        // data.error = PersoSimError.ERROR_WEB_SOCKET + ': WebSocket connection error to /SIMManager';
+        observer.next(data);
+      };
+    });
+  }
+
+  checkSimPresent(ws: any): any {
+    this.intervalCheckSimPresent = setInterval(() => {
+      ws.send(
+        JSON.stringify({
+          Command: PersoSimCommandEvent.EVENT_CONNECT_SIM_READER,
+          Parameter: ''
+        })
+      );
+    }, 3000);
   }
 
   verifySimSerialByBarcode(barcode: string): void {
