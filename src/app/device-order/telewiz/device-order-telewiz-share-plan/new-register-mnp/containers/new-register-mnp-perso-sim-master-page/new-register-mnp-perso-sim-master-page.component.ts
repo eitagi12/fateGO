@@ -66,7 +66,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
 
   title: string;
   isManageSim: boolean;
-  persoSimSubscription: Subscription;
+  persoSimSubscription: any;
   errorMessage: string;
   persoSim: any;
   transaction: Transaction;
@@ -124,6 +124,8 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
   simPresentSubscription: Subscription;
   checkStatusSim: string;
   simProgress: number;
+  simStatus: any;
+  persoSimConfig2: any;
 
   ws: any = new WebSocket(`${environment.WEB_CONNECT_URL}/SIMManager`);
   public simSerialForm: any = this.fb.group({
@@ -179,12 +181,13 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
     this.onChecSim();
   }
 
-  persoSimWebsocket(): void {
+  persoSimWebsocket(): any {
 
     console.log('Start read sim on PC');
     // for pc
     this.persoSimSubscription = this.persoSimService.onPersoSim(this.persoSimConfig).subscribe((persoSim: any) => {
       console.log('persoSim-->', persoSim);
+      console.log('this.persoSimSubscription-->', this.persoSimSubscription);
 
       this.persoSim = persoSim;
       this.simProgress = persoSim.progress;
@@ -204,8 +207,17 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
           console.log('setConfigPersoSim inside ERROR!!!!!! ');
           // this.setConfigPersoSim().then(() => {
           //   console.log('setConfigPersoSim inside ERROR!!!!!! in then')
-          this.persoSimWebsocket();
-          //   // this.onChecSim();
+          // clearInterval(this.persoSimSubscription);
+          // clearInterval(this.simStatus);
+          // this.persoSimSubscription.unsubscribe();
+          // this.simStatus.unsubscribe();
+            this.setConfigPersoSim2().then(() => {
+              this.onChecSim();
+            });
+          // this.setConfigPersoSim2().then((res) => {
+          //   this.onChecSim();
+          // });
+
           // });
         });
       }
@@ -215,17 +227,22 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
       //   console.log('Set sero')
       // }
     });
-    this.onChecSim();
+    this.setConfigPersoSim2().then((res) => {
+      this.onChecSim();
+    });
   }
 
   onChecSim(): any {
-    console.log('simProgress');
-    this.persoSimFromWebSocket(this.persoSimConfig).subscribe((res) => {
+    console.log('simProgress ====> >>>>>>>>>>>>');
+    this.simStatus = this.persoSimFromWebSocket(this.persoSimConfig2).subscribe((res) => {
       console.log('|||||||||||||||::::', res);
       console.log('PPPPPPP', this.checkStatusSim);
       if (this.checkStatusSim === 'Connected') {
         this.isNext = false;
         console.log('Still connecting...');
+      } else {
+        // clearInterval(this.simStatus);
+        // this.simStatus.unsubscribe();
       }
     });
   }
@@ -264,7 +281,42 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
     };
   }
 
+  async setConfigPersoSim2(): Promise<any> {
+    return this.persoSimConfig2 = await {
+      serviceGetPrivateKey: () => {
+        return this.http.post('/api/customerportal/newRegister/getPrivateKeyCommand', {
+          params: {}
+        }).toPromise();
+      },
+      serviceGetPersoDataCommand: (serialNo: string, indexNo: string) => {
+        return this.http.get('/api/customerportal/newRegister/queryPersoData', {
+          params: {
+            indexNo: indexNo,
+            serialNo: serialNo,
+            mobileNo: this.transaction.data.simCard.mobileNo,
+            simService: 'Normal'
+          }
+        }).toPromise();
+      },
+      serviceCreateOrderPersoSim: (refNo: string) => {
+        return this.http.get('/api/customerportal/newRegister/createPersoSim', {
+          params: {
+            refNo: refNo
+          }
+        }).toPromise();
+      },
+      serviceCheckOrderPersoSim: (refNo: string) => {
+        return this.http.get('/api/customerportal/newRegister/checkOrderStatus', {
+          params: {
+            refNo: refNo
+          }
+        }).toPromise();
+      }
+    };
+  }
+
   persoSimFromWebSocket(persoSimConfig: PersoSimConfig): any {
+    console.log('persoSimConfig --->', persoSimConfig);
     return new Observable(observer => {
       if (!WebSocket) {
         observer.next({
@@ -273,7 +325,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
         return;
       }
 
-      this.persoSimConfig = persoSimConfig;
+      this.persoSimConfig2 = persoSimConfig;
 
       const data: any = {
         progress: 0,
@@ -370,7 +422,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
       };
 
       this.ws.onopen = () => {
-        this.persoSimConfig.serviceGetPrivateKey()
+        this.persoSimConfig2.serviceGetPrivateKey()
           .then((result: any) => {
             // Connect lib
             this.ws.send(

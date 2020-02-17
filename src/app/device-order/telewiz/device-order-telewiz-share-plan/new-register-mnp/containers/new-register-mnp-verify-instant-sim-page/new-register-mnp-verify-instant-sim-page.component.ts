@@ -12,6 +12,8 @@ import {
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { VerifyInstantSimService } from '../../services/verify-instant-sim.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 
 declare let window: any;
 declare let $: any;
@@ -40,7 +42,7 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
   isSimSerial: boolean;
 
   mockSimSerial: any = '<barcode>1720202094595</barcode>';
-
+  priceOption: PriceOption;
   constructor(
     private router: Router,
     private transactionService: TransactionService,
@@ -50,8 +52,10 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
     private fb: FormBuilder,
     private zone: NgZone,
     private verifyInstantSimService: VerifyInstantSimService,
-    private translationService: TranslateService
+    private translationService: TranslateService,
+    private priceOptionService: PriceOptionService
   ) {
+    this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
   }
 
@@ -170,7 +174,7 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
       .catch((resp) => {
         let errMessage: string;
         if (resp.error && resp.error.developerMessage) {
-            errMessage = 'หมายเลขนี้ ไม่สามารถทำรายการได้ กรุณาเลือกหมายเลขใหม่';
+          errMessage = 'หมายเลขนี้ ไม่สามารถทำรายการได้ กรุณาเลือกหมายเลขใหม่';
         }
         this.pageLoadingService.closeLoading();
         this.simSerialValid = false;
@@ -226,7 +230,8 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
         this.transaction.data.simCard = {
           mobileNo: this.simSerial.mobileNo,
           simSerial: this.simSerial.simSerial,
-          persoSim: false
+          persoSim: false,
+          imei: this.priceOption.productDetail.imei ? this.priceOption.productDetail.imei : ''
         };
         this.pageLoadingService.closeLoading();
       }

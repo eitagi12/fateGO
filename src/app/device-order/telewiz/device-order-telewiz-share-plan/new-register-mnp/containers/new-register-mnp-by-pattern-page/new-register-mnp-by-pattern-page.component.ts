@@ -13,6 +13,8 @@ import {
 } from '../../constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { RemoveCartService } from '../../services/remove-cart.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 @Component({
   selector: 'app-new-register-mnp-by-pattern-page',
   templateUrl: './new-register-mnp-by-pattern-page.component.html',
@@ -23,6 +25,7 @@ export class NewRegisterMnpByPatternPageComponent implements OnInit, OnDestroy {
 
   shoppingCart: ShoppingCart;
   transaction: Transaction;
+  priceOption: PriceOption;
   mobileNoConditions: MobileNoCondition[];
   mobileNo: MobileNo;
   user: User;
@@ -35,9 +38,11 @@ export class NewRegisterMnpByPatternPageComponent implements OnInit, OnDestroy {
     private alertService: AlertService,
     private http: HttpClient,
     private shoppingCartService: ShoppingCartService,
-    private removeCartService: RemoveCartService
+    private removeCartService: RemoveCartService,
+    private priceOptionService: PriceOptionService
   ) {
     this.transaction = this.transactionService.load();
+    this.priceOption = this.priceOptionService.load();
     this.user = this.tokenService.getUser();
   }
 
@@ -120,7 +125,8 @@ export class NewRegisterMnpByPatternPageComponent implements OnInit, OnDestroy {
         if (data.returnCode === '008') {
           this.transaction.data.simCard = {
             mobileNo: mobileNo,
-            persoSim: true
+            persoSim: true,
+            imei: this.priceOption.productDetail.imei ? this.priceOption.productDetail.imei : ''
           };
           this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_PACKAGE_PAGE]);
           return;

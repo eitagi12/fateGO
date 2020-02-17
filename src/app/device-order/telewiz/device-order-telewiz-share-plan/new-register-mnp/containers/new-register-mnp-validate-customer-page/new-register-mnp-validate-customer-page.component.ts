@@ -3,9 +3,9 @@ import { FormGroup, Validators, ValidatorFn, AbstractControl, FormControl } from
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ } from 'src/app/device-order/constants/wizard.constant';
 import { ValidateCustomerService } from 'src/app/shared/services/validate-customer.service';
 import { PageLoadingService, AlertService, Utils, User, TokenService } from 'mychannel-shared-libs';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE, ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE } from '../../constants/route-path.constant';
-import { Transaction, Order, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { Transaction, Order, TransactionType, TransactionAction, SimCard } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Subscription } from 'rxjs';
@@ -33,6 +33,8 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
 
   ID_CARD: string = 'ID_CARD';
   IMM_CARD: string = 'IMM_CARD';
+  imei: string;
+  simCard: SimCard;
 
   identityFormSubscripe: Subscription;
 
@@ -68,7 +70,8 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     private utils: Utils,
     private priceOptionService: PriceOptionService,
     private tokenService: TokenService,
-    private removeCartService: RemoveCartService
+    private removeCartService: RemoveCartService,
+    private route: ActivatedRoute
   ) {
     this.placeholder = this.placeholder || 'เลขบัตรประชาชน';
     this.transaction = this.transactionService.load();
@@ -80,6 +83,12 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     this.buildForm();
     this.createTransaction();
     // localStorage.setItem('priceOption', JSON.stringify(this.priceOptionMock));
+    this.route.paramMap.subscribe(params => {
+      this.imei = params.get('imei');
+      this.priceOption.productDetail.imei = this.imei;
+    });
+    this.priceOption.productDetail.imei = this.imei ? this.imei : '';
+    this.priceOptionService.update(this.priceOption);
   }
 
   buildForm(): void {
@@ -87,7 +96,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
       'identity': new FormControl('', [Validators.required, Validators.minLength(13)])
     });
 
-    this.identityFormSubscripe =  this.identityForm.controls['identity'].valueChanges
+    this.identityFormSubscripe = this.identityForm.controls['identity'].valueChanges
       .subscribe((identityValue: any) => {
         this.onValueChanged(identityValue);
       });
@@ -185,7 +194,11 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
 
   onBack(): void {
     const queryParam = this.priceOption.queryParams;
-    const url = `/sales-portal/buy-product/brand/${queryParam.brand}/${queryParam.model}`;
+    const productStock = this.priceOption.productStock;
+    const productDetail = this.priceOption.productDetail;
+    const customerGroup = this.priceOption.customerGroup;
+    const url = `/sales-portal/buy-product/brand/${queryParam.brand}/${queryParam.model}
+    ?modelColor=${productStock.colorName}&imei=${productDetail.imei}&customerGroup=${customerGroup.code}`;
     this.removeCartService.backToReturnStock(url, this.transaction);
   }
 
