@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, FormControl } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
-import { AlertService, REGEX_MOBILE, ReceiptInfo, PageLoadingService } from 'mychannel-shared-libs';
+import { AlertService, REGEX_MOBILE, ReceiptInfo, PageLoadingService, CustomerAddress } from 'mychannel-shared-libs';
 import { TransactionAction, Customer } from 'src/app/shared/models/transaction.model';
 import { BillingAddressService } from 'src/app/device-only/services/billing-address.service';
 import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
@@ -32,13 +32,15 @@ export class ReceiptInformationComponent implements OnInit {
   searchByMobileNoForm: FormGroup;
   receiptInfoForm: FormGroup;
   billingAddressForm: FormGroup;
-  customerAddress: any;
+
+  // Test
+  // customerAddress: any;
   isShowInputForKeyIn: boolean;
   titleName: any;
-  provinces: any;
-  allZipCodes: any;
-  amphurs: any;
-  tumbols: any;
+  // provinces: any;
+  // allZipCodes: any;
+  // amphurs: any;
+  // tumbols: any;
   zipCode: any;
   nameText: string;
   billingAddressText: string;
@@ -46,7 +48,14 @@ export class ReceiptInformationComponent implements OnInit {
   actionType: string;
   customerReadCardTemp: any;
 
+  // Test
   isShowInputForKeyInTest: boolean;
+  customerAddress: CustomerAddress;
+  allZipCodes: string[];
+  provinces: any[];
+  amphurs: string[];
+  tumbols: string[];
+  zipCodes: string[];
 
   constructor(
     private fb: FormBuilder,
@@ -62,25 +71,25 @@ export class ReceiptInformationComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.customerAddress = {
-      idCardNo: '',
-      titleName: '',
-      firstName: '',
-      lastName: '',
-      homeNo: '',
-      moo: '',
-      mooBan: '',
-      room: '',
-      floor: '',
-      buildingName: '',
-      soi: '',
-      street: '',
-      province: '',
-      amphur: '',
-      tumbol: '',
-      zipCode: '',
-    };
-    this.createForm();
+    // this.customerAddress = {
+    //  idCardNo: '',
+    //  titleName: '',
+    //  firstName: '',
+    //  lastName: '',
+    //  homeNo: '',
+    //  moo: '',
+    //  mooBan: '',
+    //  room: '',
+    //  floor: '',
+    //  buildingName: '',
+    //  soi: '',
+    //  street: '',
+    //  province: '',
+    //  amphur: '',
+    //  tumbol: '',
+    //  zipCode: '',
+    // };
+    this.createReceiptInfoForm();
     this.createSearchByMobileNoForm();
     this.billingAddress.getLocationName().then((resp: any) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
     if (this.customerInfoTemp) {
@@ -107,7 +116,7 @@ export class ReceiptInformationComponent implements OnInit {
     }
   }
 
-  private createForm(): void {
+  createReceiptInfoForm(): void {
     this.receiptInfoForm = this.fb.group({
       taxId: ['', [Validators.required]],
       branch: ['', []],
@@ -124,7 +133,7 @@ export class ReceiptInformationComponent implements OnInit {
     });
   }
 
-  private createSearchByMobileNoForm(): void {
+  createSearchByMobileNoForm(): void {
     this.searchByMobileNoForm = new FormGroup({
       'mobileNo': new FormControl('', [
         Validators.maxLength(10),
@@ -279,7 +288,6 @@ export class ReceiptInformationComponent implements OnInit {
     }
   }
 
-  // TEST
   switchKeyInBillingAddressTest(): void {
     this.isShowInputForKeyInTest = !this.isShowInputForKeyInTest;
     this.billingAddress.setIsKeyInBillingAddress(this.isShowInputForKeyInTest);
@@ -290,6 +298,8 @@ export class ReceiptInformationComponent implements OnInit {
 
   onProvinceSelected(params: any): void {
     const province = this.findProvinceByName(params.provinceName);
+    // Test
+    this.alertService.error('province1 = ' + JSON.stringify(province));
     const req = {
       provinceId: province.id,
       zipcode: params.zipCode
@@ -302,6 +312,8 @@ export class ReceiptInformationComponent implements OnInit {
 
   onAmphurSelected(params: any): void {
     const province = this.findProvinceByName(params.provinceName);
+    // Test
+    this.alertService.error('province2 = ' + JSON.stringify(province));
     const req = {
       provinceId: province.id,
       amphurName: params.amphurName,
@@ -315,6 +327,8 @@ export class ReceiptInformationComponent implements OnInit {
 
   onTumbolSelected(params: any): void {
     const province = this.findProvinceByName(params.provinceName);
+    // Test
+    this.alertService.error('province3 = ' + JSON.stringify(province));
     const req = {
       provinceId: province.id,
       amphurName: params.amphurName,
@@ -390,9 +404,10 @@ export class ReceiptInformationComponent implements OnInit {
     return this.provinces.find((prov: any) => prov.id === provinceId);
   }
 
-  private getProvinces(): string[] {
-    return (this.provinces || []).map((province: any) => province.name);
-  }
+  // Test
+  // private getProvinces(): string[] {
+  //   return (this.provinces || []).map((province: any) => province.name);
+  // }
 
   private responseTitleNames(): (value: any) => any {
     return (resp: string[]) => this.titleName = resp;
@@ -420,4 +435,12 @@ export class ReceiptInformationComponent implements OnInit {
   private responseTelNo(): AbstractControl {
     return this.receiptInfoForm.controls['telNo'];
   }
+
+  // Test
+  getProvinces(): string[] {
+    return (this.provinces || []).map((province: any) => {
+      return province.name;
+    });
+  }
+
 }

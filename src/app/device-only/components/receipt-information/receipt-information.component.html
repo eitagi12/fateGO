@@ -79,7 +79,21 @@
         <label style="cursor: pointer" class="text-lime">{{ 'ระบุที่อยู่ใบเสร็จรับเงิน' | translate }}</label>
       </div>
       <div *ngIf="isShowInputForKeyInTest;else customerDetail">
-        <app-customer-address-device-only></app-customer-address-device-only>
+        <!--Lib CustomerAddress -->
+        <mc-customer-address 
+          [customerAddress]="customerAddress"
+          [allZipCodes]="allZipCodes"
+          [provinces]="getProvinces()"
+          [amphurs]="amphurs"
+          [tumbols]="tumbols"
+          [zipCodes]="zipCodes"
+          (provinceSelected)="onProvinceSelected($event)"
+          (amphurSelected)="onAmphurSelected($event)"
+          (tumbolSelected)="onTumbolSelected($event)"
+          (zipCodeSelected)="onZipCodeSelected($event)"
+          (completed)="onCompleted($event)"
+          (error)="onError($event)">
+        </mc-customer-address>
       </div>
       <ng-template #customerDetail>
         <div>
@@ -90,6 +104,8 @@
         </div>
       </ng-template>
     </div>
+
+
     <div class="card-footer bg-transparent">
       <form [formGroup]="receiptInfoForm" class="pt-2">
         <div class="form-group row">

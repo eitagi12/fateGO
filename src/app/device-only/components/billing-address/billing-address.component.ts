@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors, ValidatorFn, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinct, delay } from 'rxjs/operators';
-import { Utils, CustomerAddress, User, TokenService } from 'mychannel-shared-libs';
+import { Utils, User, TokenService } from 'mychannel-shared-libs';
 import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
 import { TransactionAction, Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
