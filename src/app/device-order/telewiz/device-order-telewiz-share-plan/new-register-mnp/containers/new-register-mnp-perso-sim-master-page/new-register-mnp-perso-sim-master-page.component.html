@@ -74,7 +74,7 @@
     </div>
     <mc-footer>
         <button class="btn btn-secondary" (click)="onBack()" [disabled]="persoSim?.progress === 100">BACK</button>
-        <button *ngIf="persoSim?.progress === 100 || isNext" class="btn btn-success" (click)="onNext()" [disabled]="currentStatus || isNext">NEXT</button>
+        <button *ngIf="persoSim?.progress === 100 || isNext" class="btn btn-success" (click)="onNext()" [disabled]="currentStatus || !isNext">NEXT</button>
         <button *ngIf="!transaction.data.simCard.persoSim" class="btn btn-success" (click)="onNext()">NEXT</button>
     </mc-footer>
 </div>

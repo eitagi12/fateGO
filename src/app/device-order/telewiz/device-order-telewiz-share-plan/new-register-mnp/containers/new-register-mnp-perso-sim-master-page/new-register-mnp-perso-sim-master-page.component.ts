@@ -195,7 +195,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
       if (persoSim.persoData && persoSim.persoData.simSerial) {
         this.transaction.data.simCard.simSerial = persoSim.persoData.simSerial;
         this.currentStatus = false;
-        // this.isNext = !this.currentStatus;
+        this.isNext = !this.currentStatus;
         this.simProgress = persoSim.progress === 100 ? 100 : 100;
         this.persoSimSubscription.unsubscribe();
       }
@@ -203,7 +203,8 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
         console.log('!!!!! persoSim.error !!!!!!', persoSim.error);
         this.alertService.error(this.translateService.instant(this.ERROR_PERSO)).then((res) => {
           console.log('push SUCCESS !!!!', res);
-          // this.persoSimSubscription.unsubscribe();
+          this.persoSimSubscription.unsubscribe();
+          this.persoSimWebsocket();
           console.log('setConfigPersoSim inside ERROR!!!!!! ');
           // this.setConfigPersoSim().then(() => {
           //   console.log('setConfigPersoSim inside ERROR!!!!!! in then')
