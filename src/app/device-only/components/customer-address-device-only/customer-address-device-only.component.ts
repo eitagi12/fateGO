@@ -108,4 +108,8 @@ export class CustomerAddressDeviceOnlyComponent implements OnInit {
     };
   }
 
+  clearCustomerAddressForm(event: any): void {
+    console.log('clearCustomerAddressForm !');
+  }
+
 }
