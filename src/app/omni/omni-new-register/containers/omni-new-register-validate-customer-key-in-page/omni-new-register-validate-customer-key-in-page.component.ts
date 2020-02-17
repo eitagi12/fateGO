@@ -92,7 +92,8 @@ export class OmniNewRegisterValidateCustomerKeyInPageComponent implements OnInit
       idCardType: customer.idCardType,
       gender: customer.gender,
       birthdate: birthdate,
-      expireDate: expireDate
+      expireDate: expireDate,
+      imageSmartCard: this.transaction.data.customer.imageSmartCard ? this.transaction.data.customer.imageSmartCard : ''
     };
     this.transaction.data.customer = profile;
 

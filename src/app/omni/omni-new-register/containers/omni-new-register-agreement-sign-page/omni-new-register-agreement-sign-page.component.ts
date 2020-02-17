@@ -60,9 +60,9 @@ export class OmniNewRegisterAgreementSignPageComponent implements OnInit, OnDest
     //   if (this.signedOpenSubscription) {
     //     this.signedOpenSubscription.unsubscribe();
     //   }
-      if (this.isOpenSign) {
-        this.onSigned();
-      }
+      // if (this.isOpenSign) {
+      //   this.onSigned();
+      // }
     // });
 
   }
