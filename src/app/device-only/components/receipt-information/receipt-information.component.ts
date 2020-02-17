@@ -46,6 +46,8 @@ export class ReceiptInformationComponent implements OnInit {
   actionType: string;
   customerReadCardTemp: any;
 
+  isShowInputForKeyInTest: boolean;
+
   constructor(
     private fb: FormBuilder,
     private billingAddress: BillingAddressService,
@@ -272,6 +274,15 @@ export class ReceiptInformationComponent implements OnInit {
   switchKeyInBillingAddress(): void {
     this.isShowInputForKeyIn = !this.isShowInputForKeyIn;
     this.billingAddress.setIsKeyInBillingAddress(this.isShowInputForKeyIn);
+    if (this.receiptInfoForm.valid) {
+      this.onError(true);
+    }
+  }
+
+  // TEST
+  switchKeyInBillingAddressTest(): void {
+    this.isShowInputForKeyInTest = !this.isShowInputForKeyInTest;
+    this.billingAddress.setIsKeyInBillingAddress(this.isShowInputForKeyInTest);
     if (this.receiptInfoForm.valid) {
       this.onError(true);
     }
