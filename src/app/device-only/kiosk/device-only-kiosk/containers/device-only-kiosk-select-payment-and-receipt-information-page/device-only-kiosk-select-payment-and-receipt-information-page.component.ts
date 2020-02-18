@@ -5,7 +5,7 @@ import { Transaction, TransactionAction, TransactionType } from 'src/app/shared/
 import { WIZARD_DEVICE_ONLY_AIS } from 'src/app/device-only/constants/wizard.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Product } from 'src/app/device-only/models/product.model';
-import { PaymentDetail, User, HomeService, ApiRequestService, AlertService, TokenService, PaymentDetailBank } from 'mychannel-shared-libs';
+import { PaymentDetail, User, HomeService, ApiRequestService, AlertService, TokenService, PaymentDetailBank, CustomerAddress } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -13,6 +13,10 @@ import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 import { CreateOrderService } from 'src/app/device-only/services/create-order.service';
 import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
 import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/route-path.constant';
+// Test
+import { Subscription } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-device-only-kiosk-select-payment-and-receipt-information-page',
@@ -37,6 +41,15 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
   addessValid: boolean;
   omiseBanks: PaymentDetailBank[];
 
+  // Test
+  customerAddress: CustomerAddress;
+  allZipCodes: string[];
+  provinces: any[];
+  amphurs: string[];
+  tumbols: string[];
+  zipCodes: string[];
+  translationSubscribe: Subscription;
+
   constructor(
     private router: Router,
     private http: HttpClient,
@@ -48,6 +61,7 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
     private alertService: AlertService,
     private homeButtonService: HomeButtonService,
     private tokenService: TokenService,
+    private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -122,6 +136,50 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
         action: this.transaction.data.action
       };
     }
+
+    // Test
+    this.callService();
+    this.translationSubscribe = this.translation.onLangChange.pipe(debounceTime(750)).subscribe(() => {
+      this.callService();
+      this.amphurs = [];
+      this.tumbols = [];
+      this.zipCodes = [];
+      this.customerAddress.amphur = null;
+      this.customerAddress.tumbol = null;
+      this.customerAddress.province = null;
+    });
+  }
+
+  // Test
+  callService(): void {
+    // const billingInformation = this.transaction.data.billingInformation || {};
+    // const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
+    this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {
+      this.allZipCodes = resp.data.zipcodes || [];
+    });
+    // customer.province = customer.province.replace(/มหานคร$/, '');
+    this.http.get('/api/customerportal/newRegister/getAllProvinces'
+      , {
+        params: {
+          provinceSubType: this.translation.currentLang === 'TH' ? 'THA' : 'ENG'
+        }
+      }).subscribe((resp: any) => {
+        this.provinces = (resp.data.provinces || []);
+      //   this.customerAddress = {
+      //     homeNo: customer.homeNo,
+      //     moo: customer.moo,
+      //     mooBan: customer.mooBan,
+      //     room: customer.room,
+      //     floor: customer.floor,
+      //     buildingName: customer.buildingName,
+      //     soi: customer.soi,
+      //     street: customer.street,
+      //     province: customer.province,
+      //     amphur: customer.amphur,
+      //     tumbol: customer.tumbol,
+      //     zipCode: customer.zipCode,
+      //   };
+      });
   }
 
   onHome(): void {
@@ -221,6 +279,98 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
 
   ngOnDestroy(): void {
     this.transactionService.save(this.transaction);
+  }
+
+  // Test
+  getProvinces(): string[] {
+    return (this.provinces || []).map((province: any) => {
+      return province.name;
+    });
+  }
+
+  // Test
+  getProvinceByName(provinceName: string): any {
+    return (this.provinces || []).find((prov: any) => prov.name === provinceName) || {};
+  }
+
+  // Test
+  onProvinceSelected(params: any): void {
+    const province = this.getProvinceByName(params.provinceName);
+    this.alertService.error('province1 onProvinceSelected = ' + JSON.stringify(province));
+    const req = {
+      provinceId: province.id,
+      zipcode: params.zipCode
+    };
+    if (!params.zipCode) {
+      delete req.zipcode;
+    }
+
+    this.http.get('/api/customerportal/newRegister/queryAmphur', {
+      params: req
+    }).subscribe((resp: any) => {
+      this.amphurs = (resp.data.amphurs || []).map((amphur: any) => {
+        return amphur;
+      });
+    });
+  }
+
+  // Test
+  onAmphurSelected(params: any): void {
+    const province = this.getProvinceByName(params.provinceName);
+    this.alertService.error('province2 onAmphurSelected( = ' + JSON.stringify(province));
+    const req = {
+      provinceId: province.id,
+      amphurName: params.amphurName,
+      zipcode: params.zipCode
+    };
+    if (!params.zipCode) {
+      delete req.zipcode;
+    }
+
+    this.http.get('/api/customerportal/newRegister/queryTumbol', {
+      params: req
+    }).subscribe((resp: any) => {
+      this.tumbols = (resp.data.tumbols || []).map((tumbol: any) => {
+        return tumbol;
+      });
+    });
+  }
+
+  // Test
+  async onTumbolSelected(params: any): Promise<void> {
+    const province = this.getProvinceByName(params.provinceName);
+    await this.alertService.error('province3 onTumbolSelected( = ' + JSON.stringify(province));
+    this.http.get('/api/customerportal/newRegister/queryZipcode', {
+      params: {
+        provinceId: province.id,
+        amphurName: params.amphurName,
+        tumbolName: params.tumbolName
+      }
+    }).subscribe((resp: any) => {
+      this.zipCodes = resp.data.zipcodes || [];
+      this.alertService.error('zipCodes = ' + this.zipCodes);
+    });
+  }
+
+  // Test
+  onZipCodeSelected(zipCode: string): void {
+    this.http.get('/api/customerportal/newRegister/getProvinceIdByZipcode', {
+      params: { zipcode: zipCode }
+    }).toPromise()
+      .then((resp: any) => {
+        const province = this.provinces.find((prov: any) => prov.id === resp.data.provinceId);
+        if (!province) {
+          return;
+        }
+        this.alertService.error('province4 onZipCodeSelected = ' + JSON.stringify(province));
+        this.customerAddress = Object.assign(
+          Object.assign({}, this.customerAddress),
+          {
+            province: province.name,
+            zipCode: zipCode
+          }
+        );
+      });
   }
 
 }
