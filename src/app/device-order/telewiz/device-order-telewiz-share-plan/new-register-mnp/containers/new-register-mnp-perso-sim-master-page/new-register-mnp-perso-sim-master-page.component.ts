@@ -179,7 +179,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
       });
     }
 
-    this.onChecSim();
+    // this.onChecSim();
   }
 
   persoSimWebsocket(): any {
@@ -213,9 +213,9 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
           // clearInterval(this.simStatus);
           // this.persoSimSubscription.unsubscribe();
           // this.simStatus.unsubscribe();
-          this.setConfigPersoSim2().then(() => {
-            this.onChecSim();
-          });
+          // this.setConfigPersoSim2().then(() => {
+          //   this.onChecSim();
+          // });
           // this.setConfigPersoSim2().then((res) => {
           //   this.onChecSim();
           // });
@@ -229,25 +229,25 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
       //   console.log('Set sero')
       // }
     });
-    this.setConfigPersoSim2().then((res) => {
-      this.onChecSim();
-    });
+    // this.setConfigPersoSim2().then((res) => {
+    //   this.onChecSim();
+    // });
   }
 
-  onChecSim(): any {
-    console.log('simProgress ====> >>>>>>>>>>>>');
-    this.simStatus = this.persoSimFromWebSocket(this.persoSimConfig2).subscribe((res) => {
-      console.log('|||||||||||||||::::', res);
-      console.log('PPPPPPP', this.checkStatusSim);
-      if (this.checkStatusSim === 'Connected') {
-        this.isNext = false;
-        console.log('Still connecting...');
-      } else {
-        // clearInterval(this.simStatus);
-        // this.simStatus.unsubscribe();
-      }
-    });
-  }
+  // onChecSim(): any {
+  //   console.log('simProgress ====> >>>>>>>>>>>>');
+  //   this.simStatus = this.persoSimFromWebSocket(this.persoSimConfig2).subscribe((res) => {
+  //     console.log('|||||||||||||||::::', res);
+  //     console.log('PPPPPPP', this.checkStatusSim);
+  //     if (this.checkStatusSim === 'Connected') {
+  //       this.isNext = false;
+  //       console.log('Still connecting...');
+  //     } else {
+  //       // clearInterval(this.simStatus);
+  //       // this.simStatus.unsubscribe();
+  //     }
+  //   });
+  // }
 
   async setConfigPersoSim(): Promise<any> {
     return this.persoSimConfig = await {
