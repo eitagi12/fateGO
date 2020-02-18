@@ -206,8 +206,9 @@
                                 </div>
                             </div>
                             <div class="form-group row ml-3">
-                                <label for="user" class="col-4 col-sm-3 col-form-label">{{ 'รหัสพนักงาน' | translate }}
-                                  <span class="text-red">*</span></label>
+                                <label for="user" class="col-4 col-sm-3 col-form-label">{{ 'รหัสพนักงานขาย/ASC Code' | translate }}
+                                  <!-- <span class="text-red">*</span> -->
+                                </label>
                                 <div class="col-5 col-sm-6">
                                     <input type="tel" maxlength="10" class="form-control" [ngClass]="{
                     'is-invalid': !employeeDetailForm.controls['ascCode'].valid &&

@@ -164,7 +164,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
 
   ngOnInit(): void {
 
-    this.masterSimCard = this.transaction.data.simCard;
+    this.mobileNo = this.transaction.data.simCard.mobileNo;
     this.createForm();
 
     this.simSerialForm.controls.simSerial.valueChanges.subscribe((value) => {
@@ -197,7 +197,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
         this.currentStatus = false;
         this.isNext = !this.currentStatus;
         this.simProgress = persoSim.progress === 100 ? 100 : 100;
-        this.persoSimSubscription.unsubscribe();
+        // this.persoSimSubscription.unsubscribe();
       }
       if (persoSim.error) {
         console.log('!!!!! persoSim.error !!!!!!', persoSim.error);
@@ -212,9 +212,9 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
           // clearInterval(this.simStatus);
           // this.persoSimSubscription.unsubscribe();
           // this.simStatus.unsubscribe();
-            this.setConfigPersoSim2().then(() => {
-              this.onChecSim();
-            });
+          this.setConfigPersoSim2().then(() => {
+            this.onChecSim();
+          });
           // this.setConfigPersoSim2().then((res) => {
           //   this.onChecSim();
           // });
@@ -489,7 +489,9 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
 
     if (this.simSerialForm.controls['simSerial'].valid && this.orderType !== 'Port - In') {
       this.checktSimInfoFn = this.getChecktSimInfo(this.mobileNo, barcode);
+      // console.log(' this.checktSimInfoFn ------->',  this.checktSimInfoFn);
       this.checktSimInfoFn.then((simInfo: any) => {
+        console.log('simInfo --->', simInfo);
         this.pageLoadingService.openLoading();
         console.log('::: Mobile Info Insert SIM :::', simInfo.data);
 
@@ -999,7 +1001,9 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
 
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
-    this.persoSimSubscription.unsubscribe();
+    if (this.transaction.data.simCard.mobileNo && this.transaction.data.simCard.persoSim === true) {
+      this.persoSimSubscription.unsubscribe();
+    }
     clearInterval(this.persoSimInterval);
     clearTimeout(this.timeoutCheckOrderStatus);
     clearTimeout(this.timeoutCreatePersoSim);

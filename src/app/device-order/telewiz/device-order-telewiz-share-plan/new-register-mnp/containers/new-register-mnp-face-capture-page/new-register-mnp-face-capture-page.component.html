@@ -20,7 +20,7 @@
                                 <!-- <img *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser" class="icon-people" /> -->
                             </div>
                             <div [hidden]="!(openCamera && !transaction?.data?.faceRecognition?.imageFaceUser)" class="position-relative">
-                                <mc-camera [flip]="true" [countdown]="3" [onTakePhoto]="camera" (completed)="onCameraCompleted($event)" (error)="onCameraError($event)">
+                                <mc-camera [flip]="true" [countdown]="0" [onTakePhoto]="camera" (completed)="onCameraCompleted($event)" (error)="onCameraError($event)">
                                 </mc-camera>
                             </div>
                             <div [hidden]="!transaction?.data?.faceRecognition?.imageFaceUser">
