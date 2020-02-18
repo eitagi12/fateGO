@@ -125,9 +125,10 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
         this.onNext();
       }
       if (persoSim.error) {
-        this.persoSimSubscription.unsubscribe();
-        this.persoSimWebsocket();
-        this.alertService.error(this.translateService.instant(this.ERROR_PERSO));
+        this.alertService.error(this.translateService.instant(this.ERROR_PERSO)).then(() => {
+          this.persoSimSubscription.unsubscribe();
+          this.persoSimWebsocket();
+        });
       }
     });
   }
