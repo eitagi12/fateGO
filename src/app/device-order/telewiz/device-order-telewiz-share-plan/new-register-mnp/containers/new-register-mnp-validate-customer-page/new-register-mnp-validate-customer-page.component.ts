@@ -83,12 +83,16 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     this.buildForm();
     this.createTransaction();
     // localStorage.setItem('priceOption', JSON.stringify(this.priceOptionMock));
-    this.route.paramMap.subscribe(params => {
-      this.imei = params.get('imei');
-      this.priceOption.productDetail.imei = this.imei;
-    });
-    this.priceOption.productDetail.imei = this.imei ? this.imei : '';
-    this.priceOptionService.update(this.priceOption);
+    // this.route.paramMap.subscribe(params => {
+    //   this.imei = params.get('imei');
+    //   this.priceOption.productDetail.imei = this.imei;
+    // });
+    const MOCK_IMEI_TELEWIZ = '701171051200026';
+    if (this.priceOption.productDetail && this.priceOption.productDetail.imei) {
+      this.priceOption.productDetail.imei = this.priceOption.productDetail.imei;
+    } else {
+      this.priceOption.productDetail.imei = MOCK_IMEI_TELEWIZ ? MOCK_IMEI_TELEWIZ : '';
+    }
   }
 
   buildForm(): void {
@@ -370,6 +374,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
 
   ngOnDestroy(): void {
     this.identityFormSubscripe.unsubscribe();
+    this.priceOptionService.update(this.priceOption);
     this.transactionService.update(this.transaction);
   }
 }
