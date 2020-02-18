@@ -140,19 +140,20 @@ export class OmniNewRegisterValidateCustomerKeyInPageComponent implements OnInit
   }
 
   setFormDefaultData(customer: any): void {
+
     this.validateCustomerKeyInForm.patchValue({
       idCardNo: customer.idCardNo || '',
       idCardType: 'บัตรประชาชน',
-      prefix: customer.titleName || '',
-      firstName: customer.firstName || '',
-      lastName: customer.lastName || '',
-      gender: customer.gender || 'M',
-      birthDay: customer.birthdate.substring(0, 2) || '',
-      birthMonth: customer.birthdate.substring(3, 5) || '',
-      birthYear: customer.birthdate.substring(6, 10) || '',
-      expireDay: customer.expireDate.substring(0, 2) || '',
-      expireMonth: customer.expireDate.substring(3, 5) || '',
-      expireYear: customer.expireDate.substring(6, 10) || '',
+      prefix: customer.titleName ? customer.titleName : '',
+      firstName: customer.firstName ? customer.firstName : '',
+      lastName: customer.lastName ? customer.lastName : '',
+      gender: customer.gender ? customer.gender : 'M',
+      birthDay: customer.birthdate ? customer.birthdate.substring(0, 2) : '',
+      birthMonth: customer.birthdate ? customer.birthdate.substring(3, 5) : '',
+      birthYear: customer.birthdate ? customer.birthdate.substring(6, 10) : '',
+      expireDay: customer.expireDate ? customer.expireDate.substring(0, 2) : '',
+      expireMonth: customer.expireDate ? customer.expireDate.substring(3, 5) : '',
+      expireYear: customer.expireDate ? customer.expireDate.substring(6, 10) : '',
     });
 
     const today: Date = new Date();
