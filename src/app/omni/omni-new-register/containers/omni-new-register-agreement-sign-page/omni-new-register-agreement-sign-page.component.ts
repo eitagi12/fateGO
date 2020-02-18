@@ -1,13 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_OMNI_NEW_REGISTER } from 'src/app/omni/constants/wizard.constant';
 import { Router } from '@angular/router';
-import { HomeService, AisNativeService, User, TokenService, ChannelType, AlertService } from 'mychannel-shared-libs';
+import { HomeService, User, TokenService, ChannelType, AlertService } from 'mychannel-shared-libs';
 import {
   ROUTE_OMNI_NEW_REGISTER_EAPPLICATION_PAGE,
   ROUTE_OMNI_NEW_REGISTER_ECONTRACT_PAGE
 } from 'src/app/omni/omni-new-register/constants/route-path.constant';
 import { Subscription } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
 import { Transaction } from 'src/app/omni/omni-shared/models/transaction.model';
 import { TransactionService } from 'src/app/omni/omni-shared/services/transaction.service';
 import { AisNativeOrderService } from 'src/app/shared/services/ais-native-order.service';
@@ -25,10 +24,7 @@ export class OmniNewRegisterAgreementSignPageComponent implements OnInit, OnDest
   signedOpenSubscription: Subscription;
   openSignedCommand: any;
   isOpenSign: boolean;
-
-  // translationSubscribe: Subscription;
   currentLang: string;
-
   commandSigned: any;
 
   constructor(
@@ -37,8 +33,7 @@ export class OmniNewRegisterAgreementSignPageComponent implements OnInit, OnDest
     private transactionService: TransactionService,
     private aisNativeOrderService: AisNativeOrderService,
     private tokenService: TokenService,
-    private alertService: AlertService,
-    private translationService: TranslateService
+    private alertService: AlertService
   ) {
     this.transaction = this.transactionService.load();
     this.signedSignatureSubscription = this.aisNativeOrderService.getSigned().subscribe((signature: string) => {
@@ -54,23 +49,9 @@ export class OmniNewRegisterAgreementSignPageComponent implements OnInit, OnDest
         return;
       }
     });
-
-    // this.currentLang =  'TH';
-    // this.translationSubscribe = this.translationService.onLangChange.subscribe(lang => {
-    //   if (this.signedOpenSubscription) {
-    //     this.signedOpenSubscription.unsubscribe();
-    //   }
-      // if (this.isOpenSign) {
-      //   this.onSigned();
-      // }
-    // });
-
   }
 
   ngOnInit(): void {
-    if (!this.transaction.data.customer.imageSignature) {
-      this.onSigned();
-    }
   }
 
   onBack(): void {
@@ -119,10 +100,6 @@ export class OmniNewRegisterAgreementSignPageComponent implements OnInit, OnDest
     if (this.signedOpenSubscription) {
       this.signedOpenSubscription.unsubscribe();
     }
-
-    // if (this.translationSubscribe) {
-    //   this.translationSubscribe.unsubscribe();
-    // }
     this.transactionService.update(this.transaction);
   }
 }
