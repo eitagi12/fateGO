@@ -164,7 +164,8 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
 
   ngOnInit(): void {
 
-    this.mobileNo = this.transaction.data.simCard.mobileNo;
+    this.masterSimCard = this.transaction.data.simCard;
+    this.mobileNo = this.masterSimCard.mobileNo;
     this.createForm();
 
     this.simSerialForm.controls.simSerial.valueChanges.subscribe((value) => {
