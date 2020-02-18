@@ -197,8 +197,8 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     const productStock = this.priceOption.productStock;
     const productDetail = this.priceOption.productDetail;
     const customerGroup = this.priceOption.customerGroup;
-    const url = `/sales-portal/buy-product/brand/${queryParam.brand}/${queryParam.model}
-    ?modelColor=${productStock.colorName}&imei=${productDetail.imei}&customerGroup=${customerGroup.code}`;
+    // tslint:disable-next-line: max-line-length
+    const url = `/sales-portal/buy-product/brand/${queryParam.brand}/${queryParam.model}?modelColor=${productStock.colorName}&imei=${productDetail.imei}&customerGroup=${customerGroup.code}`;
     this.removeCartService.backToReturnStock(url, this.transaction);
   }
 
