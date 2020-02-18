@@ -201,8 +201,14 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
         // this.persoSimSubscription.unsubscribe();
       }
       if (persoSim.error) {
+        let errorMessage;
         console.log('!!!!! persoSim.error !!!!!!', persoSim.error);
-        this.alertService.error(this.translateService.instant(this.ERROR_PERSO)).then((res) => {
+        if (this.simProgress > 0) {
+          errorMessage = this.ERROR_PERSO_PC;
+        } else {
+          errorMessage = this.ERROR_PERSO;
+        }
+        this.alertService.error(this.translateService.instant(errorMessage)).then((res) => {
           console.log('push SUCCESS !!!!', res);
           this.persoSimSubscription.unsubscribe();
           this.persoSimWebsocket();
@@ -219,7 +225,6 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
           // this.setConfigPersoSim2().then((res) => {
           //   this.onChecSim();
           // });
-
           // });
         });
       }

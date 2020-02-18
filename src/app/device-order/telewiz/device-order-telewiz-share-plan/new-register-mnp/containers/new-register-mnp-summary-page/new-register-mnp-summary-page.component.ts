@@ -106,30 +106,28 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
     const user = this.tokenService.getUser();
     this.pageLoadingService.openLoading();
     const ascCode = this.employeeDetailForm.controls['ascCode'].value ? this.employeeDetailForm.controls['ascCode'].value : '';
-    this.transaction.data.seller.sellerNo = this.sellerCode ? this.sellerCode : '';
-    this.transaction.data.seller.employeeId = ascCode;
-    this.transaction.data.seller.sellerName = user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username;
-    this.pageLoadingService.closeLoading();
-    this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE]);
 
-    // if (!ascCode) {
-    //   this.alertService.error('กรุณาระบุรหัสพนักงานขาย');
-    // } else {
-    //   this.http.get(`/api/customerportal/checkSeller/${ascCode.trim()}`).toPromise().then((resp: any) => {
-    //     const checkSeller: any = resp && resp.data ? resp.data : {};
-    //     if (checkSeller.condition) {
-    //       this.transaction.data.seller.sellerNo = this.sellerCode || '';
-    //       this.transaction.data.seller.employeeId = ascCode;
-    //       this.transaction.data.seller.sellerName =
-    // tslint:disable-next-line: comment-format
-    //user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username;
-    //       this.pageLoadingService.closeLoading();
-    //       this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE]);
-    //     } else {
-    //       this.alertService.warning(checkSeller.message);
-    //     }
-    //   });
-    // }
+    if (ascCode) {
+      this.http.get(`/api/customerportal/checkSeller/${ascCode.trim()}`).toPromise().then((resp: any) => {
+        const checkSeller: any = resp && resp.data ? resp.data : {};
+        if (checkSeller.condition) {
+          this.transaction.data.seller.sellerNo = this.sellerCode || '';
+          this.transaction.data.seller.employeeId = ascCode;
+          this.transaction.data.seller.sellerName =
+          user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username;
+          this.pageLoadingService.closeLoading();
+          this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE]);
+        } else {
+          this.alertService.warning(checkSeller.message);
+        }
+      });
+    } else {
+      this.transaction.data.seller.sellerNo = this.sellerCode ? this.sellerCode : '';
+      this.transaction.data.seller.employeeId = ascCode;
+      this.transaction.data.seller.sellerName = user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username;
+      this.pageLoadingService.closeLoading();
+      this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE]);
+    }
   }
 
   onHome(): void {
