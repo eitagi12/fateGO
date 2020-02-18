@@ -223,16 +223,19 @@ export class OmniNewRegisterValidateCustomerKeyInPageComponent implements OnInit
   }
 
   mapCustomerInfo(customer: any): void {
-    const { birthDayCustomer, expireDate }: { birthDayCustomer: string; expireDate: string; } = this.mapDateHHMMYYYY();
+
+    const birthdate = customer.birthDay + '/' + customer.birthMonth + '/' + customer.birthYear;
+    const expireDate = customer.expireDay + '/' + customer.expireMonth + '/' + customer.expireYear;
     const profile: any = {
       idCardNo: customer.idCardNo,
-      idCardType: this.validateCustomerKeyInForm.controls.idCardType.value,
-      titleName: this.validateCustomerKeyInForm.controls.titleName.value,
-      firstName: this.validateCustomerKeyInForm.controls.firstName.value,
-      lastName: this.validateCustomerKeyInForm.controls.lastName.value,
-      birthdate: birthDayCustomer,
+      titleName: customer.prefix,
+      firstName: customer.firstName,
+      lastName: customer.lastName,
+      idCardType: customer.idCardType,
+      gender: customer.gender,
+      birthdate: birthdate,
       expireDate: expireDate,
-      gender: this.validateCustomerKeyInForm.controls.gender.value
+      imageSmartCard: this.transaction.data.customer.imageSmartCard ? this.transaction.data.customer.imageSmartCard : ''
     };
     this.transaction.data.customer = profile;
   }
