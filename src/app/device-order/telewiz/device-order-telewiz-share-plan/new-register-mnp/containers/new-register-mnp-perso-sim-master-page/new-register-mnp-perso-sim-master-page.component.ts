@@ -201,13 +201,8 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
         // this.persoSimSubscription.unsubscribe();
       }
       if (persoSim.error) {
-        let errorMessage;
         console.log('!!!!! persoSim.error !!!!!!', persoSim.error);
-        if (this.simProgress > 0) {
-          errorMessage = this.ERROR_PERSO_PC;
-        } else {
-          errorMessage = this.ERROR_PERSO;
-        }
+        const errorMessage = this.simProgress > 0 ? this.ERROR_PERSO_PC : this.ERROR_PERSO;
         this.alertService.error(this.translateService.instant(errorMessage)).then((res) => {
           console.log('push SUCCESS !!!!', res);
           this.persoSimSubscription.unsubscribe();
