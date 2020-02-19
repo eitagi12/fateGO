@@ -5,7 +5,7 @@ import { Transaction, TransactionAction, TransactionType } from 'src/app/shared/
 import { WIZARD_DEVICE_ONLY_AIS } from 'src/app/device-only/constants/wizard.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Product } from 'src/app/device-only/models/product.model';
-import { PaymentDetail, User, HomeService, ApiRequestService, AlertService, TokenService, PaymentDetailBank, Utils } from 'mychannel-shared-libs';
+import { PaymentDetail, User, HomeService, ApiRequestService, AlertService, TokenService, PaymentDetailBank, Utils, REGEX_MOBILE, PageLoadingService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -17,9 +17,14 @@ import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/r
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { debounceTime } from 'rxjs/operators';
-import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl, ValidationErrors, FormControl } from '@angular/forms';
+import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
 
 export interface CustomerAddress {
+  idCardNo?: string;
+  titleName?: string;
+  firstName?: string;
+  lastName?: string;
   homeNo: string;
   moo?: string;
   mooBan?: string;
@@ -58,12 +63,6 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
   omiseBanks: PaymentDetailBank[];
 
   // Test
-  // customerAddress: CustomerAddress;
-  // allZipCodes: string[];
-  // provinces: any[];
-  // amphurs: string[];
-  // tumbols: string[];
-  // zipCodes: string[];
   translationSubscribe: Subscription;
   customerAddressForm: FormGroup;
   provinces: string[];
@@ -80,6 +79,9 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
   zipCodeSelected: any;
   customerInfo: any;
   idCardMaxLength: number = 13;
+  isShowInputForKeyIn: boolean = false;
+  receiptInfoForm: FormGroup;
+  searchByMobileNoForm: FormGroup;
 
   constructor(
     private router: Router,
@@ -94,7 +96,9 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
     private tokenService: TokenService,
     private translation: TranslateService,
     public fb: FormBuilder,
-    private utils: Utils
+    private utils: Utils,
+    private pageLoadingService: PageLoadingService,
+    private customerInfoService: CustomerInformationService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -103,13 +107,61 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
 
   ngOnInit(): void {
     this.homeButtonService.initEventButtonHome();
-    this.apiRequestService.createRequestId();
+    this.customerAddress = {
+      idCardNo: '',
+      titleName: '',
+      firstName: '',
+      lastName: '',
+      homeNo: '',
+      moo: '',
+      mooBan: '',
+      room: '',
+      floor: '',
+      buildingName: '',
+      soi: '',
+      street: '',
+      province: '',
+      amphur: '',
+      tumbol: '',
+      zipCode: '',
+    };
+    this.getPaymentDetail();
+    this.createSearchByMobileNoForm();
+    this.createCustomerAddressForm();
+    this.createReceiptInfoForm();
+    this.createTransaction();
+    this.getAllTitleName();
+    this.getAllZipcodes();
+    this.getAllProvinces();
+  }
 
+  // create Function createTransaction
+  createTransaction(): void {
+    this.apiRequestService.createRequestId();
+    if (!this.transaction.data) {
+      this.transaction = {
+        data: {
+          action: TransactionAction.KEY_IN,
+          transactionType: TransactionType.DEVICE_ONLY_AIS
+        },
+        transactionId: this.createOrderService.generateTransactionId(this.apiRequestService.getCurrentRequestId())
+      };
+    } else if (this.transaction.data.customer && this.transaction.data.billingInformation) {
+      this.customerInfoTemp = {
+        customer: this.transaction.data.customer,
+        billDeliveryAddress: this.transaction.data.billingInformation.billDeliveryAddress,
+        receiptInfo: this.transaction.data.receiptInfo,
+        action: this.transaction.data.action
+      };
+    }
+  }
+
+  // create Function getPaymentDetail
+  getPaymentDetail(): void {
     let commercialName = this.priceOption.productDetail.name;
     if (this.priceOption.productStock.color) {
       commercialName += ` สี ${this.priceOption.productStock.color}`;
     }
-    // REFACTOR IT'S
     this.paymentDetail = {
       commercialName: commercialName,
       promotionPrice: this.priceOption.trade.priceType === 'NORMAL' ? +(this.priceOption.trade.normalPrice)
@@ -120,6 +172,7 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
       qrCode: true,
       omisePayment: this.isFullPayment() && this.priceOption.productStock.company !== 'WDS'
     };
+
     this.http.get('/api/salesportal/omise/get-bank').toPromise()
       .then((res: any) => {
         const data = res.data || [];
@@ -152,100 +205,7 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
         localtion: this.localtion
       }).toPromise().then((response: any) => this.banks = response.data || '');
     }
-
-    if (!this.transaction.data) {
-      this.transaction = {
-        data: {
-          action: TransactionAction.KEY_IN,
-          transactionType: TransactionType.DEVICE_ONLY_AIS
-        },
-        transactionId: this.createOrderService.generateTransactionId(this.apiRequestService.getCurrentRequestId())
-      };
-    } else if (this.transaction.data.customer && this.transaction.data.billingInformation) {
-      this.customerInfoTemp = {
-        customer: this.transaction.data.customer,
-        billDeliveryAddress: this.transaction.data.billingInformation.billDeliveryAddress,
-        receiptInfo: this.transaction.data.receiptInfo,
-        action: this.transaction.data.action
-      };
-    }
-
-    // Test
-    // this.callService();
-    // this.translationSubscribe = this.translation.onLangChange.pipe(debounceTime(750)).subscribe(() => {
-    //   this.callService();
-    //   this.amphurs = [];
-    //   this.tumbols = [];
-    //   this.zipCodes = [];
-    //   this.customerAddress.amphur = null;
-    //   this.customerAddress.tumbol = null;
-    //   this.customerAddress.province = null;
-    // });
-
-    // Test
-    // this.clearSelectedForm();
-    // this.getAllZipCodesData();
-    // this.getAllProvincesData();
-    this.getAllTitleName();
-    this.getAllZipcodes();
-    this.getAllProvinces();
-    this.createCustomerAddressForm();
   }
-
-  // Test
-  getAllTitleName(): void {
-    this.http.get('/api/customerportal/newRegister/queryTitleName').subscribe((resp: any) => {
-      this.titleNames = resp.data.titleNames || [];
-    });
-  }
-
-  // Test
-  getAllZipcodes(): void {
-    // const customer = this.transaction.data.customer;
-    this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {
-      this.allZipCodes = resp.data.zipcodes || [];
-    });
-    this.customerAddress = {
-      homeNo: '',
-      moo: '',
-      mooBan: '',
-      room: '',
-      floor: '',
-      buildingName: '',
-      soi: '',
-      street: '',
-      province: '',
-      amphur: '',
-      tumbol: '',
-      zipCode: '',
-    };
-  }
-
-  getAllProvinces(): void {
-    // customer.province = customer.province.replace(/มหานคร$/, '');
-    this.http.get('/api/customerportal/newRegister/getAllProvinces', {
-      params: {
-        provinceSubType: this.translation.currentLang === 'TH' ? 'THA' : 'ENG'
-      }
-    }).subscribe((resp: any) => {
-      this.allProvinces = (resp.data.provinces || []);
-      this.provinces = (resp.data.provinces || []).map((province: any) => {
-        return province.name;
-      });
-    });
-  }
-
-  // Test
-  // clearSelectedForm(): void {
-  //    this.translationSubscribe = this.translation.onLangChange.pipe(debounceTime(750)).subscribe(() => {
-  //     this.amphurs = [];
-  //     this.tumbols = [];
-  //     this.zipCodes = [];
-  //     this.customerAddress.amphur = null;
-  //     this.customerAddress.tumbol = null;
-  //     this.customerAddress.province = null;
-  //   });
-  // }
 
   // Test
   createCustomerAddressForm(): void {
@@ -330,6 +290,154 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
         };
         this.onTumbolSelected(this.tumbolSelected);
       }
+    });
+  }
+
+  // Test
+  createSearchByMobileNoForm(): void {
+    this.searchByMobileNoForm = new FormGroup({
+      'mobileNo': new FormControl('', [
+        Validators.maxLength(10),
+        Validators.minLength(10),
+        Validators.pattern('^(0)(6|8|9)[0-9]*$|^((88)(6|8|9)[0-9]*)$'),
+        Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])
+      ])
+    });
+  }
+
+  // Test
+  createReceiptInfoForm(): void {
+    this.receiptInfoForm = this.fb.group({
+      taxId: ['', [Validators.required]],
+      branch: ['', [Validators.required]],
+      telNo: ['', [Validators.pattern(/^0[6-9]\d{8}$/), Validators.required]],
+    });
+    // this.receiptInfoForm.valueChanges.pipe(debounceTime(750)).subscribe(event => {
+    //   this.error.emit(this.receiptInfoForm.valid);
+    //   if (this.receiptInfoForm.valid) {
+    //     const receiptInfo: ReceiptInfo = this.receiptInfoForm.value;
+    //     this.completed.emit({ ...this.customerInfo, receiptInfo });
+    //   }
+    // });
+  }
+
+  // Test
+  searchCustomerInfo(): void {
+    if (this.searchByMobileNoForm.valid) {
+      this.pageLoadingService.openLoading();
+      const mobileNo = this.searchByMobileNoForm.value.mobileNo;
+      this.checkChargeType(mobileNo);
+    } else {
+      if (this.searchByMobileNoForm.controls.mobileNo.value.length === 10) {
+        this.alertService.notify({
+          type: 'warning',
+          confirmButtonText: 'OK',
+          showConfirmButton: true,
+          text: 'กรุณาระบุเบอร์ให้ถูกต้อง'
+        });
+      } else {
+        this.alertService.notify({
+          type: 'warning',
+          confirmButtonText: 'OK',
+          showConfirmButton: true,
+          text: 'กรุณาระบุเบอร์ให้ครบ 10 หลัก'
+        });
+      }
+      // this.nameText = '';
+      // this.billingAddressText = '';
+      this.receiptInfoForm.controls['taxId'].setValue('');
+      this.receiptInfoForm.controls['branch'].setValue('');
+    }
+  }
+
+  checkChargeType(mobileNo: string): void {
+    this.customerInfoService.getProfileByMobileNo(mobileNo)
+      .then((resp: any) => {
+        console.log('resp --> ', resp);
+        this.pageLoadingService.closeLoading();
+    //     const chargeType: string = resp.data.chargeType;
+    //     switch (chargeType) {
+    //       case 'Pre-paid':
+    //         this.alertService.warning('กรุณาระบุเบอร์ AIS รายเดือนเท่านั้น');
+    //         this.searchByMobileNoForm.controls['mobileNo'].setValue('');
+    //         break;
+    //       case 'Post-paid':
+    //         this.customerInfoService.getBillingByMobileNo(mobileNo)
+    //           .then((res: any) => {
+    //             if (res && res.data && res.data.billingAddress) {
+    //               this.setCustomerInfo({
+    //                 customer: this.customerInfoService.mapAttributeFromGetBill(res.data.billingAddress),
+    //                 action: TransactionAction.KEY_IN
+    //               });
+    //               this.errorAddessValid.emit(true);
+    //               this.customerInfoService.setSelectedMobileNo(mobileNo);
+    //               this.pageLoadingService.closeLoading();
+    //             } else {
+    //               this.errorNotAisMobileNo();
+    //             }
+    //           })
+    //           .catch(() => {
+    //             this.pageLoadingService.closeLoading();
+    //             this.errorNotAisMobileNo();
+    //             this.clearData();
+    //           });
+    //         break;
+    //     }
+      });
+    //   .catch(() => {
+    //     this.pageLoadingService.closeLoading();
+    //     this.errorNotAisMobileNo();
+    //     this.clearData();
+    //   });
+  }
+
+  // Test
+  keyPress(event: any): void {
+    const charCode: number = (event.which) ? event.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      event.preventDefault();
+    }
+  }
+
+  setCustomerInfo(data: any): void {
+  }
+
+  // Test
+  switchKeyInBillingAddress(): void {
+    this.isShowInputForKeyIn = !this.isShowInputForKeyIn;
+    // this.billingAddress.setIsKeyInBillingAddress(this.isShowInputForKeyIn);
+    // if (this.receiptInfoForm.valid) {
+    //   this.onError(true);
+    // }
+  }
+
+  // Test
+  getAllTitleName(): void {
+    this.http.get('/api/customerportal/newRegister/queryTitleName').subscribe((resp: any) => {
+      this.titleNames = resp.data.titleNames || [];
+    });
+  }
+
+  // Test
+  getAllZipcodes(): void {
+    // const customer = this.transaction.data.customer;
+    this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {
+      this.allZipCodes = resp.data.zipcodes || [];
+    });
+  }
+
+  // Test
+  getAllProvinces(): void {
+    // customer.province = customer.province.replace(/มหานคร$/, '');
+    this.http.get('/api/customerportal/newRegister/getAllProvinces', {
+      params: {
+        provinceSubType: this.translation.currentLang === 'TH' ? 'THA' : 'ENG'
+      }
+    }).subscribe((resp: any) => {
+      this.allProvinces = (resp.data.provinces || []);
+      this.provinces = (resp.data.provinces || []).map((province: any) => {
+        return province.name;
+      });
     });
   }
 
@@ -465,6 +573,27 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
       });
   }
 
+  // Test
+  clearCustomerAddressForm(): void {
+    // this.amphurs = [];
+    // this.tumbols = [];
+    // this.zipCodes = [];
+    // this.customerAddress.amphur = null;
+    // this.customerAddress.tumbol = null;
+    // this.customerAddress.province = null;
+    this.customerAddressForm.reset();
+
+    // this.translationSubscribe = this.translation.onLangChange.pipe(debounceTime(750)).subscribe(() => {
+    //   this.callService();
+    //   this.amphurs = [];
+    //   this.tumbols = [];
+    //   this.zipCodes = [];
+    //   this.customerAddress.amphur = null;
+    //   this.customerAddress.tumbol = null;
+    //   this.customerAddress.province = null;
+    // });
+  }
+
   onBack(): any {
     this.transactionService.remove();
     if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
@@ -491,7 +620,7 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
     this.isReceiptInformationValid = error;
   }
 
-  public onErrorAddessValid(err: boolean): void {
+  onErrorAddessValid(err: boolean): void {
     this.addessValid = err;
   }
 
