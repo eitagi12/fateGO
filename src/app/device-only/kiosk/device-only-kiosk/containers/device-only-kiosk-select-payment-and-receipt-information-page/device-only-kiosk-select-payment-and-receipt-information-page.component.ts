@@ -128,35 +128,35 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
       zipCode: '',
     };
     this.getPaymentDetail();
-    this.createSearchByMobileNoForm();
+    // this.createSearchByMobileNoForm();
     this.createCustomerAddressForm();
-    this.createReceiptInfoForm();
-    this.createTransaction();
+    // this.createReceiptInfoForm();
+    // this.createTransaction();
     this.getAllTitleName();
     this.getAllZipcodes();
     this.getAllProvinces();
   }
 
   // create Function createTransaction
-  createTransaction(): void {
-    this.apiRequestService.createRequestId();
-    if (!this.transaction.data) {
-      this.transaction = {
-        data: {
-          action: TransactionAction.KEY_IN,
-          transactionType: TransactionType.DEVICE_ONLY_AIS
-        },
-        transactionId: this.createOrderService.generateTransactionId(this.apiRequestService.getCurrentRequestId())
-      };
-    } else if (this.transaction.data.customer && this.transaction.data.billingInformation) {
-      this.customerInfoTemp = {
-        customer: this.transaction.data.customer,
-        billDeliveryAddress: this.transaction.data.billingInformation.billDeliveryAddress,
-        receiptInfo: this.transaction.data.receiptInfo,
-        action: this.transaction.data.action
-      };
-    }
-  }
+  // createTransaction(): void {
+  //   this.apiRequestService.createRequestId();
+  //   if (!this.transaction.data) {
+  //     this.transaction = {
+  //       data: {
+  //         action: TransactionAction.KEY_IN,
+  //         transactionType: TransactionType.DEVICE_ONLY_AIS
+  //       },
+  //       transactionId: this.createOrderService.generateTransactionId(this.apiRequestService.getCurrentRequestId())
+  //     };
+  //   } else if (this.transaction.data.customer && this.transaction.data.billingInformation) {
+  //     this.customerInfoTemp = {
+  //       customer: this.transaction.data.customer,
+  //       billDeliveryAddress: this.transaction.data.billingInformation.billDeliveryAddress,
+  //       receiptInfo: this.transaction.data.receiptInfo,
+  //       action: this.transaction.data.action
+  //     };
+  //   }
+  // }
 
   // create Function getPaymentDetail
   getPaymentDetail(): void {
@@ -296,122 +296,122 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
   }
 
   // Test
-  createSearchByMobileNoForm(): void {
-    this.searchByMobileNoForm = new FormGroup({
-      'mobileNo': new FormControl('', [
-        Validators.maxLength(10),
-        Validators.minLength(10),
-        Validators.pattern('^(0)(6|8|9)[0-9]*$|^((88)(6|8|9)[0-9]*)$'),
-        Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])
-      ])
-    });
-  }
+  // createSearchByMobileNoForm(): void {
+  //   this.searchByMobileNoForm = new FormGroup({
+  //     'mobileNo': new FormControl('', [
+  //       Validators.maxLength(10),
+  //       Validators.minLength(10),
+  //       Validators.pattern('^(0)(6|8|9)[0-9]*$|^((88)(6|8|9)[0-9]*)$'),
+  //       Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])
+  //     ])
+  //   });
+  // }
 
   // Test
-  createReceiptInfoForm(): void {
-    this.receiptInfoForm = this.fb.group({
-      taxId: ['', [Validators.required]],
-      branch: ['', [Validators.required]],
-      telNo: ['', [Validators.pattern(/^0[6-9]\d{8}$/), Validators.required]],
-    });
-    // this.receiptInfoForm.valueChanges.pipe(debounceTime(750)).subscribe(event => {
-    //   this.error.emit(this.receiptInfoForm.valid);
-    //   if (this.receiptInfoForm.valid) {
-    //     const receiptInfo: ReceiptInfo = this.receiptInfoForm.value;
-    //     this.completed.emit({ ...this.customerInfo, receiptInfo });
-    //   }
-    // });
-  }
+  // createReceiptInfoForm(): void {
+  //   this.receiptInfoForm = this.fb.group({
+  //     taxId: ['', [Validators.required]],
+  //     branch: ['', [Validators.required]],
+  //     telNo: ['', [Validators.pattern(/^0[6-9]\d{8}$/), Validators.required]],
+  //   });
+  //   // this.receiptInfoForm.valueChanges.pipe(debounceTime(750)).subscribe(event => {
+  //   //   this.error.emit(this.receiptInfoForm.valid);
+  //   //   if (this.receiptInfoForm.valid) {
+  //   //     const receiptInfo: ReceiptInfo = this.receiptInfoForm.value;
+  //   //     this.completed.emit({ ...this.customerInfo, receiptInfo });
+  //   //   }
+  //   // });
+  // }
 
   // Test
-  searchCustomerInfo(): void {
-    if (this.searchByMobileNoForm.valid) {
-      this.pageLoadingService.openLoading();
-      const mobileNo = this.searchByMobileNoForm.value.mobileNo;
-      this.checkChargeType(mobileNo);
-    } else {
-      if (this.searchByMobileNoForm.controls.mobileNo.value.length === 10) {
-        this.alertService.notify({
-          type: 'warning',
-          confirmButtonText: 'OK',
-          showConfirmButton: true,
-          text: 'กรุณาระบุเบอร์ให้ถูกต้อง'
-        });
-      } else {
-        this.alertService.notify({
-          type: 'warning',
-          confirmButtonText: 'OK',
-          showConfirmButton: true,
-          text: 'กรุณาระบุเบอร์ให้ครบ 10 หลัก'
-        });
-      }
-      // this.nameText = '';
-      // this.billingAddressText = '';
-      this.receiptInfoForm.controls['taxId'].setValue('');
-      this.receiptInfoForm.controls['branch'].setValue('');
-    }
-  }
+  // searchCustomerInfo(): void {
+  //   if (this.searchByMobileNoForm.valid) {
+  //     this.pageLoadingService.openLoading();
+  //     const mobileNo = this.searchByMobileNoForm.value.mobileNo;
+  //     this.checkChargeType(mobileNo);
+  //   } else {
+  //     if (this.searchByMobileNoForm.controls.mobileNo.value.length === 10) {
+  //       this.alertService.notify({
+  //         type: 'warning',
+  //         confirmButtonText: 'OK',
+  //         showConfirmButton: true,
+  //         text: 'กรุณาระบุเบอร์ให้ถูกต้อง'
+  //       });
+  //     } else {
+  //       this.alertService.notify({
+  //         type: 'warning',
+  //         confirmButtonText: 'OK',
+  //         showConfirmButton: true,
+  //         text: 'กรุณาระบุเบอร์ให้ครบ 10 หลัก'
+  //       });
+  //     }
+  //     // this.nameText = '';
+  //     // this.billingAddressText = '';
+  //     this.receiptInfoForm.controls['taxId'].setValue('');
+  //     this.receiptInfoForm.controls['branch'].setValue('');
+  //   }
+  // }
 
-  checkChargeType(mobileNo: string): void {
-    this.customerInfoService.getProfileByMobileNo(mobileNo)
-      .then((resp: any) => {
-        console.log('resp --> ', resp);
-        this.pageLoadingService.closeLoading();
-    //     const chargeType: string = resp.data.chargeType;
-    //     switch (chargeType) {
-    //       case 'Pre-paid':
-    //         this.alertService.warning('กรุณาระบุเบอร์ AIS รายเดือนเท่านั้น');
-    //         this.searchByMobileNoForm.controls['mobileNo'].setValue('');
-    //         break;
-    //       case 'Post-paid':
-    //         this.customerInfoService.getBillingByMobileNo(mobileNo)
-    //           .then((res: any) => {
-    //             if (res && res.data && res.data.billingAddress) {
-    //               this.setCustomerInfo({
-    //                 customer: this.customerInfoService.mapAttributeFromGetBill(res.data.billingAddress),
-    //                 action: TransactionAction.KEY_IN
-    //               });
-    //               this.errorAddessValid.emit(true);
-    //               this.customerInfoService.setSelectedMobileNo(mobileNo);
-    //               this.pageLoadingService.closeLoading();
-    //             } else {
-    //               this.errorNotAisMobileNo();
-    //             }
-    //           })
-    //           .catch(() => {
-    //             this.pageLoadingService.closeLoading();
-    //             this.errorNotAisMobileNo();
-    //             this.clearData();
-    //           });
-    //         break;
-    //     }
-      });
-    //   .catch(() => {
-    //     this.pageLoadingService.closeLoading();
-    //     this.errorNotAisMobileNo();
-    //     this.clearData();
-    //   });
-  }
-
-  // Test
-  keyPress(event: any): void {
-    const charCode: number = (event.which) ? event.which : event.keyCode;
-    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-      event.preventDefault();
-    }
-  }
-
-  setCustomerInfo(data: any): void {
-  }
+  // checkChargeType(mobileNo: string): void {
+  //   this.customerInfoService.getProfileByMobileNo(mobileNo)
+  //     .then((resp: any) => {
+  //       console.log('resp --> ', resp);
+  //       this.pageLoadingService.closeLoading();
+  //   //     const chargeType: string = resp.data.chargeType;
+  //   //     switch (chargeType) {
+  //   //       case 'Pre-paid':
+  //   //         this.alertService.warning('กรุณาระบุเบอร์ AIS รายเดือนเท่านั้น');
+  //   //         this.searchByMobileNoForm.controls['mobileNo'].setValue('');
+  //   //         break;
+  //   //       case 'Post-paid':
+  //   //         this.customerInfoService.getBillingByMobileNo(mobileNo)
+  //   //           .then((res: any) => {
+  //   //             if (res && res.data && res.data.billingAddress) {
+  //   //               this.setCustomerInfo({
+  //   //                 customer: this.customerInfoService.mapAttributeFromGetBill(res.data.billingAddress),
+  //   //                 action: TransactionAction.KEY_IN
+  //   //               });
+  //   //               this.errorAddessValid.emit(true);
+  //   //               this.customerInfoService.setSelectedMobileNo(mobileNo);
+  //   //               this.pageLoadingService.closeLoading();
+  //   //             } else {
+  //   //               this.errorNotAisMobileNo();
+  //   //             }
+  //   //           })
+  //   //           .catch(() => {
+  //   //             this.pageLoadingService.closeLoading();
+  //   //             this.errorNotAisMobileNo();
+  //   //             this.clearData();
+  //   //           });
+  //   //         break;
+  //   //     }
+  //     });
+  //   //   .catch(() => {
+  //   //     this.pageLoadingService.closeLoading();
+  //   //     this.errorNotAisMobileNo();
+  //   //     this.clearData();
+  //   //   });
+  // }
 
   // Test
-  switchKeyInBillingAddress(): void {
-    this.isShowInputForKeyIn = !this.isShowInputForKeyIn;
-    this.billingAddress.setIsKeyInBillingAddress(this.isShowInputForKeyIn);
-    // if (this.receiptInfoForm.valid) {
-    //   this.onError(true);
-    // }
-  }
+  // keyPress(event: any): void {
+  //   const charCode: number = (event.which) ? event.which : event.keyCode;
+  //   if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+  //     event.preventDefault();
+  //   }
+  // }
+
+  // setCustomerInfo(data: any): void {
+  // }
+
+  // Test
+  // switchKeyInBillingAddress(): void {
+  //   this.isShowInputForKeyIn = !this.isShowInputForKeyIn;
+  //   this.billingAddress.setIsKeyInBillingAddress(this.isShowInputForKeyIn);
+  //   // if (this.receiptInfoForm.valid) {
+  //   //   this.onError(true);
+  //   // }
+  // }
 
   // Test
   getAllTitleName(): void {
@@ -583,7 +583,7 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
     // this.customerAddress.amphur = null;
     // this.customerAddress.tumbol = null;
     // this.customerAddress.province = null;
-    this.customerAddressForm.reset();
+    // this.customerAddressForm.reset();
 
     // this.translationSubscribe = this.translation.onLangChange.pipe(debounceTime(750)).subscribe(() => {
     //   this.callService();
