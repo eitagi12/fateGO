@@ -19,6 +19,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { debounceTime } from 'rxjs/operators';
 import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl, ValidationErrors, FormControl } from '@angular/forms';
 import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
+import { BillingAddressService } from 'src/app/device-only/services/billing-address.service';
 
 export interface CustomerAddress {
   idCardNo?: string;
@@ -98,7 +99,8 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
     public fb: FormBuilder,
     private utils: Utils,
     private pageLoadingService: PageLoadingService,
-    private customerInfoService: CustomerInformationService
+    private customerInfoService: CustomerInformationService,
+    private billingAddress: BillingAddressService,
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -405,7 +407,7 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
   // Test
   switchKeyInBillingAddress(): void {
     this.isShowInputForKeyIn = !this.isShowInputForKeyIn;
-    // this.billingAddress.setIsKeyInBillingAddress(this.isShowInputForKeyIn);
+    this.billingAddress.setIsKeyInBillingAddress(this.isShowInputForKeyIn);
     // if (this.receiptInfoForm.valid) {
     //   this.onError(true);
     // }
