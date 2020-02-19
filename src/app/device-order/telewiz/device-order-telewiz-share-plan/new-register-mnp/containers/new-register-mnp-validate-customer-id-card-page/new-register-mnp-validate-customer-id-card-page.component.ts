@@ -237,7 +237,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
     } else {
       this.transaction = {
         data: {
-          transactionType: TransactionType.DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN, // Share
+          transactionType: TransactionType.DEVICE_ORDER_TELEWIZ_DEVICE_SHARE_PLAN, // Share
           action: TransactionAction.READ_CARD,
           order: this.order
         },
@@ -438,7 +438,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
     } else {
       const transactionObject: any = this.validateCustomerService.buildTransaction({
         transaction: this.transaction,
-        transactionType: TransactionType.DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN // Share
+        transactionType: TransactionType.DEVICE_ORDER_TELEWIZ_DEVICE_SHARE_PLAN // Share
       });
 
       this.transaction.transactionId = transactionObject.transactionId;
