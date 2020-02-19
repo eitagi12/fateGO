@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_DEVICE_ONLY_KIOSK_SELECT_MOBILE_CARE_PAGE, ROUTE_DEVICE_ONLY_KIOSK_SELECT_PAYMENT_AND_RECEIPT_INFORMATION_PAGE } from '../../constants/route-path.constant';
 import { Transaction, TransactionAction, TransactionType } from 'src/app/shared/models/transaction.model';
@@ -45,7 +45,7 @@ export interface CustomerAddress {
   templateUrl: './device-only-kiosk-select-payment-and-receipt-information-page.component.html',
   styleUrls: ['./device-only-kiosk-select-payment-and-receipt-information-page.component.scss']
 })
-export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent implements OnInit, OnDestroy {
+export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent implements OnInit, OnDestroy, AfterViewInit {
   wizards: string[] = WIZARD_DEVICE_ONLY_AIS;
   transaction: Transaction;
   public priceOption: PriceOption;
@@ -109,54 +109,37 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
 
   ngOnInit(): void {
     this.homeButtonService.initEventButtonHome();
-    this.customerAddress = {
-      idCardNo: '',
-      titleName: '',
-      firstName: '',
-      lastName: '',
-      homeNo: '',
-      moo: '',
-      mooBan: '',
-      room: '',
-      floor: '',
-      buildingName: '',
-      soi: '',
-      street: '',
-      province: '',
-      amphur: '',
-      tumbol: '',
-      zipCode: '',
-    };
+    // this.customerAddress = {
+    //   idCardNo: '',
+    //   titleName: '',
+    //   firstName: '',
+    //   lastName: '',
+    //   homeNo: '',
+    //   moo: '',
+    //   mooBan: '',
+    //   room: '',
+    //   floor: '',
+    //   buildingName: '',
+    //   soi: '',
+    //   street: '',
+    //   province: '',
+    //   amphur: '',
+    //   tumbol: '',
+    //   zipCode: '',
+    // };
     this.getPaymentDetail();
-    // this.createSearchByMobileNoForm();
     this.createCustomerAddressForm();
-    // this.createReceiptInfoForm();
-    // this.createTransaction();
     this.getAllTitleName();
     this.getAllZipcodes();
     this.getAllProvinces();
+    // this.createSearchByMobileNoForm();
+    // this.createReceiptInfoForm();
+    // this.createTransaction();
   }
 
-  // create Function createTransaction
-  // createTransaction(): void {
-  //   this.apiRequestService.createRequestId();
-  //   if (!this.transaction.data) {
-  //     this.transaction = {
-  //       data: {
-  //         action: TransactionAction.KEY_IN,
-  //         transactionType: TransactionType.DEVICE_ONLY_AIS
-  //       },
-  //       transactionId: this.createOrderService.generateTransactionId(this.apiRequestService.getCurrentRequestId())
-  //     };
-  //   } else if (this.transaction.data.customer && this.transaction.data.billingInformation) {
-  //     this.customerInfoTemp = {
-  //       customer: this.transaction.data.customer,
-  //       billDeliveryAddress: this.transaction.data.billingInformation.billDeliveryAddress,
-  //       receiptInfo: this.transaction.data.receiptInfo,
-  //       action: this.transaction.data.action
-  //     };
-  //   }
-  // }
+  ngAfterViewInit(): void {
+    this.testCode();
+  }
 
   // create Function getPaymentDetail
   getPaymentDetail(): void {
@@ -229,25 +212,23 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
       tumbol: ['', [Validators.required]],
       zipCode: ['', [Validators.required, Validators.maxLength(5)]]
     });
+  }
 
+  testCode(): void {
     // this.customerAddressForm.patchValue(this.customerAddress || {});
-
-    this.customerAddressForm.valueChanges.pipe(debounceTime(750)).subscribe((value: any) => {
-      // this.error.emit(this.customerAddressForm.valid);
-      this.onError(value);
-      if (this.customerAddressForm.valid) {
-        // this.completed.emit(value);
-        console.log('check Form ', this.customerAddressForm.value);
-        this.onComplete(value);
-      }
-    });
-
-    this.customerAddressForm.patchValue(this.customerAddress || {});
-
+    // this.customerAddressForm.valueChanges.pipe(debounceTime(750)).subscribe((value: any) => {
+    //   // this.error.emit(this.customerAddressForm.valid);
+    //   this.onError(value);
+    //   if (this.customerAddressForm.valid) {
+    //     // this.completed.emit(value);
+    //     console.log('check Form ', this.customerAddressForm.value);
+    //     this.onComplete(value);
+    //   }
+    // });
+    // this.customerAddressForm.patchValue(this.customerAddress || {});
     this.customerAddressForm.controls['titleName'].valueChanges.subscribe((titleName: any) => {
-      console.log('titleName -> ', titleName);
+      this.alertService.error('check titleName = ' + titleName);
     });
-
     this.customerAddressForm.controls['province'].valueChanges.subscribe((provinceName: any) => {
       this.customerAddressForm.patchValue({
         amphur: '',
@@ -261,11 +242,12 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
           provinceName: provinceName,
           zipCode: controlsZipCode.invalid ? controlsZipCode.value : null
         };
+        this.alertService.error('check provinceName = ' + JSON.stringify(this.provinceSelected));
         this.onProvinceSelected(this.provinceSelected);
       }
     });
-
     this.customerAddressForm.controls['amphur'].valueChanges.subscribe((amphurName: any) => {
+      this.alertService.error('check amphurName = ' + amphurName);
       this.customerAddressForm.patchValue({
         tumbol: '',
       });
@@ -277,10 +259,10 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
           amphurName: amphurName,
           zipCode: controlsZipCode.invalid ? controlsZipCode.value : null
         };
+        this.alertService.error('check amphurSelected = ' +  JSON.stringify(this.amphurSelected));
         this.onAmphurSelected(this.amphurSelected);
       }
     });
-
     this.customerAddressForm.controls['tumbol'].valueChanges.subscribe((tumbolName: any) => {
       if (tumbolName) {
         const controlsZipCode = this.customerAddressForm.controls['zipCode'];
@@ -294,6 +276,27 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
       }
     });
   }
+
+  // create Function createTransaction
+  // createTransaction(): void {
+  //   this.apiRequestService.createRequestId();
+  //   if (!this.transaction.data) {
+  //     this.transaction = {
+  //       data: {
+  //         action: TransactionAction.KEY_IN,
+  //         transactionType: TransactionType.DEVICE_ONLY_AIS
+  //       },
+  //       transactionId: this.createOrderService.generateTransactionId(this.apiRequestService.getCurrentRequestId())
+  //     };
+  //   } else if (this.transaction.data.customer && this.transaction.data.billingInformation) {
+  //     this.customerInfoTemp = {
+  //       customer: this.transaction.data.customer,
+  //       billDeliveryAddress: this.transaction.data.billingInformation.billDeliveryAddress,
+  //       receiptInfo: this.transaction.data.receiptInfo,
+  //       action: this.transaction.data.action
+  //     };
+  //   }
+  // }
 
   // Test
   // createSearchByMobileNoForm(): void {
@@ -527,6 +530,7 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
         this.zipCodeSelected = {
           zipCode: controlsZipCode.valid ? controlsZipCode.value : null
         };
+        this.alertService.error('check zipCodeSelected = ' + JSON.stringify(this.zipCodeSelected));
       }
     });
   }
