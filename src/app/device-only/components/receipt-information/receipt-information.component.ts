@@ -54,12 +54,15 @@ export class ReceiptInformationComponent implements OnInit {
     private pageLoadingService: PageLoadingService
   ) {
     this.isShowInputForKeyIn = false;
-    this.billingAddress.getTitleName().then(this.responseTitleNames());
+    // this.billingAddress.getTitleName().then(this.responseTitleNames());
     this.billingAddress.getProvinces().then(this.responseProvinces());
     this.billingAddress.getZipCodes().then(this.responseZipCodes());
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<any> {
+    const getTitleName = await this.billingAddress.getTitleName();
+    this.alertService.error('check getTitleName = ' + JSON.stringify(getTitleName));
+
     this.customerAddress = {
       idCardNo: '',
       titleName: '',
