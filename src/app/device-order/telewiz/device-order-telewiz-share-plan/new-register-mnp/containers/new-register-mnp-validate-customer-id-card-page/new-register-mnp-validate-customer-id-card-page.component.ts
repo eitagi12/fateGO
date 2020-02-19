@@ -302,7 +302,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
       lastNameEn: customer.lastNameEn || '',
       issueDate: customer.birthdate || customer.issueDate || '',
       // tslint:disable-next-line: max-line-length
-      expireDate: customer.expireDate ? customer.expireDay : customer.expireDay ? customer.expireDay + '/' + customer.expireMonth + '/' + customer.expireYear : '',
+      expireDate: customer.expireDate ? customer.expireDate : customer.expireDay ? customer.expireDay + '/' + customer.expireMonth + '/' + customer.expireYear : '',
       zipCode: customer.zipCode || '',
       mainMobile: customer.mainMobile || '',
       mainPhone: customer.mainPhone || '',

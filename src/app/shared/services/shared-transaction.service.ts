@@ -83,7 +83,8 @@ export class SharedTransactionService {
           colorName: productStock.color || productStock.colorName || '',
           company: productStock.company || '',
           name: productDetail.name || '',
-          imei: !!data.device ? data.device.imei : ''
+          imei: !!data.device ? data.device.imei :
+            transaction.data.transactionType === 'NewRegisterMNPTELEWIZ' ? transaction.data.simCard.imei : ''
         },
         billing_information: {},
         knoxguard: {},
@@ -228,7 +229,7 @@ export class SharedTransactionService {
       }
 
       const paymentCode: any = {
-        'payment': {'code': ''}
+        'payment': { 'code': '' }
       };
       if (data.advancePayment && data.advancePayment.paymentType) {
         if (data.advancePayment.paymentType === 'CREDIT') {

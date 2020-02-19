@@ -45,7 +45,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
 
   koiskApiFn: any;
   readonly ERROR_PERSO: string = 'ไม่สามารถให้บริการได้ กรุณาติดต่อพนักงานเพื่อดำเนินการ ขออภัยในความไม่สะดวก';
-  readonly ERROR_PERSO_PC: string = 'ไม่สามารถ Perso Sim ได้';
+  readonly ERROR_PERSO_PC: string = '';
   memberSimCard: any;
 
   mobileNo: string;
@@ -81,6 +81,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
   duration: 250;
   timeoutCheckOrderStatus: any;
   simSerialKeyIn: string;
+  simProgress: number;
 
   constructor(
     private router: Router,
@@ -120,15 +121,20 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
     this.persoSimSubscription = this.persoSimService.onPersoSim(this.persoSimConfig).subscribe((persoSim: any) => {
       console.log('persoSim-->', persoSim);
       this.persoSim = persoSim;
+      this.simProgress = persoSim.progress;
       if (persoSim.persoData && persoSim.persoData.simSerial) {
         this.transaction.data.simCard.simSerial = persoSim.persoData.simSerial;
         this.onNext();
       }
       if (persoSim.error) {
-        this.alertService.error(this.translateService.instant(this.ERROR_PERSO)).then(() => {
-          this.persoSimSubscription.unsubscribe();
-          this.persoSimWebsocket();
-        });
+        console.log('!!!!! persoSim.error !!!!!!', persoSim.error);
+        console.log('!!!!! persoSim.error persoSim !!!!!!', persoSim);
+        let errorMessage = '';
+        const mobileNo = this.transaction.data.simCard.mobileNo;
+        if (this.simProgress === 30) {
+          errorMessage = 'เกิดข้อผิดพลาด กรุณาเปลี่ยน SIM CARD ใหม่';
+          this.popupControl('errorSim', errorMessage);
+        }
       }
     });
   }
@@ -491,7 +497,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
           type: 'error',
           text: 'เกิดข้อผิดพลาด กรุณาเปลี่ยน SIM CARD ใหม่',
           confirmButtonText: 'ตกลง',
-          onClose: () => this.setIntervalSimCard()
+          onClose: () => this.persoSimWebsocket()
         });
       } break;
       case 'errorCmd': {
