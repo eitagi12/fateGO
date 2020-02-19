@@ -207,6 +207,9 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
         if (this.simProgress === 30) {
           errorMessage = 'เกิดข้อผิดพลาด กรุณาเปลี่ยน SIM CARD ใหม่';
           this.popupControl('errorSim', errorMessage);
+        } else {
+          errorMessage = 'ขออภัยค่ะ ไม่สามารถทำรายการได้ กรุณาเสียบซิมการ์ด';
+          this.popupControl('errorSmartCard', errorMessage);
         }
       }
     });
@@ -409,18 +412,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
   }
 
   setIntervalSimCard(): void {
-    // this.stateMessageControl('waiting');
-    this.lastStatus = false;
-    this.gotCardData = false;
-    this.persoSim = '';
-    this.readSimStatus = '';
     this.persoSim = { progress: 0, eventName: 'กรุณารอสักครู่' };
-    // $('.custom').animate({ width: 0 + '%' }, this.duration, () => {/**/ });
-    clearInterval(this.persoSimInterval);
-    const intervalTime: number = 3000;
-    this.persoSimInterval = setInterval(() => {
-      this.checkSimCardStatus();
-    }, intervalTime); // Timer
   }
 
   checkBarcode(barcode: string, isScan: boolean): void {
@@ -572,7 +564,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
           type: 'error',
           text: 'ขออภัยค่ะ ไม่สามารถทำรายการได้ กรุณาเสียบซิมการ์ด',
           confirmButtonText: 'ตกลง',
-          onClose: () => this.onRefreshPage()
+          onClose: () => this.persoSimWebsocket()
         });
       } break;
       case 'errorSimStatus': {
@@ -601,7 +593,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
         });
       } break;
       case 'perSoSuccess': {
-        this.alertService.success('Perso sim สำเร็จ กรุณาถอด ซิมการ์ด').then((response: any) => {});
+        this.alertService.success('Perso sim สำเร็จ กรุณาถอด ซิมการ์ด').then((response: any) => { });
       } break;
     }
   }
@@ -822,7 +814,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
       } else if (errorCode === '004') {
         this.pageLoadingService.closeLoading();
         console.log('Go to get command for Perso SIM');
-        this.getCommandForPersoSim(this.readSimStatus);
+        // this.getCommandForPersoSim(this.readSimStatus);
       } else if (errorCode === '006') {
         this.pageLoadingService.closeLoading();
         errMegFixSim = 'ซิมใบนี้ไม่สามารถทำรายการได้ เนื่องจาก Region ซิมไม่ตรงกับเบอร์ที่เลือก เบอร์ '

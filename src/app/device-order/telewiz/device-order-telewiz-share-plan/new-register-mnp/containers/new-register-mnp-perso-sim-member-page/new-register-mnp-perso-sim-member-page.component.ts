@@ -134,6 +134,9 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
         if (this.simProgress === 30) {
           errorMessage = 'เกิดข้อผิดพลาด กรุณาเปลี่ยน SIM CARD ใหม่';
           this.popupControl('errorSim', errorMessage);
+        } else {
+          errorMessage = 'ขออภัยค่ะ ไม่สามารถทำรายการได้ กรุณาเสียบซิมการ์ด';
+          this.popupControl('errorSmartCard', errorMessage);
         }
       }
     });
@@ -529,7 +532,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
           type: 'error',
           text: 'ขออภัยค่ะ ไม่สามารถทำรายการได้ กรุณาเสียบซิมการ์ด',
           confirmButtonText: 'ตกลง',
-          onClose: () => this.onRefreshPage()
+          onClose: () => this.persoSimWebsocket()
         });
       } break;
       case 'errorSimStatus': {

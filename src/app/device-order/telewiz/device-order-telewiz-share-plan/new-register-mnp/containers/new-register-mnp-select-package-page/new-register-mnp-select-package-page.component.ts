@@ -66,6 +66,10 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
     this.callService();
+
+    if (this.transaction.data && this.transaction.data.mainPackage) {
+        delete this.transaction.data.mainPackage;
+    }
   }
 
   onCompleted(promotion: any): void {
