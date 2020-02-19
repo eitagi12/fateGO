@@ -169,7 +169,8 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   createForm(): void {
     this.customerAddressForm = this.fb.group({
       idCardNo: ['', [Validators.required, Validators.pattern(/^[1-8]\d{12}$/), this.validateIdCard.bind(this)]],
-      titleName: ['', [Validators.required]],
+      // titleName: ['', [Validators.required]],
+      titleName: [''],
       firstName: ['', [Validators.required, this.validateCharacter()]],
       lastName: ['', [Validators.required, this.validateCharacter()]],
       homeNo: ['', [Validators.required, Validators.pattern(/^[0-9^/]*$/)]],
