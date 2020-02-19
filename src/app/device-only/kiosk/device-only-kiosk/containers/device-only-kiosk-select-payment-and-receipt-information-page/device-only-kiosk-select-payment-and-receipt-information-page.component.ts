@@ -576,7 +576,7 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
   }
 
   // Test
-  clearCustomerAddressForm(): void {
+  clearCustomerAddressForm(event: any): void {
     // this.amphurs = [];
     // this.tumbols = [];
     // this.zipCodes = [];
