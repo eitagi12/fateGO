@@ -5,7 +5,7 @@ import { Transaction, TransactionAction, TransactionType } from 'src/app/shared/
 import { WIZARD_DEVICE_ONLY_AIS } from 'src/app/device-only/constants/wizard.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Product } from 'src/app/device-only/models/product.model';
-import { PaymentDetail, User, HomeService, ApiRequestService, AlertService, TokenService, PaymentDetailBank } from 'mychannel-shared-libs';
+import { PaymentDetail, User, HomeService, ApiRequestService, AlertService, TokenService, PaymentDetailBank, Utils } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -17,7 +17,7 @@ import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/r
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { debounceTime } from 'rxjs/operators';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 
 export interface CustomerAddress {
   homeNo: string;
@@ -72,7 +72,14 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
   zipCodes: string[];
   allProvinces: string[];
   allZipCodes: string[];
+  titleNames: string[];
   customerAddress: CustomerAddress;
+  provinceSelected: any;
+  amphurSelected: any;
+  tumbolSelected: any;
+  zipCodeSelected: any;
+  customerInfo: any;
+  idCardMaxLength: number = 13;
 
   constructor(
     private router: Router,
@@ -86,7 +93,8 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
     private homeButtonService: HomeButtonService,
     private tokenService: TokenService,
     private translation: TranslateService,
-    public fb: FormBuilder
+    public fb: FormBuilder,
+    private utils: Utils
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -176,43 +184,58 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
 
     // Test
     // this.clearSelectedForm();
-    this.getAllZipCodesData();
-    this.getAllProvincesData();
+    // this.getAllZipCodesData();
+    // this.getAllProvincesData();
+    this.getAllTitleName();
+    this.getAllZipcodes();
+    this.getAllProvinces();
     this.createCustomerAddressForm();
   }
 
   // Test
-  // callService(): void {
-  //   const billingInformation = this.transaction.data.billingInformation || {};
-  //   const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
-  //   this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {
-  //     this.allZipCodes = resp.data.zipcodes || [];
-  //   });
-  //   customer.province = customer.province.replace(/มหานคร$/, '');
-  //   this.http.get('/api/customerportal/newRegister/getAllProvinces'
-  //     , {
-  //       params: {
-  //         provinceSubType: this.translation.currentLang === 'TH' ? 'THA' : 'ENG'
-  //       }
-  //     }).subscribe((resp: any) => {
-  //       this.provinces = (resp.data.provinces || []);
-  //       this.customerAddress = {
-  //         homeNo: customer.homeNo,
-  //         moo: customer.moo,
-  //         mooBan: customer.mooBan,
-  //         room: customer.room,
-  //         floor: customer.floor,
-  //         buildingName: customer.buildingName,
-  //         soi: customer.soi,
-  //         street: customer.street,
-  //         province: customer.province,
-  //         amphur: customer.amphur,
-  //         tumbol: customer.tumbol,
-  //         zipCode: customer.zipCode,
-  //       };
-  //     });
-  // }
+  getAllTitleName(): void {
+    this.http.get('/api/customerportal/newRegister/queryTitleName').subscribe((resp: any) => {
+      this.titleNames = resp.data.titleNames || [];
+    });
+  }
 
+  // Test
+  getAllZipcodes(): void {
+    // const customer = this.transaction.data.customer;
+    this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {
+      this.allZipCodes = resp.data.zipcodes || [];
+    });
+    this.customerAddress = {
+      homeNo: '',
+      moo: '',
+      mooBan: '',
+      room: '',
+      floor: '',
+      buildingName: '',
+      soi: '',
+      street: '',
+      province: '',
+      amphur: '',
+      tumbol: '',
+      zipCode: '',
+    };
+  }
+
+  getAllProvinces(): void {
+    // customer.province = customer.province.replace(/มหานคร$/, '');
+    this.http.get('/api/customerportal/newRegister/getAllProvinces', {
+      params: {
+        provinceSubType: this.translation.currentLang === 'TH' ? 'THA' : 'ENG'
+      }
+    }).subscribe((resp: any) => {
+      this.allProvinces = (resp.data.provinces || []);
+      this.provinces = (resp.data.provinces || []).map((province: any) => {
+        return province.name;
+      });
+    });
+  }
+
+  // Test
   // clearSelectedForm(): void {
   //    this.translationSubscribe = this.translation.onLangChange.pipe(debounceTime(750)).subscribe(() => {
   //     this.amphurs = [];
@@ -227,6 +250,18 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
   // Test
   createCustomerAddressForm(): void {
     this.customerAddressForm = this.fb.group({
+      idCardNo: ['', [Validators.required, Validators.pattern(/^[1-8]\d{12}$/), this.validateIdCard.bind(this)]],
+      titleName: ['', [Validators.required]],
+      firstName: ['', [Validators.required, this.validateCharacter()]],
+      lastName: ['', [Validators.required, this.validateCharacter()]],
+      homeNo: ['', [Validators.required, Validators.pattern(/^[0-9^/]*$/)]],
+      moo: [''],
+      mooBan: [''],
+      room: [''],
+      floor: [''],
+      buildingName: [''],
+      soi: [''],
+      street: [''],
       province: ['', [Validators.required]],
       amphur: ['', [Validators.required]],
       tumbol: ['', [Validators.required]],
@@ -234,6 +269,22 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
     });
 
     // this.customerAddressForm.patchValue(this.customerAddress || {});
+
+    this.customerAddressForm.valueChanges.pipe(debounceTime(750)).subscribe((value: any) => {
+      // this.error.emit(this.customerAddressForm.valid);
+      this.onError(value);
+      if (this.customerAddressForm.valid) {
+        // this.completed.emit(value);
+        console.log('check Form ', this.customerAddressForm.value);
+        this.onComplete(value);
+      }
+    });
+
+    this.customerAddressForm.patchValue(this.customerAddress || {});
+
+    this.customerAddressForm.controls['titleName'].valueChanges.subscribe((titleName: any) => {
+      console.log('titleName -> ', titleName);
+    });
 
     this.customerAddressForm.controls['province'].valueChanges.subscribe((provinceName: any) => {
       this.customerAddressForm.patchValue({
@@ -243,49 +294,73 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
       this.customerAddressForm.controls['amphur'].enable();
       this.customerAddressForm.controls['tumbol'].disable();
       if (provinceName) {
-        console.log('check provinceName : ', provinceName);
-        this.alertService.error('check provinceName = ' + JSON.stringify(provinceName));
-        this.onProvinceSelected(provinceName);
-        // const controlsZipCode = this.customerAddressForm.controls['zipCode'];
-        }
-      });
+        const controlsZipCode = this.customerAddressForm.controls['zipCode'];
+        this.provinceSelected = {
+          provinceName: provinceName,
+          zipCode: controlsZipCode.invalid ? controlsZipCode.value : null
+        };
+        this.onProvinceSelected(this.provinceSelected);
+      }
+    });
 
-      this.customerAddressForm.controls['amphur'].valueChanges.subscribe((amphurName: any) => {
-        this.customerAddressForm.patchValue({
-          tumbol: '',
-        });
-        this.customerAddressForm.controls['tumbol'].enable();
-        if (amphurName) {
-          console.log('check proamphurName : ', amphurName);
-          // this.onAmphurSelected(amphurName);
-          // const controlsZipCode = this.customerAddressForm.controls['zipCode'];
-        }
+    this.customerAddressForm.controls['amphur'].valueChanges.subscribe((amphurName: any) => {
+      this.customerAddressForm.patchValue({
+        tumbol: '',
       });
-  }
+      this.customerAddressForm.controls['tumbol'].enable();
+      if (amphurName) {
+        const controlsZipCode = this.customerAddressForm.controls['zipCode'];
+        this.amphurSelected = {
+          provinceName: this.customerAddressForm.value.province || '',
+          amphurName: amphurName,
+          zipCode: controlsZipCode.invalid ? controlsZipCode.value : null
+        };
+        this.onAmphurSelected(this.amphurSelected);
+      }
+    });
 
-  // Test
-  getAllZipCodesData(): void {
-    this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {
-      this.allZipCodes = resp.data.zipcodes || [];
+    this.customerAddressForm.controls['tumbol'].valueChanges.subscribe((tumbolName: any) => {
+      if (tumbolName) {
+        const controlsZipCode = this.customerAddressForm.controls['zipCode'];
+        this.tumbolSelected = {
+          provinceName: this.customerAddressForm.value.province || '',
+          amphurName: this.customerAddressForm.value.amphur || '',
+          tumbolName: tumbolName,
+          zipCode: controlsZipCode.invalid ? controlsZipCode.value : null
+        };
+        this.onTumbolSelected(this.tumbolSelected);
+      }
     });
   }
 
   // Test
-  getAllProvincesData(): void {
-    this.http.get('/api/customerportal/newRegister/getAllProvinces', {
-      params: { provinceSubType: this.translation.currentLang === 'TH' ? 'THA' : 'ENG'}}).subscribe((resp: any) => {
-        this.allProvinces = (resp.data.provinces || []);
-        this.provinces = (resp.data.provinces || []).map((province: any) => {
-          return province.name;
-        });
-    });
+  validateIdCard(control: AbstractControl): ValidationErrors | null {
+    const value = control.value;
+    const inputLength = value ? value.length : 0;
+    if (inputLength === 13) {
+      if (this.utils.isThaiIdCard(value)) {
+        return null;
+      } else {
+        return {
+          message: 'กรุณากรอกเลขบัตรประชาชนให้ถูกต้อง',
+        };
+      }
+    }
+  }
+
+  // Test
+  validateCharacter(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } => {
+      const reg = /[!$%^&*()_+|~=`{}\[\]:";'<>?,\/@#./1-9]/;
+      const stringValue = control.value;
+      const no = reg.test(stringValue);
+      return no ? { 'validateCharacter': { stringValue } } : null;
+    };
   }
 
   // Test
   onProvinceSelected(params: any): void {
-    console.log('params.zipCode => ', params.zipCode);
-    const province = this.getProvinceByName(params);
-    this.alertService.error('province1 onProvinceSelected = ' + JSON.stringify(province));
+    const province = this.getProvinceByName(params.provinceName);
     const req = {
       provinceId: province.id,
       zipcode: params.zipCode
@@ -305,8 +380,7 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
 
   // Test
   onAmphurSelected(params: any): void {
-    const province = this.getProvinceByName(params);
-    this.alertService.error('province2 onAmphurSelected( = ' + JSON.stringify(province));
+    const province = this.getProvinceByName(params.provinceName);
     const req = {
       provinceId: province.id,
       amphurName: params.amphurName,
@@ -323,6 +397,49 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
         return tumbol;
       });
     });
+  }
+
+  // Test
+  onTumbolSelected(params: any): void {
+    const province = this.getProvinceByName(params.provinceName);
+    this.http.get('/api/customerportal/newRegister/queryZipcode', {
+      params: {
+        provinceId: province.id,
+        amphurName: params.amphurName,
+        tumbolName: params.tumbolName
+      }
+    }).subscribe((resp: any) => {
+      this.zipCodes = resp.data.zipcodes || [];
+
+      if (this.zipCodes.length > 0) {
+        const controlsZipCode = this.customerAddressForm.controls['zipCode'];
+        controlsZipCode.setValue(this.zipCodes[0]);
+        this.zipCodeSelected = {
+          zipCode: controlsZipCode.valid ? controlsZipCode.value : null
+        };
+      }
+    });
+  }
+
+  // Test
+  onZipCodeSelected(zipCode: string): void {
+    // this.http.get('/api/customerportal/newRegister/getProvinceIdByZipcode', {
+    //   params: { zipcode: zipCode }
+    // }).toPromise()
+    //   .then((resp: any) => {
+    //     const province = this.provinces.find((prov: any) => prov.id === resp.data.provinceId);
+    //     if (!province) {
+    //       return;
+    //     }
+    //     this.alertService.error('province4 onZipCodeSelected = ' + JSON.stringify(province));
+    //     this.customerAddress = Object.assign(
+    //       Object.assign({}, this.customerAddress),
+    //       {
+    //         province: province.name,
+    //         zipCode: zipCode
+    //       }
+    //     );
+    //   });
   }
 
   // Test
@@ -428,97 +545,5 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
   ngOnDestroy(): void {
     this.transactionService.save(this.transaction);
   }
-
-  // Test
-  // getProvinces(): string[] {
-  //   return (this.provinces || []).map((province: any) => {
-  //     return province.name;
-  //   });
-  // }
-
-  // Test
-  // getProvinceByName(provinceName: string): any {
-  //   return (this.provinces || []).find((prov: any) => prov.name === provinceName) || {};
-  // }
-
-  // Test
-  // onProvinceSelected(params: any): void {
-  //   const province = this.getProvinceByName(params.provinceName);
-  //   this.alertService.error('province1 onProvinceSelected = ' + JSON.stringify(province));
-  //   const req = {
-  //     provinceId: province.id,
-  //     zipcode: params.zipCode
-  //   };
-  //   if (!params.zipCode) {
-  //     delete req.zipcode;
-  //   }
-
-  //   this.http.get('/api/customerportal/newRegister/queryAmphur', {
-  //     params: req
-  //   }).subscribe((resp: any) => {
-  //     this.amphurs = (resp.data.amphurs || []).map((amphur: any) => {
-  //       return amphur;
-  //     });
-  //   });
-  // }
-
-  // Test
-  // onAmphurSelected(params: any): void {
-  //   const province = this.getProvinceByName(params.provinceName);
-  //   this.alertService.error('province2 onAmphurSelected( = ' + JSON.stringify(province));
-  //   const req = {
-  //     provinceId: province.id,
-  //     amphurName: params.amphurName,
-  //     zipcode: params.zipCode
-  //   };
-  //   if (!params.zipCode) {
-  //     delete req.zipcode;
-  //   }
-
-  //   this.http.get('/api/customerportal/newRegister/queryTumbol', {
-  //     params: req
-  //   }).subscribe((resp: any) => {
-  //     this.tumbols = (resp.data.tumbols || []).map((tumbol: any) => {
-  //       return tumbol;
-  //     });
-  //   });
-  // }
-
-  // Test
-  // async onTumbolSelected(params: any): Promise<void> {
-  //   const province = this.getProvinceByName(params.provinceName);
-  //   await this.alertService.error('province3 onTumbolSelected( = ' + JSON.stringify(province));
-  //   this.http.get('/api/customerportal/newRegister/queryZipcode', {
-  //     params: {
-  //       provinceId: province.id,
-  //       amphurName: params.amphurName,
-  //       tumbolName: params.tumbolName
-  //     }
-  //   }).subscribe((resp: any) => {
-  //     this.zipCodes = resp.data.zipcodes || [];
-  //     this.alertService.error('zipCodes = ' + this.zipCodes);
-  //   });
-  // }
-
-  // Test
-  // onZipCodeSelected(zipCode: string): void {
-  //   this.http.get('/api/customerportal/newRegister/getProvinceIdByZipcode', {
-  //     params: { zipcode: zipCode }
-  //   }).toPromise()
-  //     .then((resp: any) => {
-  //       const province = this.provinces.find((prov: any) => prov.id === resp.data.provinceId);
-  //       if (!province) {
-  //         return;
-  //       }
-  //       this.alertService.error('province4 onZipCodeSelected = ' + JSON.stringify(province));
-  //       this.customerAddress = Object.assign(
-  //         Object.assign({}, this.customerAddress),
-  //         {
-  //           province: province.name,
-  //           zipCode: zipCode
-  //         }
-  //       );
-  //     });
-  // }
 
 }

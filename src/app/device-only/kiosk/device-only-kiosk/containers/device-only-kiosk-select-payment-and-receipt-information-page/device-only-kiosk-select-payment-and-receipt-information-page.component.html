@@ -50,7 +50,45 @@
               <div class="card-body">
                 <div class="pt-1 bg-white">
                   <form [formGroup]="customerAddressForm">
-                    <!-- <div class="form-group">
+                    <div class="form-group">
+                      <label for="idCardNo" id="txtIdCardNo">{{ 'บัตรประชาชน' | translate }}
+                        <span class="text-red"> *</span>
+                      </label>
+                      <input type="text" class="form-control" id="idCardNo" maxlength="{{ idCardMaxLength }}" autocomplete="off" formControlName="idCardNo" 
+                        [ngClass]="{ 'is-invalid' : customerAddressForm.controls['idCardNo'].invalid && customerAddressForm.controls['idCardNo'].dirty}">
+                      <small class="invalid-feedback" *ngIf="customerAddressForm.controls['idCardNo'].dirty && customerAddressForm.controls['idCardNo'].errors">
+                        * {{ customerAddressForm.controls['idCardNo'].errors?.message || 'กรุณากรอกรูปแบบให้ถูกต้อง'}}
+                      </small>
+                    </div>
+          
+                    <div class="form-group">
+                      <label for="titleName" id="txtTitleName">{{ 'คำนำหน้าชื่อ' | translate }}
+                        <span class="text-red"> *</span>
+                      </label>
+                      <select class="form-control" title="คำนำหน้าชื่อ" id="selectTitleName" formControlName="titleName"
+                        [ngClass]="{'is-invalid': customerAddressForm.controls['titleName'].invalid && customerAddressForm.controls['titleName'].dirty }">
+                        <option disabled value="">{{ 'คำนำหน้าชื่อ' | translate }}</option>
+                        <option *ngFor="let titleName of titleNames" [value]="titleName">{{ titleName }}</option>
+                      </select>
+                    </div> 
+          
+                    <div class="form-group">
+                      <label for="firstName" id="textFirstName">{{ 'ชื่อ' | translate }}
+                        <span class="text-red"> *</span>
+                      </label>
+                      <input type="text" autocomplete="off" class="form-control" id="inputfirstName" maxlength="50" formControlName="firstName"
+                        [ngClass]="{'is-invalid': !customerAddressForm.controls['firstName'].valid && customerAddressForm.controls['firstName'].dirty }">
+                    </div>
+          
+                    <div class="form-group">
+                      <label for="lastName" id="textLastName">{{ 'นามสกุล' | translate }}
+                        <span class="text-red"> *</span>
+                      </label>
+                      <input type="text" autocomplete="off" class="form-control" id="inputlastName" maxlength="50" formControlName="lastName"
+                        [ngClass]="{'is-invalid': !customerAddressForm.controls['lastName'].valid && customerAddressForm.controls['lastName'].dirty }">
+                    </div>
+
+                    <div class="form-group">
                       <label for="homeNo">{{ 'บ้านเลขที่' | translate }}
                         <span class="text-red"> *</span>
                       </label>
@@ -91,7 +129,7 @@
                     <div class="form-group">
                       <label for="street">{{ 'ถนน' | translate }}</label>
                       <input mcVisualKeyboard type="text" autocomplete="off" class="form-control" id="street" maxlength="80" formControlName="street">
-                    </div> -->
+                    </div>
           
                     <div class="form-group">
                       <label for="province">{{ 'จังหวัด' | translate }}
