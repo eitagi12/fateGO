@@ -408,13 +408,14 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
   // }
 
   // Test
-  // switchKeyInBillingAddress(): void {
-  //   this.isShowInputForKeyIn = !this.isShowInputForKeyIn;
-  //   this.billingAddress.setIsKeyInBillingAddress(this.isShowInputForKeyIn);
-  //   // if (this.receiptInfoForm.valid) {
-  //   //   this.onError(true);
-  //   // }
-  // }
+  switchKeyInBillingAddress(): void {
+    this.isShowInputForKeyIn = !this.isShowInputForKeyIn;
+    console.log('isShowInputForKeyIn ---> ', this.isShowInputForKeyIn);
+    // this.billingAddress.setIsKeyInBillingAddress(this.isShowInputForKeyIn);
+    // if (this.receiptInfoForm.valid) {
+    //   this.onError(true);
+    // }
+  }
 
   // Test
   getAllTitleName(): void {
