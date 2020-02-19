@@ -71,14 +71,19 @@
         </div>
       </ng-template>
     </div>
-
     <div class="card-footer bg-transparent">
       <form [formGroup]="receiptInfoForm" class="pt-2">
         <div class="form-group row">
           <label for="taxId" class="col-12 col-sm-3 col-form-label" id="txtTaxID">Tax Id </label>
           <div class="col-12 col-sm-9">
-            <input type="text" class="form-control" id="taxId" formControlName="taxId"
-              [value]="receiptInfoForm.controls.taxId.value" readonly >
+            <input 
+              type="text" 
+              class="form-control" 
+              id="taxId" 
+              formControlName="taxId"
+              [value]="receiptInfoForm.controls.taxId.value" 
+              readonly 
+            >
           </div>
         </div>
         <div class="form-group row">
@@ -93,9 +98,16 @@
             <span class="text-red"> *</span>
           </label>
           <div class="col-12 col-sm-9">
-            <input type="tel" maxlength="10" class="form-control" id="telNo" 
-              formControlName="telNo" [ngClass]="{ 'is-invalid' : receiptInfoForm.controls.telNo.invalid && receiptInfoForm.controls.telNo.touched }"
-              (keypress)="keyPress($event)" autocomplete="off">
+            <input 
+              type="tel" 
+              maxlength="10" 
+              class="form-control" 
+              id="telNo" 
+              formControlName="telNo"
+              [ngClass]="{ 'is-invalid' : receiptInfoForm.controls.telNo.invalid && receiptInfoForm.controls.telNo.touched }"
+              (keypress)="keyPress($event)" 
+              autocomplete="off"
+            >
             <small class="form-text invalid-feedback" *ngIf="receiptInfoForm.controls.telNo.touched && receiptInfoForm.controls.telNo.errors">
               * กรุณากรอกเบอร์ติดต่อให้ถูกต้อง
             </small>

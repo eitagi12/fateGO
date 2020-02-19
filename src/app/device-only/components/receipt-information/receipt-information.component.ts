@@ -61,24 +61,24 @@ export class ReceiptInformationComponent implements OnInit {
 
   ngOnInit(): void {
     this.customerAddress = {
-     idCardNo: '',
-     titleName: '',
-     firstName: '',
-     lastName: '',
-     homeNo: '',
-     moo: '',
-     mooBan: '',
-     room: '',
-     floor: '',
-     buildingName: '',
-     soi: '',
-     street: '',
-     province: '',
-     amphur: '',
-     tumbol: '',
-     zipCode: '',
+      idCardNo: '',
+      titleName: '',
+      firstName: '',
+      lastName: '',
+      homeNo: '',
+      moo: '',
+      mooBan: '',
+      room: '',
+      floor: '',
+      buildingName: '',
+      soi: '',
+      street: '',
+      province: '',
+      amphur: '',
+      tumbol: '',
+      zipCode: '',
     };
-    this.createReceiptInfoForm();
+    this.createForm();
     this.createSearchByMobileNoForm();
     this.billingAddress.getLocationName().then((resp: any) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
     if (this.customerInfoTemp) {
@@ -105,7 +105,7 @@ export class ReceiptInformationComponent implements OnInit {
     }
   }
 
-  createReceiptInfoForm(): void {
+  private createForm(): void {
     this.receiptInfoForm = this.fb.group({
       taxId: ['', [Validators.required]],
       branch: ['', []],
@@ -122,7 +122,7 @@ export class ReceiptInformationComponent implements OnInit {
     });
   }
 
-  createSearchByMobileNoForm(): void {
+  private createSearchByMobileNoForm(): void {
     this.searchByMobileNoForm = new FormGroup({
       'mobileNo': new FormControl('', [
         Validators.maxLength(10),
@@ -409,5 +409,4 @@ export class ReceiptInformationComponent implements OnInit {
   private responseTelNo(): AbstractControl {
     return this.receiptInfoForm.controls['telNo'];
   }
-
 }

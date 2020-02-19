@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors, ValidatorFn, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinct, delay } from 'rxjs/operators';
-import { Utils, User, TokenService } from 'mychannel-shared-libs';
+import { Utils, CustomerAddress, User, TokenService } from 'mychannel-shared-libs';
 import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
 import { TransactionAction, Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -169,8 +169,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   createForm(): void {
     this.customerAddressForm = this.fb.group({
       idCardNo: ['', [Validators.required, Validators.pattern(/^[1-8]\d{12}$/), this.validateIdCard.bind(this)]],
-      // titleName: ['', [Validators.required]],
-      titleName: [''],
+      titleName: ['', [Validators.required]],
       firstName: ['', [Validators.required, this.validateCharacter()]],
       lastName: ['', [Validators.required, this.validateCharacter()]],
       homeNo: ['', [Validators.required, Validators.pattern(/^[0-9^/]*$/)]],
