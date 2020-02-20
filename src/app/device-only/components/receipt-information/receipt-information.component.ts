@@ -60,8 +60,8 @@ export class ReceiptInformationComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<any> {
-    const getTitleName = await this.billingAddress.getTitleName();
-    this.alertService.error('check getTitleName = ' + JSON.stringify(getTitleName));
+    this.createForm();
+    this.createSearchByMobileNoForm();
 
     this.customerAddress = {
       idCardNo: '',
@@ -81,8 +81,10 @@ export class ReceiptInformationComponent implements OnInit {
       tumbol: '',
       zipCode: '',
     };
-    this.createForm();
-    this.createSearchByMobileNoForm();
+
+    const getTitleName = await this.billingAddress.getTitleName();
+    this.alertService.error('check getTitleName = ' + JSON.stringify(getTitleName));
+
     this.billingAddress.getLocationName().then((resp: any) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
     if (this.customerInfoTemp) {
       this.setDataFromCustomerInfoTemp();
