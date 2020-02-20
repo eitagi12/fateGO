@@ -62,14 +62,15 @@ export class OmniNewRegisterValidateCustomerKeyInPageComponent implements OnInit
   }
 
   ngOnInit(): void {
+    this.callService();
+    this.createForm();
     if (this.transaction.data.customer.caNumber && this.transaction.data.customer.caNumber !== '') { // Old CA
       this.router.navigate([ROUTE_OMNI_NEW_REGISTER_CUSTOMER_INFO_PAGE]);
     } else if (this.transaction.data.customer.caNumber === '' && this.transaction.data.action === TransactionAction.READ_CARD) {
       this.router.navigate([ROUTE_OMNI_NEW_REGISTER_FACE_CAPTURE_PAGE]);
     } else {
-      this.callService();
       const customer = this.transaction.data.customer;
-      this.createForm(customer);
+      this.setFormDefaultData(customer);
     }
   }
 
@@ -110,7 +111,7 @@ export class OmniNewRegisterValidateCustomerKeyInPageComponent implements OnInit
     });
   }
 
-  createForm(customer: any): void {
+  createForm(): void {
     this.expireDateValid = true;
     this.birthDateValid = true;
     this.idCardNoValid = true;
@@ -137,7 +138,6 @@ export class OmniNewRegisterValidateCustomerKeyInPageComponent implements OnInit
         this.onCompleted(this.validateCustomerKeyInForm.value);
       }
     });
-    this.setFormDefaultData(customer);
   }
 
   setFormDefaultData(customer: any): void {
