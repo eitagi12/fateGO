@@ -77,11 +77,11 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     this.user = this.tokenService.getUser();
+    this.createTransaction();
   }
 
   ngOnInit(): void {
     this.buildForm();
-    this.createTransaction();
     // localStorage.setItem('priceOption', JSON.stringify(this.priceOptionMock));
     // this.route.paramMap.subscribe(params => {
     //   this.imei = params.get('imei');
@@ -293,6 +293,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
 
   setTransaction(customer: any): void {
     this.transaction.data.customer = this.mapCustomer(customer.data);
+    this.transaction.data.action = TransactionAction.KEY_IN;
     if (this.transaction.transactionId) {
       this.pageLoadingService.closeLoading();
       this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
@@ -301,10 +302,13 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
         transaction: this.transaction,
         transactionType: TransactionType.DEVICE_ORDER_TELEWIZ_DEVICE_SHARE_PLAN // Share
       });
+
       this.validateCustomerService.createTransaction(transactionObject).then((response: any) => {
         this.pageLoadingService.closeLoading();
         if (response.data.isSuccess) {
+          console.log('response.data.isSuccess');
           this.transaction = transactionObject;
+          this.transaction.data.action = TransactionAction.KEY_IN;
           this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
         } else {
           this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
@@ -366,7 +370,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
           action: TransactionAction.KEY_IN,
           order: this.order
         },
-        transactionId: this.transaction.transactionId
+        transactionId: this.transaction.transactionId,
       };
     }
     delete this.transaction.data.customer;

@@ -16,10 +16,11 @@
                     <h5 class="card-header bg-transparent text-center">ถ่ายรูปผู้ขอใช้บริการ</h5>
                     <div class="card-body">
                         <div class="camera-width">
-                            <div *ngIf="!openCamera && !transaction?.data?.faceRecognition?.imageFaceUser" class="camera-pc">
-                                <!-- <img *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser" class="icon-people" /> -->
-                            </div>
-                            <div [hidden]="!(openCamera && !transaction?.data?.faceRecognition?.imageFaceUser)" class="position-relative">
+                            <!-- <div *ngIf="!openCamera && !transaction?.data?.faceRecognition?.imageFaceUser" class="camera-pc">
+                                ทดสอบ
+                            </div> -->
+                            <!-- <div [hidden]="!(openCamera && !transaction?.data?.faceRecognition?.imageFaceUser)" class="position-relative"> -->
+                            <div [hidden]="transaction?.data?.faceRecognition?.imageFaceUser" class="position-relative">
                                 <mc-camera [flip]="true" [countdown]="0" [onTakePhoto]="camera" (completed)="onCameraCompleted($event)" (error)="onCameraError($event)">
                                 </mc-camera>
                             </div>
