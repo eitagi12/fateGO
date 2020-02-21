@@ -123,9 +123,7 @@ export class OmniNewRegisterAgreementSignKeyInPageComponent implements OnInit, O
 
   onCameraCompleted(image: string): void {
     this.captureAndSign.imageSmartCard = image;     // ได้รูปถ่ายบัตรปชช.
-    if (this.transaction.data.action === 'KEY_IDCARD') {
-      this.createCanvas();
-    }
+    this.createCanvas();
   }
 
   onCameraError(error: string): void {
@@ -208,9 +206,7 @@ export class OmniNewRegisterAgreementSignKeyInPageComponent implements OnInit, O
     }
 
     if ((this.isAllowCapture()) && (this.captureAndSign.imageSmartCard && this.captureAndSign.imageSignature)) {
-      if (this.transaction.data.action === 'KEY_IDCARD') {
-        this.createCanvas();
-      }
+      this.createCanvas();
       this.onChangeValid = true;
       this.imageSigned = true;
       this.isNextValid = true;
