@@ -276,8 +276,6 @@ export class ReceiptInformationComponent implements OnInit {
 
   switchKeyInBillingAddress(): void {
     this.isShowInputForKeyIn = !this.isShowInputForKeyIn;
-    console.log('check flag this.isShowInputForKeyIn : ', this.isShowInputForKeyIn);
-
     this.billingAddress.setIsKeyInBillingAddress(this.isShowInputForKeyIn);
     if (this.receiptInfoForm.valid) {
       this.onError(true);
@@ -386,7 +384,7 @@ export class ReceiptInformationComponent implements OnInit {
     return this.provinces.find((prov: any) => prov.id === provinceId);
   }
 
-  private getProvinces(): string[] {
+  getProvinces(): string[] {
     return (this.provinces || []).map((province: any) => province.name);
   }
 
