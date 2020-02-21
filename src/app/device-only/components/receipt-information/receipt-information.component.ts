@@ -54,7 +54,7 @@ export class ReceiptInformationComponent implements OnInit {
     private pageLoadingService: PageLoadingService
   ) {
     this.isShowInputForKeyIn = false;
-    // this.billingAddress.getTitleName().then(this.responseTitleNames());
+    this.billingAddress.getTitleName().then(this.responseTitleNames());
     this.billingAddress.getProvinces().then(this.responseProvinces());
     this.billingAddress.getZipCodes().then(this.responseZipCodes());
   }
@@ -82,8 +82,8 @@ export class ReceiptInformationComponent implements OnInit {
       zipCode: '',
     };
 
-    const getTitleName = await this.billingAddress.getTitleName();
-    this.alertService.error('check getTitleName = ' + JSON.stringify(getTitleName));
+    // const getTitleName = await this.billingAddress.getTitleName();
+    // this.alertService.error('check getTitleName = ' + JSON.stringify(getTitleName));
 
     this.billingAddress.getLocationName().then((resp: any) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
     if (this.customerInfoTemp) {
@@ -276,6 +276,8 @@ export class ReceiptInformationComponent implements OnInit {
 
   switchKeyInBillingAddress(): void {
     this.isShowInputForKeyIn = !this.isShowInputForKeyIn;
+    console.log('check flag this.isShowInputForKeyIn : ', this.isShowInputForKeyIn);
+
     this.billingAddress.setIsKeyInBillingAddress(this.isShowInputForKeyIn);
     if (this.receiptInfoForm.valid) {
       this.onError(true);
