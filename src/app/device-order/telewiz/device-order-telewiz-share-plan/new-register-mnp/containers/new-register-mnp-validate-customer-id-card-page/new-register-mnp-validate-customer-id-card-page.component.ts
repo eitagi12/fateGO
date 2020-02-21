@@ -300,7 +300,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
       province: customer.province || customer.provinceName || '',
       firstNameEn: customer.firstNameEn || '',
       lastNameEn: customer.lastNameEn || '',
-      issueDate: customer.birthdate || customer.issueDate || '',
+      issueDate: customer.issueDate ? customer.issueDate : '',
       // tslint:disable-next-line: max-line-length
       expireDate: customer.expireDate ? customer.expireDate : customer.expireDay ? customer.expireDay + '/' + customer.expireMonth + '/' + customer.expireYear : '',
       zipCode: customer.zipCode || '',
