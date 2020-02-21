@@ -94,7 +94,7 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
       };
     }
     this.initialData();
-    console.log('isNativeApp= ' + this.isNativeApp);
+    // console.log('isNativeApp= ' + this.isNativeApp);
   }
 
   private createForm(): void {

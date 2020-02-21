@@ -116,10 +116,10 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
   }
 
   persoSimWebsocket(): void {
-    console.log('Start read sim on PC');
+    // console.log('Start read sim on PC');
     // for pc
     this.persoSimSubscription = this.persoSimService.onPersoSim(this.persoSimConfig).subscribe((persoSim: any) => {
-      console.log('persoSim-->', persoSim);
+      // console.log('persoSim-->', persoSim);
       this.persoSim = persoSim;
       this.simProgress = persoSim.progress;
       if (persoSim.persoData && persoSim.persoData.simSerial) {
@@ -127,10 +127,10 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
         this.onNext();
       }
       if (persoSim.error) {
-        console.log('!!!!! persoSim.error !!!!!!', persoSim.error);
-        console.log('!!!!! persoSim.error persoSim !!!!!!', persoSim);
+        // console.log('!!!!! persoSim.error !!!!!!', persoSim.error);
+        // console.log('!!!!! persoSim.error persoSim !!!!!!', persoSim);
         let errorMessage = '';
-        const mobileNo = this.transaction.data.simCard.mobileNo;
+        // const mobileNo = this.transaction.data.simCard.mobileNo;
         if (this.simProgress === 30) {
           errorMessage = 'เกิดข้อผิดพลาด กรุณาเปลี่ยน SIM CARD ใหม่';
           this.popupControl('errorSim', errorMessage);
@@ -303,7 +303,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
     this.checktSimInfoFn = this.getChecktSimInfo(this.mobileNo, serialNo);
     this.checktSimInfoFn.then((simInfo: any) => {
       // this.pageLoadingService.openLoading();
-      console.log('::: Mobile Info Read SIM ::: ', simInfo.data);
+      // console.log('::: Mobile Info Read SIM ::: ', simInfo.data);
 
       errorCode = simInfo.data.returnCode;
       returnMessage = simInfo.data.returnMessage;
@@ -313,7 +313,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
         this.popupControl('errorSimStatus', '');
       } else if (errorCode === '004') {
         this.pageLoadingService.closeLoading();
-        console.log('Go to get command for Perso SIM');
+        // console.log('Go to get command for Perso SIM');
         this.getCommandForPersoSim(this.readSimStatus);
       } else if (errorCode === '006') {
         this.pageLoadingService.closeLoading();

@@ -249,7 +249,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
                 }
               });
           }).catch((err) => {
-            console.log('err', err);
+            // console.log('err', err);
             this.pageLoadingService.closeLoading();
             const developerMessage = err.error.developerMessage;
             const messageError = err.error.errors;
@@ -306,7 +306,6 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
       this.validateCustomerService.createTransaction(transactionObject).then((response: any) => {
         this.pageLoadingService.closeLoading();
         if (response.data.isSuccess) {
-          console.log('response.data.isSuccess');
           this.transaction = transactionObject;
           this.transaction.data.action = TransactionAction.KEY_IN;
           this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);

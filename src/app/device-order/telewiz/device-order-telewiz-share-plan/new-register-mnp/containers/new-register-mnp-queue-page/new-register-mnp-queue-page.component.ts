@@ -145,7 +145,7 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
     };
     this.http.post('/api/facerecog/save-imagesV2', param).toPromise()
       .catch(e => {
-        console.log(e);
+        // console.log(e);
         Promise.resolve(null);
       });
   }

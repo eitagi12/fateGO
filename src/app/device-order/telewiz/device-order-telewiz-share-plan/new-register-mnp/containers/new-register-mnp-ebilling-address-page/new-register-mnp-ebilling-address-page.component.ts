@@ -73,7 +73,6 @@ export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDes
           provinceSubType: this.translation.currentLang === 'TH' ? 'THA' : 'ENG'
         }
       }).subscribe((resp: any) => {
-        console.log(resp);
         const mooBan = this.transaction.data.customer.mooBan;
         this.provinces = (resp.data.provinces || []);
         this.customerAddress = {
@@ -175,7 +174,6 @@ export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDes
   }
 
   onCompleted(value: any): void {
-    console.log('complete eb adr', value);
     this.customerAddressTemp = value;
   }
 

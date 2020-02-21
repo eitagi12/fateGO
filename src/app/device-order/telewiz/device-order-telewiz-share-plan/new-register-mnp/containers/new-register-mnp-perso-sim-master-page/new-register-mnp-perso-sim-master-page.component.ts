@@ -183,16 +183,10 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
   }
 
   persoSimWebsocket(): any {
-
-    console.log('Start read sim on PC');
     // for pc
     this.persoSimSubscription = this.persoSimService.onPersoSim(this.persoSimConfig).subscribe((persoSim: any) => {
-      console.log('persoSim-->', persoSim);
-      console.log('this.persoSimSubscription-->', this.persoSimSubscription);
-
       this.persoSim = persoSim;
       this.simProgress = persoSim.progress;
-      console.log('this.simProgress', this.simProgress);
       if (persoSim.persoData && persoSim.persoData.simSerial) {
         this.transaction.data.simCard.simSerial = persoSim.persoData.simSerial;
         this.currentStatus = false;
@@ -200,8 +194,6 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
         this.popupControl('perSoSuccess', 'Perso Sim สำเร็จ');
       }
       if (persoSim.error) {
-        console.log('!!!!! persoSim.error !!!!!!', persoSim.error);
-        console.log('!!!!! persoSim.error persoSim !!!!!!', persoSim);
         let errorMessage = '';
         const mobileNo = this.transaction.data.simCard.mobileNo;
         if (this.simProgress === 30) {
@@ -288,12 +280,10 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
       let checkCardPresent = 0;
 
       // interval
-      console.log('|||responsefromserver|||', this.ws);
       this.ws.onmessage = evt => {
 
         const msg = JSON.parse(evt.data);
         this.checkStatusSim = msg.Result;
-        console.log('|||evt|||', msg.Result);
         switch (msg.Command) {
           case PersoSimCommandEvent.EVENT_CONNECT_LIB:
             data.progress = 0;
@@ -304,7 +294,6 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
             data.progress = 0;
             data.eventName = PersoSimCommandEvent.EVENT_CONNECT_SIM_READER;
             if (msg.Result === 'Connected' || msg.Result === 'Present') {
-              console.log('IF Connected ...');
               this.isNext = true;
               clearInterval(this.intervalCheckSimPresent);
               observer.next({ progress: 10 });
@@ -421,16 +410,13 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
     let errMegFixSim: string;
     // this.simSerialKeyIn = barcode;
 
-    console.log('Mobile No :  ', this.mobileNo);
-    console.log('Serial NO Insert :  ', barcode);
-
     if (this.simSerialForm.controls['simSerial'].valid && this.orderType !== 'Port - In') {
       this.checktSimInfoFn = this.getChecktSimInfo(this.mobileNo, barcode);
       // console.log(' this.checktSimInfoFn ------->',  this.checktSimInfoFn);
       this.checktSimInfoFn.then((simInfo: any) => {
-        console.log('simInfo --->', simInfo);
+        // console.log('simInfo --->', simInfo);
         this.pageLoadingService.openLoading();
-        console.log('::: Mobile Info Insert SIM :::', simInfo.data);
+        // console.log('::: Mobile Info Insert SIM :::', simInfo.data);
 
         errorCode = simInfo.data.returnCode;
         returnMessage = simInfo.data.returnMessage;
@@ -980,12 +966,12 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
           this.transaction.data.queue = {
             queueNo: res.data.queue ? res.data.queue : ''
           };
-          console.log('getQueueAspAndTelewiz   ', res);
+          // console.log('getQueueAspAndTelewiz   ', res);
         })
         .then((res) => {
           return this.queuePageService.createDeviceSellingOrderListSPKASP(this.transaction, this.priceOption, this.user) // New Service Que
             .then((ress: any) => {
-              console.log('createDeviceSellingOrderListSPKASP', ress);
+              // console.log('createDeviceSellingOrderListSPKASP', ress);
               return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
             });
         })
