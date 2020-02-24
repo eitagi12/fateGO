@@ -14,6 +14,9 @@ import { environment } from 'src/environments/environment';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { RemoveCartService } from '../../services/remove-cart.service';
+import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
 
 export interface OptionPersoSim {
   key_sim?: boolean;
@@ -82,6 +85,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
   timeoutCheckOrderStatus: any;
   simSerialKeyIn: string;
   simProgress: number;
+  priceOption: PriceOption;
 
   constructor(
     private router: Router,
@@ -94,11 +98,14 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
     private shoppingCartService: ShoppingCartService,
     private pageLoadingService: PageLoadingService,
     private translateService: TranslateService,
-    private removeCartService: RemoveCartService
+    private removeCartService: RemoveCartService,
+    private sharedTransactionService: SharedTransactionService,
+    public priceOptionService: PriceOptionService
   ) {
     this.option = { scan_sim: true, key_sim: false };
     this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
     this.transaction = this.transactionService.load();
+    this.priceOption = priceOptionService.load();
   }
 
   ngOnInit(): void {
@@ -108,7 +115,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
     this.getCommandCounter = false;
     this.mobileNo = this.memberSimCard.mobileNo;
 
-    if (this.transaction.data.simCard.mobileNo) {
+    if (this.mobileNo) {
       this.setConfigPersoSim().then((res: any) => {
         this.persoSimWebsocket();
       });
@@ -123,7 +130,9 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
       this.persoSim = persoSim;
       this.simProgress = persoSim.progress;
       if (persoSim.persoData && persoSim.persoData.simSerial) {
-        this.transaction.data.simCard.simSerial = persoSim.persoData.simSerial;
+       // this.transaction.data.simCard.simSerial = persoSim.persoData.simSerial;
+        this.transaction.data.simCard.memberSimCard[0].simSerial = persoSim.persoData.simSerial;
+        this.transaction.data.simCard.memberSimCard[0].persoSim = true;
         this.onNext();
       }
       if (persoSim.error) {
@@ -154,8 +163,8 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
           params: {
             indexNo: indexNo,
             serialNo: serialNo,
-            mobileNo: this.transaction.data.simCard.mobileNo,
-            simService: 'Normal'
+            mobileNo: this.transaction.data.simCard.memberSimCard[0].mobileNo,
+            simService: 'Port - In' === this.orderType ? 'MNP-AWN' : 'Normal'
           }
         }).toPromise();
       },
@@ -605,12 +614,12 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
   }
 
   onNext(): void {
+    this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
     const baseMyChannelWebURL: any = environment.MYCHANNEL_WEB_URL;
     const transactionId: string = this.transactionService.load().transactionId;
     if (transactionId) {
       window.location.href = baseMyChannelWebURL + '/' + 'sales-order/pay-advance?transactionId=' + transactionId;
     }
-    // this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_AGGREGATE_PAGE]);
   }
 
   onHome(): void {
