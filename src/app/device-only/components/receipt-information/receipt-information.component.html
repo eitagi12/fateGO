@@ -43,7 +43,7 @@
         <label style="cursor: pointer" class="text-lime">{{ 'ระบุที่อยู่ใบเสร็จรับเงิน' | translate }}</label>
       </div>
       <div [hidden]="!isShowInputForKeyIn">
-        <app-billing-address 
+        <app-billing-address *ngIf="isShowInputForKeyIn"
           [titleNames]="titleName" 
           [customerAddress]="customerAddress" 
           [allZipCodes]="allZipCodes"
@@ -58,7 +58,8 @@
           (completed)="onCompleted($event)" 
           (error)="onError($event)"
           [keyInCustomerAddressTemp]="keyInCustomerAddressTemp" 
-          [actionType]="actionType">
+          [actionType]="actionType"
+        >
         </app-billing-address>
       </div>
       <div [hidden]="isShowInputForKeyIn">
