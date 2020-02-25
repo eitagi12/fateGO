@@ -119,8 +119,8 @@ export class CustomerInformationService {
       tumbol: billDeliveryAddress.tumbol ? 'ตำบล' + billDeliveryAddress.tumbol : '',
       amphur: billDeliveryAddress.amphur ? 'อำเภอ' + billDeliveryAddress.amphur : '',
       province: billDeliveryAddress.province || billDeliveryAddress.provinceName || '',
-      zipCode: billDeliveryAddress.zipCode || billDeliveryAddress.portalCode ?
-        billDeliveryAddress.zipCode || billDeliveryAddress.portalCode : '',
+      // tslint:disable-next-line: max-line-length
+      zipCode: billDeliveryAddress.zipCode || billDeliveryAddress.portalCode ? billDeliveryAddress.zipCode || billDeliveryAddress.portalCode : '',
     };
 
     let str: string = '';
