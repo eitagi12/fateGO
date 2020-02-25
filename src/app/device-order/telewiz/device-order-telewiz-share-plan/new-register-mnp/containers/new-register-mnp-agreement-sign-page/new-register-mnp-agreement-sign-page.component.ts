@@ -320,7 +320,6 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
     if (this.isAisNative() && !this.hasImageSmartCard()) {
       this.camera.next();
     }
-
     this.setValid();
   }
 
@@ -441,6 +440,11 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
     }
     // this.onChangeCaptureAndSign();
     this.setValid();
+  }
+
+  takePicture(): void {
+    console.log('1');
+    this.camera.next();
   }
 
 }

@@ -51,7 +51,7 @@
                             <div class="border-right p-3 col-6 " [ngClass]="{ 'd-none': !isAllowCapture(), 'col-6': hasImageSmartCard(), 'col-12': !hasImageSmartCard() } ">
                                 <!-- WEB Step -->
                                 <div *ngIf="!isAisNative() ">
-                                    <a href="# " (click)="$event.preventDefault(); camera.next(); " class="text-pink " *ngIf="!hasImageSmartCard() ">
+                                    <a href="# " (click)="$event.preventDefault(); takePicture() " class="text-pink " *ngIf="!hasImageSmartCard() ">
                     {{ 'ถ่ายรูป' | translate }}
                   </a>
                                     <a href="# " (click)="$event.preventDefault(); onClearImage() " class="text-pink " *ngIf="hasImageSmartCard() ">

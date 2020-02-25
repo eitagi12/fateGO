@@ -207,7 +207,7 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
       this.validateCustomerService.checkValidateCustomerHandleErrorMessages(this.identity, cardType, transactionType)
         .then(() => {
           if (this.order) {
-            this.setTransaction();
+            this.setTransaction(this.transaction);
             this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
           } else {
             // tslint:disable-next-line: max-line-length
@@ -218,7 +218,7 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
                   ...this.transaction.data,
                   order: { soId: order.data.soId },
                 };
-                this.setTransaction();
+                this.setTransaction(this.transaction);
               } else {
                 this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
               }
@@ -243,13 +243,13 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
     }
   }
 
-  setTransaction(): void {
+  setTransaction(transaction: Transaction): void {
     if (this.transaction.transactionId) {
       this.pageLoadingService.closeLoading();
       this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
     } else {
       const transactionObject: any = this.validateCustomerService.buildTransaction({
-        transaction: this.transaction,
+        transaction: transaction,
         transactionType: TransactionType.DEVICE_ORDER_TELEWIZ_DEVICE_SHARE_PLAN
       });
       this.validateCustomerService.createTransaction(transactionObject).then((resp: any) => {
