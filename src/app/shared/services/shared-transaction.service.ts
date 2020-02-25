@@ -411,7 +411,7 @@ export class SharedTransactionService {
         return trade;
       } else {
         const result = trade.banks.filter((bank) => {
-          if (transactionType === 'NewRegisterMNPASP') {
+          if (transactionType === 'NewRegisterMNPASP' || transactionType === 'NewRegisterMNPTELEWIZ') {
             if (bank.abb === payment.paymentMethod.abb) {
               bank.abb = payment.paymentMethod.abb;
               for (const value in bank.installmentDatas) {
