@@ -38,7 +38,7 @@ export class BrandPageComponent implements OnInit {
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEASHBOARD_PROMOTION_PAGE]);
+    window.location.href = `/sales-portal/dashboard`;
   }
 
   onHome(): void {
