@@ -144,7 +144,7 @@ export class SharedTransactionService {
       campaign: priceOption.campaign,
       privilege: priceOption.privilege,
       trade:
-        transaction.data.transactionType.toLowerCase().includes('asp')
+        transaction.data.transactionType.toLowerCase().includes('asp') || transaction.data.transactionType.toLowerCase().includes('telewiz')
           ? this.setPaymentMethod(data.payment || {}, priceOption.trade, transaction.data.transactionType) : priceOption.trade
     };
 
