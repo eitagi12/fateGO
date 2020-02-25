@@ -151,9 +151,10 @@ export class CreateEapplicationService {
       };
     }
     if (action === TransactionAction.READ_CARD || action === TransactionAction.READ_CARD_REPI) {
-      data.customerImg = customer.imageReadSmartCard || customer.imageSmartCard;
+      data.customerImg = 'data:image/jpeg;base64,' + customer.imageReadSmartCard || customer.imageSmartCard;
     } else {
-      data.customerImgKeyIn = customer.imageSmartCard ? customer.imageSignatureWithWaterMark : customer.imageReadPassport;
+      // tslint:disable-next-line: max-line-length
+      data.customerImgKeyIn = 'data:image/jpeg;base64,' + customer.imageSmartCard ? customer.imageSignatureWithWaterMark : customer.imageReadPassport;
     }
     return data;
   }
@@ -214,11 +215,11 @@ export class CreateEapplicationService {
       };
     }
     if (action === TransactionAction.READ_CARD || action === TransactionAction.READ_CARD_REPI) {
-      data.customerImg = customer.imageReadSmartCard || customer.imageSmartCard;
+      data.customerImg = 'data:image/jpeg;base64,' + customer.imageReadSmartCard || customer.imageSmartCard;
     } else {
-      data.customerImgKeyIn = customer.imageSmartCard ? customer.imageSignatureWithWaterMark : customer.imageReadPassport;
+      // tslint:disable-next-line: max-line-length
+      data.customerImgKeyIn = 'data:image/jpeg;base64,' + customer.imageSmartCard ? customer.imageSignatureWithWaterMark : customer.imageReadPassport;
     }
-
     return data;
   }
 
