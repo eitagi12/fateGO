@@ -43,7 +43,7 @@
         <label style="cursor: pointer" class="text-lime">{{ 'ระบุที่อยู่ใบเสร็จรับเงิน' | translate }}</label>
       </div>
       <div [hidden]="!isShowInputForKeyIn">
-        <app-billing-address *ngIf="isShowInputForKeyIn"
+        <app-billing-address
           [titleNames]="titleName" 
           [customerAddress]="customerAddress" 
           [allZipCodes]="allZipCodes"
