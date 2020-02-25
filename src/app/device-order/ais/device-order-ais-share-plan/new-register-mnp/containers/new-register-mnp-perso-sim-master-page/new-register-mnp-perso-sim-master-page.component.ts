@@ -10,8 +10,7 @@ import {
   //  KioskControlsPersoSim,
   //  PersoSimError,
   PageLoadingService,
-  AlertService,
-  TokenService
+  AlertService
 } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -25,7 +24,7 @@ import {
 // import { environment } from 'src/environments/environment';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { Validators, FormBuilder } from '@angular/forms';
-import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 import { RemoveCartService } from '../../services/remove-cart.service';
 
 export interface OptionPersoSim {
@@ -117,7 +116,6 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
     private router: Router,
     private homeService: HomeService,
     private http: HttpClient,
-    private tokenService: TokenService,
     // private tokenService: TokenService,
     private transactionService: TransactionService,
     private alertService: AlertService,
@@ -692,54 +690,11 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
     return this.http.get(this.checkCreatePersoSimAPI).toPromise();
   }
 
-  saveFaceImage(): any {
-    const user = this.tokenService.getUser();
-    const customer = this.transaction.data.customer;
-    const faceRecognition = this.transaction.data.faceRecognition;
-    const mobileNo = this.transaction.data.simCard.mobileNo;
-    const action = this.transaction.data.action;
-    const channelKyc = this.transaction.data.faceRecognition.kyc;
-    let channel = 'MC';
-    if (channelKyc) {
-      channel += '_KYC';
-    }
-    if (this.transaction.data.action === TransactionAction.KEY_IN) {
-      channel += '_PT';
-    } else {
-      channel += '_SM';
-    }
-    let base64Card: any;
-    if (action === TransactionAction.READ_CARD) {
-      base64Card = customer.imageReadSmartCard;
-    } else if (action === TransactionAction.READ_PASSPORT) {
-      base64Card = customer.imageReadPassport;
-    } else {
-      base64Card = customer.imageSmartCard;
-    }
-    const param: any = {
-      userId: user.username,
-      locationCode: user.locationCode,
-      idCardType: customer.idCardType === 'บัตรประชาชน' ? 'Thai National ID' : 'OTHER',
-      customerId: customer.idCardNo || '',
-      mobileNo: mobileNo || '',
-      base64Card: base64Card ? `data:image/jpg;base64,${base64Card}` : '',
-      base64Face: faceRecognition.imageFaceUser ? `data:image/jpg;base64,${faceRecognition.imageFaceUser}` : '',
-      channel: channel,
-      userchannel: 'MyChannel'
-    };
-    this.http.post('/api/facerecog/save-imagesV2', param).toPromise()
-      .catch(e => {
-        console.log(e);
-        Promise.resolve(null);
-      });
-  }
-
   onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_EAPPLICATION_PAGE]);
   }
 
   onNext(): void {
-    this.saveFaceImage();
     if (!this.transaction.data.simCard.simSerial) {
       this.transaction.data.simCard = Object.assign(this.transaction.data.simCard, {
         simSerial: this.simSerialForm.controls.simSerial.value,
