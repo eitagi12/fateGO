@@ -9,7 +9,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ValidateCustomerService } from 'src/app/shared/services/validate-customer.service';
-import { Transaction, Order, TransactionType } from 'src/app/shared/models/transaction.model';
+import { Transaction, Order, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RemoveCartService } from '../../services/remove-cart.service';
 import * as moment from 'moment';
@@ -244,31 +244,35 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
   }
 
   setTransaction(transaction: Transaction): void {
-    if (this.transaction.transactionId) {
+    if (transaction.transactionId) {
       this.pageLoadingService.closeLoading();
       this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
     } else {
-      const transactionObject: any = this.validateCustomerService.buildTransaction({
-        transaction: transaction,
-        transactionType: TransactionType.DEVICE_ORDER_TELEWIZ_DEVICE_SHARE_PLAN
-      });
-      this.validateCustomerService.createTransaction(transactionObject).then((resp: any) => {
-        this.pageLoadingService.closeLoading();
-        if (resp.data.isSuccess) {
-          this.transaction = transactionObject;
-          this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
-        } else {
-          this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
-        }
-      }).catch((error: any) => {
-        this.pageLoadingService.closeLoading();
-        this.alertService.error(error);
-      });
+      if (!transaction.data.action) {
+        transaction.data.action = TransactionAction.KEY_IN;
+      }
     }
+
+    const transactionObject: any = this.validateCustomerService.buildTransaction({
+      transaction: transaction,
+      transactionType: TransactionType.DEVICE_ORDER_TELEWIZ_DEVICE_SHARE_PLAN
+    });
+    this.validateCustomerService.createTransaction(transactionObject).then((resp: any) => {
+      this.pageLoadingService.closeLoading();
+      if (resp.data.isSuccess) {
+        this.transaction = transactionObject;
+        this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
+      } else {
+        this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+      }
+    }).catch((error: any) => {
+      this.pageLoadingService.closeLoading();
+      this.alertService.error(error);
+    });
   }
 
-  ngOnDestroy(): void {
-    this.transactionService.update(this.transaction);
-  }
+ngOnDestroy(): void {
+  this.transactionService.update(this.transaction);
+}
 
 }
