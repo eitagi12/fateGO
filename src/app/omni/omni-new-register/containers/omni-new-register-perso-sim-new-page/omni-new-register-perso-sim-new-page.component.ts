@@ -676,15 +676,17 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
 
   }
 
-  onNext(): void {
-    this.transactionService.update(this.transaction);
+  async onNext(): Promise<void> {
     if (!this.transaction.data.simCard.simSerial) {
       this.transaction.data.simCard = Object.assign(this.transaction.data.simCard, {
         simSerial: this.simSerialKeyIn
       });
+      await this.transactionService.update(this.transaction);
+      window.location.href = `/sales-portal/reserve-stock/receive-confirm-online`;
+    } else {
+      await this.transactionService.update(this.transaction);
       window.location.href = `/sales-portal/reserve-stock/receive-confirm-online`;
     }
-    window.location.href = `/sales-portal/reserve-stock/receive-confirm-online`;
   }
 
   onSerialNumberChanged(data?: any): void {
