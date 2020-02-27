@@ -144,7 +144,9 @@ export class SharedTransactionService {
     params.data.main_promotion = {
       campaign: priceOption.campaign,
       privilege: priceOption.privilege,
-      trade: this.setPaymentMethod(data.payment || {}, priceOption.trade)
+      trade:
+        transaction.data.transactionType.toLowerCase().includes('asp') || transaction.data.transactionType.toLowerCase().includes('telewiz')
+          ? this.setPaymentMethod(data.payment || {}, priceOption.trade, transaction.data.transactionType) : priceOption.trade
     };
 
     if (data.billingInformation) {
@@ -387,7 +389,7 @@ export class SharedTransactionService {
     return transactionId;
   }
 
-  public setPaymentMethod(payment: any, trade: any): void {
+  public setPaymentMethod(payment: any, trade: any, transactionType: string): void {
     // const trade = priceOption.trade;
     // const payment = transaction.data.payment;
 
@@ -402,7 +404,19 @@ export class SharedTransactionService {
       } else {
         trade.payments[0].method = 'CC';
         const result = trade.banks.filter((bank) => {
-          return bank.abb === payment.paymentBank.abb;
+          if (transactionType === 'NewRegisterMNPASP' || transactionType === 'NewRegisterMNPTELEWIZ') {
+            if (bank.abb === payment.paymentMethod.abb) {
+              bank.abb = payment.paymentMethod.abb;
+              for (const value in bank.installmentDatas) {
+                if (bank.installmentDatas[value] && bank.installmentDatas[value].installmentMounth === payment.paymentMethod.month) {
+                  bank.installmentDatas = [bank.installmentDatas[value]];
+                  return bank;
+                }
+              }
+            }
+          } else {
+            return bank.abb === payment.paymentBank.abb;
+          }
         });
         trade.banks = result;
         return trade;
