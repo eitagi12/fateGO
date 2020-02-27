@@ -31,7 +31,6 @@ export class NewRegisterMnpSelectReasonPageComponent implements OnInit, OnDestro
     private removeCartService: RemoveCartService
   ) {
     this.transaction = this.transactionService.load();
-    console.log();
   }
   ngOnInit(): void {
     this.createForm();

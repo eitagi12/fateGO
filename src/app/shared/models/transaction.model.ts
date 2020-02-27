@@ -14,6 +14,7 @@ export enum TransactionType {
   DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN = 'NewRegisterMNPAIS',
   DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN = 'NewRegisterMNPASP',
   DEVICE_ORDER_TELEWIZ_DEVICE_SHARE_PLAN = 'NewRegisterMNPTELEWIZ',
+
   // pure
   ORDER_NEW_REGISTER = 'NewRegister',
   ORDER_PRE_TO_POST = 'ConvertPreToPost',

@@ -67,4 +67,15 @@ export class ShoppingCartService {
     this.translateService.stream(campaign.campaignName).subscribe(campaignName => shoppingCartData.campaignName = campaignName);
     return shoppingCartData;
   }
+
+  getShoppingCartDataSuperKhumTelewiz(): any {
+    const transaction = this.transactionService.load();
+    const customer = transaction.data.customer;
+    const simCard = transaction.data.simCard;
+    const shoppingCartData = {
+      fullName: `${customer.titleName || ''} ${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
+      mobileNo: simCard && simCard.mobileNo ? simCard.mobileNo : '',
+    };
+    return shoppingCartData;
+  }
 }

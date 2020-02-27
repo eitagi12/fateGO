@@ -1,0 +1,40 @@
+<div class="mc-flex">
+    <mc-header title="{{'ซื้อเครื่องพร้อมเปิดเบอร์ใหม่'| translate}}">
+    </mc-header>
+    <div class="mt-5 pt-4">
+        <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
+    </div>
+    <div class="start-container bg-white">
+        <div class="row read-card">
+            <div class="col-md-12 read-card-title">
+                ระบุข้อมูลลูกค้า</div>
+            <div class="col-md-5 text-center">
+                <div class="idcard-container column">
+                    <div style="padding-top:50px">เสียบบัตรประชาชน</div>
+                    <a (click)="onCardImgPressCaller()">
+                        <img id="ImgRegNumVerifyScanCardLink" class="idcard-img-pc" src="assets/images/icon/icon-insert-idcard.png" alt="">
+                    </a>
+                </div>
+            </div>
+            <div class="line-center-pc">
+                <span>หรือ</span>
+            </div>
+            <div class="col-md-5 text-center">
+                <div class="otherid-container-pc">
+                    <div>กรอกเอกสารแสดงตน</div>
+                    <div class="font-small1">({{ placeholder }})</div>
+                    <form [formGroup]="identityForm">
+                        <input id="txtRegNumVerifyStartKeyInCard" class="form-control text-center" placeholder="{{ placeholder }}" autocomplete="off" maxlength="13" formControlName="identity">
+                        <div *ngIf="formErrors.identity" class="row col text-center" style="color: red;">
+                            * {{ formErrors.identity }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <mc-footer>
+            <button class="btn btn-secondary col-md-2" (click)="onBack()">BACK</button>
+            <button class="btn btn-secondary col-md-2" *ngIf="!activeNextBtn" [disabled]="!activeNextBtn" (click)="onNext()">NEXT</button>
+            <button class="btn btn-success col-md-2" *ngIf="activeNextBtn" (click)="onNext()">NEXT</button>
+        </mc-footer>
+    </div>

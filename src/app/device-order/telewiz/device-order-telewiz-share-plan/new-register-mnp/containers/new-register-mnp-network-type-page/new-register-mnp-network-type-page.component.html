@@ -1,0 +1,41 @@
+<div class="mc-flex">
+    <mc-header title="{{ 'ย้ายค่ายเบอร์เดิม' | translate }}">
+        <!-- <div class="header-icon-left w-25">
+          <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+      </div>
+      <div class="header-icon-right w-25 text-right">
+          <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+      </div> -->
+    </mc-header>
+    <div class="mc-flex-wrap">
+        <div class="my-3">
+            <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
+            <div class="container-fluid">
+                <form [formGroup]="mnpForm">
+                    <div class="card">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item text-center" translate>ระบุเบอร์ที่ท่านต้องการย้ายค่ายระบบรายเดือน</li>
+                            <li class="list-group-item">
+                                <input id="mobileNoMember" type="tel" class="form-control text-center mt-2" autocomplete="off" maxlength="10" formControlName="mobileNoMember" [ngClass]="{'is-invalid':mnpForm.controls['mobileNoMember'].invalid && mnpForm.controls['mobileNoMember'].touched }">
+                                <small class="invalid-feedback text-center" *ngIf="mnpForm.controls['mobileNoMember'].touched && mnpForm.controls['mobileNoMember'].errors">*<span
+                    translate>กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง</span></small>
+                            </li>
+                            <li class="list-group-item text-center" translate>ระบุรหัสขอย้ายค่าย</li>
+                            <li class="list-group-item mb-3">
+                                <div class="text-light-grey text-center">กด *151*เลขบัตรประชาชน 13 หลัก # แล้วโทรออก</div>
+                                <input id="pinCode" type="tel" class="form-control text-center " autocomplete="off" maxlength="8" formControlName="pinCode" [ngClass]="{'is-invalid': !mnpForm.controls['pinCode'].valid && mnpForm.controls['pinCode'].touched }">
+                            </li>
+                            <div class="ml-4 text-grey">
+                                <p translate>การขอรหัส : กด*151*เลขที่บัตรประชาชน 13 หลัก# แล้วโทรออก (ฟรี)</p>
+                            </div>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <mc-footer>
+        <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+        <button class="btn btn-success" (click)="onNext()" [disabled]="mnpForm.invalid">NEXT</button>
+    </mc-footer>
+</div>

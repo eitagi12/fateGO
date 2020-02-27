@@ -98,7 +98,8 @@ export class SharedTransactionService {
           colorName: productStock.color || productStock.colorName || '',
           company: productStock.company || '',
           name: productDetail.name || '',
-          imei: !!data.device ? data.device.imei : ''
+          imei: !!data.device ? data.device.imei :
+            transaction.data.transactionType === 'NewRegisterMNPTELEWIZ' ? transaction.data.simCard.imei : ''
         },
         billing_information: {},
         knoxguard: {},
@@ -143,9 +144,7 @@ export class SharedTransactionService {
     params.data.main_promotion = {
       campaign: priceOption.campaign,
       privilege: priceOption.privilege,
-      trade:
-        transaction.data.transactionType.toLowerCase().includes('asp')
-          ? this.setPaymentMethod(data.payment || {}, priceOption.trade, transaction.data.transactionType) : priceOption.trade
+      trade: this.setPaymentMethod(data.payment || {}, priceOption.trade)
     };
 
     if (data.billingInformation) {
@@ -307,6 +306,7 @@ export class SharedTransactionService {
     if (data.mpayPayment) {
       params.data.mpay_payment = data.mpayPayment;
     }
+
     return params;
   }
 
@@ -387,48 +387,33 @@ export class SharedTransactionService {
     return transactionId;
   }
 
-  public setPaymentMethod(payment: any, trade: any, transactionType: string): void {
+  public setPaymentMethod(payment: any, trade: any): void {
     // const trade = priceOption.trade;
     // const payment = transaction.data.payment;
-    if (trade.payments && trade.payments.length > 0) {
-      if (trade.payments[0].method === 'CC/CA') {
-        if (!payment || (payment && !payment.paymentType)) {
-          return trade;
-        }
 
-        if (payment.paymentType === 'DEBIT') {
-          trade.payments[0].method = 'CA';
-          return trade;
-        } else {
-          trade.payments[0].method = 'CC';
-          const result = trade.banks.filter((bank) => {
-            return bank.abb === payment.paymentBank.abb;
-          });
-          trade.banks = result;
-          return trade;
-        }
-      } else if (trade.payments[0].method === 'CA') {
+    if (trade.payments[0].method === 'CC/CA') {
+      if (!payment || (payment && !payment.paymentType)) {
+        return trade;
+      }
+
+      if (payment.paymentType === 'DEBIT') {
+        trade.payments[0].method = 'CA';
         return trade;
       } else {
+        trade.payments[0].method = 'CC';
         const result = trade.banks.filter((bank) => {
-          if (transactionType === 'NewRegisterMNPASP') {
-            if (bank.abb === payment.paymentMethod.abb) {
-              bank.abb = payment.paymentMethod.abb;
-              for (const value in bank.installmentDatas) {
-                if (bank.installmentDatas[value] && bank.installmentDatas[value].installmentMounth === payment.paymentMethod.month) {
-                  bank.installmentDatas = [bank.installmentDatas[value]];
-                  return bank;
-                }
-              }
-            }
-          } else {
-            return bank.abb === payment.paymentBank.abb;
-          }
+          return bank.abb === payment.paymentBank.abb;
         });
         trade.banks = result;
         return trade;
       }
+    } else if (trade.payments[0].method === 'CA') {
+      return trade;
     } else {
+      const result = trade.banks.filter((bank) => {
+        return bank.abb === payment.paymentBank.abb;
+      });
+      trade.banks = result;
       return trade;
     }
   }
