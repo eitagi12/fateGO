@@ -684,6 +684,7 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
       });
       window.location.href = `/sales-portal/reserve-stock/receive-confirm-online`;
     }
+    window.location.href = `/sales-portal/reserve-stock/receive-confirm-online`;
   }
 
   onSerialNumberChanged(data?: any): void {
