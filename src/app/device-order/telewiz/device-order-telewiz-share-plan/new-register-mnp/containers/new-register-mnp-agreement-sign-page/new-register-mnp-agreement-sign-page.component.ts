@@ -422,7 +422,7 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
           const dxw = (canvas.width - watermarkWidth) / 2;
           const dyw = (canvas.height - watermarkHeight) / 2;
           // ctx.drawImage(watermark, dxw + 80, dyw + 40, watermarkWidth / 1.5, watermarkHeight / 1.5);
-          ctx.drawImage(watermark, dxw + 230, dyw + 160, watermarkWidth / 2.5, watermarkHeight / 2.5);
+          ctx.drawImage(watermark, dxw + 70, dyw + 40, watermarkWidth / 1.87, watermarkHeight / 1.87);
         }
       }
     }
