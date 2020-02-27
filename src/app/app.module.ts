@@ -11,9 +11,9 @@ import {
   MyChannelSharedLibsModule,
   I18nService,
   IdCardPipe,
+  CookieService
 } from 'mychannel-shared-libs';
 import { AppRoutingModule } from './app-routing.module';
-import { CookiesStorageService } from 'ngx-store';
 /* Components */
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
@@ -42,7 +42,7 @@ import { TranslateModule } from '@ngx-translate/core';
       jwtOptionsProvider: {
         provide: JWT_OPTIONS,
         useFactory: jwtOptionsFactory,
-        deps: [CookiesStorageService]
+        deps: [CookieService]
       }
     }),
     SharedModule,
