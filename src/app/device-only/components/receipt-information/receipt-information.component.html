@@ -42,7 +42,7 @@
       <div class="text-right" (click)="switchKeyInBillingAddress()">
         <label style="cursor: pointer" class="text-lime">{{ 'ระบุที่อยู่ใบเสร็จรับเงิน' | translate }}</label>
       </div>
-      <div *ngIf="isShowInputForKeyIn">
+      <div [hidden]="!isShowInputForKeyIn">
         <app-billing-address
           [titleNames]="titleName" 
           [customerAddress]="customerAddress" 
