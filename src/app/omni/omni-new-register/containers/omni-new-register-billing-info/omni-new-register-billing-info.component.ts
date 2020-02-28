@@ -1,10 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import * as moment from 'moment';
 import { TranslateService } from '@ngx-translate/core';
-import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Transaction } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
-import { ROUTE_OMNI_NEW_REGISTER_EBILLING_ADDRESS_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_OMNI_NEW_REGISTER_EBILLING_ADDRESS_PAGE, ROUTE_OMNI_NEW_REGISTER_EBILLING_PAGE } from '../../constants/route-path.constant';
+import { Transaction } from 'src/app/omni/omni-shared/models/transaction.model';
+import { TransactionService } from 'src/app/omni/omni-shared/services/transaction.service';
 
 const Moment = moment;
 export interface BillingInfo {
@@ -60,4 +60,7 @@ export class OmniNewRegisterBillingInfoComponent implements OnInit {
     this.router.navigate([ROUTE_OMNI_NEW_REGISTER_EBILLING_ADDRESS_PAGE]);
   }
 
+  onEdit(): void {
+    this.router.navigate([ROUTE_OMNI_NEW_REGISTER_EBILLING_PAGE]);
+  }
 }

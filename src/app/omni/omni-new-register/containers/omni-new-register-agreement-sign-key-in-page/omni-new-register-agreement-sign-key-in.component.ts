@@ -11,7 +11,8 @@ import {
   CaptureAndSign,
   Utils,
   CaptureSignedWithCard,
-  AWS_WATERMARK } from 'mychannel-shared-libs';
+  AWS_WATERMARK
+} from 'mychannel-shared-libs';
 import {
   ROUTE_OMNI_NEW_REGISTER_EAPPLICATION_PAGE,
   ROUTE_OMNI_NEW_REGISTER_ECONTRACT_PAGE
@@ -50,6 +51,7 @@ export class OmniNewRegisterAgreementSignKeyInPageComponent implements OnInit, O
   apiSigned: 'SignaturePad' | 'OnscreenSignpad';
   isDrawingSignature: boolean = false;
   imageSigned: boolean;
+  watermark: string = AWS_WATERMARK;
 
   constructor(
     private router: Router,
@@ -187,8 +189,9 @@ export class OmniNewRegisterAgreementSignKeyInPageComponent implements OnInit, O
         const dxs = ((canvas.width - signImageWidth) / 2);
         const dys = ((canvas.height - signImageHeight) / 2) / 6;
 
-         ctx.globalCompositeOperation = 'multiply';                            // ทำให้รูปลายเซ็นทับรูปถ่ายบัตรปชช.
-         ctx.drawImage(signImage, dxs, dys, signImageWidth, signImageHeight);  // เริ่มวาดรูปตั้งแต่จุดเริ่มต้นของภาพ
+        ctx.globalCompositeOperation = 'multiply';                            // ทำให้รูปลายเซ็นทับรูปถ่ายบัตรปชช.
+        ctx.drawImage(signImage, dxs, dys, signImageWidth, signImageHeight);  // เริ่มวาดรูปตั้งแต่จุดเริ่มต้นของภาพ
+        ctx.drawImage(watermark, 0, 0, canvas.width, canvas.height);
       }
     }
     // ได้รูปภาพทีมีรูปถ่ายจากบัตรปชช.พร้อมลายเซ็นที่ทับกัน

@@ -55,7 +55,7 @@ export class CreateNewRegisterService {
       userId: user.username,
       locationCode: user.locationCode,
       idCardType: customer.idCardType === 'บัตรประชาชน' ? 'Thai National ID' : 'OTHER',
-      customerId: transaction.data.cardId || '',
+      customerId: transaction.data.customer.idCardNo || '',
       mobileNo: simCard,
       base64Card: base64Card ? `data:image/jpg;base64,${base64Card}` : '',
       base64Face: faceRecognition.imageFaceUser ? `data:image/jpg;base64,${faceRecognition.imageFaceUser}` : '',

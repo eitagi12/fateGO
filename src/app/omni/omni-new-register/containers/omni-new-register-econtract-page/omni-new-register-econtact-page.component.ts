@@ -61,11 +61,11 @@ export class OmniNewRegisterEcontactPageComponent implements OnInit, OnDestroy {
   }
 
   onNext(): void {
-    if (this.transaction.data.action === TransactionAction.KEY_IN) {
+     if (this.transaction.data.action === TransactionAction.KEY_IN) {
       this.router.navigate([ROUTE_OMNI_NEW_REGISTER_AGREEMENT_SIGN_KEY_IN_PAGE]);
-    } else {
-      this.router.navigate([ROUTE_OMNI_NEW_REGISTER_AGREEMENT_SIGN_PAGE]);
-    }
+     } else {
+       this.router.navigate([ROUTE_OMNI_NEW_REGISTER_AGREEMENT_SIGN_PAGE]);
+     }
   }
 
   onHome(): void {

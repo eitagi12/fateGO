@@ -74,7 +74,7 @@ export interface TransactionData {
   productPrice?: any;
   productDiscount?: any;
   productNetPrice?: any;
-  cardId?: string;
+  amount?: number;
   cusMobileNo?: string;
   packageName?: string;
 }
@@ -201,6 +201,7 @@ export interface Customer {
   isBlockChain?: boolean;
   campaign: string;
   locationDestName: string;
+  imageIdCardWithReceive?: any;
 }
 
 export interface Recipientinformation {
@@ -249,6 +250,7 @@ export interface MainPackage {
   payAdvance?: any;
   payAdvanceDiscount?: any;
   durationContract?: any;
+  durationMonthlyFee?: any;
 }
 
 export interface MainPackageMember {
