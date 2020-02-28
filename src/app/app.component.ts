@@ -77,7 +77,7 @@ export class AppComponent {
 
   errorHandler(): void {
     this.errorsService.getUnauthorized().subscribe((observer) => {
-      this.alertService.error('Unauthorized: Access is denied due to invalid credentials.' + document.cookie).then(
+      this.alertService.error('Unauthorized: Access is denied due to invalid credentials.').then(
         () => this.cookieService.deleteAll()
       );
     });
