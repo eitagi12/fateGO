@@ -425,7 +425,19 @@ export class SharedTransactionService {
       return trade;
     } else {
       const result = trade.banks.filter((bank) => {
-        return bank.abb === payment.paymentBank.abb;
+        if (transactionType === 'NewRegisterMNPASP' || transactionType === 'NewRegisterMNPTELEWIZ') {
+          if (bank.abb === payment.paymentMethod.abb) {
+            bank.abb = payment.paymentMethod.abb;
+            for (const value in bank.installmentDatas) {
+              if (bank.installmentDatas[value] && bank.installmentDatas[value].installmentMounth === payment.paymentMethod.month) {
+                bank.installmentDatas = [bank.installmentDatas[value]];
+                return bank;
+              }
+            }
+          }
+        } else {
+          return bank.abb === payment.paymentBank.abb;
+        }
       });
       trade.banks = result;
       return trade;
