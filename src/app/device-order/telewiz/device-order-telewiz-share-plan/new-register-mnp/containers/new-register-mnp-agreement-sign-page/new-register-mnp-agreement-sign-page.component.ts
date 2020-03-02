@@ -24,7 +24,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { HttpClient } from '@angular/common/http';
 import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
-import { AgreementSignConstant } from 'src/app/device-order/ais/device-order-ais-share-plan/new-register-mnp/constants/agreement-sign.constant';
+import { AgreementSignConstant } from 'src/app/device-order/telewiz/device-order-telewiz-share-plan/new-register-mnp/constants/constants';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { RemoveCartService } from '../../services/remove-cart.service';
 import { environment } from 'src/environments/environment';
