@@ -43,7 +43,7 @@ export class BillingAddressService {
   }
 
   getZipCodes(): Promise<string[]> {
-    return this.http.get(API.GET_ALL_ZIP_CODES).toPromise().then(this.responseZipCodes());
+    return this.http.get(API.GET_ALL_ZIP_CODES).pipe(map(this.responseZipCodes())).toPromise();
   }
 
   getAmphurs(req: any): Promise<string[]> {

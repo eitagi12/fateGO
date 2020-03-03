@@ -34,7 +34,7 @@
       </div>
       <div class="row">
         <div class="col-12">
-          <app-read-card (customerInfo)="setCustomerInfo($event)"></app-read-card>
+          <app-read-card (customerInfo)="setCustomerInfoReadCard($event)"></app-read-card>
         </div>
       </div>
     </div>
@@ -44,10 +44,11 @@
       </div>
       <div [hidden]="!isShowInputForKeyIn">
         <app-billing-address
-          [titleNames]="titleName" 
+          [titleNames]="titleNames" 
           [customerAddress]="customerAddress" 
-          [allZipCodes]="allZipCodes"
-          [provinces]="getProvinces()" 
+          [zipCodesAllProvince]="zipCodesAllProvince"
+          [provinces]="provinces" 
+          [allProvinces]="allProvinces"
           [amphurs]="amphurs" 
           [tumbols]="tumbols" 
           [zipCodes]="zipCode"
@@ -59,7 +60,7 @@
           (error)="onError($event)"
           [keyInCustomerAddressTemp]="keyInCustomerAddressTemp" 
           [actionType]="actionType"
-        >
+          [readCardCustomerAddressTemp]="readCardCustomerAddressTemp">
         </app-billing-address>
       </div>
       <div [hidden]="isShowInputForKeyIn">
