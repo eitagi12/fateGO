@@ -19,9 +19,10 @@
               <br>
               <span translate>เบอร์</span> {{ transaction?.data?.simCard?.mobileNo | mobileNo }}
             </div>
+            <div [hidden]="!!!getMessage5G()" class="message-result text-center mt-5 text-black">
+              <span>{{ getMessage5G() }}</span>
+            </div>
           </div>
-
-
         </mc-result>
       </div>
     </div>

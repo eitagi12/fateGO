@@ -16,12 +16,12 @@
             <div class="text-grey float-left mt-2"><i class="fa fa fa-circle text-light-green"></i>&nbsp;&nbsp;
               <span translate>ผลการโอนย้ายบริการเสริม</span></div>
             <div class="text-grey float-right">
-                <div *ngIf="translationService.currentLang === 'EN'">
-                    {{ serviceChange?.length }} package(s)
-                </div>
-                <div *ngIf="translationService.currentLang === 'TH'">
-                    ทั้งหมด {{ serviceChange?.length }} บริการ
-                </div>
+              <div *ngIf="translationService.currentLang === 'EN'">
+                {{ serviceChange?.length }} package(s)
+              </div>
+              <div *ngIf="translationService.currentLang === 'TH'">
+                ทั้งหมด {{ serviceChange?.length }} บริการ
+              </div>
             </div>
             <div class="row" *ngFor="let service of serviceChange">
               <ul>
@@ -33,6 +33,9 @@
             <div class="message-result text-center mt-5 text-black">
               <span translate>ระบบจัดส่ง SMS แจ้ง รายละเอียดการทำรายการข้อตกลงและเงื่อนไขบริการโทรศัพท์เคลื่อนที่ ไปที่</span>
               <br> <span translate>เบอร์</span> {{ transaction?.data?.simCard?.mobileNo | mobileNo }}
+            </div>
+            <div [hidden]="!!!getMessage5G()" class="message-result text-center mt-5 text-black">
+              <span>{{ getMessage5G() }}</span>
             </div>
           </div>
 

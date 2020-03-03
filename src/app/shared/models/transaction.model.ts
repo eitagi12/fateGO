@@ -96,6 +96,7 @@ export interface TransactionData {
   romTransaction?: RomTransactionData;
   // Omise
   omise?: Omise;
+  handsetSim5G?: HandsetSim5G;
 }
 
 export interface Omise {
@@ -119,6 +120,18 @@ export interface Omise {
   cardExpireDate?: string;
 }
 
+export interface HandsetSim5G {
+  handset: string;
+  sim: string;
+  isMultisim: string;
+  volteHandset: string;
+  volteService: string;
+  sharePlan: string;
+  message5gTh: string;
+  message5gEng: string;
+  messageVolteTh: string;
+  messageVolteEng: string;
+}
 export interface Condition {
   conditionCode: string;
   conditionName?: string;

@@ -53,4 +53,23 @@ export class OrderNewRegisterResultPageComponent implements OnInit {
     window.location.href = '/smart-digital/main-menu';
     // this.homeService.goToHome();
   }
+
+  getMessage5G(): string {
+    if (this.isPackage5G()) {
+      return 'แนะนำใช้เครื่องที่รองรับ 5G เพื่อประสิทธิภาพในการใช้งาน';
+    } else {
+      return '';
+    }
+  }
+
+  isPackage5G(): boolean {
+    const REGEX_PACKAGE_5G = /5[Gg]/;
+    const mainPackage = this.transaction.data.mainPackage;
+    if (mainPackage && REGEX_PACKAGE_5G.test(mainPackage.productPkg)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
 }
