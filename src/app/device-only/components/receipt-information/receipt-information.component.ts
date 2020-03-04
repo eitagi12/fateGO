@@ -32,6 +32,8 @@ export class ReceiptInformationComponent implements OnInit {
 
   customerInfo: any;
 
+  customerBilling: any;
+
   searchByMobileNoForm: FormGroup;
   receiptInfoForm: FormGroup;
   billingAddressForm: FormGroup;
@@ -183,10 +185,12 @@ export class ReceiptInformationComponent implements OnInit {
       zipCode: data.customer.zipCode || ''
     };
     this.readCardCustomerAddressTemp = customer;
-
+    this.actionType = data.action;
+    console.log('this.actionType <--->', this.actionType);
     console.log('assign customerTemp readcard ------> ', this.readCardCustomerAddressTemp);
     this.nameText = data.customer.titleName + ' ' + data.customer.firstName + ' ' + data.customer.lastName;
     this.billingAddressText = this.customerInfoService.convertBillingAddressToString(customer);
+
   }
 
   setCustomerInfo(data: any): void {
@@ -224,7 +228,13 @@ export class ReceiptInformationComponent implements OnInit {
       // tslint:disable-next-line: max-line-length
       this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(data.customer.idCardNo.substring(9))}`));
     }
-    this.keyInCustomerAddressTemp = customer;
+
+    if (data.mobileNo) {
+      this.keyInCustomerAddressTemp = customer;
+    }
+  //  this.keyInCustomerAddressTemp = customer;
+    this.customerBilling = customer;
+
     this.actionType = data.action;
     // this.billingAddress.getLocationName().then((resp: any) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
     this.nameText = data.customer.titleName + ' ' + data.customer.firstName + ' ' + data.customer.lastName;
@@ -250,7 +260,8 @@ export class ReceiptInformationComponent implements OnInit {
                 if (res && res.data && res.data.billingAddress) {
                   this.setCustomerInfo({
                     customer: this.customerInfoService.mapAttributeFromGetBill(res.data.billingAddress),
-                    action: TransactionAction.KEY_IN
+                    action: TransactionAction.KEY_IN,
+                    mobileNo: mobileNo
                   });
                   this.errorAddessValid.emit(true);
                   this.customerInfoService.setSelectedMobileNo(mobileNo);
@@ -279,7 +290,7 @@ export class ReceiptInformationComponent implements OnInit {
     this.nameText = '';
     this.billingAddressText = '';
     this.receiptInfoForm.controls['taxId'].setValue('');
-    this.receiptInfoForm.controls['branch'].setValue('');
+ //   this.receiptInfoForm.controls['branch'].setValue('');
   }
 
   private errorNotAisMobileNo(): void {
@@ -315,7 +326,7 @@ export class ReceiptInformationComponent implements OnInit {
       this.nameText = '';
       this.billingAddressText = '';
       this.receiptInfoForm.controls['taxId'].setValue('');
-      this.receiptInfoForm.controls['branch'].setValue('');
+   //   this.receiptInfoForm.controls['branch'].setValue('');
     }
   }
 
@@ -324,6 +335,7 @@ export class ReceiptInformationComponent implements OnInit {
     this.billingAddress.setIsKeyInBillingAddress(this.isShowInputForKeyIn);
 
     if (this.isShowInputForKeyIn) {
+      this.keyInCustomerAddressTemp = this.customerBilling;
       this.titleNames = this.titleNamesData;
       this.zipCodesAllProvince = this.zipCodeData;
       this.provinces = this.provincesName;
@@ -397,8 +409,6 @@ export class ReceiptInformationComponent implements OnInit {
   }
 
   onCompleted(value: any): void {
-    console.log('value ===========>', value);
-
     let action = TransactionAction.KEY_IN;
     if (!value.dirty && !value.touched && this.actionType === TransactionAction.READ_CARD) {
       action = TransactionAction.READ_CARD;

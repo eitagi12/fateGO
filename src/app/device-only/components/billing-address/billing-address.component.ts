@@ -98,6 +98,8 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   tumbolSelected: any;
   zipCodeSelected: any;
 
+  customerChanges: any;
+
   constructor(
     public fb: FormBuilder,
     private utils: Utils,
@@ -113,11 +115,13 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.createCustomerAddressForm();
     this.checkProvinceAndAmphur();
-    this.checkAction();
+ //   this.checkAction();
     this.isDeviceOnlyASP = this.user.userType === 'ASP' ? true : false;
   }
 
   checkAction(): void {
+    console.log('TransactionAction.READ_CARD', TransactionAction.READ_CARD);
+
     if (this.actionType === TransactionAction.READ_CARD) {
       this.customerAddressForm.controls['idCardNo'].disable();
     } else {
@@ -127,9 +131,39 @@ export class BillingAddressComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     console.log('changes jaaaa ----> ', changes);
+    // if (changes.readCardCustomerAddressTemp && changes.readCardCustomerAddressTemp.currentValue) {
+    //   this.customerChanges = changes.readCardCustomerAddressTemp.currentValue;
+    // } else if (changes.keyInCustomerAddressTemp && changes.keyInCustomerAddressTemp.currentValue) {
+    //   this.customerChanges = changes.keyInCustomerAddressTemp.currentValue;
+    // }
 
-    // This's refactor
-    if (changes.readCardCustomerAddressTemp) {
+    // if (this.customerChanges) {
+    //   console.log('this.customerChanges ===>', this.customerChanges);
+
+    //   this.checkAction();
+    //   this.customerAddressForm.patchValue({
+    //     idCardNo: this.customerChanges.idCardNo,
+    //     titleName: this.customerChanges.titleName === 'น.ส.' ? 'นางสาว' : this.customerChanges.titleName,
+    //     firstName: this.customerChanges.firstName,
+    //     lastName: this.customerChanges.lastName,
+    //     homeNo: this.customerChanges.homeNo,
+    //     moo: this.customerChanges.moo,
+    //     mooBan: this.customerChanges.mooBan,
+    //     room: this.customerChanges.room,
+    //     floor: this.customerChanges.floor,
+    //     buildingName: this.customerChanges.buildingName,
+    //     soi: this.customerChanges.soi,
+    //     street: this.customerChanges.street,
+    //     province: this.customerChanges.province,
+    //     amphur: this.customerChanges.amphur,
+    //     tumbol: this.customerChanges.tumbol,
+    //     zipCode: this.customerChanges.zipCode
+    //   });
+    // }
+
+  //  This's refactor
+    if (changes.readCardCustomerAddressTemp && changes.readCardCustomerAddressTemp.currentValue) {
+      this.checkAction();
       this.customerAddressForm.patchValue({
         idCardNo: this.readCardCustomerAddressTemp.idCardNo,
         titleName: this.readCardCustomerAddressTemp.titleName === 'น.ส.' ? 'นางสาว' : this.readCardCustomerAddressTemp.titleName,
@@ -148,7 +182,8 @@ export class BillingAddressComponent implements OnInit, OnChanges {
         tumbol: this.readCardCustomerAddressTemp.tumbol,
         zipCode: this.readCardCustomerAddressTemp.zipCode
       });
-    } else if (changes.keyInCustomerAddressTemp) {
+    } else if (changes.keyInCustomerAddressTemp && changes.keyInCustomerAddressTemp.currentValue) {
+      this.checkAction();
       this.customerAddressForm.patchValue({
         idCardNo: this.keyInCustomerAddressTemp.idCardNo,
         titleName: this.keyInCustomerAddressTemp.titleName === 'น.ส.' ? 'นางสาว' : this.keyInCustomerAddressTemp .titleName,
@@ -172,15 +207,15 @@ export class BillingAddressComponent implements OnInit, OnChanges {
    // this.completed.emit(this.customerAddressForm.value);
     console.log('customerAddressForm -=====>', this.customerAddressForm);
 
-    // if (changes.zipCodes
-    //   && changes.zipCodes.currentValue
-    //   && changes.zipCodes.currentValue.length === 1) {
-    //     if (this.customerAddressForm) {
-    //       this.customerAddressForm.patchValue({
-    //         zipCode: changes.zipCodes.currentValue[0]
-    //       });
-    //     }
-    // }
+    if (changes.zipCodes
+      && changes.zipCodes.currentValue
+      && changes.zipCodes.currentValue.length === 1) {
+        if (this.customerAddressForm) {
+          this.customerAddressForm.patchValue({
+            zipCode: changes.zipCodes.currentValue[0]
+          });
+        }
+    }
   }
 
   checkProvinceAndAmphur(): void {
@@ -275,11 +310,14 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     //   }
     // }
     this.customerAddressForm.valueChanges.pipe(debounceTime(750)).subscribe((value: any) => {
-      // this.error.emit(this.customerAddressForm.valid);
-      // if (this.customerAddressForm.valid && this.customerAddressForm.controls.idCardNo.value) {
-      //   const idCardNo = this.customerAddressForm.controls.idCardNo.value;
-      //   this.completed.emit({...value, idCardNo, dirty: this.customerAddressForm.dirty, touched: this.customerAddressForm.touched });
-      // }
+      this.error.emit(this.customerAddressForm.valid);
+
+      console.log('this.customerAddressForm.valid', this.customerAddressForm.valid);
+
+      if (this.customerAddressForm.valid && this.customerAddressForm.controls.idCardNo.value) {
+        const idCardNo = this.customerAddressForm.controls.idCardNo.value;
+        this.completed.emit({...value, idCardNo, dirty: this.customerAddressForm.dirty, touched: this.customerAddressForm.touched });
+       }
 
       console.log('1111111111111111111');
     });
