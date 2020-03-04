@@ -3,6 +3,7 @@ export const environment = {
   name: 'DEV',
   CSP_URL: 'http://10.13.81.39:8103/SFFWeb/pages/home/aisMyChannel.jsf',
   AUTH_URL: 'http://10.13.81.39:8103/SFFWeb/pages/home/portal.jsf',
+  MYCHANNEL_WEB_URL: 'http://10.137.16.46:8080/web',
   WEB_CONNECT_URL: 'wss://localhost:8088',
   TEST_OTP_MOBILE: '0927095833',
   TEST_OTP_MOBILE_POSTPAID: '0623180146',

@@ -1,14 +1,15 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { PageLoadingService, AlertService, Utils } from 'mychannel-shared-libs';
 import { Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { Transaction, SimCard } from 'src/app/omni/omni-shared/models/transaction.model';
+import { Transaction, SimCard, TransactionAction } from 'src/app/omni/omni-shared/models/transaction.model';
 import { WIZARD_OMNI_NEW_REGISTER } from 'src/app/omni/constants/wizard.constant';
 import { TransactionService } from 'src/app/omni/omni-shared/services/transaction.service';
 import { ROUTE_OMNI_NEW_REGISTER_EAPPLICATION_PAGE, ROUTE_OMNI_NEW_REGISTER_RESULT_PAGE } from '../../constants/route-path.constant';
+import { RECEIVE_WATERMARK } from '../../constants/receive-watermark';
 
 declare let $: any;
 declare let window: any;
@@ -71,7 +72,8 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
   getSerialNo: string;
   simSerialForm: FormGroup;
   isNext: boolean = false;
-
+  @ViewChild('drawWatermark') drawWatermark: ElementRef;
+  imageWithDraw: any;
   constructor(
     private router: Router,
     private transactionService: TransactionService,
@@ -93,6 +95,7 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.createCanvas();
     this.createForm();
     this.simSerialForm.controls.simSerial.valueChanges.subscribe((value) => {
       if (value && value.length === 13) {
@@ -673,15 +676,17 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
 
   }
 
-  onNext(): void {
-    this.transactionService.update(this.transaction);
+  async onNext(): Promise<void> {
     if (!this.transaction.data.simCard.simSerial) {
       this.transaction.data.simCard = Object.assign(this.transaction.data.simCard, {
         simSerial: this.simSerialKeyIn
       });
+      await this.transactionService.update(this.transaction);
+      window.location.href = `/sales-portal/reserve-stock/receive-confirm-online`;
+    } else {
+      await this.transactionService.update(this.transaction);
       window.location.href = `/sales-portal/reserve-stock/receive-confirm-online`;
     }
-    window.location.href = `/sales-portal/reserve-stock/receive-confirm-online`;
   }
 
   onSerialNumberChanged(data?: any): void {
@@ -728,5 +733,47 @@ export class OmniNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
       ...this.transaction.data,
       simCard: simCard
     };
+  }
+
+  createCanvas(): void {
+    const imageCard = new Image();
+    const watermarkImage = new Image();
+
+    if (this.transaction.data.action === TransactionAction.KEY_IN) {
+      imageCard.src = 'data:image/png;base64,' + this.transaction.data.customer.imageSmartCard;
+    } else {
+      imageCard.src = 'data:image/png;base64,' + this.transaction.data.customer.imageReadSmartCard;
+    }
+
+    watermarkImage.src = 'data:image/png;base64,' + RECEIVE_WATERMARK;
+
+    imageCard.onload = () => {
+      this.drawIdCard(imageCard, watermarkImage);
+    };
+  }
+
+  clearCanvas(): void {
+    const canvas: HTMLCanvasElement = (<HTMLCanvasElement>this.drawWatermark.nativeElement);
+    const ctx: CanvasRenderingContext2D = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.restore();
+  }
+
+  drawIdCard(imageCard?: any, watermark?: any): void {
+    const canvas: HTMLCanvasElement = (<HTMLCanvasElement>this.drawWatermark.nativeElement);
+    const ctx: CanvasRenderingContext2D = canvas.getContext('2d');
+    if (ctx) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    if (new RegExp('data:image/png;base64,').test(imageCard.src)) {
+      canvas.width = imageCard.width;
+      canvas.height = imageCard.height;
+      ctx.drawImage(imageCard, 0, 0);
+      ctx.drawImage(watermark, 0, 0, canvas.width, canvas.height);
+    }
+
+    this.transaction.data.customer.imageIdCardWithReceive = canvas.toDataURL('image/jpeg').replace(/^data:image\/jpeg;base64,/, '');
+    this.transactionService.update(this.transaction);
   }
 }

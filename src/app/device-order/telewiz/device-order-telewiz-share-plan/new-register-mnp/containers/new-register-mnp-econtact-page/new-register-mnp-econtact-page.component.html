@@ -1,0 +1,35 @@
+<div class="mc-flex">
+    <mc-header title="{{ 'รายการสินค้า' | translate}}">
+        <!-- <div class="header-icon-left w-25">
+            <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+        </div>
+        <div class="header-icon-right w-25 text-right">
+            <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+        </div> -->
+    </mc-header>
+    <div class="mc-flex-wrap">
+        <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
+        <div class="my-3">
+            <mc-wizard [wizards]="wizards" active="6"></mc-wizard>
+
+            <div class="container">
+                <div class="card" *ngIf="eContactSrc">
+                    <div class="card-body">
+                        <img [src]="'data:image/jpeg;base64,'+eContactSrc" class="img-fluid mx-auto d-block" />
+                        <div class="my-3 text-center">
+                            <input type="checkbox" name="agree" id="agree" [value]="true" [(ngModel)]="agreement">
+                            <label for="agree" translate>
+                ข้าพเจ้ายอมรับตามเงื่อนไขข้อความข้างต้น
+              </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <mc-footer>
+        <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+        <button class="btn btn-success" (click)="onNext()" [disabled]="!agreement">NEXT</button>
+    </mc-footer>
+</div>

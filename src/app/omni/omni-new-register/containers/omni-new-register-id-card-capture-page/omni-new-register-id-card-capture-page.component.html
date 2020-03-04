@@ -64,7 +64,12 @@
                   *ngIf="!transaction?.data?.customer?.imageSmartCard">
                   <span *ngIf="!transaction?.data?.customer?.imageSmartCard">ถ่ายรูป</span>
                 </a>
-                <a href="#" (click)="$event.preventDefault(); onClearIdCardImage()" class="text-pink"
+               
+                <!-- <a href="#" (click)="$event.preventDefault(); onClearIdCardImage()" class="text-pink"
+                *ngIf="transaction?.data?.customer?.imageSmartCard">
+                ถ่ายรูปใหม่
+                </a> -->
+                <a href="#" (click)="$event.preventDefault(); onClearIdCardImage(); onOpenCamera(); camera.next();" class="text-pink"
                   *ngIf="transaction?.data?.customer?.imageSmartCard">
                   ถ่ายรูปใหม่
                 </a>

@@ -64,7 +64,7 @@ export class OmniNewRegisterIdCardCapturePageComponent implements OnInit, OnDest
   }
 
   onBack(): void {
-    this.onClearIdCardImage();
+    // this.onClearIdCardImage();
     // tslint:disable-next-line: max-line-length
     if (this.transaction.data.customer.caNumber && this.transaction.data.customer.caNumber !== '' && this.transaction.data.action === TransactionAction.READ_CARD) {
         this.router.navigate([ROUTE_OMNI_NEW_REGISTER_CUSTOMER_INFO_PAGE]);

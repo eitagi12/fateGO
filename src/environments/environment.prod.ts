@@ -4,6 +4,7 @@ export const environment = {
   CSP_URL: 'https://cspportal.ais.co.th/SFFWeb/pages/home/aisMyChannel.jsf',
   AUTH_URL: 'https://cspportal.ais.co.th/SFFWeb/pages/home/portal.jsf',
   sffHomeUrl: 'https://sffportal.ais.co.th/SFFWeb/pages/home/index.jsf',
+  MYCHANNEL_WEB_URL: 'https://mychannel.ais.co.th/web',
   WEB_CONNECT_URL: 'wss://localhost:8088',
   TEST_OTP_MOBILE: null,
   MOBILE_STATUS: ['000', 'active', '377', 'terminate', '378', 'suspend', '379', 'disable'],

@@ -25,7 +25,7 @@
             {{ '(ห้ามนำซิมการ์ดออก)' | translate }}
           </div>
           <div class="text-center my-3" *ngIf="persoSim?.progress === 100">
-            {{ 'กรุณานำซิมออกและเปลี่ยนเป็นซิมสำหรับเบอร์ย้ายค่าย' | translate }}
+            {{ 'กรุณานำซิมออกและเปลี่ยนเป็นซิมสำหรับเบอร์จดทะเบียนใหม่' | translate }}
           </div>
         </div>
         <div *ngIf="isStateStatus === 'waitingFixSim'">
@@ -63,4 +63,5 @@
     <button class="btn btn-secondary" (click)="onBack()" [disabled]="disableBack">BACK</button>
     <button class="btn btn-success" (click)="onNext()" [disabled]="!(persoSim?.progress === 100) && !isNext">NEXT</button>
   </mc-footer>
+  <canvas #drawWatermark class="watermark"></canvas>
 </div>

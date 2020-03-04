@@ -1,0 +1,153 @@
+//for PC
+.idcard-img-pc {
+    display: block;
+    width: 100px;
+    margin: auto;
+    padding: 20px 0 20px 0;
+    // @include breakpoint(small only){
+    //   width: 50px;
+    //   padding: 10px 0 40px 0;
+    // }
+}
+
+.otherid-container-pc {
+    margin: 60px 20px 0px 20px; // @include breakpoint(small only){
+    //   padding: 0;
+    // }
+}
+
+.line-center-pc {
+    max-width: 400px;
+    text-align: center;
+    border-left: 1px solid #cbcbcb;
+    line-height: 0.1em;
+    margin: 30px auto 30px auto;
+    span {
+        background: #fff;
+        // padding:0 20px;
+        margin-top: 80px;
+        margin-left: -33px;
+        padding: 20px;
+        position: absolute;
+    }
+    // @include breakpoint(small only){
+    //   margin: 50px auto 50px auto;
+    // }
+}
+
+.read-card {
+    margin: 50px;
+    border: 1px solid #b7b7b7;
+    border-radius: 4px;
+}
+
+.read-card-title {
+    background: #8cc53f;
+    border-radius: 3px;
+    width: 100%;
+    padding: 8px 10px 8px 15px;
+    color: #fff;
+}
+
+.font-small1 {
+    color: gray;
+}
+
+.progress-header {
+    line-height: 35px;
+    padding-bottom: 10px;
+    // @include breakpoint(small only) {
+    //     line-height: 20px;
+    //     padding-bottom: 5px;
+    // }
+}
+
+.proress-container {
+    padding: 50px 40px 50px 40px;
+    line-height: 75px;
+    .waiting {
+        color: #989898;
+    }
+    // @include breakpoint(small only){
+    //   padding: 40px 20px 40px 20px;
+    //   line-height: 30px;
+    // }
+}
+
+.progress {
+    display: block;
+    margin: 0 auto;
+    background-color: #f4f4f4;
+    height: 13px;
+    border-radius: 15px;
+    max-width: 700px;
+}
+
+.progress-meter {
+    background-color: #cced61;
+    border-radius: 15px;
+}
+
+.middile-line {
+    width: 6px;
+    min-height: 180px;
+    border-radius: 10px;
+    background: #ccee62;
+    display: block;
+    margin: auto;
+    margin-top: 50px;
+}
+
+.progress-container {
+    margin-top: 12%;
+}
+
+.card-reader {
+    .inserted {
+        display: block;
+    }
+    .removed {
+        display: none;
+    }
+    &.reading {
+        .inserted {
+            display: none;
+        }
+        .removed {
+            display: block;
+        }
+    }
+    img {
+        display: block;
+        margin: 0 auto;
+        width: 100%;
+        max-width: 390px;
+    }
+}
+
+.card-reader-native {
+    .inserted {
+        display: block;
+    }
+    .removed {
+        display: none;
+    }
+    &.reading {
+        .inserted {
+            display: none;
+        }
+        .removed {
+            display: block;
+        }
+    }
+    img {
+        display: block;
+        margin: 0 auto;
+        width: 50%;
+        max-width: 250px;
+    }
+}
+
+.img-fluid {
+    max-width: 50% !important;
+}

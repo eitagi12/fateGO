@@ -8,6 +8,7 @@ export const environment = {
   CSP_URL: '',
   AUTH_URL: 'http://10.13.81.39:8103/SFFWeb/pages/home/portal.jsf',
   sffHomeUrl: 'http://10.13.81.39:8103/SFFWeb/pages/home/index.jsf',
+  MYCHANNEL_WEB_URL: 'http://10.137.16.46:8080/web',
   WEB_CONNECT_URL: 'wss://localhost:8088', // 'wss://172.16.62.114:8088',
   TEST_OTP_MOBILE_POSTPAID: '0623180146',
   TEST_OTP_MOBILE: '0927095833',

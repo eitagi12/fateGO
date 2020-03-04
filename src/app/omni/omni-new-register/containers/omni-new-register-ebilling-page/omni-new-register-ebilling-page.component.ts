@@ -1,12 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
-import { Transaction } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
 import { HomeService, Ebilling } from 'mychannel-shared-libs';
-import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { ROUTE_ORDER_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE } from 'src/app/order/order-new-register/constants/route-path.constant';
+import { } from 'src/app/order/order-new-register/constants/route-path.constant';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { TransactionService } from 'src/app/omni/omni-shared/services/transaction.service';
+import { Transaction } from 'src/app/omni/omni-shared/models/transaction.model';
+import { ROUTE_OMNI_NEW_REGISTER_SUMMARY_PAGE } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-omni-new-register-ebilling-page',
@@ -40,16 +41,12 @@ export class OmniNewRegisterEbillingPageComponent implements OnInit, OnDestroy {
 
     this.http.get('/api/customerportal/newRegister/queryBillCycle', {
       params: {
-        coProject: 'N'
+        coProject: 'Y'
       }
     }).toPromise().then((resp: any) => {
       const data = resp.data || {};
       this.billCycles = data.billCycles || [];
-      if (!this.transaction.data.billingInformation.billCycle) {
-        this.setBillingDefault(data.billCycles || []);
-      } else {
-        this.billCycle = this.transaction.data.billingInformation.billCycle;
-      }
+      this.setBillingDefault(data.billCycles || []);
     });
   }
 
@@ -70,12 +67,13 @@ export class OmniNewRegisterEbillingPageComponent implements OnInit, OnDestroy {
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_ORDER_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE]);
+    this.router.navigate([ROUTE_OMNI_NEW_REGISTER_SUMMARY_PAGE]);
   }
 
   onNext(): void {
-    this.transaction.data.billingInformation.billCycle = this.billCycle;
-    this.router.navigate([ROUTE_ORDER_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE]);
+    this.transaction.data.billingInformation.billCycles[0] = this.billCycle;
+    this.transaction.data.customer.billCycle = this.billCycle.bill;
+    this.router.navigate([ROUTE_OMNI_NEW_REGISTER_SUMMARY_PAGE]);
   }
 
   onHome(): void {
