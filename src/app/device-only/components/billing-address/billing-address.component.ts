@@ -115,7 +115,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.createCustomerAddressForm();
     this.checkProvinceAndAmphur();
- //   this.checkAction();
+    //   this.checkAction();
     this.isDeviceOnlyASP = this.user.userType === 'ASP' ? true : false;
   }
 
@@ -161,7 +161,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     //   });
     // }
 
-  //  This's refactor
+    //  This's refactor
     if (changes.readCardCustomerAddressTemp && changes.readCardCustomerAddressTemp.currentValue) {
       this.checkAction();
       this.customerAddressForm.patchValue({
@@ -186,7 +186,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       this.checkAction();
       this.customerAddressForm.patchValue({
         idCardNo: this.keyInCustomerAddressTemp.idCardNo,
-        titleName: this.keyInCustomerAddressTemp.titleName === 'น.ส.' ? 'นางสาว' : this.keyInCustomerAddressTemp .titleName,
+        titleName: this.keyInCustomerAddressTemp.titleName === 'น.ส.' ? 'นางสาว' : this.keyInCustomerAddressTemp.titleName,
         firstName: this.keyInCustomerAddressTemp.firstName,
         lastName: this.keyInCustomerAddressTemp.lastName,
         homeNo: this.keyInCustomerAddressTemp.homeNo,
@@ -204,17 +204,17 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       });
     }
 
-   // this.completed.emit(this.customerAddressForm.value);
+    // this.completed.emit(this.customerAddressForm.value);
     console.log('customerAddressForm -=====>', this.customerAddressForm);
 
     if (changes.zipCodes
       && changes.zipCodes.currentValue
       && changes.zipCodes.currentValue.length === 1) {
-        if (this.customerAddressForm) {
-          this.customerAddressForm.patchValue({
-            zipCode: changes.zipCodes.currentValue[0]
-          });
-        }
+      if (this.customerAddressForm) {
+        this.customerAddressForm.patchValue({
+          zipCode: changes.zipCodes.currentValue[0]
+        });
+      }
     }
   }
 
@@ -310,16 +310,15 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     //   }
     // }
     this.customerAddressForm.valueChanges.pipe(debounceTime(750)).subscribe((value: any) => {
-      this.error.emit(this.customerAddressForm.valid);
-
-      console.log('this.customerAddressForm.valid', this.customerAddressForm.valid);
-
-      if (this.customerAddressForm.valid && this.customerAddressForm.controls.idCardNo.value) {
-        const idCardNo = this.customerAddressForm.controls.idCardNo.value;
-        this.completed.emit({...value, idCardNo, dirty: this.customerAddressForm.dirty, touched: this.customerAddressForm.touched });
-       }
-
-      console.log('1111111111111111111');
+      if (this.keyInCustomerAddressTemp || this.readCardCustomerAddressTemp) {
+        this.error.emit(this.customerAddressForm.valid);
+      } else {
+        this.error.emit(true);
+      }
+        if (this.customerAddressForm.valid && this.customerAddressForm.controls.idCardNo.value) {
+          const idCardNo = this.customerAddressForm.controls.idCardNo.value;
+          this.completed.emit({ ...value, idCardNo, dirty: this.customerAddressForm.dirty, touched: this.customerAddressForm.touched });
+        }
     });
   }
 
@@ -571,7 +570,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       const zipCode = resp.data.zipcodes || [];
       if (zipCode && zipCode.length > 0) {
         const controlZipCode = this.customerAddressForm.controls['zipCode'];
-          controlZipCode.setValue(zipCode[0]);
+        controlZipCode.setValue(zipCode[0]);
         this.zipCodeSelected = {
           zipCode: controlZipCode.value
         };
