@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { Transaction, ExistingMobileCare } from 'src/app/shared/models/transaction.model';
+import { Transaction, ExistingMobileCare, HandsetSim5G } from 'src/app/shared/models/transaction.model';
 import { PromotionShelve, ShoppingCart, HomeService, PageLoadingService, BillingSystemType, AlertService, PromotionShelveGroup, I18nService } from 'mychannel-shared-libs';
 import { BsModalRef } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
@@ -43,6 +43,7 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
     private router: Router,
     private http: HttpClient,
     private homeService: HomeService,
+    private alertService: AlertService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
@@ -115,8 +116,23 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
 
       // ถ้ามี mobileCare เดิม จะไปหน้า เลือกว่าจะเปลี่ยน mobileCare หรือ ไม่
       // ถ้าไม่มี mobileCare เดิม จะไปหน้าเลือกวันที่มีผลรอบบิล
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE]);
-    }).then(() => this.pageLoadingService.closeLoading());
+
+      if (this.isPackage5G()) {
+        if (this.isMultiSim() && this.isSharePlan()) {
+          this.alertService.warning('แนะนำยกเลิก MultiSIM และ Share Plan');
+        } else if (this.isMultiSim()) {
+          this.alertService.warning('แนะนำยกเลิก MultiSIM');
+        } else if (this.isSharePlan()) {
+          this.alertService.warning('แนะนำยกเลิก Share Plan');
+        } else {
+          this.pageLoadingService.closeLoading();
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE]);
+        }
+      } else {this.pageLoadingService.closeLoading();
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE]);
+      }
+
+    });
   }
 
   onHome(): void {
@@ -200,4 +216,25 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
     this.transactionService.update(this.transaction);
     console.log('condition', this.condition);
   }
+
+  isPackage5G(): boolean {
+    const REGEX_PACKAGE_5G = /5[Gg]/;
+    const mainPackage = this.transaction.data.mainPackage;
+    if (mainPackage && mainPackage.customAttributes && REGEX_PACKAGE_5G.test(mainPackage.customAttributes.productPkg)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  isMultiSim(): boolean {
+    const handsetSim5G: HandsetSim5G = this.transaction.data.handsetSim5G || {} as HandsetSim5G;
+    return handsetSim5G.isMultisim === 'Y' ? true : false;
+  }
+
+  isSharePlan(): boolean {
+    const handsetSim5G: HandsetSim5G = this.transaction.data.handsetSim5G || {} as HandsetSim5G;
+    return handsetSim5G.sharePlan ? true : false;
+  }
+
 }

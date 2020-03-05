@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { Transaction } from 'src/app/shared/models/transaction.model';
-import { MobileCare, ShoppingCart, HomeService, PageLoadingService, AlertService, MobileInfo } from 'mychannel-shared-libs';
+import { Transaction, HandsetSim5G } from 'src/app/shared/models/transaction.model';
+import { MobileCare, ShoppingCart, HomeService, PageLoadingService, AlertService, MobileInfo, TokenService, User } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -31,16 +31,20 @@ export class DeviceOrderAisMnpMobileDetailPageComponent implements OnInit, OnDes
   priceOption: PriceOption;
   transaction: Transaction;
   shoppingCart: ShoppingCart;
-
+  user: User;
   mcLoadingService: Promise<any>;
 
   mobileInfo: MobileInfo;
   translationSubscribe: Subscription;
   currentLang: string = 'TH';
 
+  message5G: string;
+  messageVolTE: string;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
+    private tokenService: TokenService,
     private priceOptionService: PriceOptionService,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
@@ -50,6 +54,7 @@ export class DeviceOrderAisMnpMobileDetailPageComponent implements OnInit, OnDes
     private http: HttpClient,
     private translationService: TranslateService
   ) {
+    this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
 
@@ -112,7 +117,6 @@ export class DeviceOrderAisMnpMobileDetailPageComponent implements OnInit, OnDes
 
       return this.http.get(`/api/customerportal/newRegister/${idCardNo}/queryBillingAccount`).toPromise();
     }).then((resp: any) => {
-      this.pageLoadingService.closeLoading();
       const data = resp.data || {};
       const billingAccountList: any = [];
       const mobileNoList: any = [];
@@ -139,7 +143,84 @@ export class DeviceOrderAisMnpMobileDetailPageComponent implements OnInit, OnDes
           });
         return;
       }
-    });
+
+      return this.getHandSetSim5G();
+    }).then(() => this.pageLoadingService.closeLoading());
+  }
+
+  getHandSetSim5G(): Promise<any> {
+
+    const mobileNo = this.transaction.data.simCard.mobileNo;
+
+    return this.http.post('/api/easyapp/configMC', {
+      operation: 'query',
+      nameconfig: 'showFlow5G'
+    }).toPromise()
+      .then((repConFig: any) => {
+
+        const dataConfig: any = repConFig.data || {};
+        if (dataConfig[0] &&
+          dataConfig[0].config &&
+          dataConfig[0].config.data[0] &&
+          dataConfig[0].config.data[0].status) {
+
+          const queryParams = this.priceOption.queryParams || {};
+          const brand: string = queryParams.brand.replace(/\(/g, '%28').replace(/\)/g, '%29');
+          const model: string = queryParams.model.replace(/\(/g, '%28').replace(/\)/g, '%29');
+          const productType: string = queryParams.productType.replace(/\(/g, '%28').replace(/\)/g, '%29');
+          const productSubtype: string = queryParams.productSubtype.replace(/\(/g, '%28').replace(/\)/g, '%29');
+
+          return this.http.post('/api/salesportal/products-by-brand-model', {
+            location: this.user.locationCode,
+            brand: brand,
+            model: model,
+            offset: '1',
+            maxrow: '1',
+            productType: [productType],
+            productSubtype: [productSubtype]
+          }).toPromise()
+            .then((respBrandModel: any) => {
+
+              const products = respBrandModel.data.products || {};
+              if (products[0].flag5G === 'Y') {
+
+                return this.http.post(`/api/customerportal/check-handset-sim-5G`, {
+                  cmd: 'CHECK',
+                  msisdn: mobileNo,
+                  channel: 'WEB'
+                }).toPromise()
+                  .then((resp5G: any) => {
+                    const handsetSim5G: HandsetSim5G = resp5G.data || {} as HandsetSim5G;
+                    this.transaction.data.handsetSim5G = handsetSim5G;
+                    this.transaction.data.handsetSim5G.handset = 'Y';
+
+                    this.message5G = this.mapMessage5G(handsetSim5G);
+                    this.messageVolTE = this.mapMessageVOTE(handsetSim5G);
+
+                    return this.transaction.data.handsetSim5G;
+                  })
+                  .catch((error: any) => {
+                    const errObj: any = error.error || [];
+                    const messageError = errObj.developerMessage ? errObj.developerMessage : 'ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้';
+                    this.message5G = messageError;
+                    this.messageVolTE = messageError;
+                    return messageError;
+                  });
+
+              } else {
+                return '';
+              }
+
+            }).catch((error: any) => {
+              return '';
+            });
+
+        } else {
+          return '';
+        }
+      }).catch((error: any) => {
+        return '';
+      });
   }
 
   changeMainPackageLangauge(mobileDetail: any = {}): string {
@@ -173,6 +254,24 @@ export class DeviceOrderAisMnpMobileDetailPageComponent implements OnInit, OnDes
     }
 
     return serviceYearWording;
+  }
+
+  mapMessage5G(handsetSim5G: HandsetSim5G): string {
+    const map = handsetSim5G.sim + handsetSim5G.handset + handsetSim5G.isMultisim + (handsetSim5G.sharePlan ? 'Y' : 'N');
+    const message5G = {
+      'YYNN': '5G พร้อมใช้งาน แนะนำสมัครแพ็กเกจ 5G',
+      'YYNY': 'แนะนำยกเลิก Share Plan และสมัครแพ็กเกจ 5G',
+      'YYYN': 'แนะนำยกเลิกบริการ MultiSIM และสมัครแพ็กเกจ 5G',
+      'YYYY': 'แนะนำยกเลิกบริการ MultiSIM และยกเลิก Share Plan',
+      'NYNN': 'แนะนำเปลี่ยน SIM และสมัครแพ็กเกจ 5G',
+      'NYNY': 'แนะนำเปลี่ยน SIM, ยกเลิก Share Plan และสมัครแพ็กเกจ 5G',
+      'NYYN': 'แนะนำเปลี่ยน SIM, ยกเลิกบริการ MultiSIM และสมัครแพ็กเกจ 5G',
+      'NYYY': 'แนะนำเปลี่ยน SIM, ยกเลิกบริการ MultiSIM และยกเลิก Share Plan'
+    };
+    return message5G[map] || 'ไม่สามารถตรวจสอบข้อมูลได้ในขณะนี้';
+  }
+  mapMessageVOTE(handsetSim5G: HandsetSim5G): string {
+    return handsetSim5G.volteHandset === 'Y' && handsetSim5G.volteService === 'N' ? 'แนะนำสมัคร HD Voice' : '';
   }
 
 }

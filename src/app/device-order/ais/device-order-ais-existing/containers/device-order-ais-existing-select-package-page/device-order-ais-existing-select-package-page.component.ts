@@ -1,15 +1,17 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
-import { Transaction, ExistingMobileCare } from 'src/app/shared/models/transaction.model';
-import { PromotionShelve, HomeService, PageLoadingService, ShoppingCart, BillingSystemType } from 'mychannel-shared-libs';
+import { Transaction, ExistingMobileCare, HandsetSim5G } from 'src/app/shared/models/transaction.model';
+import { PromotionShelve, HomeService, PageLoadingService, ShoppingCart, BillingSystemType, AlertService } from 'mychannel-shared-libs';
 import { BsModalRef } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
-import { ROUTE_DEVICE_ORDER_AIS_EXISTING_PAYMENT_DETAIL_PAGE,
+import {
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_PAYMENT_DETAIL_PAGE,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE } from '../../constants/route-path.constant';
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE
+} from '../../constants/route-path.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
@@ -43,6 +45,7 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
     private router: Router,
     private http: HttpClient,
     private homeService: HomeService,
+    private alertService: AlertService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
@@ -81,8 +84,8 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.callService()
-    .then(filterPromotionByContractFirstPack => this.defualtSelected(filterPromotionByContractFirstPack))
-    .then(() => this.pageLoadingService.closeLoading());
+      .then(filterPromotionByContractFirstPack => this.defualtSelected(filterPromotionByContractFirstPack))
+      .then(() => this.pageLoadingService.closeLoading());
   }
 
   defualtSelected(promotion: any): void {
@@ -121,13 +124,28 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
     const mobileNo = this.transaction.data.simCard.mobileNo;
 
     this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`)
-    .toPromise()
-    .then((response: any) => {
-      const exMobileCare = response.data || {};
-      this.mappingExistingMobileCare(exMobileCare);
-      this.router.navigate([this.checkRouteNavigate(exMobileCare)]);
-    })
-    .then(() => this.pageLoadingService.closeLoading());
+      .toPromise()
+      .then((response: any) => {
+        const exMobileCare = response.data || {};
+        this.mappingExistingMobileCare(exMobileCare);
+
+        if (this.isPackage5G()) {
+          if (this.isMultiSim() && this.isSharePlan()) {
+            this.alertService.warning('แนะนำยกเลิก MultiSIM และ Share Plan');
+          } else if (this.isMultiSim()) {
+            this.alertService.warning('แนะนำยกเลิก MultiSIM');
+          } else if (this.isSharePlan()) {
+            this.alertService.warning('แนะนำยกเลิก Share Plan');
+          } else {
+            this.pageLoadingService.closeLoading();
+            this.router.navigate([this.checkRouteNavigate(exMobileCare)]);
+          }
+        } else {
+          this.pageLoadingService.closeLoading();
+          this.router.navigate([this.checkRouteNavigate(exMobileCare)]);
+        }
+
+      });
   }
 
   mappingExistingMobileCare(exMobileCare: any): void {
@@ -165,7 +183,7 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
     const trade: any = this.priceOption.trade || {};
     const privilege: any = this.priceOption.privilege;
     const billingSystem = (this.transaction.data.simCard.billingSystem === 'RTBS')
-    ? BillingSystemType.IRB : this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
+      ? BillingSystemType.IRB : this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
 
     return this.callGetPromotionShelveService(trade, billingSystem, privilege);
 
@@ -177,14 +195,14 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
       orderType: `Change Service`,
       billingSystem: billingSystem
     }, +privilege.minimumPackagePrice, +privilege.maximumPackagePrice)
-    .then((promotionShelves: any) => {
-      const contract = this.transaction.data.contractFirstPack || {};
-      if (+trade.durationContract === 0) {
-        return promotionShelves;
-      } else {
-        return this.filterPromotions(promotionShelves, contract);
-      }
-    });
+      .then((promotionShelves: any) => {
+        const contract = this.transaction.data.contractFirstPack || {};
+        if (+trade.durationContract === 0) {
+          return promotionShelves;
+        } else {
+          return this.filterPromotions(promotionShelves, contract);
+        }
+      });
   }
 
   filterPromotions(promotionShelves: any = [], contract: any = {}): any[] {
@@ -213,8 +231,8 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
 
   mathCurrentPackage(customAttributes: any = {}): boolean {
     return !this.advancePay
-    && this.transaction.data.currentPackage
-    && this.transaction.data.currentPackage.promotionCode === customAttributes.promotionCode;
+      && this.transaction.data.currentPackage
+      && this.transaction.data.currentPackage.promotionCode === customAttributes.promotionCode;
   }
 
   get showSelectCurrentPackage(): boolean {
@@ -281,6 +299,26 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
     }
     const fileLang = `i18n/${moduleName}.${lang}.json`.toLowerCase();
     return this.http.get(fileLang).toPromise();
+  }
+
+  isPackage5G(): boolean {
+    const REGEX_PACKAGE_5G = /5[Gg]/;
+    const mainPackage = this.transaction.data.mainPackage;
+    if (mainPackage && mainPackage.customAttributes && REGEX_PACKAGE_5G.test(mainPackage.customAttributes.productPkg)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  isMultiSim(): boolean {
+    const handsetSim5G: HandsetSim5G = this.transaction.data.handsetSim5G || {} as HandsetSim5G;
+    return handsetSim5G.isMultisim === 'Y' ? true : false;
+  }
+
+  isSharePlan(): boolean {
+    const handsetSim5G: HandsetSim5G = this.transaction.data.handsetSim5G || {} as HandsetSim5G;
+    return handsetSim5G.sharePlan ? true : false;
   }
 
   ngOnDestroy(): void {

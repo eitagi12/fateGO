@@ -28,13 +28,15 @@
               ยอดเงินคงเหลือ
             </div>
             <div class="col-8">
-              {{+balance?.remainingBalance > 0 ? (balance?.remainingBalance | number:'1.2-2' ) + (' บาท' | translate) : '-'}}
+              {{+balance?.remainingBalance > 0 ? (balance?.remainingBalance | number:'1.2-2' ) + (' บาท' | translate) :
+              '-'}}
             </div>
             <div class="col-4 text-green">
 
             </div>
             <div class="col-8">
-              {{'กรุณาตรวจสอบยอดเงินคงเหลือผ่าน *121# โทรออก โดยยอดเงินคงเหลือของท่านจะถูกโอนเป็นค่าโทรที่ระบบรายเดือนให้โดยอัตโนมัติ' | translate}} 
+              {{'กรุณาตรวจสอบยอดเงินคงเหลือผ่าน *121# โทรออก
+              โดยยอดเงินคงเหลือของท่านจะถูกโอนเป็นค่าโทรที่ระบบรายเดือนให้โดยอัตโนมัติ' | translate}}
               <a class="float-right text-green" (click)="openModal(template)">
                 <u>MORE</u>
               </a>
@@ -43,7 +45,8 @@
               ค่าโทรที่ได้รับ
             </div>
             <div class="col-8">
-              {{+balance?.transferBalance > 0 ? (balance?.transferBalance | number:'1.2-2' )+ (' บาท' | translate) : '-'}}
+              {{+balance?.transferBalance > 0 ? (balance?.transferBalance | number:'1.2-2' )+ (' บาท' | translate) :
+              '-'}}
             </div>
 
           </div>
@@ -55,7 +58,7 @@
               <div class="row mb-3">
                 <div class="col-sm-12 text-left">
                   <i class="fa fa-circle text-green mr-3"></i>
-                    {{ 'บริการเสริมตามรายการด้านล่าง จะถูกโอนย้ายโดยอัตโนมัติ' | translate}}
+                  {{ 'บริการเสริมตามรายการด้านล่าง จะถูกโอนย้ายโดยอัตโนมัติ' | translate}}
                 </div>
               </div>
               <div class="row" *ngFor="let service of serviceChange">
@@ -84,6 +87,28 @@
                     {{ service?.serviceName }}
                   </li>
                 </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mb-3" [hidden]="!!!message5G">
+            <div class="card-body text-center">
+              <div class="row">
+                <div class="col-sm-12 text-left">
+                  <img src="assets/images/icon/icon_5G.png" alt="" class="mr-3">
+                  <span translate>{{ message5G }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mb-3" [hidden]="!!!messageVolTE">
+            <div class="card-body text-center">
+              <div class="row">
+                <div class="col-sm-12 text-left">
+                  <img src="assets/images/icon/icon_volte.png" alt="" class="mr-3">
+                  <span translate>{{ messageVolTE }}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -209,7 +234,8 @@
 
   </table>
   <div class="container mt-3 mb-3 text-light-grey">
-    *{{'ยอดเงินคงเหลือในกระเป๋า 1 ของคุณจะถูกโอนเป็นค่าโทรที่ระบบรายเดือนให้อัตโนมัติ ส่วนเงินคงเหลือในกระเป๋า 2 ไมสามารถโอนได้ ควรใช้ให้หมดก่อนทำรายการ'| translate}}
+    *{{'ยอดเงินคงเหลือในกระเป๋า 1 ของคุณจะถูกโอนเป็นค่าโทรที่ระบบรายเดือนให้อัตโนมัติ ส่วนเงินคงเหลือในกระเป๋า 2
+    ไมสามารถโอนได้ ควรใช้ให้หมดก่อนทำรายการ'| translate}}
   </div>
 
 </ng-template>
