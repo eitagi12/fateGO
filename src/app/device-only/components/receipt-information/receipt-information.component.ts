@@ -158,7 +158,6 @@ export class ReceiptInformationComponent implements OnInit {
   }
 
   setCustomerInfoReadCard(data: any): void {
-    console.log('check data customer  ------> ', data);
     const customer: Customer = {
       firstNameEn: data.customer.firstNameEn || '',
       lastNameEn: data.customer.lastNameEn || '',
@@ -186,15 +185,12 @@ export class ReceiptInformationComponent implements OnInit {
     };
     this.readCardCustomerAddressTemp = customer;
     this.actionType = data.action;
-    console.log('this.actionType <--->', this.actionType);
-    console.log('assign customerTemp readcard ------> ', this.readCardCustomerAddressTemp);
     this.nameText = data.customer.titleName + ' ' + data.customer.firstName + ' ' + data.customer.lastName;
     this.billingAddressText = this.customerInfoService.convertBillingAddressToString(customer);
 
   }
 
   setCustomerInfo(data: any): void {
-    console.log('set data ------> ', data);
     const customer: Customer = {
       idCardNo: data.customer.idCardNo,
       idCardType: data.customer.idCardType || 'บัตรประชาชน',
@@ -225,18 +221,15 @@ export class ReceiptInformationComponent implements OnInit {
     }
 
     if (data.customer.idCardNo) {
-      // tslint:disable-next-line: max-line-length
       this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(data.customer.idCardNo.substring(9))}`));
     }
 
     if (data.mobileNo) {
       this.keyInCustomerAddressTemp = customer;
     }
-  //  this.keyInCustomerAddressTemp = customer;
     this.customerBilling = customer;
 
     this.actionType = data.action;
-    // this.billingAddress.getLocationName().then((resp: any) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
     this.nameText = data.customer.titleName + ' ' + data.customer.firstName + ' ' + data.customer.lastName;
     this.billingAddressText = this.customerInfoService.convertBillingAddressToString(customer);
     if (data.action === TransactionAction.READ_CARD || this.billingAddressText) {
@@ -290,7 +283,6 @@ export class ReceiptInformationComponent implements OnInit {
     this.nameText = '';
     this.billingAddressText = '';
     this.receiptInfoForm.controls['taxId'].setValue('');
- //   this.receiptInfoForm.controls['branch'].setValue('');
   }
 
   private errorNotAisMobileNo(): void {
@@ -326,7 +318,6 @@ export class ReceiptInformationComponent implements OnInit {
       this.nameText = '';
       this.billingAddressText = '';
       this.receiptInfoForm.controls['taxId'].setValue('');
-   //   this.receiptInfoForm.controls['branch'].setValue('');
     }
   }
 
@@ -364,49 +355,6 @@ export class ReceiptInformationComponent implements OnInit {
       this.zipCodeData = resp;
     });
   }
-
- // onProvinceSelected(params: any): void {
-    // const province = this.findProvinceByName(params.provinceName);
-    // const req = {
-    //   provinceId: province.id,
-    //   zipcode: params.zipCode
-    // };
-    // if (!params.zipCode) {
-    //   delete req.zipcode;
-    // }
-    // this.billingAddress.getAmphurs(req).then(this.responseAmphur());
- // }
-
- // onAmphurSelected(params: any): void {
-    // const province = this.findProvinceByName(params.provinceName);
-    // const req = {
-    //   provinceId: province.id,
-    //   amphurName: params.amphurName,
-    //   zipcode: params.zipCode
-    // };
-    // if (!params.zipCode) {
-    //   delete req.zipcode;
-    // }
-    // this.billingAddress.getTumbols(req).then(this.responseTumbols());
-//  }
-
- // onTumbolSelected(params: any): void {
-    // const province = this.findProvinceByName(params.provinceName);
-    // const req = {
-    //   provinceId: province.id,
-    //   amphurName: params.amphurName,
-    //   tumbolName: params.tumbolName
-    // };
-    // this.billingAddress.queryZipCode(req).then(this.responseZipCode());
- // }
-
- // onZipCodeSelected(zipCode: string): void {
-    // this.billingAddress.getProvinceIdByZipCode(zipCode).then(provinceId => {
-    //   const province = this.findProvinceByProvinceID(provinceId);
-    //   if (!province) { return; }
-    //   this.assignProvinceAndZipCode(province, zipCode);
-    // });
- // }
 
   onCompleted(value: any): void {
     let action = TransactionAction.KEY_IN;
@@ -459,38 +407,4 @@ export class ReceiptInformationComponent implements OnInit {
     });
   }
 
-  // private findProvinceByName(provinceName: string): any {
-  //   return (this.provinces || []).find((prov: any) => prov.name === provinceName) || {};
-  // }
-
-  // private findProvinceByProvinceID(provinceId: string): any {
-  //   return this.provinces.find((prov: any) => prov.id === provinceId);
-  // }
-
-  // private responseTitleNames(): (value: any) => any {
-  //   return (resp: string[]) => this.titleNames = resp;
-  // }
-
-  // private responseZipCode(): (value: any) => any {
-  //   return (resp: any) => this.zipCode = resp;
-  // }
-
-  // private responseTumbols(): (value: any) => any {
-  //   return (resp: string[]) => this.tumbols = resp;
-  // }
-
-  // private responseAmphur(): (value: any) => any {
-  //   return (resp: string[]) => this.amphurs = resp;
-  // }
-
-  // private responseZipCodes(): (value: any) => any {
-  //   return (resp: string[]) => this.allZipCodes = resp;
-  // }
-
-  // private responseProvinces(): (value: any) => any {
-  //   return (resp: string[]) => this.provinces = resp;
-  // }
-  // private responseTelNo(): AbstractControl {
-  //   return this.receiptInfoForm.controls['telNo'];
-  // }
 }

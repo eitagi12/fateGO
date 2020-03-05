@@ -65,16 +65,6 @@ export class BillingAddressComponent implements OnInit, OnChanges {
 
   @Input() titleNameSelected: EventEmitter<any> = new EventEmitter<any>();
 
-  // @Output() provinceSelected: EventEmitter<any> = new EventEmitter<any>();
-
-  // @Output() amphurSelected: EventEmitter<any> = new EventEmitter<any>();
-
-  // @Output() tumbolSelected: EventEmitter<any> = new EventEmitter<any>();
-
-  // @Output() zipCodeSelected: EventEmitter<any> = new EventEmitter<any>();
-
-  // @Output() customerInfo: EventEmitter<any> = new EventEmitter<any>();
-
   @Output() completed: EventEmitter<any> = new EventEmitter<any>();
 
   @Output() error: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -115,13 +105,10 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.createCustomerAddressForm();
     this.checkProvinceAndAmphur();
-    //   this.checkAction();
     this.isDeviceOnlyASP = this.user.userType === 'ASP' ? true : false;
   }
 
   checkAction(): void {
-    console.log('TransactionAction.READ_CARD', TransactionAction.READ_CARD);
-
     if (this.actionType === TransactionAction.READ_CARD) {
       this.customerAddressForm.controls['idCardNo'].disable();
     } else {
@@ -130,37 +117,6 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('changes jaaaa ----> ', changes);
-    // if (changes.readCardCustomerAddressTemp && changes.readCardCustomerAddressTemp.currentValue) {
-    //   this.customerChanges = changes.readCardCustomerAddressTemp.currentValue;
-    // } else if (changes.keyInCustomerAddressTemp && changes.keyInCustomerAddressTemp.currentValue) {
-    //   this.customerChanges = changes.keyInCustomerAddressTemp.currentValue;
-    // }
-
-    // if (this.customerChanges) {
-    //   console.log('this.customerChanges ===>', this.customerChanges);
-
-    //   this.checkAction();
-    //   this.customerAddressForm.patchValue({
-    //     idCardNo: this.customerChanges.idCardNo,
-    //     titleName: this.customerChanges.titleName === 'น.ส.' ? 'นางสาว' : this.customerChanges.titleName,
-    //     firstName: this.customerChanges.firstName,
-    //     lastName: this.customerChanges.lastName,
-    //     homeNo: this.customerChanges.homeNo,
-    //     moo: this.customerChanges.moo,
-    //     mooBan: this.customerChanges.mooBan,
-    //     room: this.customerChanges.room,
-    //     floor: this.customerChanges.floor,
-    //     buildingName: this.customerChanges.buildingName,
-    //     soi: this.customerChanges.soi,
-    //     street: this.customerChanges.street,
-    //     province: this.customerChanges.province,
-    //     amphur: this.customerChanges.amphur,
-    //     tumbol: this.customerChanges.tumbol,
-    //     zipCode: this.customerChanges.zipCode
-    //   });
-    // }
-
     //  This's refactor
     if (changes.readCardCustomerAddressTemp && changes.readCardCustomerAddressTemp.currentValue) {
       this.checkAction();
@@ -203,9 +159,6 @@ export class BillingAddressComponent implements OnInit, OnChanges {
         zipCode: this.keyInCustomerAddressTemp.zipCode
       });
     }
-
-    // this.completed.emit(this.customerAddressForm.value);
-    console.log('customerAddressForm -=====>', this.customerAddressForm);
 
     if (changes.zipCodes
       && changes.zipCodes.currentValue
@@ -290,25 +243,6 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     this.onSelectedAmphur();
     this.onSelectedTumbol();
 
-    // this.customerAddressForm.patchValue(this.customerAddress || {});
-
-    // this.disableFormAmphurAndTumbol();
-    // this.customerAddressForm.patchValue(this.customerAddress || {});
-    // this.titleFormControl();
-    // this.provinceFormControl();
-    // this.amphurFormControl();
-    // this.tumbolFormControl();
-    // this.zipCodeFormControl();
-    // if (this.keyInCustomerAddressTemp) {
-    //   if (this.keyInCustomerAddressTemp.titleName === 'น.ส.') {
-    //     this.keyInCustomerAddressTemp.titleName = 'นางสาว';
-    //   }
-    //   for (const item in this.keyInCustomerAddressTemp) {
-    //     if (this.keyInCustomerAddressTemp.hasOwnProperty(item) && this.customerAddressForm.value.hasOwnProperty(item)) {
-    //       this.customerAddressForm.controls[item].setValue(this.keyInCustomerAddressTemp[item]);
-    //     }
-    //   }
-    // }
     this.customerAddressForm.valueChanges.pipe(debounceTime(750)).subscribe((value: any) => {
       if (this.keyInCustomerAddressTemp || this.readCardCustomerAddressTemp) {
         this.error.emit(this.customerAddressForm.valid);
