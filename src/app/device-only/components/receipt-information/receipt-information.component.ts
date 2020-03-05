@@ -365,7 +365,7 @@ export class ReceiptInformationComponent implements OnInit {
     });
   }
 
-  onProvinceSelected(params: any): void {
+ // onProvinceSelected(params: any): void {
     // const province = this.findProvinceByName(params.provinceName);
     // const req = {
     //   provinceId: province.id,
@@ -375,9 +375,9 @@ export class ReceiptInformationComponent implements OnInit {
     //   delete req.zipcode;
     // }
     // this.billingAddress.getAmphurs(req).then(this.responseAmphur());
-  }
+ // }
 
-  onAmphurSelected(params: any): void {
+ // onAmphurSelected(params: any): void {
     // const province = this.findProvinceByName(params.provinceName);
     // const req = {
     //   provinceId: province.id,
@@ -388,9 +388,9 @@ export class ReceiptInformationComponent implements OnInit {
     //   delete req.zipcode;
     // }
     // this.billingAddress.getTumbols(req).then(this.responseTumbols());
-  }
+//  }
 
-  onTumbolSelected(params: any): void {
+ // onTumbolSelected(params: any): void {
     // const province = this.findProvinceByName(params.provinceName);
     // const req = {
     //   provinceId: province.id,
@@ -398,15 +398,15 @@ export class ReceiptInformationComponent implements OnInit {
     //   tumbolName: params.tumbolName
     // };
     // this.billingAddress.queryZipCode(req).then(this.responseZipCode());
-  }
+ // }
 
-  onZipCodeSelected(zipCode: string): void {
+ // onZipCodeSelected(zipCode: string): void {
     // this.billingAddress.getProvinceIdByZipCode(zipCode).then(provinceId => {
     //   const province = this.findProvinceByProvinceID(provinceId);
     //   if (!province) { return; }
     //   this.assignProvinceAndZipCode(province, zipCode);
     // });
-  }
+ // }
 
   onCompleted(value: any): void {
     let action = TransactionAction.KEY_IN;
