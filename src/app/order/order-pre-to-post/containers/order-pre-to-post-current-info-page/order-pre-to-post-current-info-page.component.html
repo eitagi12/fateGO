@@ -22,13 +22,14 @@
             </div>
             <div class="col-4 text-green" translate>ยอดเงินคงเหลือ</div>
             <div class="col-8" translate>
-                {{+balance?.remainingBalance > 0 ? (balance?.remainingBalance | number:'1.2-2' ) + ' บาท' : '-'}}
+              {{+balance?.remainingBalance > 0 ? (balance?.remainingBalance | number:'1.2-2' ) + ' บาท' : '-'}}
             </div>
             <div class="col-4 text-green">
 
             </div>
             <div class="col-8">
-              <span translate>กรุณาตรวจสอบยอดเงินคงเหลือผ่าน *121# โทรออก โดยยอดเงินคงเหลือของท่านจะถูกโอนเป็นค่าโทรที่ระบบรายเดือนให้โดยอัตโนมัติ</span>
+              <span translate>กรุณาตรวจสอบยอดเงินคงเหลือผ่าน *121# โทรออก
+                โดยยอดเงินคงเหลือของท่านจะถูกโอนเป็นค่าโทรที่ระบบรายเดือนให้โดยอัตโนมัติ</span>
               <a class="float-right text-green" (click)="openModal(template)"><u>MORE</u></a>
             </div>
             <div class="col-4 text-green" translate>ค่าโทรที่ได้รับ</div>
@@ -72,6 +73,28 @@
                     <span translate>{{ service?.serviceName }}</span>
                   </li>
                 </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mb-3" [hidden]="!!!message5G">
+            <div class="card-body text-center">
+              <div class="row">
+                <div class="col-sm-12 text-left">
+                  <img src="assets/images/icon/icon_5G.png" alt="" class="mr-3">
+                  <span translate>{{ message5G }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mb-3" [hidden]="!!!messageVolTE">
+            <div class="card-body text-center">
+              <div class="row">
+                <div class="col-sm-12 text-left">
+                  <img src="assets/images/icon/icon_volte.png" alt="" class="mr-3">
+                  <span translate>{{ messageVolTE }}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -191,6 +214,7 @@
     </tbody>
 
   </table>
-  <div class="container mt-3 mb-3 text-grey" translate>*ยอดเงินคงเหลือในกระเป๋า 1 ของคุณ จะถูกโอนเป็นค่าโทรที่ รับรายเดือนให้อัตโนมัติ ส่วนเงินคงเหลือในกระเป๋า 2 ไม่สามารถโอนได้ ควรใช้ให้หมดก่อนทำรายการ</div>
+  <div class="container mt-3 mb-3 text-grey" translate>*ยอดเงินคงเหลือในกระเป๋า 1 ของคุณ จะถูกโอนเป็นค่าโทรที่
+    รับรายเดือนให้อัตโนมัติ ส่วนเงินคงเหลือในกระเป๋า 2 ไม่สามารถโอนได้ ควรใช้ให้หมดก่อนทำรายการ</div>
 
 </ng-template>

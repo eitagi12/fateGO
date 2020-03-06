@@ -1,6 +1,6 @@
 import { OnDestroy, OnInit, Component, ViewChild } from '@angular/core';
 import { WIZARD_ORDER_PRE_TO_POST } from 'src/app/order/constants/wizard.constant';
-import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionAction, HandsetSim5G } from 'src/app/shared/models/transaction.model';
 import { PromotionShelve, HomeService, PageLoadingService, AlertService, PromotionShelveItem } from 'mychannel-shared-libs';
 import {
   ROUTE_ORDER_PRE_TO_POST_ID_CARD_CAPTURE_PAGE,
@@ -79,6 +79,16 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
   onNext(): void {
     if (this.isPackageOneLove()) {
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_ONE_LOVE_PAGE]);
+    } else if (this.isPackage5G()) {
+      if (this.isMultiSim() && this.isSharePlan()) {
+        this.alertService.warning('แนะนำยกเลิก MultiSIM และ Share Plan');
+      } else if (this.isMultiSim()) {
+        this.alertService.warning('แนะนำยกเลิก MultiSIM');
+      } else if (this.isSharePlan()) {
+        this.alertService.warning('แนะนำยกเลิก Share Plan');
+      } else {
+        this.router.navigate([ROUTE_ORDER_PRE_TO_POST_ON_TOP_PAGE]);
+      }
     } else {
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_ON_TOP_PAGE]);
     }
@@ -243,4 +253,25 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
     }
     return (+mainPackage.numberOfMobile) > 0;
   }
+
+  isPackage5G(): boolean {
+    const REGEX_PACKAGE_5G = /5[Gg]/;
+    const mainPackage = this.transaction.data.mainPackage;
+    if (mainPackage && REGEX_PACKAGE_5G.test(mainPackage.productPkg)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  isMultiSim(): boolean {
+    const handsetSim5G: HandsetSim5G = this.transaction.data.handsetSim5G || {} as HandsetSim5G;
+    return handsetSim5G.isMultisim === 'Y' ? true : false;
+  }
+
+  isSharePlan(): boolean {
+    const handsetSim5G: HandsetSim5G = this.transaction.data.handsetSim5G || {} as HandsetSim5G;
+    return handsetSim5G.sharePlan ? true : false;
+  }
+
 }

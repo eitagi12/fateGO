@@ -11,7 +11,7 @@ import {
   ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_REPI_PAGE,
   ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_PAGE,
 } from '../../constants/route-path.constant';
-import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionAction, HandsetSim5G } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 
 export interface Balance {
@@ -42,6 +42,9 @@ export class OrderPreToPostCurrentInfoPageComponent implements OnInit, OnDestroy
   serviceChange: CurrentServices[];
   serviceAfterChanged: CurrentServices[];
 
+  message5G: string;
+  messageVolTE: string;
+
   constructor(
     private router: Router,
     private http: HttpClient,
@@ -67,12 +70,42 @@ export class OrderPreToPostCurrentInfoPageComponent implements OnInit, OnDestroy
       .toPromise().catch(() => {
         return {};
       });
-    Promise.all([getBalancePromise, queryCurrentServicesPromise]).then((res: any[]) => {
+    const queryCheckHandsetSim5G = this.http.post('/api/easyapp/configMC',
+      {
+        operation: 'query',
+        nameconfig: 'showFlow5G'
+      }).toPromise().then((repConFig: any) => {
+        const dataConfig: any = repConFig.data || {};
+        if (dataConfig[0] &&
+          dataConfig[0].config &&
+          dataConfig[0].config.data[0] &&
+          dataConfig[0].config.data[0].status) {
+          return this.http.post(`/api/customerportal/check-handset-sim-5G`, {
+            cmd: 'CHECK',
+            msisdn: this.mobileNo,
+            channel: 'WEB'
+          }).toPromise().catch((error: any) => {
+            const errObj: any = error.error || [];
+            return errObj.developerMessage ? errObj.developerMessage : 'ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้';
+          });
+        } else {
+          return '';
+        }
+      });
+
+    Promise.all([getBalancePromise, queryCurrentServicesPromise, queryCheckHandsetSim5G]).then((res: any[]) => {
       this.balance = res[0].data || {};
       this.balance.remainingBalance = Number(this.balance.remainingBalance) / 100;
+
       const currentServices = res[1].data || [];
       this.serviceChange = currentServices.services.filter(service => service.canTransfer);
       this.serviceAfterChanged = currentServices.services.filter(service => !service.canTransfer);
+
+      const checkHandsetSim5G: HandsetSim5G = res[2].data || [];
+      this.message5G = typeof res[2] === 'string' ? res[2] : checkHandsetSim5G.message5gTh;
+      this.messageVolTE = typeof res[2] === 'string' ? res[2] : checkHandsetSim5G.messageVolteTh;
+      this.transaction.data.handsetSim5G = checkHandsetSim5G;
+
       this.pageLoadingService.closeLoading();
       this.isLoad = false;
     }).catch(() => {
@@ -138,5 +171,4 @@ export class OrderPreToPostCurrentInfoPageComponent implements OnInit, OnDestroy
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }
-
 }

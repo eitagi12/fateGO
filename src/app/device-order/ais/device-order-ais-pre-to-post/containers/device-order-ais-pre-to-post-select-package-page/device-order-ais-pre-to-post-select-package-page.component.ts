@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { BsModalRef } from 'ngx-bootstrap';
 import {
-  PromotionShelve, HomeService, PageLoadingService, ShoppingCart, BillingSystemType
+  PromotionShelve, HomeService, PageLoadingService, ShoppingCart, BillingSystemType, AlertService
 } from 'mychannel-shared-libs';
 import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
 import {
@@ -10,7 +10,7 @@ import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CURRENT_INFO_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_PAYMENT_DETAIL_PAGE
 } from '../../constants/route-path.constant';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, HandsetSim5G } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
@@ -45,6 +45,7 @@ export class DeviceOrderAisPreToPostSelectPackagePageComponent implements OnInit
   constructor(
     private router: Router,
     private homeService: HomeService,
+    private alertService: AlertService,
     private pageLoadingService: PageLoadingService,
     private priceOptionService: PriceOptionService,
     private transactionService: TransactionService,
@@ -79,7 +80,19 @@ export class DeviceOrderAisPreToPostSelectPackagePageComponent implements OnInit
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE]);
+    if (this.isPackage5G()) {
+      if (this.isMultiSim() && this.isSharePlan()) {
+        this.alertService.warning('แนะนำยกเลิก MultiSIM และ Share Plan');
+      } else if (this.isMultiSim()) {
+        this.alertService.warning('แนะนำยกเลิก MultiSIM');
+      } else if (this.isSharePlan()) {
+        this.alertService.warning('แนะนำยกเลิก Share Plan');
+      } else {
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE]);
+      }
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE]);
+    }
   }
 
   onHome(): void {
@@ -159,5 +172,25 @@ export class DeviceOrderAisPreToPostSelectPackagePageComponent implements OnInit
       this.translateSubscription.unsubscribe();
     }
     this.transactionService.update(this.transaction);
+  }
+
+  isPackage5G(): boolean {
+    const REGEX_PACKAGE_5G = /5[Gg]/;
+    const mainPackage = this.transaction.data.mainPackage;
+    if (mainPackage && mainPackage.customAttributes && REGEX_PACKAGE_5G.test(mainPackage.customAttributes.productPkg)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  isMultiSim(): boolean {
+    const handsetSim5G: HandsetSim5G = this.transaction.data.handsetSim5G || {} as HandsetSim5G;
+    return handsetSim5G.isMultisim === 'Y' ? true : false;
+  }
+
+  isSharePlan(): boolean {
+    const handsetSim5G: HandsetSim5G = this.transaction.data.handsetSim5G || {} as HandsetSim5G;
+    return handsetSim5G.sharePlan ? true : false;
   }
 }

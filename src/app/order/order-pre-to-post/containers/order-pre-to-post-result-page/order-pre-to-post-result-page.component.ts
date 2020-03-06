@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { WIZARD_ORDER_PRE_TO_POST } from 'src/app/order/constants/wizard.constant';
 import { HomeService, PageLoadingService, AlertService } from 'mychannel-shared-libs';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, HandsetSim5G } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { CreatePreToPostService } from 'src/app/shared/services/create-pre-to-post.service';
 import { HttpClient } from '@angular/common/http';
@@ -61,9 +61,38 @@ export class OrderPreToPostResultPageComponent implements OnInit {
   }
 
   onMainMenu(): void {
-     // bug gotohome จะ unlock เบอร์ ทำให้ออก orderไม่สำเร็จ
-     window.location.href = '/smart-digital/main-menu';
-     // this.homeService.goToHome();
+    // bug gotohome จะ unlock เบอร์ ทำให้ออก orderไม่สำเร็จ
+    window.location.href = '/smart-digital/main-menu';
+    // this.homeService.goToHome();
   }
 
+  getMessage5G(): string {
+    const handsetSim5G: HandsetSim5G = this.transaction.data.handsetSim5G || {} as HandsetSim5G;
+    const sim: string = handsetSim5G.sim;
+    const handset: string = handsetSim5G.handset;
+
+    if (this.isPackage5G()) {
+      if (sim === 'N' && handset === 'N') {
+        return 'แนะนำเปลี่ยน SIM และใช้เครื่องที่รองรับ 5G เพื่อประสิทธิภาพในการใช้งาน';
+      }
+      if (sim === 'N') {
+        return 'แนะนำเปลี่ยน SIM เพื่อประสิทธิภาพในการใช้งาน 5G';
+      }
+      if (handset === 'N') {
+        return 'แนะนำใช้เครื่องที่รองรับ 5G เพื่อประสิทธิภาพในการใช้งาน';
+      }
+    } else {
+      return '';
+    }
+  }
+
+  isPackage5G(): boolean {
+    const REGEX_PACKAGE_5G = /5[Gg]/;
+    const mainPackage = this.transaction.data.mainPackage;
+    if (mainPackage && REGEX_PACKAGE_5G.test(mainPackage.productPkg)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
