@@ -11,8 +11,8 @@
   <div class="mc-flex-wrap">
     <div class="mt-3 mb-3">
       <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
-      <mc-promotion-shelve [selected]="transaction?.data?.mainPackage" [promotionShelves]="promotionShelves"
-        (completed)="onCompleted($event)" (condition)="onTermConditions($event)"></mc-promotion-shelve>
+      <smart-digital-promotion-shelve [selected]="transaction?.data?.mainPackage" [promotionShelves]="promotionShelves"
+        (completed)="onCompleted($event)" (condition)="onTermConditions($event)"></smart-digital-promotion-shelve>
     </div>
   </div>
   <mc-footer>

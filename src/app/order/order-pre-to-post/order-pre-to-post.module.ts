@@ -33,12 +33,14 @@ import { OrderPreToPostPassportInfoPageComponent } from './containers/order-pre-
 import { OrderPreToPostPassportInfoRepiPageComponent } from './containers/order-pre-to-post-passport-info-repi-page/order-pre-to-post-passport-info-repi-page.component';
 import { OrderPreToPostVerifyDocumentRepiPageComponent } from './containers/order-pre-to-post-verify-document-repi-page/order-pre-to-post-verify-document-repi-page.component';
 import { OrderPreToPostVerifyDocumentPageComponent } from './containers/order-pre-to-post-verify-document-page/order-pre-to-post-verify-document-page.component';
+import { SmartDigitalSharedLibsModule } from 'projects/smart-digital-shared-libs/src/public_api';
 
 @NgModule({
   imports: [
     CommonModule,
     OrderPreToPostRoutingModule,
     MyChannelSharedLibsModule,
+    SmartDigitalSharedLibsModule,
     FormsModule,
     ReactiveFormsModule,
     TranslateModule

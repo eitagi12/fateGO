@@ -218,7 +218,47 @@
           }
         }
       }
+    },
+    "smart-digital-shared-libs": {
+      "root": "projects/smart-digital-shared-libs",
+      "sourceRoot": "projects/smart-digital-shared-libs/src",
+      "projectType": "library",
+      "prefix": "smart-digital",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/smart-digital-shared-libs/tsconfig.lib.json",
+            "project": "projects/smart-digital-shared-libs/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/smart-digital-shared-libs/src/test.ts",
+            "tsConfig": "projects/smart-digital-shared-libs/tsconfig.spec.json",
+            "karmaConfig": "projects/smart-digital-shared-libs/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/smart-digital-shared-libs/tsconfig.lib.json",
+              "projects/smart-digital-shared-libs/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
-  "defaultProject": "client-smart-digital"
+  "defaultProject": "client-smart-digital",
+  "schematics": {
+    "@schematics/angular:component": {
+      "styleext": "scss"
+    }
+  }
 }

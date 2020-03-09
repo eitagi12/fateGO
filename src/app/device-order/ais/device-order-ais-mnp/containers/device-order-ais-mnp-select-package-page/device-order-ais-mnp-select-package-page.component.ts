@@ -119,11 +119,11 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
 
       if (this.isPackage5G()) {
         if (this.isMultiSim() && this.isSharePlan()) {
-          this.alertService.warning('แนะนำยกเลิก MultiSIM และ Share Plan');
+          this.alertService.warning(this.translateService.instant('แนะนำยกเลิก MultiSIM และ Share Plan'));
         } else if (this.isMultiSim()) {
-          this.alertService.warning('แนะนำยกเลิก MultiSIM');
+          this.alertService.warning(this.translateService.instant('แนะนำยกเลิก MultiSIM'));
         } else if (this.isSharePlan()) {
-          this.alertService.warning('แนะนำยกเลิก Share Plan');
+          this.alertService.warning(this.translateService.instant('แนะนำยกเลิก Share Plan'));
         } else {
           this.pageLoadingService.closeLoading();
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE]);

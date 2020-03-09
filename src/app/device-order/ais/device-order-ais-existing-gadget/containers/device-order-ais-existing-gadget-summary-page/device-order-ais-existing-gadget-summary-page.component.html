@@ -39,7 +39,7 @@
             </div>
           </div>
           <div class="card-footer bg-transparent text-right" translate>
-            รวมยอดชำระ(รวม VAT)
+            รวมยอดชำระ (รวม VAT)
             <span class="text-green ml-2">
               ฿ {{ summary([
               +priceOption?.trade?.promotionPrice,
@@ -55,8 +55,7 @@
             <p>
               <i class="fa fa-circle mr-3 text-green"></i>
               {{ transaction?.data?.mainPackage?.title || transaction?.data?.currentPackage?.title}}
-              <span class="pull-right"
-                (click)="onOpenDetail(transaction?.data?.mainPackage?.detailTH || transaction?.data?.currentPackage?.detail)">
+              <span class="pull-right" (click)="onOpenDetail(transaction?.data?.mainPackage?.detailTH || transaction?.data?.currentPackage?.detail)">
                 <img src="assets/images/icon/icon-page.png" class="icon" />
               </span>
             </p>
@@ -91,8 +90,7 @@
             </p>
 
             <!-- ชำระเต็มจำนวน -->
-            <ng-container
-              *ngIf="!priceOption?.trade?.advancePay || priceOption?.trade?.advancePay?.installmentFlag === 'N'">
+            <ng-container *ngIf="!priceOption?.trade?.advancePay || priceOption?.trade?.advancePay?.installmentFlag === 'N'">
               <p>
                 <i class="fa fa-circle mr-3 text-green"></i>
                 {{ priceOption?.productDetail?.name }}
@@ -130,8 +128,8 @@
                 <i class="fa fa-circle mr-3 text-green"></i>
                 {{'ค่าเครื่องและค่าแพ็กเกจล่วงหน้า'| translate}} :
                 <span *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">{{'ชำระเต็มจำนวน'| translate}}</span>
-                <span
-                  *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">{{'ผ่อนชำระบัตรเครดิต'| translate}}</span>
+                <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">{{'ผ่อนชำระบัตรเครดิต'|
+                  translate}}</span>
                 <span class="pull-right text-green">฿ {{ summary([
                   +priceOption?.trade?.promotionPrice,
                   +priceOption?.trade?.advancePay?.amount
@@ -202,8 +200,7 @@
                   <span class="text-red">*</span>
                 </label>
                 <div class="col-6 col-sm-8">
-                  <input type="text" class="form-control" id="sellerCode" value="" autocomplete="off"
-                    formControlName="checkSeller">
+                  <input type="text" class="form-control" id="sellerCode" value="" autocomplete="off" formControlName="checkSeller">
                 </div>
               </div>
             </form>
