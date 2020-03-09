@@ -392,12 +392,11 @@ export class SharedTransactionService {
   public setPaymentMethod(payment: any, trade: any, transactionType: string): void {
     // const trade = priceOption.trade;
     // const payment = transaction.data.payment;
+    if (!payment) {
+      return trade;
+    }
 
     if (trade.payments[0].method === 'CC/CA') {
-      if (!payment || !(payment && !!payment.paymentType)) {
-        return trade;
-      }
-
       if (payment.paymentType === 'DEBIT') {
         trade.payments[0].method = 'CA';
         return trade;
