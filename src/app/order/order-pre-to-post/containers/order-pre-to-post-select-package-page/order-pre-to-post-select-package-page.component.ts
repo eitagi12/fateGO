@@ -81,11 +81,11 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_ONE_LOVE_PAGE]);
     } else if (this.isPackage5G()) {
       if (this.isMultiSim() && this.isSharePlan()) {
-        this.alertService.warning('แนะนำยกเลิก MultiSIM และ Share Plan');
+        this.alertService.warning(this.translateService.instant('แนะนำยกเลิก MultiSIM และ Share Plan'));
       } else if (this.isMultiSim()) {
-        this.alertService.warning('แนะนำยกเลิก MultiSIM');
+        this.alertService.warning(this.translateService.instant('แนะนำยกเลิก MultiSIM'));
       } else if (this.isSharePlan()) {
-        this.alertService.warning('แนะนำยกเลิก Share Plan');
+        this.alertService.warning(this.translateService.instant('แนะนำยกเลิก Share Plan'));
       } else {
         this.router.navigate([ROUTE_ORDER_PRE_TO_POST_ON_TOP_PAGE]);
       }
@@ -186,7 +186,7 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
 
   onTermConditions(condition: any): void {
     if (!condition) {
-      this.alertService.warning('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+      this.alertService.warning(this.translateService.instant('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'));
       return;
     }
     this.pageLoadingService.openLoading();

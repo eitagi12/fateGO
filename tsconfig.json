@@ -17,6 +17,14 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "smart-digital-shared-libs": [
+        "dist/smart-digital-shared-libs"
+      ],
+      "smart-digital-shared-libs/*": [
+        "dist/smart-digital-shared-libs/*"
+      ]
+    }
   }
 }

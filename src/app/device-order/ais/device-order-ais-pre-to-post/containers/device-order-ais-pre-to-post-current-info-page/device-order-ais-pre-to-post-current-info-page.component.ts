@@ -114,7 +114,7 @@ export class DeviceOrderAisPreToPostCurrentInfoPageComponent implements OnInit, 
           }).toPromise()
             .then((respBrandModel: any) => {
 
-              const products = respBrandModel.data || {};
+              const products = respBrandModel.data.products || {};
               if (products[0].flag5G === 'Y') {
 
                 return this.http.post(`/api/customerportal/check-handset-sim-5G`, {

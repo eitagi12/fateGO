@@ -1,0 +1,52 @@
+<div class="container-fluid">
+  <form [formGroup]="promotionShelveForm">
+    <tabset [justified]="true">
+      <tab *ngFor="let promotionShelve of promotionShelves" [active]="promotionShelve.active" (select)="onPromotionShelveSelected(promotionShelve)">
+        <ng-template tabHeading>
+          <div class="promotion" [ngClass]="promotionShelve?.icon" [hidden]="promotionShelves?.length <= 1">
+            {{ promotionShelve?.title }}
+          </div>
+        </ng-template>
+        <div class="accordion" *ngFor="let promotion of promotionShelve?.promotions;">
+          <div class="card">
+            <div class="card-header" [ngClass]="{ 'bg-green': promotion.active }" (click)="onPromotionGroupSelected(promotionShelve, promotion)">
+              {{ promotion?.title }}
+              <i class="fa pull-right" [ngClass]="{ 'fa-angle-down': promotion.active, 'fa-angle-right': !promotion.active}"></i>
+            </div>
+            <ul class="list-group list-group-flush collapse" [ngClass]="{ 'show': promotion.active }">
+              <li class="list-group-item" *ngFor="let item of promotion?.items">
+                <div class="row">
+                  <div class="col-11">
+                    <input [hidden]="!view" type="radio" id="promotion-{{ item?.id }}" name="promotion" [value]="item" [checked]="checked(item?.value)" formControlName="promotion" />
+                    <label for="promotion-{{ item?.id}}">{{ item?.title }}</label>
+                  </div>
+                  <div class="col-1 text-right">
+                    <img src="data:image/png;base64,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"
+                      class="icon-dv" (click)="onOpenModal(item)" />
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div *ngIf="!promotionShelve?.promotions?.length" class="text-center p-3">{{ 'ไม่มีข้อมูลแพ็กเกจ' }}</div>
+      </tab>
+    </tabset>
+  </form>
+  <div class="py-3">
+    <a href="#" (click)="$event.preventDefault(); onTermConditions()" class="text-grey">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyNpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDE0IDc5LjE1MTQ4MSwgMjAxMy8wMy8xMy0xMjowOToxNSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIChNYWNpbnRvc2gpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkY2NDlGRDFBMkU1QjExRTdCOThBQjNDREQ0NURDNDYxIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkY2NDlGRDFCMkU1QjExRTdCOThBQjNDREQ0NURDNDYxIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6RjY0OUZEMTgyRTVCMTFFN0I5OEFCM0NERDQ1REM0NjEiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6RjY0OUZEMTkyRTVCMTFFN0I5OEFCM0NERDQ1REM0NjEiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz4Yad9eAAAFxElEQVR42uRba2xURRSeXUAFRYNaLS/lEVOD0GqMoohQ26RaCLFoBExM5AfaIEIs/BAwaiWg4g9JADE1BGskBGog4RETIvxRAWPUKkoJIMVotYaXFI0PFOr3Zc+a7XJ3O3d3zuxtPMnXoZfpPfd8c2bmzMyZWGdnp9GShoaGXihKgTuBMqAEGAIUA1emVP0HOA20A61AC9AM7Kmtrf3ZKErMNQEwui+KKcBUoAq4Os9Xfg3sADaBjK8iSwAMH4liLjATuEqpwb4E1gDrQcYfkSAAht+EYgkwDYgbP8KuspzqQcSfBSEAhvdHUS+t3scURo4BdSBhq1cCYHwFireBG0w05D1gNog4pUqAjOp094Ue3d1W2oDpIGGvCgEwntPWRqDaRFfOAXNAwlqnBMD4IhQ7gdtMz5CXQEK9EwLE+N3AGNOz5FWQsKi7SnELt9+pYHwHsFQ8agAwFHgMcBnoLMT3P5uzB8iAtw2Y5Nh4RnaT0DptATp7o1gN1DrSReNmQFdTLh5Qr2A84/0Hgoyn4DnXBLOFeCeBHrAOxI4O5QH4g/tQ7FKY6p6DkS9bhtWHHern4ur2oKgxHqD8ChSNSvN8k00lfOhRFJ851DuKM4NtF3hRMcI7GqLuYce656NxS7MSIK43T3FqujRE3X6OdXOAfb07D+DUdIkiAXdYRp38rrEK+ivx7spAAvAfI1A8ohycPG1Z70FgsNI3LM7kAXT9XsoETAPR07tp/cESC2hJBXSUdSEADy5D8binEHU99C2QoCfd+HtQfAwMUv6GJ7vEAVD8EP69uQDLVwY8rRIOTwTGe9LNgKwY0+3fyVZ4uACLFe4OP1WghRI3asuBD+Iy4t5v/n9SnZwbGSdf4/jlZ4HngU9kk8JWuPqsA2o8EFCeJOBuhZdvQP9amcsfwiMZAvMwpL8yAWOgqx/dv1Th5TV4eZV0r1AC4n6XJbO2sPFH8cfNCi8vlo2UUyDhEMp93KCQ5a5tV/AhJXEZjbWEY8s4YIFJHJPZdAGuF0o8ETCUBAz0pKzIst4txt9BS1Hcw2CTFNtT3lt9xgM+DzcORpAAb6c7ZzEAfm9Zt8w3Aec96Akzrfkk4FxcFgbacsByBhhu9HILAhdFJKDdg6JvLOuVGr/STgKORagLlHkmoJUEtESlCxTAAw6SgC+UlZzADHAiglPgmaQH7IuC+0vKzQiPBOxFw3TG8eNH5W5g2/+5LxHzSMCu1EBom6Ii2xnA9wC4I5WAJkVFtt7lMwGjGZ5/5D8C8Euz4iZES4gu4Esag9YCaxQU/QRyz0SMgN+Ad4MIeAc46VjZEcsZ4DqTf06xraxFo/xyEQGSe7vcsTLb4/BBnoynja9lWw6/AXznchlsWY9L5Qtpz/g7U2A/cvg9K9DQ7RkJEC+oc6jwWptK0HtayE8azrS8sXjO84FZjr6FJF+UnpMpR2iLSeT7573aAm7kGVyIseAv1O9Iecbj7GUOvmUy3vt++sPemRrFJBIU8u2bA+Vdqy094XgaITw7XOrA+DeDjM/oAaL8XnHFPg4GHqbGfWj7BzyxkcFqjgPjPwfGZ7pXkDVVFh/Cc/QGBx9B5Uy+WpXtpodkqD1qElkcwxx1QY4lP2SqYJMrzPSyFxwNRB2yCOH6IDkXcwuMZwY8D7gL6OtQ1wQYvz9bJdts8VdM4o5ATxEaXwXjP+2uYpj7AotkNI5F3Hi6fbXtDbOwN0ZmMJQELo+o8dzdqsnW5/MiQEjgomWTSaSfRkneAp4Je50u10tTzCrj4Dg/SyzhS9oSIUTwPK9CQAoR3MRYAVQWwHC2NLNQlsH4X3N9iZOboyBiokyVFR4MZwbJOq5cM9078E5AChHc13tCghnX6/v9smfRKIsnJxLTuD0OIhg+0yt446TcJPb7wo4VdOs9Eo5vh9GHNNwppnl9Pi2256zB1BfeRbjedD0ETb0+z6M65hJ8C6MvaH/bvwIMAKdN65KPNxFoAAAAAElFTkSuQmCC" class="icon-condition" />
+      Term & Conditions
+    </a>
+  </div>
+</div>
+
+<ng-template #template>
+  <div class="modal-header bg-primary">
+    <h5 class="modal-title pull-left text-white">Detail</h5>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">{{ detail }}</div>
+</ng-template>

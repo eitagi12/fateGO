@@ -73,11 +73,10 @@ export class MainMenuPageComponent implements OnInit, OnDestroy {
 
   onClick(menu: any): void {
     // if (menu.text === 'เปิดเบอร์ใหม่') {
-      // this.virtualKeyboardService.setAllowKeyboard(true);
+    // this.virtualKeyboardService.setAllowKeyboard(true);
     // } else {
-      // this.virtualKeyboardService.setAllowKeyboard(false);
+    // this.virtualKeyboardService.setAllowKeyboard(false);
     // }
-    this.currentLanguage = menu.text !== 'เปิดเบอร์ใหม่' ? 'TH' : this.currentLanguage;
     this.router.navigate([menu.link]);
   }
 
