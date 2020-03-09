@@ -146,7 +146,7 @@ export class SharedTransactionService {
       privilege: priceOption.privilege,
       trade:
         transaction.data.transactionType.toLowerCase().includes('asp') || transaction.data.transactionType.toLowerCase().includes('telewiz')
-          ? this.setPaymentMethod(data.payment || {}, priceOption.trade, transaction.data.transactionType) : priceOption.trade
+          ? this.setPaymentMethod(data.payment, priceOption.trade, transaction.data.transactionType) : priceOption.trade
     };
 
     if (data.billingInformation) {
@@ -394,7 +394,7 @@ export class SharedTransactionService {
     // const payment = transaction.data.payment;
 
     if (trade.payments[0].method === 'CC/CA') {
-      if (!payment || (payment && !payment.paymentType)) {
+      if (!payment || !(payment && !!payment.paymentType)) {
         return trade;
       }
 
