@@ -71,7 +71,7 @@ export class DeviceOrderAisExistingGadgetCustomerInfoPageComponent implements On
 
   onNext(): void {
     const action = this.transaction.data.action;
-    if (action === TransactionAction.KEY_IN_MOBILE_NO) {
+    if (action === TransactionAction.KEY_IN_MOBILE_NO || action === TransactionAction.KEY_IN_FBB) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_MOBILE_DETAIL_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_ELIGIBLE_MOBILE_PAGE]);

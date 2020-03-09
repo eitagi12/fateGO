@@ -129,7 +129,7 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
     }
 
     if (day) {
-      serviceYearWording += this.isEngLanguage() ? `${day} day` : `${month} วัน`;
+      serviceYearWording += this.isEngLanguage() ? `${day} day` : `${day} วัน`;
     }
 
     return serviceYearWording;
@@ -151,7 +151,7 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
 
   onBack(): void {
     const action = this.transaction.data.action;
-    if (action === TransactionAction.KEY_IN_MOBILE_NO) {
+    if (action === TransactionAction.KEY_IN_MOBILE_NO || action === TransactionAction.KEY_IN_FBB) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_VALIDATE_CUSTOMER_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_ELIGIBLE_MOBILE_PAGE]);

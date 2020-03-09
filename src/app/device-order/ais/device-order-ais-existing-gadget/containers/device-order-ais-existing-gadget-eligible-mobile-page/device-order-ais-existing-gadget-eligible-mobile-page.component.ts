@@ -24,7 +24,9 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
   shoppingCart: ShoppingCart;
   transaction: Transaction;
 
-  eligibleMobiles: Array<EligibleMobile>;
+  eligibleMobileNo: Array<EligibleMobile>;
+  eligibleMobileFbb: Array<EligibleMobile>;
+  eligibleMobiles: Array<any>;
   onSelected: any;
   priceOption: PriceOption;
   ussdCode: string;
@@ -59,13 +61,18 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
 
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    this.callQueryEligibleFbbListService();
+    const mobileNo = this.callQueryEligibleMobileListService();
+    const mobileFbb = this.callQueryEligibleFbbListService();
+
+    Promise.all([mobileNo, mobileFbb]).then((res: any[]) => {
+      this.mobilesList();
+    });
   }
 
-  callQueryEligibleFbbListService(): void {
+  callQueryEligibleMobileListService(): Promise<any> {
     const idCardNo = this.transaction.data.customer.idCardNo;
     const ussdCode = this.priceOption.trade.ussdCode;
-    this.http.post('/api/customerportal/query-eligible-mobile-list', {
+    return this.http.post('/api/customerportal/query-eligible-mobile-list', {
       idCardNo: idCardNo,
       ussdCode: ussdCode,
       mobileType: `Post-paid`,
@@ -78,12 +85,33 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
         }).map(res => {
           eligibleMobile.push(res);
         });
-        this.eligibleMobiles = eligibleMobile || [];
+        this.eligibleMobileNo = eligibleMobile || [];
         this.pageLoadingService.closeLoading();
       }).catch((error: any) => {
         this.pageLoadingService.closeLoading();
-        this.eligibleMobiles = [];
+        this.eligibleMobileNo = [];
       });
+  }
+
+  callQueryEligibleFbbListService(): Promise<any> {
+    const idCardNo = this.transaction.data.customer.idCardNo;
+    const ussdCode = this.priceOption.trade.ussdCode;
+    return this.http.post('/api/customerportal/query-eligible-fbb-list', {
+      idCardNo: idCardNo,
+      ussdCode: ussdCode,
+      chkMainProFlg: true
+    }).toPromise()
+      .then((response: any) => {
+        this.pageLoadingService.closeLoading();
+        this.eligibleMobileFbb = response.data.fbbLists || [];
+      }).catch((error: any) => {
+        this.pageLoadingService.closeLoading();
+        this.eligibleMobileFbb = [];
+      });
+  }
+
+  mobilesList(): void {
+    this.eligibleMobiles = this.eligibleMobileNo.concat(this.eligibleMobileFbb);
   }
 
   onCompleted(onSelected: any): void {
