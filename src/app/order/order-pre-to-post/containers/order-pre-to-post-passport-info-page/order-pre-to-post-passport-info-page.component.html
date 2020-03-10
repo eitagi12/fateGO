@@ -42,14 +42,16 @@
             }">
                 <!-- WEB Step -->
                 <div *ngIf="!isAisNative()">
-                  <a href="#" (click)="$event.preventDefault(); camera.next();" class="text-pink" *ngIf="!hasImageSmartCard()" translate>ถ่ายรูป</a>
-                  <a href="#" (click)="$event.preventDefault(); onClearImage()" class="text-pink" *ngIf="hasImageSmartCard()" translate>ถ่ายรูปใหม่</a>
+                  <a href="#" (click)="$event.preventDefault(); camera.next();" class="text-pink" *ngIf="!hasImageSmartCard()">{{'ถ่ายรูป'
+                    | translate}}</a>
+                  <a href="#" (click)="$event.preventDefault(); onClearImage()" class="text-pink" *ngIf="hasImageSmartCard()">{{'ถ่ายรูปใหม่'
+                    | translate}}</a>
                 </div>
                 <!-- Native Step -->
                 <div *ngIf="isAisNative()">
                   <a href="#" (click)="$event.preventDefault(); camera.next();" class="text-pink" *ngIf="!hasImageSmartCard()">
-                    <span *ngIf="!hasImageSmartCard()" translate>ถ่ายรูป</span>
-                    <span *ngIf="hasImageSmartCard()" translate>ถ่ายรูปใหม่</span>
+                    <span *ngIf="!hasImageSmartCard()">{{'ถ่ายรูป' | translate}}</span>
+                    <span *ngIf="hasImageSmartCard()">{{'ถ่ายรูปใหม่' | translate}}</span>
                   </a>
                 </div>
               </div>
@@ -60,8 +62,8 @@
             }">
                 <!-- WEB Step -->
                 <a href="#" (click)="$event.preventDefault(); onSigned()" class="text-pink">
-                  <span *ngIf="!hasImageSignature()" translate>เซ็นลายเซ็น</span>
-                  <span *ngIf="hasImageSignature()" translate>เซ็นลายเซ็นใหม่</span>
+                  <span *ngIf="!hasImageSignature()">{{'เซ็นลายเซ็น' | translate}}</span>
+                  <span *ngIf="hasImageSignature()">{{'เซ็นลายเซ็นใหม่' | translate}}</span>
                 </a>
               </div>
             </div>

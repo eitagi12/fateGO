@@ -15,7 +15,7 @@
         <!-- ชำระ -->
         <ng-container>
           <div class="card-body border-top">
-            <p><b class="text-light-grey" translate>รายการสินค้า (ที่ชำระแล้ว)</b></p>
+            <p><b class="text-light-grey">{{'รายการสินค้า (ที่ชำระแล้ว)' | translate}}</b></p>
             <ng-container *ngIf="qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'payment')">
               <div class="text-light-grey">
                 <p>
@@ -49,7 +49,7 @@
 
             <div class="mt-1 text-right">
               <b>
-                <span class="mr-3" translate>รวมยอดชำระ (รวม VAT)</span>
+                <span class="mr-3">{{'รวมยอดชำระ (รวม VAT)'| translate}}</span>
                 <span class="text-green">
                   $ {{ getPaymentBalance() | number:'1.0-0' }}
                 </span>
@@ -62,7 +62,7 @@
         <!-- ค้างชำระ -->
         <ng-container *ngIf="(qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'payment') !== qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'advancePayment')) && priceOption?.trade?.advancePay?.installmentFlag === 'N'">
           <div class="card-body border-top">
-            <p><b class="text-light-grey" translate>รายการสินค้า (รอชำระ)</b></p>
+            <p><b class="text-light-grey">{{'รายการสินค้า (รอชำระ)' | translate}}</b></p>
 
             <ng-container *ngIf="!qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'payment')">
               <div class="text-light-grey">
@@ -101,7 +101,7 @@
 
             <div class="mt-1 text-right text-pink">
               <b>
-                <span class="mr-3" translate>รวมยอดชำระ (รวม VAT)</span>
+                <span class="mr-3">{{'รวมยอดชำระ (รวม VAT)' | translate}}</span>
                 <span class="text-pink">
                   ฿ {{ getOutStandingBalance() | number:'1.0-0' }}
                 </span>
@@ -113,7 +113,7 @@
       <!-- card -->
       <div class="card-body  border-right border-bottom border-left text-center text-light-grey bg-white">
         <div class="text-center mb-3">
-          <h5 class="pt-2" translate>รายการสั่งซื้อ</h5>
+          <h5 class="pt-2">{{'รายการสั่งซื้อ' | translate}}</h5>
           <div class="mt-4">
             <div class="card pl-5 pr-5 pt-2 pb-2" style="display: inline-block;">
               <div class="card-body queue-no text-green h1">
@@ -121,7 +121,7 @@
               </div>
             </div>
           </div>
-          <h5 class="pt-4" translate>สินค้าของคุณพร้อมแล้วที่จุดรับสินค้า</h5>
+          <h5 class="pt-4">{{'สินค้าของคุณพร้อมแล้วที่จุดรับสินค้า' | translate}}</h5>
         </div>
       </div>
     </div>

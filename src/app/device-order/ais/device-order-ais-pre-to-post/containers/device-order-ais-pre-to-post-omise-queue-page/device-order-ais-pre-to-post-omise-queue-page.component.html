@@ -14,7 +14,7 @@
         <!-- ชำระ -->
         <ng-container>
           <div class="card-body border-top">
-            <p><b class="text-light-grey" translate>รายการสินค้า (ที่ชำระแล้ว)</b></p>
+            <p><b class="text-light-grey">{{'รายการสินค้า (ที่ชำระแล้ว)' | translate}}</b></p>
             <ng-container *ngIf="qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'payment')">
               <div class="text-light-grey">
                 <p>
@@ -48,7 +48,7 @@
 
             <div class="mt-1 text-right">
               <b>
-                <span class="mr-3" translate>รวมยอดชำระ (รวม VAT)</span>
+                <span class="mr-3">{{'รวมยอดชำระ (รวม VAT)' | translate}}</span>
                 <span class="text-green">
                   $ {{ getPaymentBalance() | number:'1.0-0' }}
                 </span>
@@ -61,7 +61,7 @@
         <!-- ค้างชำระ -->
         <ng-container *ngIf="(qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'payment') !== qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'advancePayment')) && priceOption?.trade?.advancePay?.installmentFlag === 'N'">
           <div class="card-body border-top">
-            <p><b class="text-light-grey" translate>รายการสินค้า (รอชำระ)</b></p>
+            <p><b class="text-light-grey">{{'รายการสินค้า (รอชำระ)' | translate}}</b></p>
 
             <ng-container *ngIf="!qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'payment')">
               <div class="text-light-grey">
@@ -100,7 +100,7 @@
 
             <div class="mt-1 text-right text-pink">
               <b>
-                <span class="mr-3" translate>รวมยอดชำระ (รวม VAT)</span>
+                <span class="mr-3">{{'รวมยอดชำระ (รวม VAT)' | translate}}</span>
                 <span class="text-pink">
                   ฿ {{ getOutStandingBalance() | number:'1.0-0' }}
                 </span>

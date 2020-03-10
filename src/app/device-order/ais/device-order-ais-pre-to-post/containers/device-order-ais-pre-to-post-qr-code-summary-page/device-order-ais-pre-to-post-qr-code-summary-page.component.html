@@ -60,16 +60,14 @@
         </div>
 
         <div class="card mb-3">
-          <div class="card-header bg-pink text-white" translate>
-            รายละเอียดการชำระ
+          <div class="card-header bg-pink text-white">
+            {{'รายละเอียดการชำระ' | translate}}
           </div>
           <div class="card-body text-light-grey">
             <!-- ชำระค่าเครื่อง (ผ่อนแยก)-->
-            <ng-container
-              *ngIf="!priceOption?.trade?.advancePay || priceOption?.trade?.advancePay?.installmentFlag === 'N'">
+            <ng-container *ngIf="!priceOption?.trade?.advancePay || priceOption?.trade?.advancePay?.installmentFlag === 'N'">
               <div class="mb-3">
-                <input class="form-check-input" type="radio" id="installmentNoAdvancePay" disabled=""
-                  [checked]="transaction?.data?.payment?.paymentQrCodeType">
+                <input class="form-check-input" type="radio" id="installmentNoAdvancePay" disabled="" [checked]="transaction?.data?.payment?.paymentQrCodeType">
                 <label class="form-check-label" for="installmentNoAdvancePay">
                   <!-- <i class="fa fa-circle mr-3 text-green"></i> -->
                   {{ priceOption?.productDetail?.name }}
@@ -80,44 +78,44 @@
                     ({{'แถมซิม'| translate}})
                   </span>
                   <span *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">: {{'ชำระเต็มจำนวน'| translate}}</span>
-                  <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">: {{'ผ่อนชำระบัตรเครดิต'| translate}}</span>
+                  <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">: {{'ผ่อนชำระบัตรเครดิต'|
+                    translate}}</span>
                 </label>
                 <span class="pull-right text-green">
                   ฿ {{ priceOption?.trade?.promotionPrice | number }}
                 </span>
-                <div class="mt-1"
-                *ngIf="transaction?.data?.payment?.paymentForm !== 'INSTALLMENT' && transaction?.data?.payment?.paymentType === 'QR_CODE'">
-                <small class="text-muted">
-                  ({{'ชำระโดย' | translate}} {{ summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) }})
-                </small>
-                <!-- <span class="text-pink"
+                <div class="mt-1" *ngIf="transaction?.data?.payment?.paymentForm !== 'INSTALLMENT' && transaction?.data?.payment?.paymentType === 'QR_CODE'">
+                  <small class="text-muted">
+                    ({{'ชำระโดย' | translate}} {{ summaryPageService.detailPayment(transaction?.data?.payment,
+                    priceOption?.trade) }})
+                  </small>
+                  <!-- <span class="text-pink"
                   *ngIf="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'WAITING'">( {{'รอชำระ' | translate}} )</span> -->
-                <span class="text-green"
-                  *ngIf="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'SUCCESS'">
-                  ( {{'ชำระแล้ว' | translate }} TX: {{transaction?.data?.mpayPayment?.tranId}} )
-                </span>
+                  <span class="text-green" *ngIf="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'SUCCESS'">
+                    ( {{'ชำระแล้ว' | translate }} TX: {{transaction?.data?.mpayPayment?.tranId}} )
+                  </span>
 
-              </div>
+                </div>
               </div>
 
               <!-- ค่าแพ็กเกจบริการล่วงหน้า -->
-              <div
-              *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && (+priceOption?.trade?.advancePay?.amount) > 0">
-              <input class="form-check-input" type="radio" id="advancePay" disabled="" [checked]="(getStatusPay() === 'AIRTIME' && transaction?.data?.advancePayment?.paymentQrCodeType) || transaction?.data?.mpayPayment?.mpayStatus?.statusDevice !== 'WAITING'
+              <div *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && (+priceOption?.trade?.advancePay?.amount) > 0">
+                <input class="form-check-input" type="radio" id="advancePay" disabled="" [checked]="(getStatusPay() === 'AIRTIME' && transaction?.data?.advancePayment?.paymentQrCodeType) || transaction?.data?.mpayPayment?.mpayStatus?.statusDevice !== 'WAITING'
                     || priceOption?.productStock?.company === 'AWN'">
-              <label class="form-check-label" for="advancePay">
-                {{'ค่าแพ็กเกจบริการล่วงหน้า' | translate }} : {{'ชำระเต็มจำนวน' | translate}}
-              </label>
-              <span class="pull-right text-green">
-                ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
-              </span>
-              <div class="mt-1">
-                <small class="text-muted" *ngIf="(+priceOption?.trade?.advancePay?.amount) > 0">
-                  ({{'ชำระโดย' | translate}} {{ summaryPageService.descriptionPayment(transaction?.data?.advancePayment) }})
-                </small>
-                <!-- <span class="text-pink">( {{'รอชำระ' | translate}} )</span> -->
+                <label class="form-check-label" for="advancePay">
+                  {{'ค่าแพ็กเกจบริการล่วงหน้า' | translate }} : {{'ชำระเต็มจำนวน' | translate}}
+                </label>
+                <span class="pull-right text-green">
+                  ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
+                </span>
+                <div class="mt-1">
+                  <small class="text-muted" *ngIf="(+priceOption?.trade?.advancePay?.amount) > 0">
+                    ({{'ชำระโดย' | translate}} {{
+                    summaryPageService.descriptionPayment(transaction?.data?.advancePayment) }})
+                  </small>
+                  <!-- <span class="text-pink">( {{'รอชำระ' | translate}} )</span> -->
+                </div>
               </div>
-            </div>
             </ng-container>
 
             <!-- ค่าเครื่องและค่าแพ็กเกจล่วงหน้า (ผ่อนรวม) -->
@@ -128,16 +126,18 @@
                   <!-- <i class="fa fa-circle mr-3 text-green"></i> -->
                   {{'ค่าเครื่องและค่าแพ็กเกจล่วงหน้า'| translate}} :
                   <span *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">{{'ชำระเต็มจำนวน'| translate}}</span>
-                  <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">{{'ผ่อนชำระบัตรเครดิต'| translate}}</span>
+                  <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">{{'ผ่อนชำระบัตรเครดิต'|
+                    translate}}</span>
                 </label>
                 <span class="pull-right text-green">฿ {{ summary([
-            +priceOption?.trade?.promotionPrice,
-            +priceOption?.trade?.advancePay?.amount
-            ]) | number:'1.0-0' }}</span>
+                  +priceOption?.trade?.promotionPrice,
+                  +priceOption?.trade?.advancePay?.amount
+                  ]) | number:'1.0-0' }}</span>
               </div>
               <div class="mt-1">
                 <small class="text-muted">
-                  ({{'ชำระโดย'| translate}} {{ summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) }})
+                  ({{'ชำระโดย'| translate}} {{ summaryPageService.detailPayment(transaction?.data?.payment,
+                  priceOption?.trade) }})
                 </small>
                 <!-- <span class="text-pink">( รอชำระ )</span> -->
               </div>
@@ -155,12 +155,10 @@
             <div class="text-pink mt-2">{{'กรุณาเปิด Application เพื่อสแกน QR Code'| translate}}</div>
           </div>
           <div class="col-4 text-right">
-            <div
-              *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'THAI_QR' || transaction?.data?.advancePayment?.paymentQrCodeType === 'THAI_QR'">
+            <div *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'THAI_QR' || transaction?.data?.advancePayment?.paymentQrCodeType === 'THAI_QR'">
               <img class="img-fluid w-75" src="assets/images/icon/Thai_Qr_Payment.png" />
             </div>
-            <div
-              *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'LINE_QR' || transaction?.data?.advancePayment?.paymentQrCodeType === 'LINE_QR'">
+            <div *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'LINE_QR' || transaction?.data?.advancePayment?.paymentQrCodeType === 'LINE_QR'">
               <img class="img-fluid w-75" src="assets/images/icon/Rabbit_Line_Pay.png" />
             </div>
           </div>
@@ -168,8 +166,8 @@
             <form class="form-inline pull-right">
               <div class="form-group">
                 <label for="summaryInput" class="text-green">{{'ยอดชำระ'| translate}}</label>
-                <input style="text-align: center" type="text" id="summaryInput" disabled
-                  class="form-control ml-3 text-green" value="฿ {{ getTotal() | number }}">
+                <input style="text-align: center" type="text" id="summaryInput" disabled class="form-control ml-3 text-green"
+                  value="฿ {{ getTotal() | number }}">
               </div>
             </form>
           </div>
@@ -177,8 +175,7 @@
 
       </div>
       <div class="text-center mt-5">
-        <button class="btn btn-secondary btn-lg mr-3 pl-5 pr-5" (click)="onHome()"
-          [hidden]="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'SUCCESS'">CANCEL</button>
+        <button class="btn btn-secondary btn-lg mr-3 pl-5 pr-5" (click)="onHome()" [hidden]="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'SUCCESS'">CANCEL</button>
         <button class="btn btn-success btn-lg pl-5 pr-5" (click)="onNext()">PAY NOW</button>
       </div>
     </div>

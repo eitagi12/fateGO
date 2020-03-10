@@ -6,7 +6,8 @@
       <div class="card">
         <div class="card-body pt-3 text-center ">
           <img src="assets/images/icon/icon-green-check-circle.png" class="icon" /> <br>
-          <b>{{'หมายเลข'| translate}} <span class="text-green">{{ transaction?.data?.simCard?.mobileNo | mobileNo }}</span></b> <br>
+          <b>{{'หมายเลข'| translate}} <span class="text-green">{{ transaction?.data?.simCard?.mobileNo | mobileNo }}</span></b>
+          <br>
           <b>{{'ชำระค่าสินค้าเรียบร้อยแล้ว'| translate}}</b> <br>
           <b>{{'หมายเลขอ้างอิง'| translate}} {{ transaction?.data?.mpayPayment?.tranId }}</b>
         </div>
@@ -21,7 +22,8 @@
                   <i class="fa fa-circle mr-3 text-green"></i>
                   {{ priceOption?.productDetail?.name }}
                   <span *ngIf="priceOption?.productStock?.color">
-                    {{ priceOption?.productStock?.color? ('สี'| translate) : '' }} {{ priceOption?.productStock?.color }}
+                    {{ priceOption?.productStock?.color? ('สี'| translate) : '' }} {{ priceOption?.productStock?.color
+                    }}
                   </span>
                   <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
                     ({{'แถมซิม'| translate}})
@@ -34,8 +36,7 @@
             </ng-container>
 
             <ng-container *ngIf="transaction?.data?.advancePayment?.paymentType === 'QR_CODE'">
-              <div class="text-light-grey"
-                *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && priceOption?.trade?.advancePay?.amount > 0">
+              <div class="text-light-grey" *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && priceOption?.trade?.advancePay?.amount > 0">
                 <p>
                   <i class="fa fa-circle mr-3 text-green"></i>
                   {{ summaryPageService.advanpayDescription(priceOption?.trade?.advancePay?.description) }}
@@ -48,7 +49,7 @@
 
             <div class="mt-1 text-right">
               <b>
-                <span class="mr-3" translate>รวมยอดชำระ (รวม VAT)</span>
+                <span class="mr-3">{{'รวมยอดชำระ (รวม VAT)' | translate}}</span>
                 <span class="text-green">
                   $ {{ getPaymentBalance() | number:'1.0-0' }}
                 </span>
@@ -63,7 +64,7 @@
                 || (transaction?.data?.advancePayment?.paymentType !== 'QR_CODE' 
                 && priceOption?.trade?.advancePay?.installmentFlag === 'N')">
           <div class="card-body border-top">
-            <p><b class="text-light-grey" translate>รายการสินค้า (รอชำระ)</b></p>
+            <p><b class="text-light-grey">{{'รายการสินค้า (รอชำระ)' | translate}}</b></p>
 
             <ng-container *ngIf="transaction?.data?.payment?.paymentType !== 'QR_CODE'">
               <div class="text-light-grey">
@@ -71,7 +72,8 @@
                   <i class="fa fa-circle mr-3 text-green"></i>
                   {{ priceOption?.productDetail?.name }}
                   <span *ngIf="priceOption?.productStock?.color">
-                    {{ priceOption?.productStock?.color? ('สี'| translate) : '' }} {{ priceOption?.productStock?.color }}
+                    {{ priceOption?.productStock?.color? ('สี'| translate) : '' }} {{ priceOption?.productStock?.color
+                    }}
                   </span>
                   <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
                     ({{'แถมซิม'| translate}})
@@ -84,10 +86,8 @@
             </ng-container>
 
             <ng-container *ngIf="transaction?.data?.advancePayment?.paymentType !== 'QR_CODE'">
-              <div class="text-light-grey"
-                *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && priceOption?.trade?.advancePay?.amount > 0">
-                <p
-                  *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && priceOption?.trade?.advancePay?.amount > 0">
+              <div class="text-light-grey" *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && priceOption?.trade?.advancePay?.amount > 0">
+                <p *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && priceOption?.trade?.advancePay?.amount > 0">
                   <i class="fa fa-circle mr-3 text-green"></i>
                   {{ summaryPageService.advanpayDescription(priceOption?.trade?.advancePay?.description) }}
                   <span class="pull-right text-green">
@@ -99,7 +99,7 @@
 
             <div class="mt-1 text-right">
               <b>
-                <span class="mr-3" translate>รวมยอดชำระ (รวม VAT)</span>
+                <span class="mr-3">{{'รวมยอดชำระ (รวม VAT)' | translate}}</span>
                 <span class="text-green">
                   ฿ {{ getOutStandingBalance() | number:'1.0-0' }}
                 </span>
@@ -111,7 +111,7 @@
       <!-- card -->
       <div class="card-body  border-right border-bottom border-left text-center text-light-grey bg-white">
         <div class="text-center mb-3">
-          <h5 class="pt-2" translate>รายการสั่งซื้อ</h5>
+          <h5 class="pt-2">{{'รายการสั่งซื้อ' | translate}}</h5>
           <div class="mt-4">
             <div class="card pl-5 pr-5 pt-2 pb-2" style="display: inline-block;">
               <div class="card-body queue-no text-green h1">
@@ -119,7 +119,7 @@
               </div>
             </div>
           </div>
-          <h5 class="pt-4" translate>สินค้าของคุณพร้อมแล้วที่จุดรับสินค้า</h5>
+          <h5 class="pt-4">{{'สินค้าของคุณพร้อมแล้วที่จุดรับสินค้า' | translate}}</h5>
         </div>
       </div>
 

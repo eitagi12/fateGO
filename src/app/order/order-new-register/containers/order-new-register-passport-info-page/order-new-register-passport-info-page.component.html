@@ -1,13 +1,13 @@
 <div class="mc-flex">
-    <mc-header title="{{ 'เปิดเบอร์ใหม่' | translate }}">
-        <div class="header-icon-left w-25">
-          <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
-        </div>
-        <div class="header-icon-right w-25 text-right">
-        <mc-dropdown-language></mc-dropdown-language>
-          <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
-        </div>
-      </mc-header>
+  <mc-header title="{{ 'เปิดเบอร์ใหม่' | translate }}">
+    <div class="header-icon-left w-25">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right w-25 text-right">
+      <mc-dropdown-language></mc-dropdown-language>
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
   <div class="mc-flex-wrap">
     <div class="mb-3 mt-3">
       <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
@@ -27,7 +27,7 @@
                   <img class="capture-and-sign watermark" alt="" [src]="'data:image/png;base64,' + watermark" />
                 </div>
               </div>
-      
+
             </div>
           </div>
           <div class="card-footer signature" [hidden]="!(!isAllowCapture() || hasImageSmartCard())">
@@ -42,14 +42,16 @@
               }">
                 <!-- WEB Step -->
                 <div *ngIf="!isAisNative()">
-                  <a href="#" (click)="$event.preventDefault(); camera.next();" class="text-pink" *ngIf="!hasImageSmartCard()" translate>ถ่ายรูป</a>
-                  <a href="#" (click)="$event.preventDefault(); onClearImage()" class="text-pink" *ngIf="hasImageSmartCard()">ถ่ายรูปใหม่</a>
+                  <a href="#" (click)="$event.preventDefault(); camera.next();" class="text-pink" *ngIf="!hasImageSmartCard()">{{'ถ่ายรูป'
+                    | translate}}</a>
+                  <a href="#" (click)="$event.preventDefault(); onClearImage()" class="text-pink" *ngIf="hasImageSmartCard()">{{'ถ่ายรูปใหม่'
+                    | translate}}</a>
                 </div>
                 <!-- Native Step -->
                 <div *ngIf="isAisNative()">
                   <a href="#" (click)="$event.preventDefault(); camera.next();" class="text-pink" *ngIf="!hasImageSmartCard()">
-                    <span *ngIf="!hasImageSmartCard()" translate>ถ่ายรูป </span>
-                    <span *ngIf="hasImageSmartCard()" translate>ถ่ายรูปใหม่</span>
+                    <span *ngIf="!hasImageSmartCard()">{{'ถ่ายรูป' | translate}} </span>
+                    <span *ngIf="hasImageSmartCard()">{{'ถ่ายรูปใหม่' | translate}}</span>
                   </a>
                 </div>
               </div>
@@ -60,8 +62,8 @@
               }">
                 <!-- WEB Step -->
                 <a href="#" (click)="$event.preventDefault(); onSigned()" class="text-pink">
-                  <span *ngIf="!hasImageSignature()" translate>เซ็นลายเซ็น</span>
-                  <span *ngIf="hasImageSignature()" translate>เซ็นลายเซ็นใหม่</span>
+                  <span *ngIf="!hasImageSignature()">{{'เซ็นลายเซ็น' | translate}}</span>
+                  <span *ngIf="hasImageSignature()">{{'เซ็นลายเซ็นใหม่' | translate}}</span>
                 </a>
               </div>
             </div>

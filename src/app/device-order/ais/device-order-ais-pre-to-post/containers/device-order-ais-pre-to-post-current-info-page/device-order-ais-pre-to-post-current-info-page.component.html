@@ -15,17 +15,17 @@
       <div class="container-fluid">
         <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
         <div class="container-fluid bg-white pt-3 pb-2 mb-3" *ngIf="balance && serviceChange && serviceAfterChanged">
-          <div class="text-center" translate>{{'ข้อมูลปัจจุบันของคุณ'| translate}}</div>
+          <div class="text-center">{{'ข้อมูลปัจจุบันของคุณ'| translate}}</div>
           <hr>
           <div class="row mt-3 mb-3">
-            <div class="col-4 text-green" translate>
-              หมายเลข
+            <div class="col-4 text-green">
+              {{'หมายเลข' | translate}}
             </div>
             <div class="col-8">
               {{ mobileNo | mobileNo }}
             </div>
-            <div class="col-4 text-green" translate>
-              ยอดเงินคงเหลือ
+            <div class="col-4 text-green">
+              {{'ยอดเงินคงเหลือ' | translate}}
             </div>
             <div class="col-8">
               {{+balance?.remainingBalance > 0 ? (balance?.remainingBalance | number:'1.2-2' ) + (' บาท' | translate) :
@@ -41,14 +41,36 @@
                 <u>MORE</u>
               </a>
             </div>
-            <div class="col-4 text-green" translate>
-              ค่าโทรที่ได้รับ
+            <div class="col-4 text-green">
+              {{'ค่าโทรที่ได้รับ' | translate}}
             </div>
             <div class="col-8">
               {{+balance?.transferBalance > 0 ? (balance?.transferBalance | number:'1.2-2' )+ (' บาท' | translate) :
               '-'}}
             </div>
 
+          </div>
+        </div>
+
+        <div class="card mb-3" [hidden]="!!!message5G">
+          <div class="card-body text-center">
+            <div class="row">
+              <div class="col-sm-12 text-left">
+                <img src="assets/images/icon/icon_5G.png" alt="" class="mr-3">
+                <span>{{ message5G | translate}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-3" [hidden]="!!!messageVolTE">
+          <div class="card-body text-center">
+            <div class="row">
+              <div class="col-sm-12 text-left">
+                <img src="assets/images/icon/icon_volte.png" alt="" class="mr-3">
+                <span>{{ messageVolTE | translate}}</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -87,28 +109,6 @@
                     {{ service?.serviceName }}
                   </li>
                 </ul>
-              </div>
-            </div>
-          </div>
-
-          <div class="card mb-3" [hidden]="!!!message5G">
-            <div class="card-body text-center">
-              <div class="row">
-                <div class="col-sm-12 text-left">
-                  <img src="assets/images/icon/icon_5G.png" alt="" class="mr-3">
-                  <span translate>{{ message5G }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="card mb-3" [hidden]="!!!messageVolTE">
-            <div class="card-body text-center">
-              <div class="row">
-                <div class="col-sm-12 text-left">
-                  <img src="assets/images/icon/icon_volte.png" alt="" class="mr-3">
-                  <span translate>{{ messageVolTE }}</span>
-                </div>
               </div>
             </div>
           </div>
@@ -154,25 +154,25 @@
       <span aria-hidden="true">&times;</span>
     </button>
     <br>
-    <h5 class="text-green" translate>เงื่อนไขการโอนเงินอัตโนมัติใช้สิทธิ์ค่าโทร</h5>
-    <ol class="text-light-grey" translate>
-      <li translate>สามารถใช้สิทธิ์ค่าโทรได้ ภายใน 3 วัน (ทำการ)</li>
-      <li translate>เฉพาะสิทธิ์การโทรภายในประเทศเท่านั้น</li>
-      <li translate>คิดค่าโทรที่ได้รับหลังหักโปรโมชั่นหลัก</li>
-      <li translate>รายละเอียดโอนเงินอัตโนมัติ ดังนี้</li>
+    <h5 class="text-green">{{'เงื่อนไขการโอนเงินอัตโนมัติใช้สิทธิ์ค่าโทร' | translate}}</h5>
+    <ol class="text-light-grey">
+      <li>{{'สามารถใช้สิทธิ์ค่าโทรได้ ภายใน 3 วัน (ทำการ)' | translate}}</li>
+      <li>{{'เฉพาะสิทธิ์การโทรภายในประเทศเท่านั้น' | translate}}</li>
+      <li>{{'คิดค่าโทรที่ได้รับหลังหักโปรโมชั่นหลัก' | translate}}</li>
+      <li>{{'รายละเอียดโอนเงินอัตโนมัติ' | translate}} ดังนี้</li>
     </ol>
   </div>
   <table class="w-100">
     <thead align="center">
       <tr class="bg-lime text-white">
-        <td class="align-middle  p-2" width="50%" translate>
-          จำนวนเงินคงเหลือ (บาท)
+        <td class="align-middle  p-2" width="50%">
+          {{'จำนวนเงินคงเหลือ (บาท)' | translate}}
         </td>
         <td class="align-middle " width="1px">
           |
         </td>
-        <td class="align-middle" width="50%" translate>
-          ค่าโทรที่ได้รับ (บาท)
+        <td class="align-middle" width="50%">
+          {{'ค่าโทรที่ได้รับ (บาท)' | translate}}
         </td>
       </tr>
     </thead>

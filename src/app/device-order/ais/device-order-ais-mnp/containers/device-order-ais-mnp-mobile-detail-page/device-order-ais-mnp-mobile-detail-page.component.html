@@ -15,13 +15,13 @@
       <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
       <div class="container-fluid">
         <mc-mobile-info title="{{'ข้อมูลลูกค้า' | translate }}" [mobileInfo]="mobileInfo"></mc-mobile-info>
-        
+
         <div class="card mb-3" [hidden]="!!!message5G">
           <div class="card-body text-center">
             <div class="row">
               <div class="col-sm-12 text-left">
                 <img src="assets/images/icon/icon_5G.png" alt="" class="mr-3">
-                <span translate>{{ message5G }}</span>
+                <span>{{ message5G | translate }}</span>
               </div>
             </div>
           </div>
@@ -32,12 +32,12 @@
             <div class="row">
               <div class="col-sm-12 text-left">
                 <img src="assets/images/icon/icon_volte.png" alt="" class="mr-3">
-                <span translate>{{ messageVolTE }}</span>
+                <span>{{ messageVolTE | translate}}</span>
               </div>
             </div>
           </div>
         </div>
-        
+
       </div>
     </div>
   </div>

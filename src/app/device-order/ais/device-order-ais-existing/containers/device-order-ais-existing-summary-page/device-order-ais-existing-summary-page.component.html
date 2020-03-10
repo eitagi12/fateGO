@@ -14,7 +14,7 @@
       <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
       <div class="container-fluid">
         <div class="card mb-3">
-          <div class="card-header bg-pink text-white" translate>สรุปรายการสั่งซื้อสินค้า</div>
+          <div class="card-header bg-pink text-white">{{'สรุปรายการสั่งซื้อสินค้า' | translate}}</div>
           <div class="card-body">
             <p class="text-green">{{ priceOption?.campaign?.campaignName }}</p>
             <div class="text-light-grey">
@@ -40,8 +40,8 @@
               </p>
             </div>
           </div>
-          <div class="card-footer bg-transparent text-right" translate>
-            รวมยอดชำระ (รวม VAT)
+          <div class="card-footer bg-transparent text-right">
+            {{'รวมยอดชำระ (รวม VAT)' | translate}}
             <span class="text-green ml-2">
               ฿ {{ summary([ +priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount ]) | number
               }}
@@ -50,7 +50,7 @@
         </div>
 
         <div class="card mb-3">
-          <div class="card-header bg-lime text-white" translate>แพ็กเกจใช้บริการ</div>
+          <div class="card-header bg-lime text-white">{{'แพ็กเกจใช้บริการ' | translate}}</div>
           <div class="card-body">
             <p>
               <i class="fa fa-circle mr-3 text-green"></i>
@@ -65,12 +65,12 @@
         </div>
 
         <div class="card mb-3">
-          <div class="card-header bg-purple text-white" translate>สินค้าและบริการอื่น</div>
+          <div class="card-header bg-purple text-white">{{'สินค้าและบริการอื่น' | translate}}</div>
           <div class="card-body">
             <p>
               <i class="fa fa-circle mr-3 text-green"></i>
               <ng-container *ngIf="!transaction?.data?.mobileCarePackage?.title">
-                <span translate>ไม่ซื้อบริการโมบายแคร์</span>
+                <span>{{'ไม่ซื้อบริการโมบายแคร์' | translate}}</span>
               </ng-container>
               <ng-container *ngIf="transaction?.data?.mobileCarePackage?.title">
                 <span>
@@ -104,12 +104,12 @@
         </div>
 
         <div class="card mb-3">
-          <div class="card-header bg-pink text-white" translate>
-            รายละเอียดการชำระ
+          <div class="card-header bg-pink text-white">
+            {{'รายละเอียดการชำระ' | translate}}
           </div>
           <div class="card-body">
-            <p translate>
-              ข้อมูลการชำระสินค้า
+            <p>
+              {{'ข้อมูลการชำระสินค้า' | translate}}
             </p>
 
             <!-- ชำระเต็มจำนวน -->
@@ -167,11 +167,11 @@
 
           </div>
           <div class="card-footer bg-transparent ">
-            <p translate>
-              ข้อมูลใบเสร็จรับเงิน
+            <p>
+              {{'ข้อมูลใบเสร็จรับเงิน' | translate}}
             </p>
             <div class="row">
-              <p class="col-12 col-sm-4" translate>
+              <p class="col-12 col-sm-4">
                 <i class="fa fa-circle mr-3 text-green"></i>
                 {{'ผู้ซื้อ' | translate}}
               </p>
@@ -180,9 +180,9 @@
                 transaction?.data?.customer?.lastName
                 }}
               </p>
-              <p class="col-12 col-sm-4" translate>
+              <p class="col-12 col-sm-4">
                 <i class="fa fa-circle mr-3 text-green"></i>
-                ที่อยู่ในใบเสร็จรับเงิน
+                {{'ที่อยู่ในใบเสร็จรับเงิน' | translate}}
               </p>
               <p class="col-12 col-sm-8 text-green">
                 {{ customerAddress }}
@@ -190,8 +190,8 @@
             </div>
           </div>
           <div class="card-footer bg-transparent">
-            <p translate>
-              ข้อตกลงรับสิทธิ์ต่อเนื่อง
+            <p>
+              {{'ข้อตกลงรับสิทธิ์ต่อเนื่อง' | translate}}
             </p>
             <p translate>
               <i class="fa fa-circle mr-3 text-green"></i>
