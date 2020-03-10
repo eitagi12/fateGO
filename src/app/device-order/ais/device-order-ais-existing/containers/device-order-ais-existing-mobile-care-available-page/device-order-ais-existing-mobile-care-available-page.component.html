@@ -16,10 +16,10 @@
 
       <div class="container-fluid mt-3 mb-3">
         <div class="card mb-5">
-          <h5 class="card-header bg-teal text-white" translate>บริการโมบายแคร์</h5>
+          <h5 class="card-header bg-teal text-white">{{'บริการโมบายแคร์' | translate}}</h5>
           <div class="card-body">
             <div class="row">
-              <div class="col-6 col-sm-6 card-text text-black mb-4" translate>แพ็กเกจปัจจุบัน</div>
+              <div class="col-6 col-sm-6 card-text text-black mb-4">{{'แพ็กเกจปัจจุบัน' | translate}}</div>
               <div class="col-6 col-sm-6 card-text text-right">{{ exMobileCare?.handSet?.model }}</div>
             </div>
             <div class="row bg-blue-light-grey mr-0 ml-0">
@@ -41,13 +41,14 @@
               </div>
               <div class="row">
                 <input class="form-check-input" type="radio" id="change-mobile-care" value="Yes" formControlName="changeMobileCare">
-                <label class="form-check-label col-6 col-sm-6" for="change-mobile-care" translate>ใช่</label>
+                <label class="form-check-label col-6 col-sm-6" for="change-mobile-care">{{'ใช่' | translate}}</label>
                 <input class="form-check-input" type="radio" id="unchange-mobile-care" value="No" formControlName="changeMobileCare">
-                <label class="form-check-label" for="unchange-mobile-care" translate>ไม่ใช่</label>
+                <label class="form-check-label" for="unchange-mobile-care">{{'ไม่ใช่' | translate}}</label>
               </div>
               <div *ngIf="changeMobileCare">
-                <span class="text-pink" style="margin-left:20px;" translate>
-                  หมายเหตุ : กรณีมีการสมัคร Mobile care ที่เครื่องใหม่ การรับประกันที่เครื่องเดิมจะสิ้นสุด
+                <span class="text-pink" style="margin-left:20px;">
+                  {{'หมายเหตุ : กรณีมีการสมัคร Mobile care ที่เครื่องใหม่ การรับประกันที่เครื่องเดิมจะสิ้นสุด' |
+                  translate}}
                 </span>
               </div>
               <hr>

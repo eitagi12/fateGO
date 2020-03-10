@@ -15,10 +15,11 @@
       <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
       <div class="container-fluid">
         <div class="card mb-3">
-          <h5 class="card-header bg-lime text-white" translate>ตรวจสอบสิทธิ์</h5>
+          <h5 class="card-header bg-lime text-white">{{'ตรวจสอบสิทธิ์' | translate}}</h5>
           <div class="card-body text-center">
             <img class="imagecorrect mb-3" src="assets/images/icon/icon-red-alert-circle.png">
-            <p>{{'หมายเลข' | translate}} {{ transaction?.data?.simCard?.mobileNo }} {{'ไม่สามารถรับสิทธิ์โครงการนี้ได้'| translate}} <br>
+            <p>{{'หมายเลข' | translate}} {{ transaction?.data?.simCard?.mobileNo }}
+              {{'ไม่สามารถรับสิทธิ์โครงการนี้ได้'| translate}} <br>
               <span>* {{'กรุณาเปลี่ยนเบอร์ใหม่ เพื่อรับสิทธิ์ซื้อเครื่องราคาพิเศษ'| translate}}</span>
             </p>
           </div>
@@ -27,10 +28,10 @@
             <button class="btn btn-secondary btn-lg" (click)="onHome()">CANCEL</button>
             <button class="btn btn-success btn-lg" (click)="onBack()">CONFIRM</button>
           </div>
-          
+
         </div>
       </div>
     </div>
   </div>
-  
+
 </div>

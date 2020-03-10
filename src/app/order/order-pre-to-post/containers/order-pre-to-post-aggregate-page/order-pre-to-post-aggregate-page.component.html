@@ -14,14 +14,14 @@
 
       <div class="container-fluid">
         <div class="card mb-3">
-          <div class="card-header bg-transparent text-center" translate>สรุปผลเปลี่ยนเติมเงินเป็นรายเดือน</div>
+          <div class="card-header bg-transparent text-center">{{'สรุปผลเปลี่ยนเติมเงินเป็นรายเดือน' | translate}}</div>
           <div class="card-body text-center">
             <div class="row">
-              <div class="col-sm-6 text-left text-green" translate>หมายเลข</div>
+              <div class="col-sm-6 text-left text-green">{{'หมายเลข' | translate}}</div>
               <div class="col-sm-6 text-left">{{ mobileNo | mobileNo }}</div>
             </div>
             <div class="row">
-              <div class="col-sm-6 text-left text-green" translate>ค่าโทรที่ได้รับ</div>
+              <div class="col-sm-6 text-left text-green">{{'ค่าโทรที่ได้รับ' | translate}}</div>
               {{+balance?.transferBalance > 0 ? (balance?.transferBalance | number:'1.2-2' ) + ' บาท' : '-'}}
             </div>
           </div>
@@ -32,22 +32,22 @@
             <div class="row mb-3">
               <div class="col-sm-6 text-left">
                 <i class="fa fa-circle text-green mr-3"></i>
-                <span translate>ผลการโอนย้ายบริการเสริม</span>
+                <span>{{'ผลการโอนย้ายบริการเสริม' | translate}}</span>
               </div>
               <div class="col-sm-6 text-right">
-                
+
                 <div *ngIf="translationService.currentLang === 'EN'">
-                    {{ serviceChange?.length }} package(s)
+                  {{ serviceChange?.length }} package(s)
                 </div>
                 <div *ngIf="translationService.currentLang === 'TH'">
-                    ทั้งหมด {{ serviceChange?.length }} บริการ
+                  ทั้งหมด {{ serviceChange?.length }} บริการ
                 </div>
               </div>
             </div>
             <div class="row" *ngFor="let service of serviceChange">
               <ul>
                 <li class="text-grey d-inline"><i class="fa fa-check text-green mr-3"></i>
-                  <span translate>{{ service?.serviceName }}</span>
+                  <span>{{ service?.serviceName | translate}}</span>
                 </li>
               </ul>
             </div>

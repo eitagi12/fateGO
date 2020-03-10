@@ -12,17 +12,17 @@
     <div class="my-3">
 
       <div class="container-fluid pl-5 pr-5 pt-3">
-        <h4 class="text-center mb-3" translate>ตะกร้าของคุณ</h4>
+        <h4 class="text-center mb-3">{{'ตะกร้าของคุณ' | translate}}</h4>
         <div class="row text-light">
           <div class="col-6">
-              <img src="assets/images/icon/icon-person.png" class="icon-person" />
-              {{ transaction?.data?.customer?.titleName }}
-              {{ transaction?.data?.customer?.firstName }}
-              {{ transaction?.data?.customer?.lastName }}
-            </div>
+            <img src="assets/images/icon/icon-person.png" class="icon-person" />
+            {{ transaction?.data?.customer?.titleName }}
+            {{ transaction?.data?.customer?.firstName }}
+            {{ transaction?.data?.customer?.lastName }}
+          </div>
           <div class="col-6 text-right">
-              <img src="assets/images/icon/sales_portal_green_phone.png" class="icon-mobile" />
-              {{ transaction?.data?.simCard?.mobileNo | mobileNo }}
+            <img src="assets/images/icon/sales_portal_green_phone.png" class="icon-mobile" />
+            {{ transaction?.data?.simCard?.mobileNo | mobileNo }}
           </div>
         </div>
 
@@ -41,7 +41,8 @@
             </span>
             <p>{{ priceOption?.campaign?.campaignName | translate }}</p>
             <h2 class="text-green">
-              ฿{{ summary([+priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount]) | number : '1.2-2' }}
+              ฿{{ summary([+priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount]) | number :
+              '1.2-2' }}
             </h2>
           </div>
         </div>
@@ -49,7 +50,7 @@
         <div class="card shadow-sm mt-3">
           <div class="card-body">
             <div class="card-body">
-              <p class="text-green mb-3" translate>สรุปรายการซื้อ</p>
+              <p class="text-green mb-3">{{'สรุปรายการซื้อ' | translate}}</p>
               <div class="text-light-grey">
                 <p>
                   <i class="fa fa-circle mr-3 text-green"></i>
@@ -62,7 +63,8 @@
                     ({{'แถมซิม' | translate}})
                   </span>
                   <span class="pull-right text-green">
-                    ฿{{ summary([+priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount]) | number : '1.2-2' }}
+                    ฿{{ summary([+priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount]) |
+                    number : '1.2-2' }}
                   </span>
                 </p>
               </div>
@@ -70,7 +72,8 @@
               <div class="text-right mt-3">
                 Total
                 <span class="total text-green h2 ml-5">
-                  ฿{{ summary([+priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount]) | number : '1.2-2' }}</span>
+                  ฿{{ summary([+priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount]) | number
+                  : '1.2-2' }}</span>
               </div>
             </div>
           </div>
@@ -80,7 +83,8 @@
       <div class="text-center mt-4">
         <button class="btn btn-secondary btn-lg mr-3 pl-5 pr-5" (click)="onBack()">BACK</button>
         <button class="btn btn-success btn-lg pl-5 pr-5" (click)="onNext()">
-          {{ transaction?.data?.payment?.paymentType === 'QR_CODE' || transaction?.data?.advancePayment?.paymentType === 'QR_CODE' ? 'PAYMENT' : 'CHECK OUT'}}
+          {{ transaction?.data?.payment?.paymentType === 'QR_CODE' || transaction?.data?.advancePayment?.paymentType
+          === 'QR_CODE' ? 'PAYMENT' : 'CHECK OUT'}}
         </button>
       </div>
     </div>

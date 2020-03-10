@@ -5,8 +5,8 @@
     </div>
     <div class="header-icon-right w-25 text-right">
       <mc-dropdown-language></mc-dropdown-language>
-    <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
-  </div>
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
   </mc-header>
   <div class="mc-flex-wrap bg-white">
     <div class="my-3">
@@ -19,7 +19,7 @@
         </div>
         <form [formGroup]="queueFrom">
           <div class="form-group">
-            <div class="text-center mt-5" translate>เบอร์โทรศัพท์รับหมายเลขสั่งซื้อเพื่อชำระสินค้าของท่านคือ</div>
+            <div class="text-center mt-5">{{'เบอร์โทรศัพท์รับหมายเลขสั่งซื้อเพื่อชำระสินค้าของท่านคือ' | translate}}</div>
             <input class="form-control text-center mb-3" id="mobileNo" maxlength="10" autofocus autocomplete="off"
               formControlName="mobileNo" placeholder="ระบุเบอร์โทรศัพท์รับ SMS" [ngClass]="{ 'is-invalid' : queueFrom.controls.mobileNo.invalid && queueFrom.controls.mobileNo.touched && queueFrom.controls.mobileNo.errors }">
             <small class="invalid-feedback" *ngIf="queueFrom.controls.mobileNo.touched && queueFrom.controls.mobileNo.errors">

@@ -11,7 +11,7 @@
     <div class="my-3">
       <div class="container-fluid">
         <div class="card mb-5">
-          <div class="card-header bg-lime text-white" translate>ข้อมูลการชำระ</div>
+          <div class="card-header bg-lime text-white">{{'ข้อมูลการชำระ' | translate}}</div>
           <div class="card-body text-light-grey">
             <div class="border-bottom pb-3 mb-3">
               {{'ชำระโดย'| translate}}
@@ -28,8 +28,8 @@
 
         <ng-container *ngIf="qrCode">
           <div class="text-center mb-3">
-            <div translate>กรุณาสแกน QR Code รับ Link ชำระเงินทันทีด้วยบัตรเครดิต</div>
-            <div translate>เพื่อทำรายการชำระค่าสินค้าและบริการ</div>
+            <div>{{'กรุณาสแกน QR Code รับ Link ชำระเงินทันทีด้วยบัตรเครดิต' | translate}}</div>
+            <div>{{'เพื่อทำรายการชำระค่าสินค้าและบริการ' | translate}}</div>
           </div>
           <div class="qr-code border bg-white mb-3">
             <img src="assets/images/icon/Branner-Thai-Qr-code.png" class="d-block w-100" />

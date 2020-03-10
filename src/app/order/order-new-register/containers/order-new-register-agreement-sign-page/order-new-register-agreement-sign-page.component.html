@@ -4,7 +4,7 @@
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
     <div class="header-icon-right w-25 text-right">
-    <mc-dropdown-language></mc-dropdown-language>
+      <mc-dropdown-language></mc-dropdown-language>
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
@@ -15,27 +15,25 @@
         <div class="col-12 ">
           <div class="card card-block">
             <!-- <div class="card-header bg-transparent text-center">ลงชื่อผู้ทำรายการ</div> -->
-              <div *ngIf="!transaction?.data?.customer?.imageSignature" class="signed">
-                <img src="assets/images/icon/pen.png" (click)="$event.preventDefault(); onSigned()"
-                  *ngIf="signatureText !== 'แก้ไขลายเซ็น'" />
-              </div>
-              <div *ngIf="transaction?.data?.customer?.imageSignature" class="signed">
-                <img [src]="'data:image/jpeg;base64,' + transaction?.data?.customer?.imageSignature"
-                  *ngIf="signatureText !== 'แก้ไขลายเซ็น'">
-              </div>
+            <div *ngIf="!transaction?.data?.customer?.imageSignature" class="signed">
+              <img src="assets/images/icon/pen.png" (click)="$event.preventDefault(); onSigned()" *ngIf="signatureText !== 'แก้ไขลายเซ็น'" />
             </div>
-            <div class="card-footer text-center">
-              <a href="#" (click)="$event.preventDefault(); onSigned()" class="text-pink">
-                <span *ngIf="!transaction?.data?.customer?.imageSignature" translate>เซ็นลายเซ็น</span>
-                <span *ngIf="transaction?.data?.customer?.imageSignature" translate>แก้ไขลายเซ็น</span>
-              </a> 
+            <div *ngIf="transaction?.data?.customer?.imageSignature" class="signed">
+              <img [src]="'data:image/jpeg;base64,' + transaction?.data?.customer?.imageSignature" *ngIf="signatureText !== 'แก้ไขลายเซ็น'">
             </div>
           </div>
+          <div class="card-footer text-center">
+            <a href="#" (click)="$event.preventDefault(); onSigned()" class="text-pink">
+              <span *ngIf="!transaction?.data?.customer?.imageSignature">{{'เซ็นลายเซ็น' | translate}}</span>
+              <span *ngIf="transaction?.data?.customer?.imageSignature">{{'แก้ไขลายเซ็น' | translate}}</span>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()">NEXT</button> 
+    <button class="btn btn-success" (click)="onNext()">NEXT</button>
   </mc-footer>
 </div>

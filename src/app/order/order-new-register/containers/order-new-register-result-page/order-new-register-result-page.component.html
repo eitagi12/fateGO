@@ -13,14 +13,15 @@
             <div class="text-center text-black"> TRANSACTION ID :
               <span class="text-light-grey"> {{ transaction?.data?.order?.orderNo }}</span>
             </div>
-            <div class="container text-center text-black mb-5 mt-1" translate>ซิมใช้งานได้ภายใน 1 ชั่วโมง</div>
-            <div class="message-result text-center mb-5 text-black" translate>
-              <span translate>ระบบจัดส่ง SMS แจ้ง รายละเอียดการทำรายการข้อตกลงและเงื่อนไขบริการโทรศัพท์เคลื่อนที่ ไปที่</span>
+            <div class="container text-center text-black mb-5 mt-1">{{'ซิมใช้งานได้ภายใน 1 ชั่วโมง' | translate}}</div>
+            <div class="message-result text-center mb-5 text-black">
+              <span>{{'ระบบจัดส่ง SMS แจ้ง รายละเอียดการทำรายการข้อตกลงและเงื่อนไขบริการโทรศัพท์เคลื่อนที่ ไปที่' |
+                translate}}</span>
               <br>
-              <span translate>เบอร์</span> {{ transaction?.data?.simCard?.mobileNo | mobileNo }}
+              <span>{{'เบอร์' | translate}}</span> {{ transaction?.data?.simCard?.mobileNo | mobileNo }}
             </div>
             <div [hidden]="!!!getMessage5G()" class="message-result text-center mt-5 text-black">
-              <span translate>{{ getMessage5G() }}</span>
+              <span>{{ getMessage5G() | translate}}</span>
             </div>
           </div>
         </mc-result>

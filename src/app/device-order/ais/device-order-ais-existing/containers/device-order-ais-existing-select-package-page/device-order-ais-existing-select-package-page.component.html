@@ -14,28 +14,30 @@
       <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
       <div [hidden]="promotionShelves?.length === 0">
         <div class="container-fluid">
-          <div class="bg-white p-3 h5" translate>
+          <div class="bg-white p-3 h5">
             <img src="assets/images/icon/package-info.png" class="icon-package-info" />
             {{'ข้อมูลแพ็กเกจ'| translate}}
           </div>
           <div class="bg-white">
             <div class="container-fluid">
 
-             <div *ngIf="isContractFirstPack" class="text-align p-4">
-                <img class ="icon-red-alert-circle" src="assets/images/icon/icon-red-alert-circle.png"/>
-                <span class="text-red ml-3">{{'ท่านมีสัญญาข้อตกลงการใช้แพ็กเกจค่าบริการรายเดือนขั้นต่ำเดือนละ'| translate}} {{isContractFirstPack}} {{'บาท'| translate}}</span>
-            </div>
+              <div *ngIf="isContractFirstPack" class="text-align p-4">
+                <img class="icon-red-alert-circle" src="assets/images/icon/icon-red-alert-circle.png" />
+                <span class="text-red ml-3">{{'ท่านมีสัญญาข้อตกลงการใช้แพ็กเกจค่าบริการรายเดือนขั้นต่ำเดือนละ'|
+                  translate}} {{isContractFirstPack}} {{'บาท'| translate}}</span>
+              </div>
 
               <div class="card mb-3" *ngIf="!this.advancePay && transaction?.data?.currentPackage">
-                <div class="card-header bg-green text-white" translate>
-                  แพ็กเกจปัจจุบัน
+                <div class="card-header bg-green text-white">
+                  {{'แพ็กเกจปัจจุบัน' | translate}}
                 </div>
                 <div class="card-body">
                   <div class="text-green">
                     <span class="pull-left pt-2">{{ changePackageTitleLanguage(transaction?.data?.currentPackage) }}</span>
-                    <input *ngIf="showSelectCurrentPackage" type="radio" id="current-package" name="current-package" [checked]="selectCurrentPackage" (click)="onClickCurrentPackage()">
-                    <label *ngIf="showSelectCurrentPackage" class="pull-right" for="current-package" translate>
-                      ใช้แพ็กเกจเดิม
+                    <input *ngIf="showSelectCurrentPackage" type="radio" id="current-package" name="current-package"
+                      [checked]="selectCurrentPackage" (click)="onClickCurrentPackage()">
+                    <label *ngIf="showSelectCurrentPackage" class="pull-right" for="current-package">
+                      {{'ใช้แพ็กเกจเดิม' | translate}}
                     </label>
                   </div>
                   <div class="d-inline-block mt-3">
@@ -44,18 +46,19 @@
                   </div>
                 </div>
               </div>
-              <div class="card" *ngIf="havePromotions"> 
+              <div class="card" *ngIf="havePromotions">
                 <div class="card-header bg-green text-white mb-2">
-                  {{'เลือกแพ็กเกจใหม่' | translate}} <span class="minimum-package">({{'แพ็กเกจเริ่มต้น' | translate}} {{ priceOption?.privilege?.minimumPackagePrice }} {{'บาท'| translate}})</span>
+                  {{'เลือกแพ็กเกจใหม่' | translate}} <span class="minimum-package">({{'แพ็กเกจเริ่มต้น' | translate}}
+                    {{ priceOption?.privilege?.minimumPackagePrice }} {{'บาท'| translate}})</span>
                 </div>
                 <mc-promotion-shelve [selected]="transaction?.data?.mainPackage" [promotionShelves]="promotionShelves"
-                (completed)="onCompleted($event)"></mc-promotion-shelve>
+                  (completed)="onCompleted($event)"></mc-promotion-shelve>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <p class="text-center my-5" *ngIf="promotionShelves?.length === 0" translate>ไม่พบแพ็กเกจที่ร่วมรายการ</p>
+      <p class="text-center my-5" *ngIf="promotionShelves?.length === 0">{{'ไม่พบแพ็กเกจที่ร่วมรายการ' | translate}}</p>
     </div>
   </div>
   <mc-footer>

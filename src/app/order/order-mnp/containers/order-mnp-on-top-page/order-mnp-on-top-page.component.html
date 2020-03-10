@@ -12,7 +12,7 @@
     <div class="mt-3 mb-3">
       <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
       <div class="container-fluid">
-        <div class="bg-white text-center mb-1 p-3" translate>เลือกแพ็กเกจเสริม</div>
+        <div class="bg-white text-center mb-1 p-3">{{'เลือกแพ็กเกจเสริม' | translate}}</div>
       </div>
       <mc-promotion-shelve [promotionShelves]="promotionShelves" (completed)="onCompleted($event)">
       </mc-promotion-shelve>

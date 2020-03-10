@@ -60,6 +60,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
   ngOnInit(): void {
     const customer = this.transaction.data.customer;
     const mainPackage = this.transaction.data.mainPackage;
+    const onTopPackage = this.transaction.data.onTopPackage;
     const simCard = this.transaction.data.simCard;
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData: any = billingInformation.billCycleData || {};
@@ -73,7 +74,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
       idCardNo: customer.idCardNo,
       mobileNo: simCard.mobileNo,
       mainPackage: mainPackage.shortNameThai,
-      onTopPackage: '',
+      onTopPackage: onTopPackage.shortNameThai,
       packageDetail: mainPackage.statementThai,
       idCardType: customer.idCardType
     };
@@ -98,9 +99,11 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
     if (lang === 'EN') {
       this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameEng;
       this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementEng;
+      this.confirmCustomerInfo.onTopPackage = this.transaction.data.onTopPackage.shortNameEng;
     } else {
       this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameThai;
       this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementThai;
+      this.confirmCustomerInfo.onTopPackage = this.transaction.data.onTopPackage.shortNameThai;
     }
   }
 

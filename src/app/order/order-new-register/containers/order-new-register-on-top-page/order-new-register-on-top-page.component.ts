@@ -99,7 +99,7 @@ export class OrderNewRegisterOnTopPageComponent implements OnInit, OnDestroy {
   }
 
   onCompleted(promotion: any): void {
-    this.transaction.data.mainPackage = promotion;
+    this.transaction.data.onTopPackage = promotion;
   }
 
   ngOnDestroy(): void {
