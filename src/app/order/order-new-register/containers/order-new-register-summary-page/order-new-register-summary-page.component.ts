@@ -41,8 +41,9 @@ export class OrderNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const customer = this.transaction.data.customer;
     const mainPackage = this.transaction.data.mainPackage;
+    const onTopPackage = this.transaction.data.onTopPackage || {};
     const billingInformation = this.transaction.data.billingInformation;
-    const billCycleData = billingInformation.billCycleData;
+    const billCycleData = billingInformation.billCycleData || {};
     const simCard = this.transaction.data.simCard;
 
     this.confirmCustomerInfo = {
@@ -52,7 +53,7 @@ export class OrderNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
       idCardNo: customer.idCardNo,
       mobileNo: simCard.mobileNo,
       mainPackage: mainPackage.shortNameThai,
-      onTopPackage: '',
+      onTopPackage: onTopPackage.shortNameThai,
       packageDetail: mainPackage.statementThai,
       idCardType: customer.idCardType
     };
@@ -94,9 +95,11 @@ export class OrderNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
     if (lang === 'EN') {
       this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameEng;
       this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementEng;
+      this.confirmCustomerInfo.onTopPackage = this.transaction.data.onTopPackage.shortNameEng;
     } else {
       this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameThai;
       this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementThai;
+      this.confirmCustomerInfo.onTopPackage = this.transaction.data.onTopPackage.shortNameThai;
     }
 
     if (bills[3] === 'สิ้นเดือน') {

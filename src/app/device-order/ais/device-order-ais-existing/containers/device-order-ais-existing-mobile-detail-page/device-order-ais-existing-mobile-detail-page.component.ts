@@ -247,6 +247,7 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
                       const messageError = errObj.developerMessage ? errObj.developerMessage : 'ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้';
                       this.message5G = messageError;
                       this.messageVolTE = messageError;
+                      delete this.transaction.data.handsetSim5G;
                       return messageError;
                     });
 
