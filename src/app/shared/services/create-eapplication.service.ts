@@ -169,7 +169,7 @@ export class CreateEapplicationService {
     const data: any = {
       channelType: 'NewRegister',
       fullNameTH: language === 'EN' ? `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}` :
-      customer.firstName + ' ' + customer.lastName || '',
+        customer.firstName + ' ' + customer.lastName || '',
       idCard: this.privateIdcard(customer.idCardNo) || '',
       idCardType: customer.idCardType || '',
       birthDate: customer.birthdate || '',
@@ -231,8 +231,6 @@ export class CreateEapplicationService {
     const simCard: any = transaction.data.simCard || {};
 
     const data: any = {
-      fullNameTH: language === 'EN' ? `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}` :
-        customer.firstName + ' ' + customer.lastName || '',
       idCard: this.privateIdcard(customer.idCardNo) || '',
       idCardType: customer.idCardType || '',
       birthDate: customer.birthdate || '',
@@ -270,13 +268,23 @@ export class CreateEapplicationService {
         name: (mainPackage.customAttributes || {}).shortNameEng || mainPackage.title || '',
         description: mainPackage.statementEng || mainPackage.detailEN || ''
       };
+
+      if (action === TransactionAction.READ_CARD || action === TransactionAction.READ_CARD_REPI) {
+        data.fullNameTH = `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}`;
+      } else {
+        data.fullNameTH = customer.firstName + ' ' + customer.lastName || '';
+      }
+
     } else {
       data.billCycle = billCycleData.billCycleText;
       data.mainPackage = {
         name: (mainPackage.customAttributes || {}).shortNameThai || mainPackage.title || '',
         description: mainPackage.statementThai || mainPackage.detailTH || ''
       };
+
+      data.fullNameTH = customer.firstName + ' ' + customer.lastName || '';
     }
+
     if (action === TransactionAction.READ_CARD || action === TransactionAction.READ_CARD_REPI) {
       data.customerImg = customer.imageReadSmartCard;
     } else {

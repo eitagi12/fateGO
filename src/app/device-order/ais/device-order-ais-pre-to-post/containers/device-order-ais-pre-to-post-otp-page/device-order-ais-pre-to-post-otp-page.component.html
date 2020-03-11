@@ -30,7 +30,7 @@
                   <a (click)="sendOTP()"><u>{{'ขอรับรหัสใหม่'| translate}}</u></a>
                 </div>
                 <div class="col-6 col-sm-6 text-center">
-                  <button [disabled]="!otpForm.valid" type="submit" id="btnOtp" class="btn btn-success btn-lg" (click)="verifyOTP()">ตกลง
+                  <button [disabled]="!otpForm.valid" type="submit" id="btnOtp" class="btn btn-success btn-lg" (click)="verifyOTP()">{{'ตกลง' | translate}}
                   </button>
                 </div>
               </div>

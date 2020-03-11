@@ -130,6 +130,7 @@ export class DeviceOrderAisPreToPostCurrentInfoPageComponent implements OnInit, 
                   })
                   .catch((error: any) => {
                     const errObj: any = error.error || [];
+                    delete this.transaction.data.handsetSim5G;
                     return errObj.developerMessage ? errObj.developerMessage : 'ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้';
                   });
 

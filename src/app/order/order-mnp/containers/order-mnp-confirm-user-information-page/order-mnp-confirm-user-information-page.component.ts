@@ -61,7 +61,7 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
   ngOnInit(): void {
     const customer = this.transaction.data.customer;
     const mainPackage = this.transaction.data.mainPackage;
-    const onTopPackage = this.transaction.data.onTopPackage;
+    const onTopPackage = this.transaction.data.onTopPackage || {};
     const simCard = this.transaction.data.simCard;
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData: any = billingInformation.billCycleData || {};

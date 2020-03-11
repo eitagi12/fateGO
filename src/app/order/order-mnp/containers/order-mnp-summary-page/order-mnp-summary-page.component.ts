@@ -10,6 +10,8 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { HttpClient } from '@angular/common/http';
 import { Transaction, MainPackage } from 'src/app/shared/models/transaction.model';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { Subscription } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-order-mnp-summary-page',
@@ -25,11 +27,13 @@ export class OrderMnpSummaryPageComponent implements OnInit {
   billingInfo: BillingInfo;
   mailBillingInfo: MailBillingInfo;
   telNoBillingInfo: TelNoBillingInfo;
+  translationSubscribe: Subscription;
 
   constructor(
     private router: Router,
     private homeService: HomeService,
-    private transactionService: TransactionService
+    private transactionService: TransactionService,
+    private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -37,6 +41,7 @@ export class OrderMnpSummaryPageComponent implements OnInit {
   ngOnInit(): void {
     const customer = this.transaction.data.customer;
     const mainPackage = this.transaction.data.mainPackage;
+    const onTopPackage = this.transaction.data.onTopPackage || {};
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData;
     const simCard = this.transaction.data.simCard;
@@ -48,7 +53,7 @@ export class OrderMnpSummaryPageComponent implements OnInit {
       idCardNo: customer.idCardNo,
       mobileNo: simCard.mobileNo,
       mainPackage: mainPackage.shortNameThai,
-      onTopPackage: '',
+      onTopPackage: onTopPackage.shortNameThai,
       packageDetail: mainPackage.statementThai,
     };
 
@@ -75,6 +80,24 @@ export class OrderMnpSummaryPageComponent implements OnInit {
       mobileNo: billCycleData.mobileNoContact,
       phoneNo: billCycleData.phoneNoContact,
     };
+
+    this.mapCustomerInfoByLang(this.translation.currentLang);
+    this.translationSubscribe = this.translation.onLangChange.subscribe(lang => {
+      this.mapCustomerInfoByLang(lang.lang);
+    });
+
+  }
+
+  mapCustomerInfoByLang(lang: string): void {
+    if (lang === 'EN') {
+      this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameEng;
+      this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementEng;
+      this.confirmCustomerInfo.onTopPackage = this.transaction.data.onTopPackage.shortNameEng;
+    } else {
+      this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameThai;
+      this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementThai;
+      this.confirmCustomerInfo.onTopPackage = this.transaction.data.onTopPackage.shortNameThai;
+    }
   }
 
   onBack(): void {

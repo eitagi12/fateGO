@@ -101,10 +101,10 @@ export class OrderPreToPostCurrentInfoPageComponent implements OnInit, OnDestroy
       this.serviceChange = currentServices.services.filter(service => service.canTransfer);
       this.serviceAfterChanged = currentServices.services.filter(service => !service.canTransfer);
 
-      const checkHandsetSim5G: HandsetSim5G = res[2].data || [];
-      this.message5G = typeof res[2] === 'string' ? res[2] : checkHandsetSim5G.message5gTh;
-      this.messageVolTE = typeof res[2] === 'string' ? res[2] : checkHandsetSim5G.messageVolteTh;
-      this.transaction.data.handsetSim5G = checkHandsetSim5G;
+      const handsetSim5G: HandsetSim5G = res[2].data || [];
+      this.message5G = typeof res[2] === 'string' ? res[2] : handsetSim5G.message5gTh;
+      this.messageVolTE = typeof res[2] === 'string' ? res[2] : handsetSim5G.messageVolteTh;
+      this.transaction.data.handsetSim5G = handsetSim5G;
 
       this.pageLoadingService.closeLoading();
       this.isLoad = false;

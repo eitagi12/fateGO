@@ -142,10 +142,11 @@ export class DeviceOrderAisMnpMobileDetailPageComponent implements OnInit, OnDes
             this.onBack();
           });
         return;
+      } else {
+        return this.getHandSetSim5G().then(() => this.pageLoadingService.closeLoading());
       }
 
-      return this.getHandSetSim5G();
-    }).then(() => this.pageLoadingService.closeLoading());
+    });
   }
 
   getHandSetSim5G(): Promise<any> {
@@ -204,6 +205,7 @@ export class DeviceOrderAisMnpMobileDetailPageComponent implements OnInit, OnDes
                     const messageError = errObj.developerMessage ? errObj.developerMessage : 'ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้';
                     this.message5G = messageError;
                     this.messageVolTE = messageError;
+                    delete this.transaction.data.handsetSim5G;
                     return messageError;
                   });
 
