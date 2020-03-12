@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Transaction, TransactionAction } from '../models/transaction.model';
+import { Transaction, TransactionAction, FaceRecognition } from '../models/transaction.model';
 import { PriceOption } from '../models/price-option.model';
 import { TokenService, BillingSystemType } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
@@ -74,6 +74,7 @@ export class SharedTransactionService {
     const data = transaction.data;
     const productDetail = priceOption.productDetail;
     const productStock = priceOption.productStock;
+    const faceRecognition: FaceRecognition = data.faceRecognition || {} as FaceRecognition;
 
     data.customer.province = (data.customer.province || '').replace(/มหานคร$/, '');
 
@@ -126,7 +127,7 @@ export class SharedTransactionService {
       }
     };
 
-    params.data.customer.isKYC = data.faceRecognition.kyc || false;
+    params.data.customer.isKYC = faceRecognition.kyc || false;
     params.data.customer.isOCR = false;
 
     if (data.mainPackage) {
