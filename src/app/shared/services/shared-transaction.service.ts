@@ -128,6 +128,9 @@ export class SharedTransactionService {
       }
     };
 
+    params.data.customer.isKYC = data.faceRecognition.kyc || false;
+    params.data.customer.isOCR = false;
+
     if (data.mainPackage) {
       params.data.main_package = data.mainPackage;
     }
