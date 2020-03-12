@@ -99,6 +99,10 @@ export class DeviceOrderAisNewRegisterSummaryPageComponent implements OnInit, On
     return (this.translateService.currentLang === 'EN') ? detail.shortNameEng : detail.shortNameThai;
   }
 
+  mobileCarePackageTitle(detail: any): string {
+    return (this.translateService.currentLang === 'EN') ? detail.shortNameEng : detail.shortNameThai;
+  }
+
   summary(amount: number[]): number {
     return amount.reduce((prev, curr) => {
       return prev + curr;
