@@ -1,8 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MyChannelSharedLibsModule, I18nService } from 'mychannel-shared-libs';
+import { SmartDigitalSharedLibsModule } from 'projects/smart-digital-shared-libs/src/public_api';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { OrderNewRegisterRoutingModule } from './order-new-register-routing.module';
+
 import { OrderNewRegisterValidateCustomerPageComponent } from './containers/order-new-register-validate-customer-page/order-new-register-validate-customer-page.component';
 import { OrderNewRegisterValidateCustomerIdCardPageComponent } from './containers/order-new-register-validate-customer-id-card-page/order-new-register-validate-customer-id-card-page.component';
 import { OrderNewRegisterValidateCustomerKeyInPageComponent } from './containers/order-new-register-validate-customer-key-in-page/order-new-register-validate-customer-key-in-page.component';
@@ -36,6 +38,7 @@ import { OrderNewRegisterPassportInfoPageComponent } from './containers/order-ne
     FormsModule,
     ReactiveFormsModule,
     OrderNewRegisterRoutingModule,
+    SmartDigitalSharedLibsModule,
     MyChannelSharedLibsModule,
     TranslateModule
   ],

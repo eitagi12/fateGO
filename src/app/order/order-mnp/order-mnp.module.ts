@@ -2,6 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { OrderMnpRoutingModule } from './order-mnp-routing.module';
+import { TranslateModule } from '@ngx-translate/core';
+import { SmartDigitalSharedLibsModule } from 'projects/smart-digital-shared-libs/src/public_api';
+
 import { OrderMnpNetworkTypePageComponent } from './containers/order-mnp-network-type-page/order-mnp-network-type-page.component';
 import { OrderMnpSelectReasonPageComponent } from './containers/order-mnp-select-reason-page/order-mnp-select-reason-page.component';
 import { OrderMnpValidateCustomerPageComponent } from './containers/order-mnp-validate-customer-page/order-mnp-validate-customer-page.component';
@@ -24,12 +27,12 @@ import { OrderMnpEbillingPageComponent } from './containers/order-mnp-ebilling-p
 import { OrderMnpEapplicationPageComponent } from './containers/order-mnp-eapplication-page/order-mnp-eapplication-page.component';
 import { OrderMnpVerifyDocumentPageComponent } from './containers/order-mnp-verify-document-page/order-mnp-verify-document-page.component';
 import { OrderMnpPassportInfoPageComponent } from './containers/order-mnp-passport-info-page/order-mnp-passport-info-page.component';
-import { TranslateModule } from '@ngx-translate/core';
 @NgModule({
   imports: [
     CommonModule,
     OrderMnpRoutingModule,
     MyChannelSharedLibsModule,
+    SmartDigitalSharedLibsModule,
     FormsModule,
     ReactiveFormsModule,
     TranslateModule

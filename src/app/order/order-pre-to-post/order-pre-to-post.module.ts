@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
+import { SmartDigitalSharedLibsModule } from 'projects/smart-digital-shared-libs/src/public_api';
 
 import { OrderPreToPostRoutingModule } from './order-pre-to-post-routing.module';
 
@@ -33,7 +34,6 @@ import { OrderPreToPostPassportInfoPageComponent } from './containers/order-pre-
 import { OrderPreToPostPassportInfoRepiPageComponent } from './containers/order-pre-to-post-passport-info-repi-page/order-pre-to-post-passport-info-repi-page.component';
 import { OrderPreToPostVerifyDocumentRepiPageComponent } from './containers/order-pre-to-post-verify-document-repi-page/order-pre-to-post-verify-document-repi-page.component';
 import { OrderPreToPostVerifyDocumentPageComponent } from './containers/order-pre-to-post-verify-document-page/order-pre-to-post-verify-document-page.component';
-import { SmartDigitalSharedLibsModule } from 'projects/smart-digital-shared-libs/src/public_api';
 
 @NgModule({
   imports: [

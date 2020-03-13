@@ -96,14 +96,15 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
   }
 
   mapCustomerInfoByLang(lang: string): void {
+    const onTopPackage = this.transaction.data.onTopPackage || {};
     if (lang === 'EN') {
       this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameEng;
       this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementEng;
-      this.confirmCustomerInfo.onTopPackage = this.transaction.data.onTopPackage.shortNameEng;
+      this.confirmCustomerInfo.onTopPackage = onTopPackage.shortNameEng || '-';
     } else {
       this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameThai;
       this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementThai;
-      this.confirmCustomerInfo.onTopPackage = this.transaction.data.onTopPackage.shortNameThai;
+      this.confirmCustomerInfo.onTopPackage = onTopPackage.shortNameThai || '-';
     }
   }
 
