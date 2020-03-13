@@ -46,7 +46,7 @@ export class DeviceOrderAisMnpSummaryPageComponent implements OnInit, OnDestroy 
     public qrCodeOmisePageService: QrCodeOmisePageService,
     public summaryPageService: SummaryPageService,
     private utils: Utils,
-    public translateService: TranslateService
+    private translateService: TranslateService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();

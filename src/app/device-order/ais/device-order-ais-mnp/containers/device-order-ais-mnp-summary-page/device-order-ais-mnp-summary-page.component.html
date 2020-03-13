@@ -55,7 +55,7 @@
             <p>
               <i class="fa fa-circle mr-3 text-green"></i>
               {{mainPackageTitle(transaction?.data?.mainPackage?.customAttributes)}}
-              <span class="pull-right" (click)="onOpenDetail(translateService.currentLang === 'EN' ? transaction?.data?.mainPackage?.detailEN : transaction?.data?.mainPackage?.detailTH )">
+              <span class="pull-right" (click)="onOpenDetail(currentLang === 'EN' ? transaction?.data?.mainPackage?.detailEN : transaction?.data?.mainPackage?.detailTH )">
                 <img src="assets/images/icon/icon-page.png" class="icon" />
               </span>
             </p>
@@ -76,7 +76,7 @@
                 <span>
                   {{mainPackageTitle(transaction?.data?.mobileCarePackage?.customAttributes)}}
                 </span>
-                <span class="pull-right" (click)="onOpenDetail(translateService.currentLang === 'EN' ? transaction?.data?.mobileCarePackage?.detailEN : transaction?.data?.mobileCarePackage?.detailTH)">
+                <span class="pull-right" (click)="onOpenDetail(currentLang === 'EN' ? transaction?.data?.mobileCarePackage?.detailEN : transaction?.data?.mobileCarePackage?.detailTH)">
                   <img src="assets/images/icon/icon-page.png" class="icon" />
                 </span>
               </ng-container>
