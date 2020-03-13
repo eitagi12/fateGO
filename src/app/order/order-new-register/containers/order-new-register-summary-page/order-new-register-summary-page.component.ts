@@ -92,14 +92,15 @@ export class OrderNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
     const billCycleData = billingInformation.billCycleData;
     const bills = billCycleData.billCycleText.split(' ');
     let billCycleTextEng = '-';
+    const onTopPackage = this.transaction.data.onTopPackage || {};
     if (lang === 'EN') {
       this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameEng;
       this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementEng;
-      this.confirmCustomerInfo.onTopPackage = this.transaction.data.onTopPackage.shortNameEng;
+      this.confirmCustomerInfo.onTopPackage = onTopPackage.shortNameEng || '-';
     } else {
       this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameThai;
       this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementThai;
-      this.confirmCustomerInfo.onTopPackage = this.transaction.data.onTopPackage.shortNameThai;
+      this.confirmCustomerInfo.onTopPackage = onTopPackage.shortNameThai || '-';
     }
 
     if (bills[3] === 'สิ้นเดือน') {
