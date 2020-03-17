@@ -1,17 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { TokenService } from 'mychannel-shared-libs';
+import { TokenService, AlertService } from 'mychannel-shared-libs';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { Transaction, Customer, Payment, Prebooking, Omise } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { User } from 'mychannel-shared-libs';
 import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
-import { QRCodeModel } from 'src/app/shared/services/qrcode-payment.service';
-import { environment } from 'src/environments/environment';
 import { QrCodeOmiseService } from 'src/app/device-only/services/qr-code-omise.service';
 import { CustomerGroup } from 'src/app/buy-product/services/flow.service';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -24,22 +20,13 @@ export class CreateOrderService {
   private readonly CREDIT_CARD_PAYMENT: string = '[CC]';
   private readonly BANK: string = '[B]';
   private readonly INSTALLMENT: string = '[I]';
-  private readonly POINT: string = '[P]';
   private readonly DISCOUNT: string = '[D]';
   private readonly TRADE_NO: string = '[T]';
-  private readonly REMARK: string = '[RM]';
-  private readonly SUMMARY_POINT: string = '[SP]';
-  private readonly SUMMARY_DISCOUNT: string = '[SD]';
-  private readonly RETURN_CODE: string = '[RC]';
   private readonly PROMOTION_NAME: string = '[PM]';
   private readonly MOBILE_CARE_CODE: string = '[MCC]';
   private readonly MOBILE_CARE: string = '[MC]';
   private readonly QUEUE_NUMBER: string = '[Q]';
-  private readonly AIR_TIME: string = '[AT]';
   private readonly DEVICE: string = '[DV]';
-  private readonly AIR_TIME_AND_DEVICE: string = '[AD]';
-  private readonly DEVICE_AND_ADVANCE_PAYMENT: string = '[DP]';
-  private readonly PRMOTION_CODE: string = '[PC]';
   private readonly PRIVILEGE_DESC: string = '[PN]';
   private readonly ORDER_TYPE: string = '[OT]';
   private readonly SPACE: string = ' ';
@@ -52,7 +39,8 @@ export class CreateOrderService {
     private http: HttpClient,
     private tokenService: TokenService,
     public qrCodeOmiseService: QrCodeOmiseService,
-    private sharedTransactionService: SharedTransactionService
+    private sharedTransactionService: SharedTransactionService,
+    private alertService: AlertService
   ) {
     this.user = this.tokenService.getUser();
   }
@@ -60,7 +48,7 @@ export class CreateOrderService {
   createTransaction(transaction: Transaction, priceOption: PriceOption): Promise<any> {
     return this.http.post('/api/salesportal/device-order/create-transaction', this.mapCreateTransactionDb(transaction, priceOption))
       .toPromise()
-      .then((resp => transaction));
+      .then((() => transaction));
   }
 
   private mapCreateTransactionDb(transaction: Transaction, priceOption: PriceOption): any {
@@ -109,27 +97,50 @@ export class CreateOrderService {
   }
 
   createAddToCartTrasaction(transaction: Transaction, priceOption: PriceOption): Promise<any> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       if (transaction
         && transaction.data
         && transaction.data.order
         && transaction.data.order.soId) {
         resolve(transaction);
       } else {
-        this.callAddToCartDT(transaction, priceOption).then((response) => {
-          if (response.resultCode === 'S') {
-            transaction.data.order = {
-              soId: response.soId
-            };
-            this.sharedTransactionService.createSharedTransaction(transaction, priceOption).then((res) => {
-              if (res.data.isSuccess === true) {
-                resolve(transaction);
-              }
-            }).catch(resolve);
-          } else {
-            reject('Cannot add item to the cart');
-          }
-        });
+        if (this.tokenService.isTelewizUser()) {
+          this.callAddToCart(transaction, priceOption).then((response: any) => {
+            if (response) {
+              transaction.data.order = {
+                soId: response.soId
+              };
+              this.sharedTransactionService.createSharedTransaction(transaction, priceOption).then((res: any) => {
+                if (res.data.isSuccess === true) {
+                  resolve(transaction);
+                }
+              }).catch((err: any) => {
+                this.alertService.error(err.error.developerMessage);
+              });
+            }
+          }).catch((err: any) => {
+            this.alertService.error(err.error.developerMessage);
+          });
+        } else {
+          this.callAddToCartDT(transaction, priceOption).then((response: any) => {
+            if (response.resultCode === 'S') {
+              transaction.data.order = {
+                soId: response.soId
+              };
+              this.sharedTransactionService.createSharedTransaction(transaction, priceOption).then((res: any) => {
+                if (res.data.isSuccess === true) {
+                  resolve(transaction);
+                }
+              }).catch((err: any) => {
+                this.alertService.error(err.error.developerMessage);
+              });
+            } else {
+              this.alertService.error('Cannot add item to the cart');
+            }
+          }).catch((err: any) => {
+            this.alertService.error(err.error.developerMessage);
+          });
+        }
       }
     });
   }
@@ -188,7 +199,7 @@ export class CreateOrderService {
       .then((res: any) => res.data);
   }
 
-  private callAddToCart(transaction: Transaction, priceOption: PriceOption): Promise<any> {
+  private callAddToCart(transaction: Transaction, priceOption: PriceOption): any {
     const productStock = priceOption.productStock;
     const productDetail = priceOption.productDetail;
     const customer = transaction.data.customer;
@@ -210,7 +221,7 @@ export class CreateOrderService {
       cusNameOrder: cusNameOrder,
       preBookingNo: '',
       depositAmt: '',
-      reserveNo: ''
+      reserveNo: '',
     };
 
     return this.http.post('/api/salesportal/add-device-selling-cart', requestData).toPromise()
@@ -295,7 +306,6 @@ export class CreateOrderService {
     const customer = transactionData.customer;
     const simCard = transactionData.simCard;
     const order = transactionData.order;
-    const currentPackage = transactionData.currentPackage || {};
     const mainPackage = transaction.data.mainPackage && transaction.data.mainPackage.customAttributes || {};
     const contract = transaction.data.contractFirstPack || {};
     const queue: any = transactionData.queue || {};
@@ -379,7 +389,7 @@ export class CreateOrderService {
       remarkReceipt: '',
     };
 
-    if (this.checkAddCurrentPackAmt(priceOption, trade, contract)) {
+    if (this.checkAddCurrentPackAmt(priceOption, contract)) {
       data.currentPackAmt = (mainPackage.priceExclVat || '0');
     }
 
@@ -722,10 +732,8 @@ export class CreateOrderService {
     let message = '';
     let customerGroupName = '';
     const customerGroup = priceOption.customerGroup;
-    const privilege = priceOption.privilege;
     const trade = priceOption.trade;
     const mobileCarePackage = transaction.data.mobileCarePackage || {};
-    const customer: any = transaction.data.customer || {};
     const queue: any = transaction.data.queue || {};
     const customAttributes = mobileCarePackage.customAttributes || {};
 
@@ -757,7 +765,7 @@ export class CreateOrderService {
     }
   }
 
-  checkAddCurrentPackAmt(priceOption: PriceOption, trade: any, contract: any): boolean {
+  checkAddCurrentPackAmt(priceOption: PriceOption, contract: any): boolean {
     return priceOption.customerGroup.code === CustomerGroup.EXISTING
       && this.isContractFirstPack(contract) === 0;
   }
