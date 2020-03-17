@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { TokenService } from 'mychannel-shared-libs';
 import { Subscription, Observable } from 'rxjs';
 import { API } from 'src/app/device-only/constants/api.constant';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +35,7 @@ export class BillingAddressService {
   }
 
   getTitleName(): Promise<Object> {
-    return this.http.get(API.QUERY_TITLENAMES).toPromise().then(this.responseTitleName());
+    return this.http.get(API.QUERY_TITLENAMES).pipe(map(this.responseTitleName())).toPromise();
   }
 
   getProvinces(): Promise<string[]> {
@@ -42,7 +43,7 @@ export class BillingAddressService {
   }
 
   getZipCodes(): Promise<string[]> {
-    return this.http.get(API.GET_ALL_ZIP_CODES).toPromise().then(this.responseZipCodes());
+    return this.http.get(API.GET_ALL_ZIP_CODES).pipe(map(this.responseZipCodes())).toPromise();
   }
 
   getAmphurs(req: any): Promise<string[]> {

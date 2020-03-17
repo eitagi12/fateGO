@@ -34,7 +34,7 @@
       </div>
       <div class="row">
         <div class="col-12">
-          <app-read-card (customerInfo)="setCustomerInfo($event)"></app-read-card>
+          <app-read-card (customerInfo)="setCustomerInfoReadCard($event)"></app-read-card>
         </div>
       </div>
     </div>
@@ -42,34 +42,31 @@
       <div class="text-right" (click)="switchKeyInBillingAddress()">
         <label style="cursor: pointer" class="text-lime">{{ 'ระบุที่อยู่ใบเสร็จรับเงิน' | translate }}</label>
       </div>
-      <div *ngIf="isShowInputForKeyIn;else customerDetail">
-        <app-billing-address 
-          [titleNames]="titleName" 
+      <div [hidden]="!isShowInputForKeyIn">
+        <app-billing-address
+          [titleNames]="titleNames" 
           [customerAddress]="customerAddress" 
-          [allZipCodes]="allZipCodes"
-          [provinces]="getProvinces()" 
+          [zipCodesAllProvince]="zipCodesAllProvince"
+          [provinces]="provinces" 
+          [allProvinces]="allProvinces"
           [amphurs]="amphurs" 
           [tumbols]="tumbols" 
           [zipCodes]="zipCode"
-          (provinceSelected)="onProvinceSelected($event)" 
-          (amphurSelected)="onAmphurSelected($event)"
-          (tumbolSelected)="onTumbolSelected($event)" 
-          (zipCodeSelected)="onZipCodeSelected($event)"
           (completed)="onCompleted($event)" 
           (error)="onError($event)"
           [keyInCustomerAddressTemp]="keyInCustomerAddressTemp" 
           [actionType]="actionType"
-        >
+          [readCardCustomerAddressTemp]="readCardCustomerAddressTemp">
         </app-billing-address>
       </div>
-      <ng-template #customerDetail>
+      <div [hidden]="isShowInputForKeyIn">
         <div>
           <label class="text-grey">{{ 'ผู้ซื้อ' | translate }} &nbsp;&nbsp;&nbsp; {{ nameText }} </label>
         </div>
         <div>
           <label class="text-grey">{{ 'ที่อยู่ใบเสร็จรับเงิน' | translate }} &nbsp;&nbsp;&nbsp; {{ billingAddressText }}</label>
         </div>
-      </ng-template>
+      </div>
     </div>
     <div class="card-footer bg-transparent">
       <form [formGroup]="receiptInfoForm" class="pt-2">

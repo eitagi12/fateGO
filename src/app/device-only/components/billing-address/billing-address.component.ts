@@ -1,15 +1,19 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, AfterViewInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors, ValidatorFn, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinct, delay } from 'rxjs/operators';
-import { Utils, CustomerAddress, User, TokenService } from 'mychannel-shared-libs';
+import { Utils, User, TokenService } from 'mychannel-shared-libs';
 import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
 import { TransactionAction, Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { HttpClient } from '@angular/common/http';
+import { API } from 'src/app/device-only/constants/api.constant';
+import { longStackSupport } from 'q';
 
 export interface CustomerAddress {
-  titleName: string;
-  firstName: string;
-  lastName: string;
+  idCardNo?: string;
+  titleName?: string;
+  firstName?: string;
+  lastName?: string;
   homeNo: string;
   moo?: string;
   mooBan?: string;
@@ -33,6 +37,8 @@ export class BillingAddressComponent implements OnInit, OnChanges {
 
   @Input() keyInCustomerAddressTemp: any;
 
+  @Input() readCardCustomerAddressTemp: any;
+
   @Input() actionType: string;
 
   @Input() titleNames: string[];
@@ -41,11 +47,11 @@ export class BillingAddressComponent implements OnInit, OnChanges {
 
   @Input() lastName: string[];
 
-  @Input() customerAddress: CustomerAddress;
+  @Input() customerAddress: any;
 
   @Input() idCardNo: string[];
 
-  @Input() allZipCodes: string[];
+  @Input() zipCodesAllProvince: string[];
 
   @Input() provinces: string[];
 
@@ -55,15 +61,9 @@ export class BillingAddressComponent implements OnInit, OnChanges {
 
   @Input() zipCodes: string[];
 
+  @Input() allProvinces: string[];
+
   @Input() titleNameSelected: EventEmitter<any> = new EventEmitter<any>();
-
-  @Output() provinceSelected: EventEmitter<any> = new EventEmitter<any>();
-
-  @Output() amphurSelected: EventEmitter<any> = new EventEmitter<any>();
-
-  @Output() tumbolSelected: EventEmitter<any> = new EventEmitter<any>();
-
-  @Output() zipCodeSelected: EventEmitter<any> = new EventEmitter<any>();
 
   @Output() completed: EventEmitter<any> = new EventEmitter<any>();
 
@@ -83,21 +83,28 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   isDeviceOnlyASP: boolean;
   user: User;
 
+  provinceSelected: any;
+  amphurSelected: any;
+  tumbolSelected: any;
+  zipCodeSelected: any;
+
+  customerChanges: any;
+
   constructor(
     public fb: FormBuilder,
     private utils: Utils,
     private customerInformationService: CustomerInformationService,
     private transactionService: TransactionService,
     private tokenService: TokenService,
+    private http: HttpClient
   ) {
     this.transaction = this.transactionService.load();
     this.user = this.tokenService.getUser();
   }
 
   ngOnInit(): void {
-    this.createForm();
+    this.createCustomerAddressForm();
     this.checkProvinceAndAmphur();
-    this.checkAction();
     this.isDeviceOnlyASP = this.user.userType === 'ASP' ? true : false;
   }
 
@@ -110,14 +117,57 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    //  This's refactor
+    if (changes.readCardCustomerAddressTemp && changes.readCardCustomerAddressTemp.currentValue) {
+      this.checkAction();
+      this.customerAddressForm.patchValue({
+        idCardNo: this.readCardCustomerAddressTemp.idCardNo,
+        titleName: this.readCardCustomerAddressTemp.titleName === 'น.ส.' ? 'นางสาว' : this.readCardCustomerAddressTemp.titleName,
+        firstName: this.readCardCustomerAddressTemp.firstName,
+        lastName: this.readCardCustomerAddressTemp.lastName,
+        homeNo: this.readCardCustomerAddressTemp.homeNo,
+        moo: this.readCardCustomerAddressTemp.moo,
+        mooBan: this.readCardCustomerAddressTemp.mooBan,
+        room: this.readCardCustomerAddressTemp.room,
+        floor: this.readCardCustomerAddressTemp.floor,
+        buildingName: this.readCardCustomerAddressTemp.buildingName,
+        soi: this.readCardCustomerAddressTemp.soi,
+        street: this.readCardCustomerAddressTemp.street,
+        province: this.readCardCustomerAddressTemp.province,
+        amphur: this.readCardCustomerAddressTemp.amphur,
+        tumbol: this.readCardCustomerAddressTemp.tumbol,
+        zipCode: this.readCardCustomerAddressTemp.zipCode
+      });
+    } else if (changes.keyInCustomerAddressTemp && changes.keyInCustomerAddressTemp.currentValue) {
+      this.checkAction();
+      this.customerAddressForm.patchValue({
+        idCardNo: this.keyInCustomerAddressTemp.idCardNo,
+        titleName: this.keyInCustomerAddressTemp.titleName === 'น.ส.' ? 'นางสาว' : this.keyInCustomerAddressTemp.titleName,
+        firstName: this.keyInCustomerAddressTemp.firstName,
+        lastName: this.keyInCustomerAddressTemp.lastName,
+        homeNo: this.keyInCustomerAddressTemp.homeNo,
+        moo: this.keyInCustomerAddressTemp.moo,
+        mooBan: this.keyInCustomerAddressTemp.mooBan,
+        room: this.keyInCustomerAddressTemp.room,
+        floor: this.keyInCustomerAddressTemp.floor,
+        buildingName: this.keyInCustomerAddressTemp.buildingName,
+        soi: this.keyInCustomerAddressTemp.soi,
+        street: this.keyInCustomerAddressTemp.street,
+        province: this.keyInCustomerAddressTemp.province,
+        amphur: this.keyInCustomerAddressTemp.amphur,
+        tumbol: this.keyInCustomerAddressTemp.tumbol,
+        zipCode: this.keyInCustomerAddressTemp.zipCode
+      });
+    }
+
     if (changes.zipCodes
       && changes.zipCodes.currentValue
       && changes.zipCodes.currentValue.length === 1) {
-        if (this.customerAddressForm) {
-          this.customerAddressForm.patchValue({
-            zipCode: changes.zipCodes.currentValue[0]
-          });
-        }
+      if (this.customerAddressForm) {
+        this.customerAddressForm.patchValue({
+          zipCode: changes.zipCodes.currentValue[0]
+        });
+      }
     }
   }
 
@@ -152,6 +202,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       tumbol: '',
       zipCode: ''
     });
+
     this.disableFormAmphurAndTumbol();
     this.customerAddressForm.markAsTouched();
     this.completed.emit({
@@ -166,7 +217,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     }
   }
 
-  createForm(): void {
+  createCustomerAddressForm(): void {
     this.customerAddressForm = this.fb.group({
       idCardNo: ['', [Validators.required, Validators.pattern(/^[1-8]\d{12}$/), this.validateIdCard.bind(this)]],
       titleName: ['', [Validators.required]],
@@ -183,30 +234,95 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       province: ['', [Validators.required]],
       amphur: ['', [Validators.required]],
       tumbol: ['', [Validators.required]],
-      zipCode: ['', [Validators.required, Validators.maxLength(5), this.validateZipCode.bind(this)]],
+      zipCode: ['', [Validators.required, Validators.maxLength(5)]],
     });
-    this.disableFormAmphurAndTumbol();
-    this.customerAddressForm.patchValue(this.customerAddress || {});
-    this.titleFormControl();
-    this.provinceFormControl();
-    this.amphurFormControl();
-    this.tumbolFormControl();
-    this.zipCodeFormControl();
-    if (this.keyInCustomerAddressTemp) {
-      if (this.keyInCustomerAddressTemp.titleName === 'น.ส.') {
-        this.keyInCustomerAddressTemp.titleName = 'นางสาว';
-      }
-      for (const item in this.keyInCustomerAddressTemp) {
-        if (this.keyInCustomerAddressTemp.hasOwnProperty(item) && this.customerAddressForm.value.hasOwnProperty(item)) {
-          this.customerAddressForm.controls[item].setValue(this.keyInCustomerAddressTemp[item]);
-        }
-      }
-    }
+
+    // CHECK SELECT VALUE
+    this.onSelectedTitleName();
+    this.onSelectedProvince();
+    this.onSelectedAmphur();
+    this.onSelectedTumbol();
+
     this.customerAddressForm.valueChanges.pipe(debounceTime(750)).subscribe((value: any) => {
-      this.error.emit(this.customerAddressForm.valid);
-      if (this.customerAddressForm.valid && this.customerAddressForm.controls.idCardNo.value) {
-        const idCardNo = this.customerAddressForm.controls.idCardNo.value;
-        this.completed.emit({...value, idCardNo, dirty: this.customerAddressForm.dirty, touched: this.customerAddressForm.touched });
+      if (this.keyInCustomerAddressTemp || this.readCardCustomerAddressTemp) {
+        this.error.emit(this.customerAddressForm.valid);
+      } else {
+        this.error.emit(true);
+      }
+        if (this.customerAddressForm.valid && this.customerAddressForm.controls.idCardNo.value) {
+          const idCardNo = this.customerAddressForm.controls.idCardNo.value;
+          this.completed.emit({ ...value, idCardNo, dirty: this.customerAddressForm.dirty, touched: this.customerAddressForm.touched });
+        }
+    });
+  }
+
+  onSelectedTumbol(): void {
+    this.customerAddressForm.controls['tumbol'].valueChanges.subscribe((tumbolName: any) => {
+      if (tumbolName) {
+        const controlsZipCode = this.customerAddressForm.controls['zipCode'];
+        this.tumbolSelected = {
+          provinceName: this.customerAddressForm.value.province || '',
+          amphurName: this.customerAddressForm.value.amphur || '',
+          tumbolName: tumbolName,
+          zipCode: controlsZipCode.invalid ? controlsZipCode.value : null
+        };
+        this.customerAddress = {
+          tumbol: tumbolName
+        };
+        this.queryZipCode(this.tumbolSelected);
+      }
+    });
+  }
+
+  onSelectedAmphur(): void {
+    this.customerAddressForm.controls['amphur'].valueChanges.subscribe((amphurName: any) => {
+      this.customerAddressForm.patchValue({
+        tumbol: '',
+      });
+      this.customerAddressForm.controls['tumbol'].enable();
+      if (amphurName) {
+        const controlsZipCode = this.customerAddressForm.controls['zipCode'];
+        this.amphurSelected = {
+          provinceName: this.customerAddressForm.value.province || '',
+          amphurName: amphurName,
+          zipCode: controlsZipCode.invalid ? controlsZipCode.value : null
+        };
+        this.customerAddress = {
+          amphur: amphurName
+        };
+        this.queryTumbol(this.amphurSelected);
+      }
+    });
+  }
+
+  onSelectedProvince(): void {
+    this.customerAddressForm.controls['province'].valueChanges.subscribe((provinceName: any) => {
+      this.customerAddressForm.patchValue({
+        amphur: '',
+        tumbol: '',
+      });
+      this.customerAddressForm.controls['amphur'].enable();
+      this.customerAddressForm.controls['tumbol'].disable();
+      if (provinceName) {
+        const controlsZipCode = this.customerAddressForm.controls['zipCode'];
+        this.provinceSelected = {
+          provinceName: provinceName,
+          zipCode: controlsZipCode.invalid ? controlsZipCode.value : null
+        };
+        this.customerAddress = {
+          province: provinceName
+        };
+        this.queryAmphur(this.provinceSelected);
+      }
+    });
+  }
+
+  onSelectedTitleName(): void {
+    this.customerAddressForm.controls['titleName'].valueChanges.subscribe((titleName: any) => {
+      if (titleName) {
+        this.customerAddress = {
+          titleName: titleName
+        };
       }
     });
   }
@@ -340,6 +456,64 @@ export class BillingAddressComponent implements OnInit, OnChanges {
 
   private amphurForm(): AbstractControl {
     return this.customerAddressForm.controls['amphur'];
+  }
+
+  // It's Refactor
+  queryAmphur(params: any): void {
+    const province = this.getProvinceByName(params.provinceName);
+    const req = {
+      provinceId: province.id,
+      zipCode: params.zipcode
+    };
+    if (!params.zipCode) {
+      delete req.zipCode;
+    }
+    this.http.get(API.QUERY_AMPHURS, { params: req }).subscribe((resp: any) => {
+      this.amphurs = (resp.data.amphurs || []).map((amphur: any) => {
+        return amphur;
+      });
+    });
+  }
+
+  queryTumbol(params: any): void {
+    const province = this.getProvinceByName(params.provinceName);
+    const req = {
+      provinceId: province.id,
+      amphurName: params.amphurName,
+      zipCode: params.zipcode
+    };
+    if (!params.zipCode) {
+      delete req.zipCode;
+    }
+    this.http.get(API.QUERY_TUMBOLS, { params: req }).subscribe((resp: any) => {
+      this.tumbols = (resp.data.tumbols || []).map((tumbol: any) => {
+        return tumbol;
+      });
+    });
+  }
+
+  queryZipCode(params: any): void {
+    const province = this.getProvinceByName(params.provinceName);
+    this.http.get(API.QUERY_ZIPCODE, {
+      params: {
+        provinceId: province.id,
+        amphurName: params.amphurName,
+        tumbolName: params.tumbolName
+      }
+    }).subscribe((resp: any) => {
+      const zipCode = resp.data.zipcodes || [];
+      if (zipCode && zipCode.length > 0) {
+        const controlZipCode = this.customerAddressForm.controls['zipCode'];
+        controlZipCode.setValue(zipCode[0]);
+        this.zipCodeSelected = {
+          zipCode: controlZipCode.value
+        };
+      }
+    });
+  }
+
+  getProvinceByName(provinceName: string): any {
+    return (this.allProvinces || []).find((prov: any) => prov.name === provinceName) || {};
   }
 
 }

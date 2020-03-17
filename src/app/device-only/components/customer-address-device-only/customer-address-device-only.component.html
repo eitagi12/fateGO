@@ -19,21 +19,27 @@
             <label for="idCardNo" id="txtIdCardNo">{{ 'บัตรประชาชน' | translate }}
               <span class="text-red"> *</span>
             </label>
-            <input type="text" class="form-control" id="idCardNo" maxlength="{{ idCardMaxLength }}" autocomplete="off" formControlName="idCardNo" 
+            <!-- <input type="text" class="form-control" id="idCardNo" maxlength="{{ idCardMaxLength }}" autocomplete="off" formControlName="idCardNo" 
               [ngClass]="{ 'is-invalid' : customerAddressForm.controls['idCardNo'].invalid && customerAddressForm.controls['idCardNo'].dirty}">
             <small class="invalid-feedback" *ngIf="customerAddressForm.controls['idCardNo'].dirty && customerAddressForm.controls['idCardNo'].errors">
               * {{ customerAddressForm.controls['idCardNo'].errors?.message || 'กรุณากรอกรูปแบบให้ถูกต้อง'}}
-            </small>
+            </small> -->
+            <input type="text" class="form-control" id="idCardNo" maxlength="{{ idCardMaxLength }}" autocomplete="off" formControlName="idCardNo">
           </div>
 
           <div class="form-group">
             <label for="titleName" id="txtTitleName">{{ 'คำนำหน้าชื่อ' | translate }}
               <span class="text-red"> *</span>
             </label>
-            <select class="form-control" title="คำนำหน้าชื่อ" id="selectTitleName" formControlName="titleName"
+            <!-- <select class="form-control" title="คำนำหน้าชื่อ" id="selectTitleName" formControlName="titleName"
               [ngClass]="{'is-invalid': customerAddressForm.controls['titleName'].invalid && customerAddressForm.controls['titleName'].dirty }">
               <option disabled value="">{{ 'คำนำหน้าชื่อ' | translate }}</option>
               <option *ngFor="let titleName of titleNames" [value]="titleName">{{ titleName }}</option>
+            </select> -->
+            <select class="form-control" title="คำนำหน้าชื่อ" id="selectTitleName" formControlName="titleName">
+              <option disabled value="">{{ 'คำนำหน้าชื่อ' | translate }}</option>
+              <option *ngFor="let titleName of titleNames" [value]="titleName">{{ titleName }}</option>
+              <option></option>
             </select>
           </div>
 
@@ -41,24 +47,27 @@
             <label for="firstName" id="textFirstName">{{ 'ชื่อ' | translate }}
               <span class="text-red"> *</span>
             </label>
-            <input type="text" autocomplete="off" class="form-control" id="inputfirstName" maxlength="50" formControlName="firstName"
-              [ngClass]="{'is-invalid': !customerAddressForm.controls['firstName'].valid && customerAddressForm.controls['firstName'].dirty }">
+            <!-- <input type="text" autocomplete="off" class="form-control" id="inputfirstName" maxlength="50" formControlName="firstName"
+              [ngClass]="{'is-invalid': !customerAddressForm.controls['firstName'].valid && customerAddressForm.controls['firstName'].dirty }"> -->
+            <input type="text" autocomplete="off" class="form-control" id="inputfirstName" maxlength="50" formControlName="firstName">
           </div>
 
           <div class="form-group">
             <label for="lastName" id="textLastName">{{ 'นามสกุล' | translate }}
               <span class="text-red"> *</span>
             </label>
-            <input type="text" autocomplete="off" class="form-control" id="inputlastName" maxlength="50" formControlName="lastName"
-              [ngClass]="{'is-invalid': !customerAddressForm.controls['lastName'].valid && customerAddressForm.controls['lastName'].dirty }">
+            <!-- <input type="text" autocomplete="off" class="form-control" id="inputlastName" maxlength="50" formControlName="lastName"
+              [ngClass]="{'is-invalid': !customerAddressForm.controls['lastName'].valid && customerAddressForm.controls['lastName'].dirty }"> -->
+            <input type="text" autocomplete="off" class="form-control" id="inputlastName" maxlength="50" formControlName="lastName">
           </div>
 
           <div class="form-group">
             <label for="homeNo" id="txtHomeNo">{{ 'บ้านเลขที่' | translate }}
               <span class="text-red"> *</span>
             </label>
-            <input type="text" autocomplete="off" class="form-control" id="inputHomeNo" maxlength="10" formControlName="homeNo"
-              [ngClass]="{'is-invalid': !customerAddressForm.controls['homeNo'].valid && customerAddressForm.controls['homeNo'].dirty }">
+            <!-- <input type="text" autocomplete="off" class="form-control" id="inputHomeNo" maxlength="10" formControlName="homeNo"
+              [ngClass]="{'is-invalid': !customerAddressForm.controls['homeNo'].valid && customerAddressForm.controls['homeNo'].dirty }"> -->
+            <input type="text" autocomplete="off" class="form-control" id="inputHomeNo" maxlength="10" formControlName="homeNo">
           </div>
 
           <div class="form-group">
@@ -100,8 +109,12 @@
             <label for="province" id="txtProvince">{{ 'จังหวัด' | translate }}
               <span class="text-red"> *</span>
             </label>
-            <select class="form-control" title="กรุณาเลือกจังหวัด" id="selectProvince" formControlName="province"
+            <!-- <select class="form-control" title="กรุณาเลือกจังหวัด" id="selectProvince" formControlName="province"
               [ngClass]="{'is-invalid': customerAddressForm.controls['province'].invalid && customerAddressForm.controls['province'].dirty }">
+              <option disabled value="">{{ 'กรุณาเลือกจังหวัด' | translate }}</option>
+              <option *ngFor="let province of provinces" [value]="province">{{ province }}</option>
+            </select> -->
+            <select class="form-control" title="กรุณาเลือกจังหวัด" id="selectProvince" formControlName="province">
               <option disabled value="">{{ 'กรุณาเลือกจังหวัด' | translate }}</option>
               <option *ngFor="let province of provinces" [value]="province">{{ province }}</option>
             </select>
@@ -111,10 +124,14 @@
             <label for="amphur" class="col-form-label" id="txtAmphur">{{ 'อำเภอ/เขต' | translate }}
               <span class="text-red"> *</span>
             </label>
-            <select class="form-control" title="กรุณาเลือกอำเภอ/เขต" id="selectAmphur" formControlName="amphur"
+            <!-- <select class="form-control" title="กรุณาเลือกอำเภอ/เขต" id="selectAmphur" formControlName="amphur"
               [ngClass]="{'is-invalid': customerAddressForm.controls['amphur'].invalid && customerAddressForm.controls['amphur'].dirty }">
               <option disabled value="">{{ 'กรุณาเลือกอำเภอ/เขต' | translate }}</option>
               <option *ngFor="let amphur of amphurs" [value]="amphur">{{amphur}}</option>
+            </select> -->
+            <select class="form-control" title="กรุณาเลือกอำเภอ/เขต"  id="selectAmphur" formControlName="amphur">
+              <option disabled value="">{{ 'กรุณาเลือกอำเภอ/เขต' | translate }}</option>
+              <option></option>
             </select>
           </div>
 
@@ -122,10 +139,14 @@
             <label for="tumbol" class="col-form-label" id="txtTumbol">{{ 'ตำบล/แขวง' | translate }}
               <span class="text-red"> *</span>
             </label>
-            <select class="form-control" title="กรุณาเลือกตำบล/แขวง" id="selectTumbol" formControlName="tumbol"
+            <!-- <select class="form-control" title="กรุณาเลือกตำบล/แขวง" id="selectTumbol" formControlName="tumbol"
               [ngClass]="{'is-invalid': customerAddressForm.controls['tumbol'].invalid && customerAddressForm.controls['tumbol'].dirty }">
               <option disabled value="">{{ 'กรุณาเลือกตำบล/แขวง' | translate }}</option>
               <option *ngFor="let tumbol of tumbols;" [value]="tumbol">{{tumbol}}</option>
+            </select> -->
+            <select class="form-control" title="กรุณาเลือกตำบล/แขวง"  id="selectTumbol" formControlName="tumbol">
+              <option disabled value="">{{ 'กรุณาเลือกตำบล/แขวง' | translate }}</option>
+              <option></option>
             </select>
           </div>
 
@@ -133,9 +154,11 @@
             <label for="zipCodes" class="col-form-label" id="txtZipCode">{{ 'รหัสไปรษณีย์' | translate }}
               <span class="text-red"> *</span>
             </label>
-            <input type="text" id="selectZipCode" maxlength="5" autocomplete="off" formControlName="zipCode"
+            <!-- <input type="text" id="selectZipCode" maxlength="5" autocomplete="off" formControlName="zipCode"
               placeholder="กรุณาเลือกรหัสไปรษณีย์" class="form-control"
-              [ngClass]="{'is-invalid': customerAddressForm.controls['zipCode'].invalid && customerAddressForm.controls['zipCode'].dirty }">
+              [ngClass]="{'is-invalid': customerAddressForm.controls['zipCode'].invalid && customerAddressForm.controls['zipCode'].dirty }"> -->
+              <input type="text" id="selectZipCode" maxlength="5" autocomplete="off" formControlName="zipCode"
+              placeholder="กรุณาเลือกรหัสไปรษณีย์" class="form-control">
           </div>
         </form>
       </div>
