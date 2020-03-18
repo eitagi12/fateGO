@@ -163,7 +163,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
         });
       }).catch((error: any) => {
         this.pageLoadingService.closeLoading();
-        this.alertService.error(error);
+        this.alertService.error(error.error.resultDescription);
       });
     } else {
       const requestBody: any = {
