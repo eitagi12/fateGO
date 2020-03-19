@@ -33,7 +33,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
   identityValid: boolean = false;
   identity: string;
   isFbbNo: boolean;
-
+  minimumPackage: any;
   profileFbb: ProfileFbb;
 
   constructor(
@@ -50,12 +50,12 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
     private privilegeService: PrivilegeService,
     private sharedTransactionService: SharedTransactionService,
     private profileFbbService: ProfileFbbService,
-    private translateService: TranslateService
-
+    private translateService: TranslateService,
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     this.profileFbb = this.profileFbbService.load();
+    this.minimumPackage = this.priceOption.trade.minimumPackage;
     this.user = this.tokenService.getUser();
     if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
       this.homeService.callback = () => {
@@ -74,6 +74,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
   }
 
   ngOnInit(): void {
+    console.log('priceOption  minimumPackage : ' , this.minimumPackage);
   }
 
   private createTransaction(): void {

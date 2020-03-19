@@ -32,6 +32,7 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
   shoppingCart: ShoppingCart;
   mobileNo: string;
   disableNextButton: boolean;
+  minimumPackage: any;
 
   constructor(
     private router: Router,
@@ -49,6 +50,7 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     this.profileFbb = this.profileFbbService.load();
+    this.minimumPackage = this.priceOption.trade.minimumPackage;
     this.homeService.callback = () => {
       this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
         .then((response: any) => {
@@ -72,9 +74,40 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
     this.pageLoadingService.openLoading();
     this.http.get(`/api/customerportal/mobile-detail/${this.mobileNo}`).toPromise()
       .then((response: any) => {
+        console.log('response  : ' , response);
         const mobileDetail = response.data;
+        console.log('if : ' , +response.data.package.priceExclVat , this.minimumPackage );
         this.mappingMobileDetail(mobileDetail);
-      }).then(() => this.pageLoadingService.closeLoading());
+        console.log('response.futurePackage.priceExclVat' , response.data.futurePackage);
+        console.log('response.data.package.priceExclVat' , response.data.package.priceExclVat);
+
+        if (response.data.futurePackage && +response.data.futurePackage.priceExclVat ) {
+          console.log('+response.futurePackage.priceExclVat : ' , +response.data.futurePackage.priceExclVat);
+          if (+response.data.futurePackage.priceExclVat >= this.minimumPackage) {
+            this.pageLoadingService.closeLoading();
+          } else {
+            const text = `เบอร์ ${this.mobileNo} ไม่สามารถรับสิทธิ์โครงการนี้ได้ `;
+            this.alertService.notify({
+              type: 'warning',
+              text,
+              onClose: () => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_VALIDATE_CUSTOMER_PAGE])
+            });
+          }
+        } else if (response.data.package.priceExclVat) {
+          console.log('+response.data.package.priceExclVat : ' , +response.data.package.priceExclVat);
+          if (+response.data.package.priceExclVat >= this.minimumPackage) {
+            this.pageLoadingService.closeLoading();
+          } else {
+            const text = `เบอร์ ${this.mobileNo} ไม่สามารถรับสิทธิ์โครงการนี้ได้ `;
+            this.alertService.notify({
+              type: 'warning',
+              text,
+              onClose: () => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_VALIDATE_CUSTOMER_PAGE])
+            });
+          }
+        }
+      });
+      // .then(() => this.pageLoadingService.closeLoading());
   }
 
   mappingMobileDetail(mobileDetail: any): any {
