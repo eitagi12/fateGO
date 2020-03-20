@@ -221,8 +221,8 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     this.customerAddressForm = this.fb.group({
       idCardNo: ['', [Validators.required, Validators.pattern(/^[1-8]\d{12}$/), this.validateIdCard.bind(this)]],
       titleName: ['', [Validators.required]],
-      firstName: ['', [Validators.required, this.validateCharacter()]],
-      lastName: ['', [Validators.required, this.validateCharacter()]],
+      firstName: ['', [Validators.required, this.validateCharacter(), this.validateSpace()]],
+      lastName: ['', [Validators.required, this.validateCharacter(), this.validateSpace()]],
       homeNo: ['', [Validators.required, Validators.pattern(/^[0-9^/]*$/)]],
       moo: [''],
       mooBan: [''],
@@ -249,10 +249,14 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       } else {
         this.error.emit(true);
       }
-        if (this.customerAddressForm.valid && this.customerAddressForm.controls.idCardNo.value) {
-          const idCardNo = this.customerAddressForm.controls.idCardNo.value;
-          this.completed.emit({ ...value, idCardNo, dirty: this.customerAddressForm.dirty, touched: this.customerAddressForm.touched });
-        }
+      if (this.customerAddressForm.valid && this.customerAddressForm.controls.idCardNo.value) {
+        const idCardNo = this.customerAddressForm.controls.idCardNo.value;
+        const firstName = this.customerAddressForm.controls.firstName.value.trim();
+        const lastName = this.customerAddressForm.controls.lastName.value.trim();
+        value.firstName = firstName;
+        value.lastName = lastName;
+        this.completed.emit({ ...value, idCardNo, dirty: this.customerAddressForm.dirty, touched: this.customerAddressForm.touched });
+      }
     });
   }
 
@@ -349,10 +353,21 @@ export class BillingAddressComponent implements OnInit, OnChanges {
 
   validateCharacter(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } => {
-      const reg = /[!$%^&*()_+|~=`{}\[\]:";'<>?,\/@#./1-9]/;
+      const reg = /[!$%^&*()_+|~=`{}\[\]:";'<>?,\/@#./0-9]/;
       const stringValue = control.value;
       const no = reg.test(stringValue);
       return no ? { 'validateCharacter': { stringValue } } : null;
+    };
+  }
+
+  validateSpace(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } => {
+      const stringValue = control.value;
+      if (stringValue && stringValue.trim() === '') {
+        return { 'validateSpace': { stringValue } };
+      } else {
+        return null;
+      }
     };
   }
 
