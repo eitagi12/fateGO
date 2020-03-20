@@ -363,7 +363,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   validateSpace(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } => {
       const stringValue = control.value;
-      if (stringValue.trim() === '') {
+      if (stringValue && stringValue.trim() === '') {
         return { 'validateSpace': { stringValue } };
       } else {
         return null;
