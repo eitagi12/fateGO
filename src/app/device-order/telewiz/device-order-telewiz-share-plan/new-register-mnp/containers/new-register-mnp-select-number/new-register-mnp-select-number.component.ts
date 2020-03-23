@@ -11,6 +11,9 @@ import {
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { RemoveCartService } from '../../services/remove-cart.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+
 @Component({
   selector: 'app-new-register-mnp-select-number',
   templateUrl: './new-register-mnp-select-number.component.html',
@@ -20,18 +23,31 @@ export class NewRegisterMnpSelectNumberComponent implements OnInit {
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
   transaction: Transaction;
   shoppingCart: ShoppingCart;
+  priceOption: PriceOption;
+  isJaymart: boolean = false;
 
   constructor(
     private router: Router,
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
-    private removeCartService: RemoveCartService
+    private removeCartService: RemoveCartService,
+    private priceOptionService: PriceOptionService
+
   ) {
     this.transaction = this.transactionService.load();
+    this.priceOption = this.priceOptionService.load();
   }
 
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
+    this.checkJaymart();
+  }
+
+  checkJaymart(): void {
+    const retailChain = this.priceOption.queryParams.isRole;
+    if (retailChain && retailChain === 'Retail Chain') {
+      this.isJaymart = !this.isJaymart;
+    }
   }
 
   onVerifyInstantSim(): void {

@@ -10,7 +10,8 @@ import {
   ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_EDIT_BILLING_ADDRESS_PAGE,
   ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_EBILLING_PAGE,
   ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_REASON_PAGE,
-  ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_MOBILE_CARE_PAGE
+  ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_MOBILE_CARE_PAGE,
+  ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_SUMMARY_PAGE
 } from '../../constants/route-path.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -19,6 +20,8 @@ import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ } from 'src/app/devic
 import * as moment from 'moment';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { RemoveCartService } from '../../services/remove-cart.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 const Moment = moment;
 
 @Component({
@@ -31,6 +34,7 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
 
   transaction: Transaction;
+  priceOption: PriceOption;
   confirmCustomerInfo: ConfirmCustomerInfo;
   billingInfo: BillingInfo;
   mailBillingInfo: MailBillingInfo;
@@ -58,9 +62,11 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     private shoppingCartService: ShoppingCartService,
     private translateService: TranslateService,
     private modalService: BsModalService,
-    private removeCartService: RemoveCartService
+    private removeCartService: RemoveCartService,
+    private priceOptionService: PriceOptionService
   ) {
     this.transaction = this.transactionService.load();
+    this.priceOption = this.priceOptionService.load();
     // New register profile not found.
     if (!this.transaction.data.billingInformation) {
       this.transaction.data.billingInformation = {};
@@ -265,7 +271,7 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
   }
 
   onNext(): void {
-
+    const retailChain = this.priceOption.queryParams.isRole;
     if (!this.customerValid() && !this.isMergeBilling()) {
       this.alertService.warning(this.translateService.instant('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร'));
       return;
@@ -276,7 +282,11 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     billCycleData.billingMethodText = this.billingInfo.billingMethod.text;
     billCycleData.billCycleText = this.billingInfo.billingCycle.text;
 
-    this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_MOBILE_CARE_PAGE]);
+    if (retailChain && retailChain === 'Retail Chain') {
+      this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_SUMMARY_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_MOBILE_CARE_PAGE]);
+    }
   }
 
   onEditAddress(): void {

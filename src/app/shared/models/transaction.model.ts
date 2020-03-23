@@ -440,6 +440,8 @@ export interface Seller {
   employeeId?: string;
   ascCode?: string;
   sharedUser?: string;
+  isRole?: string;
+  isPaymentId?: string;
 }
 export interface ShopLocation {
   id?: string;
