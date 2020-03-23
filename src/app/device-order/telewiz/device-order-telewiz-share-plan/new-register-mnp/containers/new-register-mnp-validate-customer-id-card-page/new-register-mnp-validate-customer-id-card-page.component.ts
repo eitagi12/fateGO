@@ -6,7 +6,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Transaction, Prebooking, Customer, TransactionType, TransactionAction, Order } from 'src/app/shared/models/transaction.model';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ } from 'src/app/device-order/constants/wizard.constant';
-import { ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_PAGE, ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_PAGE, ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_BY_PATTERN_PAGE } from '../../constants/route-path.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
@@ -53,6 +53,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
 
   order: Order;
   transactionId: string;
+  channelFlow: string;
 
   constructor(
     private router: Router,
@@ -76,6 +77,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
 
   ngOnInit(): void {
     this.readCardflowPC();
+    this.checkJaymart();
     // if (this.isTelewiz) {
     //   console.log('isTelewiz2');
     // }
@@ -97,6 +99,22 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
   // onCompleted(profile: ReadCardProfile): void {
   //   this.profile = profile;
   // }
+
+  checkJaymart(): void {
+    const retailChain = this.priceOption.queryParams.isRole;
+    if (retailChain && retailChain === 'Retail Chain') {
+      this.channelFlow = "isJaymart";
+    }
+  }
+
+  isJaymartRouteNextPage(): void {
+    if (this.channelFlow && this.channelFlow === 'isJaymart') {
+      this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_BY_PATTERN_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
+    }
+  }
+
 
   onNext(): any {
     this.pageLoadingService.openLoading();
@@ -153,7 +171,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                     }
                   }).then(() => {
                     this.setTransaction(this.transaction.data.customer);
-                    this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
+                    this.isJaymartRouteNextPage();
                   }).then(() => this.pageLoadingService.closeLoading());
               });
           }).catch((err) => {
@@ -210,7 +228,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                         // return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
                       }).then(() => {
                         this.setTransaction(this.transaction.data.customer);
-                        this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
+                        this.isJaymartRouteNextPage();
                         this.pageLoadingService.closeLoading();
                       });
                     } else {
@@ -219,7 +237,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                         order: { soId: this.soId }
                       };
                       this.setTransaction(this.transaction.data.customer);
-                      this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
+                      this.isJaymartRouteNextPage();
                       this.pageLoadingService.closeLoading();
                     }
                   });
@@ -434,7 +452,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
     this.transaction.data.customer = this.mapCustomer(customer);
     if (this.transaction.transactionId) {
       this.pageLoadingService.closeLoading();
-      this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
+      this.isJaymartRouteNextPage();
     } else {
       const transactionObject: any = this.validateCustomerService.buildTransaction({
         transaction: this.transaction,
@@ -450,7 +468,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
         if (response.data.isSuccess) {
           this.transaction = transactionObject;
           // this.createTransaction(transactionObject);
-          this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
+          this.isJaymartRouteNextPage();
         } else {
           this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
         }
