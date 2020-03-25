@@ -14,7 +14,10 @@ import {
   Utils
 } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ } from 'src/app/device-order/constants/wizard.constant';
+import {
+  WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ,
+  WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART
+} from 'src/app/device-order/constants/wizard.constant';
 import {
   ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE,
   ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CAPTURE_PAGE
@@ -41,7 +44,9 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
   @ViewChild('signImage') signImage: ElementRef;
   signed: boolean = false;
 
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+  wizards: string[];
+  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
 
   transaction: Transaction;
   priceOption: PriceOption;
@@ -75,6 +80,7 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
   imageSignatureBase64: string;
   img: any;
   isSuccess: boolean;
+  action: number = 5;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -120,6 +126,7 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
 
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
+    this.checkJaymart();
     this.isReadCard = this.transaction.data.action === 'READ_CARD' ? true : false;
     this.checkCaptureAndSign();
 
@@ -148,6 +155,16 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
     //     });
     //   }
     // };
+  }
+
+  checkJaymart(): void {
+    const retailChain = this.priceOption.queryParams.isRole;
+    if (retailChain && retailChain === 'Retail Chain') {
+      this.wizards = this.wizardJaymart;
+      this.action = 4;
+    } else {
+      this.wizards = this.wizardTelewiz;
+    }
   }
 
   checkCaptureAndSign(): void {

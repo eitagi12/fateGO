@@ -1,5 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ } from 'src/app/device-order/constants/wizard.constant';
+import {
+  WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ,
+  WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART
+} from 'src/app/device-order/constants/wizard.constant';
 import {
   MobileNoCondition, TokenService, PageLoadingService, ShoppingCart, MobileNo, User, AlertService
 } from 'mychannel-shared-libs';
@@ -21,7 +24,9 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
   styleUrls: ['./new-register-mnp-by-pattern-page.component.scss']
 })
 export class NewRegisterMnpByPatternPageComponent implements OnInit, OnDestroy {
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+  wizards: string[];
+  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
 
   shoppingCart: ShoppingCart;
   transaction: Transaction;
@@ -49,7 +54,7 @@ export class NewRegisterMnpByPatternPageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // let isUser = this.tokenService.isTelewizUser() ? 'Y' : 'N'
     // console.log('isUser -->', isUser);
-
+    this.checkJaymart();
     if (this.transaction.data.simCard &&
       this.transaction.data.simCard.mobileNo) {
       this.onResereMobileNo(this.transaction.data.simCard.mobileNo, 'Unlock');
@@ -60,6 +65,15 @@ export class NewRegisterMnpByPatternPageComponent implements OnInit, OnDestroy {
     this.shoppingCart = Object.assign(this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz(), {
       mobileNo: ''
     });
+  }
+
+  checkJaymart(): void {
+    const retailChain = this.priceOption.queryParams.isRole;
+    if (retailChain && retailChain === 'Retail Chain') {
+      this.wizards = this.wizardJaymart;
+    } else {
+      this.wizards = this.wizardTelewiz;
+    }
   }
 
   onSearch(mobileNoCondition: any): void {

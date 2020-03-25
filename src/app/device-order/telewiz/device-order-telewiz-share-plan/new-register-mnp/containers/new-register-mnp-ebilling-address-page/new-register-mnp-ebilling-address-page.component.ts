@@ -8,9 +8,14 @@ import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { debounceTime } from 'rxjs/operators';
 import { ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_CONFIRM_USER_INFORMATION_PAGE } from '../../constants/route-path.constant';
-import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ } from 'src/app/device-order/constants/wizard.constant';
+import {
+  WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ,
+  WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART
+} from 'src/app/device-order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { RemoveCartService } from '../../services/remove-cart.service';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
 
 @Component({
   selector: 'app-new-register-mnp-ebilling-address-page',
@@ -19,9 +24,12 @@ import { RemoveCartService } from '../../services/remove-cart.service';
 })
 export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDestroy {
 
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+  wizards: string[];
+  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
 
   transaction: Transaction;
+  priceOption: PriceOption;
   customerAddress: CustomerAddress;
   allZipCodes: string[];
   provinces: any[];
@@ -41,12 +49,15 @@ export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDes
     private http: HttpClient,
     private translation: TranslateService,
     private pageLoadingService: PageLoadingService,
-    private removeCartService: RemoveCartService
+    private removeCartService: RemoveCartService,
+    private priceOptionService: PriceOptionService
   ) {
     this.transaction = this.transactionService.load();
+    this.priceOption = this.priceOptionService.load();
   }
 
   ngOnInit(): void {
+    this.checkJaymart();
     this.callService();
     this.translationSubscribe = this.translation.onLangChange.pipe(debounceTime(750)).subscribe(() => {
       this.callService();
@@ -57,6 +68,15 @@ export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDes
       this.customerAddress.tumbol = null;
       this.customerAddress.province = null;
     });
+  }
+
+  checkJaymart(): void {
+    const retailChain = this.priceOption.queryParams.isRole;
+    if (retailChain && retailChain === 'Retail Chain') {
+      this.wizards = this.wizardJaymart;
+    } else {
+      this.wizards = this.wizardTelewiz;
+    }
   }
 
   callService(): void {

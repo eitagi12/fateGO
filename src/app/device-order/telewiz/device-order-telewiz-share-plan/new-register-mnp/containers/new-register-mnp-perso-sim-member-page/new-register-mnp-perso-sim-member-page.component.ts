@@ -11,7 +11,10 @@ import {
   ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PERSO_SIM_MASTER_PAGE
 } from '../../constants/route-path.constant';
 import { environment } from 'src/environments/environment';
-import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ } from 'src/app/device-order/constants/wizard.constant';
+import {
+  WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ,
+  WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART
+} from 'src/app/device-order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { RemoveCartService } from '../../services/remove-cart.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
@@ -32,7 +35,9 @@ declare let window: any;
 })
 export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDestroy {
 
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+  wizards: string[];
+  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
   aisNative: any = window.aisNative;
 
   title: string;
@@ -86,6 +91,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
   simSerialKeyIn: string;
   simProgress: number;
   priceOption: PriceOption;
+  action: number = 6;
 
   constructor(
     private router: Router,
@@ -109,8 +115,8 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
   }
 
   ngOnInit(): void {
+    this.checkJaymart();
     this.memberSimCard = this.transaction.data.simCard.memberSimCard[0];
-
     this.checkOrderCounter = 0;
     this.getCommandCounter = false;
     this.mobileNo = this.memberSimCard.mobileNo;
@@ -119,6 +125,16 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
       this.setConfigPersoSim().then((res: any) => {
         this.persoSimWebsocket();
       });
+    }
+  }
+
+  checkJaymart(): void {
+    const retailChain = this.priceOption.queryParams.isRole;
+    if (retailChain && retailChain === 'Retail Chain') {
+      this.wizards = this.wizardJaymart;
+      this.action = 4;
+    } else {
+      this.wizards = this.wizardTelewiz;
     }
   }
 

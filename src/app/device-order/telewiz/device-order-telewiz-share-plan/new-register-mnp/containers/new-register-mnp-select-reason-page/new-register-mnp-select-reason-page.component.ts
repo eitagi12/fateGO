@@ -8,19 +8,28 @@ import {
   ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_NETWORK_TYPE,
   ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_CONFIRM_USER_INFORMATION_PAGE
 } from '../../constants/route-path.constant';
-import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ } from 'src/app/device-order/constants/wizard.constant';
+import {
+  WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ,
+  WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART
+} from 'src/app/device-order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { RemoveCartService } from '../../services/remove-cart.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 @Component({
   selector: 'app-new-register-mnp-select-reason-page',
   templateUrl: './new-register-mnp-select-reason-page.component.html',
   styleUrls: ['./new-register-mnp-select-reason-page.component.scss']
 })
 export class NewRegisterMnpSelectReasonPageComponent implements OnInit, OnDestroy {
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+  wizards: string[];
+  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
   transaction: Transaction;
   reasonForm: FormGroup;
   reasons: any[];
+  priceOption: PriceOption;
+  action: number = 4;
 
   constructor(
     private transactionService: TransactionService,
@@ -28,14 +37,27 @@ export class NewRegisterMnpSelectReasonPageComponent implements OnInit, OnDestro
     private fb: FormBuilder,
     private pageLoadingService: PageLoadingService,
     private http: HttpClient,
-    private removeCartService: RemoveCartService
+    private removeCartService: RemoveCartService,
+    private priceOptionService: PriceOptionService
   ) {
     this.transaction = this.transactionService.load();
+    this.priceOption = this.priceOptionService.load();
   }
 
   ngOnInit(): void {
+    this.checkJaymart();
     this.createForm();
     this.callService();
+  }
+
+  checkJaymart(): void {
+    const retailChain = this.priceOption.queryParams.isRole;
+    if (retailChain && retailChain === 'Retail Chain') {
+      this.wizards = this.wizardJaymart;
+      this.action = 3;
+    } else {
+      this.wizards = this.wizardTelewiz;
+    }
   }
 
   onBack(): void {

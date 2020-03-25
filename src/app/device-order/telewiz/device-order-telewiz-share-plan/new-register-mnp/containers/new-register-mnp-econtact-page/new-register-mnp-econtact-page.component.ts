@@ -13,7 +13,10 @@ import { CreateEcontractService } from 'src/app/shared/services/create-econtract
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_AGREEMENT_SIGN_PAGE } from '../../constants/route-path.constant';
-import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ } from 'src/app/device-order/constants/wizard.constant';
+import {
+  WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ,
+  WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART
+} from 'src/app/device-order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { RemoveCartService } from '../../services/remove-cart.service';
 
@@ -24,7 +27,9 @@ import { RemoveCartService } from '../../services/remove-cart.service';
 })
 export class NewRegisterMnpEcontactPageComponent implements OnInit, OnDestroy {
 
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+  wizards: string[];
+  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
 
   priceOption: PriceOption;
   transaction: Transaction;
@@ -34,6 +39,7 @@ export class NewRegisterMnpEcontactPageComponent implements OnInit, OnDestroy {
 
   translationSubcription: Subscription;
   currentLang: string;
+  action: number = 6;
   constructor(private router: Router,
     private homeService: HomeService,
     private http: HttpClient,
@@ -58,7 +64,18 @@ export class NewRegisterMnpEcontactPageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
+    this.checkJaymart();
     this.callService();
+  }
+
+  checkJaymart(): void {
+    const retailChain = this.priceOption.queryParams.isRole;
+    if (retailChain && retailChain === 'Retail Chain') {
+      this.wizards = this.wizardJaymart;
+      this.action = 4;
+    } else {
+      this.wizards = this.wizardTelewiz;
+    }
   }
 
   onBack(): void {

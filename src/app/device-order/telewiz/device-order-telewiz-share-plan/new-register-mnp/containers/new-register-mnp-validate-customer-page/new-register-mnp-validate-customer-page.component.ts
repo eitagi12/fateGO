@@ -1,6 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, Validators, ValidatorFn, AbstractControl, FormControl } from '@angular/forms';
-import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ } from 'src/app/device-order/constants/wizard.constant';
+import {
+  WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ,
+  WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART
+} from 'src/app/device-order/constants/wizard.constant';
 import { ValidateCustomerService } from 'src/app/shared/services/validate-customer.service';
 import { PageLoadingService, AlertService, Utils, User, TokenService } from 'mychannel-shared-libs';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -17,7 +20,9 @@ import { RemoveCartService } from '../../services/remove-cart.service';
   styleUrls: ['./new-register-mnp-validate-customer-page.component.scss']
 })
 export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDestroy {
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+  wizards: string[];
+  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
   // priceOptionMock: any = require('../new-register-mnp-validate-customer-page/priceOption-Mock.json');
   identityType: string;
   identityForm: FormGroup;
@@ -82,6 +87,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   }
 
   ngOnInit(): void {
+    this.checkJaymart();
     this.buildForm();
     // localStorage.setItem('priceOption', JSON.stringify(this.priceOptionMock));
     // this.route.paramMap.subscribe(params => {
@@ -94,7 +100,6 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     } else {
       this.priceOption.productDetail.imei = MOCK_IMEI_TELEWIZ ? MOCK_IMEI_TELEWIZ : '';
     }
-    this.checkJaymart();
   }
 
   buildForm(): void {
@@ -185,6 +190,9 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     const retailChain = this.priceOption.queryParams.isRole;
     if (retailChain && retailChain === 'Retail Chain') {
       this.channelFlow = 'isJaymart';
+      this.wizards = this.wizardJaymart;
+    } else {
+      this.wizards = this.wizardTelewiz;
     }
   }
 

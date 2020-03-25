@@ -1,7 +1,10 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { SimSerial, AlertService, PageLoadingService, ShoppingCart } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
-import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ } from 'src/app/device-order/constants/wizard.constant';
+import {
+  WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ,
+  WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART
+} from 'src/app/device-order/constants/wizard.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -24,7 +27,9 @@ declare let $: any;
   styleUrls: ['./new-register-mnp-verify-instant-sim-page.component.scss']
 })
 export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDestroy {
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+  wizards: string[];
+  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
   simSerialForm: FormGroup;
   transaction: Transaction;
   simSerial: SimSerial;
@@ -60,6 +65,7 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
   }
 
   ngOnInit(): void {
+    this.checkJaymart();
     this.createForm();
     delete this.transaction.data.simCard;
     this.shoppingCart = Object.assign(this.shoppingCartService.getShoppingCartDataSuperKhum(), {
@@ -95,6 +101,15 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
     }
     this.initialData();
     // console.log('isNativeApp= ' + this.isNativeApp);
+  }
+
+  checkJaymart(): void {
+    const retailChain = this.priceOption.queryParams.isRole;
+    if (retailChain && retailChain === 'Retail Chain') {
+      this.wizards = this.wizardJaymart;
+    } else {
+      this.wizards = this.wizardTelewiz;
+    }
   }
 
   private createForm(): void {
