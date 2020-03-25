@@ -14,7 +14,10 @@ import {
   ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE,
   ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_CONFIRM_USER_INFORMATION_PAGE
 } from '../../constants/route-path.constant';
-import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ } from 'src/app/device-order/constants/wizard.constant';
+import {
+  WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ,
+  WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART
+} from 'src/app/device-order/constants/wizard.constant';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Transaction, Seller } from 'src/app/shared/models/transaction.model';
@@ -27,7 +30,9 @@ import { RemoveCartService } from '../../services/remove-cart.service';
 })
 export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
 
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+  wizards: string[];
+  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
 
   @ViewChild('detailTemplate')
   detailTemplate: any;
@@ -44,6 +49,7 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
   employeeDetailForm: FormGroup;
   sellerCode: string;
   currentLang: string;
+  channelFlow: string;
 
   templatePopupRef: BsModalRef;
   constructor(
@@ -74,6 +80,7 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.pageLoadingService.openLoading();
+    this.checkJaymart();
     const customer = this.transaction.data && this.transaction.data.billingInformation
       && this.transaction.data.billingInformation.billDeliveryAddress ?
       this.transaction.data.billingInformation.billDeliveryAddress : this.transaction.data.customer;
@@ -94,6 +101,16 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
     });
     this.createEmployeeForm();
     this.getSeller$();
+  }
+
+  checkJaymart(): void {
+    const retailChain = this.priceOption.queryParams.isRole;
+    if (retailChain && retailChain === 'Retail Chain') {
+      this.channelFlow = 'isJaymart';
+      this.wizards = this.wizardJaymart;
+    } else {
+      this.wizards = this.wizardTelewiz;
+    }
   }
 
   createEmployeeForm(): void {

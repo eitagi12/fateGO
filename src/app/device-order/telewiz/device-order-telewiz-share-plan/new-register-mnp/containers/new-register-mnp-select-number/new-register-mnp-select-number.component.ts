@@ -8,7 +8,10 @@ import {
   ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_VERIFY_INSTANT_SIM_PAGE,
   ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_BY_PATTERN_PAGE
 } from '../../constants/route-path.constant';
-import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ } from 'src/app/device-order/constants/wizard.constant';
+import {
+  WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ,
+  WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART
+} from 'src/app/device-order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { RemoveCartService } from '../../services/remove-cart.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
@@ -20,7 +23,9 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
   styleUrls: ['./new-register-mnp-select-number.component.scss']
 })
 export class NewRegisterMnpSelectNumberComponent implements OnInit {
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+  wizards: string[];
+  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
   transaction: Transaction;
   shoppingCart: ShoppingCart;
   priceOption: PriceOption;
@@ -46,7 +51,10 @@ export class NewRegisterMnpSelectNumberComponent implements OnInit {
   checkJaymart(): void {
     const retailChain = this.priceOption.queryParams.isRole;
     if (retailChain && retailChain === 'Retail Chain') {
+      this.wizards = this.wizardJaymart;
       this.isJaymart = !this.isJaymart;
+    } else {
+      this.wizards = this.wizardTelewiz;
     }
   }
 

@@ -26,7 +26,10 @@ import {
   ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PERSO_SIM_MEMBER_PAGE
 } from '../../constants/route-path.constant';
 // import { environment } from 'src/environments/environment';
-import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ } from 'src/app/device-order/constants/wizard.constant';
+import {
+  WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ,
+  WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART
+} from 'src/app/device-order/constants/wizard.constant';
 import { Validators, FormBuilder } from '@angular/forms';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { RemoveCartService } from '../../services/remove-cart.service';
@@ -59,7 +62,9 @@ declare let window: any;
 })
 export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDestroy {
 
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+  wizards: string[];
+  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
   // aisNative: any = window.aisNative;
 
   intervalCheckSimPresent: any;
@@ -163,7 +168,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
   }
 
   ngOnInit(): void {
-
+    this.checkJaymart();
     this.masterSimCard = this.transaction.data.simCard;
     this.mobileNo = this.masterSimCard.mobileNo;
     this.createForm();
@@ -178,8 +183,16 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
         this.persoSimWebsocket();
       });
     }
-
     // this.onChecSim();
+  }
+
+  checkJaymart(): void {
+    const retailChain = this.priceOption.queryParams.isRole;
+    if (retailChain && retailChain === 'Retail Chain') {
+      this.wizards = this.wizardJaymart;
+    } else {
+      this.wizards = this.wizardTelewiz;
+    }
   }
 
   persoSimWebsocket(): any {
