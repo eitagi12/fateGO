@@ -321,7 +321,7 @@ export class CreateOrderService {
       matAirTime: trade.advancePay ? trade.advancePay.matAirtime : '',
       tradeNo: trade.tradeNo || '',
       ussdCode: trade.ussdCode || '',
-      returnCode: simCard.privilegeCode || customer.privilegeCode || '4GEYYY',
+      returnCode: simCard ? simCard.privilegeCode : '4GEYYY' || customer ? customer.privilegeCode : '4GEYYY' || '4GEYYY',
       cashBackFlg: '',
       tradeAirtimeId: trade.advancePay ? trade.advancePay.tradeAirtimeId : '',
       tradeDiscountId: trade.discount ? trade.discount.tradeDiscountId : '',
@@ -346,7 +346,7 @@ export class CreateOrderService {
       grandTotalAmt: (+this.getGrandTotalAmt(trade, prebooking)).toFixed(2),
       saleCode: this.tokenService.isAisUser() ? (seller.sellerNo || '') : (seller.sellerNo || user.ascCode),
       taxCardId: customer.idCardNo || '',
-      cusMobileNoOrder: simCard.mobileNo || '',
+      cusMobileNoOrder: simCard ? simCard.mobileNo : '' || '',
       customerAddress: {
         addrNo: customer.homeNo,
         room: customer.room,
