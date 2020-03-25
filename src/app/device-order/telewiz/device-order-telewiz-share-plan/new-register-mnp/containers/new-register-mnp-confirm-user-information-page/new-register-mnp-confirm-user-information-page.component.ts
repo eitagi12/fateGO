@@ -56,6 +56,7 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
 
   templatePopupRef: BsModalRef;
   title: string;
+  action: number = 5;
 
   constructor(
     private router: Router,
@@ -132,6 +133,7 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     const retailChain = this.priceOption.queryParams.isRole;
     if (retailChain && retailChain === 'Retail Chain') {
       this.wizards = this.wizardJaymart;
+      this.action = 4;
     } else {
       this.wizards = this.wizardTelewiz;
     }

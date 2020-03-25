@@ -39,6 +39,7 @@ export class NewRegisterMnpEcontactPageComponent implements OnInit, OnDestroy {
 
   translationSubcription: Subscription;
   currentLang: string;
+  action: number = 6;
   constructor(private router: Router,
     private homeService: HomeService,
     private http: HttpClient,
@@ -71,6 +72,7 @@ export class NewRegisterMnpEcontactPageComponent implements OnInit, OnDestroy {
     const retailChain = this.priceOption.queryParams.isRole;
     if (retailChain && retailChain === 'Retail Chain') {
       this.wizards = this.wizardJaymart;
+      this.action = 4;
     } else {
       this.wizards = this.wizardTelewiz;
     }

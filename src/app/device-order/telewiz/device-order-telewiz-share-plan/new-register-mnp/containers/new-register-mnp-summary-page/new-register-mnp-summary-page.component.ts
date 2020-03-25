@@ -52,6 +52,7 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
   channelFlow: string;
 
   templatePopupRef: BsModalRef;
+  action: number = 6;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -108,6 +109,7 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
     if (retailChain && retailChain === 'Retail Chain') {
       this.channelFlow = 'isJaymart';
       this.wizards = this.wizardJaymart;
+      this.action = 4;
     } else {
       this.wizards = this.wizardTelewiz;
     }

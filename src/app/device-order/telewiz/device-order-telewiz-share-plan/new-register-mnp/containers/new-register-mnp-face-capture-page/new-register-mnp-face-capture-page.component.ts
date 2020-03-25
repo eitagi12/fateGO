@@ -32,7 +32,7 @@ export class NewRegisterMnpFaceCapturePageComponent implements OnInit, OnDestroy
   priceOption: PriceOption;
   camera: EventEmitter<void> = new EventEmitter<void>();
   isCaptureSuccess: boolean = false;
-
+  action: number = 6;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -57,6 +57,7 @@ export class NewRegisterMnpFaceCapturePageComponent implements OnInit, OnDestroy
     const retailChain = this.priceOption.queryParams.isRole;
     if (retailChain && retailChain === 'Retail Chain') {
       this.wizards = this.wizardJaymart;
+      this.action = 4;
     } else {
       this.wizards = this.wizardTelewiz;
     }

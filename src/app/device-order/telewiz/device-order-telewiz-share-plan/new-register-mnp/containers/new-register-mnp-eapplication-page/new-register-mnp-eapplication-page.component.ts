@@ -36,6 +36,7 @@ export class NewRegisterMnpEapplicationPageComponent implements OnInit, OnDestro
   eApplicationSuperKhumMnp: string;
   isSelect: boolean;
   translationSubscribe: Subscription;
+  action: number = 6;
   constructor(private router: Router,
     private createEapplicationService: CreateEapplicationService,
     private transactionService: TransactionService,
@@ -66,6 +67,7 @@ export class NewRegisterMnpEapplicationPageComponent implements OnInit, OnDestro
     const retailChain = this.priceOption.queryParams.isRole;
     if (retailChain && retailChain === 'Retail Chain') {
       this.wizards = this.wizardJaymart;
+      this.action = 4;
     } else {
       this.wizards = this.wizardTelewiz;
     }

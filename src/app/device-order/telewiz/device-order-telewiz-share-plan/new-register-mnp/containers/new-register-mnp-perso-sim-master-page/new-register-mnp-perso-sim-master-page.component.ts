@@ -131,6 +131,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
   simProgress: number;
   simStatus: any;
   persoSimConfig2: any;
+  action: number = 6;
 
   ws: any = new WebSocket(`${environment.WEB_CONNECT_URL}/SIMManager`);
   public simSerialForm: any = this.fb.group({
@@ -190,6 +191,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
     const retailChain = this.priceOption.queryParams.isRole;
     if (retailChain && retailChain === 'Retail Chain') {
       this.wizards = this.wizardJaymart;
+      this.action = 4;
     } else {
       this.wizards = this.wizardTelewiz;
     }

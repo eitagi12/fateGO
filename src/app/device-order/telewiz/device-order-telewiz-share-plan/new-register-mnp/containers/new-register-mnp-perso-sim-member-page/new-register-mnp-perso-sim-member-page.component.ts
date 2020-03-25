@@ -91,6 +91,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
   simSerialKeyIn: string;
   simProgress: number;
   priceOption: PriceOption;
+  action: number = 6;
 
   constructor(
     private router: Router,
@@ -131,6 +132,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
     const retailChain = this.priceOption.queryParams.isRole;
     if (retailChain && retailChain === 'Retail Chain') {
       this.wizards = this.wizardJaymart;
+      this.action = 4;
     } else {
       this.wizards = this.wizardTelewiz;
     }

@@ -80,6 +80,7 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
   imageSignatureBase64: string;
   img: any;
   isSuccess: boolean;
+  action: number = 5;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -160,6 +161,7 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
     const retailChain = this.priceOption.queryParams.isRole;
     if (retailChain && retailChain === 'Retail Chain') {
       this.wizards = this.wizardJaymart;
+      this.action = 4;
     } else {
       this.wizards = this.wizardTelewiz;
     }

@@ -29,6 +29,7 @@ export class NewRegisterMnpSelectReasonPageComponent implements OnInit, OnDestro
   reasonForm: FormGroup;
   reasons: any[];
   priceOption: PriceOption;
+  action: number = 4;
 
   constructor(
     private transactionService: TransactionService,
@@ -53,6 +54,7 @@ export class NewRegisterMnpSelectReasonPageComponent implements OnInit, OnDestro
     const retailChain = this.priceOption.queryParams.isRole;
     if (retailChain && retailChain === 'Retail Chain') {
       this.wizards = this.wizardJaymart;
+      this.action = 3;
     } else {
       this.wizards = this.wizardTelewiz;
     }
