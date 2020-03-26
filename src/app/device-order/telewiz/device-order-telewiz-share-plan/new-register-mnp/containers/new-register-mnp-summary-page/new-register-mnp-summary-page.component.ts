@@ -201,20 +201,34 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
     }).then(() => {
       this.sellerCode = this.tokenService.getUser().ascCode ? this.tokenService.getUser().ascCode : '';
       this.employeeDetailForm.patchValue({ ascCode: this.sellerCode });
-
+      this.isChangeASC = true;
       this.priceOption.productStock.locationName = this.seller$.locationName;
       this.transaction.data.seller = this.seller$;
       this.pageLoadingService.closeLoading();
-
-      // this.http.get(`/api/customerportal/newRegister/getEmployeeDetail/username/${user.username}`).toPromise().then((response: any) => {
-      //   if (response && response.data) {
-      //   }
-      // }).then(() => {
-      // }).catch(() => {
-      //   this.sellerCode = '';
-      //   this.pageLoadingService.closeLoading();
-      // });
     });
+  }
+
+  isChangeASCCode(): void {
+    const ascCode = this.employeeDetailForm.controls['ascCode'].value;
+    if (ascCode.length === 0) {
+      this.feedback = '';
+      this.isChangeASC = true;
+    } else if (ascCode.length === 6) {
+      this.pageLoadingService.openLoading();
+      const queryAPI = '/api/easyapp/get-profile-by-ccsm?inEvent=evASCInfo&inASCCode=' + ascCode;
+      this.http.get(queryAPI).toPromise().then((res: any) => {
+        this.pageLoadingService.closeLoading();
+        this.isChangeASC = true;
+      }).catch((err: any) => {
+        this.pageLoadingService.closeLoading();
+        this.feedback = '*ไม่พบรหัส ASC Code กรุณาตรวจสอบใหม่';
+        this.isChangeASC = false;
+      });
+    } else {
+      this.feedback = '*กรุณาระบุรหัส ASC Code ให้ครบ 6 หลัก';
+      this.isChangeASC = false;
+    }
+
   }
 
   ngOnDestroy(): void {

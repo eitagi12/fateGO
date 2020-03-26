@@ -41,7 +41,7 @@ export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDes
   billDeliveryAddress: CustomerAddress;
   translationSubscribe: Subscription;
   ebillingAddressValid: boolean;
-
+  action: number = 4;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -73,6 +73,7 @@ export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDes
   checkJaymart(): void {
     const retailChain = this.priceOption.queryParams.isRole;
     if (retailChain && retailChain === 'Retail Chain') {
+      this.action = 5;
       this.wizards = this.wizardJaymart;
     } else {
       this.wizards = this.wizardTelewiz;

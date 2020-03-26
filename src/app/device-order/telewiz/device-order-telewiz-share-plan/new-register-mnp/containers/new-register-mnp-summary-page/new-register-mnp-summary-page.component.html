@@ -210,8 +210,8 @@
                                   <!-- <span class="text-red">*</span> -->
                                 </label>
                                 <div class="col-5 col-sm-6">
-                                    <input type="tel" maxlength="10" class="form-control" (ngModelChange)="isChangeASCCode()" [ngClass]="{'is-invalid': !employeeDetailForm.controls['ascCode'].valid && employeeDetailForm.controls['ascCode'].dirty}" id="ascCode" formControlName="ascCode"
-                                        autocomplete="off" />
+                                    <input type="tel" maxlength="6" class="form-control" (ngModelChange)="isChangeASCCode()" [ngClass]="{'is-invalid': !employeeDetailForm.controls['ascCode'].valid && employeeDetailForm.controls['ascCode'].dirty}" id="ascCode" formControlName="ascCode" autocomplete="off"
+                                    />
                                     <small class="invalid-feedback">
                                         {{ 'รหัสพนักงานขาย ไม่ถูกต้อง' | translate }}
                                     </small>
@@ -238,7 +238,7 @@
     </div>
     <mc-footer>
         <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-        <button class="btn btn-success" (click)="onNext()">NEXT</button>
+        <button class="btn btn-success" (click)="onNext()" [disabled]="!isChangeASC">NEXT</button>
     </mc-footer>
 </div>
 <!-- <ng-template #detailTemplate>

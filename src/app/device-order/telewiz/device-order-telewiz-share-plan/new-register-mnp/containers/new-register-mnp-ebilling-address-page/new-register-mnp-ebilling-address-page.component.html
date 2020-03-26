@@ -9,7 +9,7 @@
     </mc-header>
     <div class="mc-flex-wrap">
         <div class="mb-3 mt-3">
-            <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
+            <mc-wizard [wizards]="wizards" active="{{action}}"></mc-wizard>
 
             <mc-customer-address [customerAddress]="customerAddress" [allZipCodes]="allZipCodes" [provinces]="getProvinces()" [amphurs]="amphurs" [tumbols]="tumbols" [zipCodes]="zipCodes" (provinceSelected)="onProvinceSelected($event)" (amphurSelected)="onAmphurSelected($event)"
                 (tumbolSelected)="onTumbolSelected($event)" (zipCodeSelected)="onZipCodeSelected($event)" (completed)="onCompleted($event)" (error)="onError($event)"></mc-customer-address>
