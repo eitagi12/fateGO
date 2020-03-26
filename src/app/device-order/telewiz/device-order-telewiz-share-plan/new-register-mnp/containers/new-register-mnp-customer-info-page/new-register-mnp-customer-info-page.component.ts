@@ -14,6 +14,8 @@ import {
 } from '../../constants/route-path.constant';
 import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { RemoveCartService } from '../../services/remove-cart.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 @Component({
   selector: 'app-new-register-mnp-customer-info-page',
   templateUrl: './new-register-mnp-customer-info-page.component.html',
@@ -28,13 +30,16 @@ export class NewRegisterMnpCustomerInfoPageComponent implements OnInit, OnDestro
   customerInfo: CustomerInfo;
   shoppingCart: ShoppingCart;
   translateSubscription: Subscription;
+  priceOption: PriceOption;
   constructor(
     private router: Router,
     private transactionService: TransactionService,
     private translateService: TranslateService,
-    private removeCartService: RemoveCartService
+    private removeCartService: RemoveCartService,
+    private priceOptionService: PriceOptionService
   ) {
     this.transaction = this.transactionService.load();
+    this.priceOption = this.priceOptionService.load();
   }
 
   ngOnInit(): void {
@@ -43,6 +48,15 @@ export class NewRegisterMnpCustomerInfoPageComponent implements OnInit, OnDestro
     this.customerInfo = this.mappingCustomerInfo(customer);
     this.translateSubscription = this.translateService.onLangChange
       .subscribe(() => this.customerInfo.idCardType = this.isEngLanguage() ? 'ID Card' : 'บัตรประชาชน');
+  }
+
+  checkJaymart(): void {
+    const retailChain = this.priceOption.queryParams.isRole;
+    if (retailChain && retailChain === 'Retail Chain') {
+      this.wizards = this.wizardJaymart;
+    } else {
+      this.wizards = this.wizardTelewiz;
+    }
   }
 
   mappingCustomerInfo(customer: Customer): CustomerInfo {

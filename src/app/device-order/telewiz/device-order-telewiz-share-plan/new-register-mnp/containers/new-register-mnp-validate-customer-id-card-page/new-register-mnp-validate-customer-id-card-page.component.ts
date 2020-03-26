@@ -81,9 +81,19 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
 
   ngOnInit(): void {
     this.readCardflowPC();
+    this.checkJaymart();
     // if (this.isTelewiz) {
     //   console.log('isTelewiz2');
     // }
+  }
+
+  checkJaymart(): void {
+    const retailChain = this.priceOption.queryParams.isRole;
+    if (retailChain && retailChain === 'Retail Chain') {
+      this.wizards = this.wizardJaymart;
+    } else {
+      this.wizards = this.wizardTelewiz;
+    }
   }
 
   onError(valid: boolean): void {

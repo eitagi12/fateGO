@@ -13,6 +13,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Subscription } from 'rxjs';
 import { RemoveCartService } from '../../services/remove-cart.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
 
 @Component({
   selector: 'app-new-register-mnp-validate-customer-page',
@@ -33,7 +34,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   transaction: Transaction;
   order: Order;
   user: User;
-  priceOption: any;
+  priceOption: PriceOption;
   transactionId: string;
 
   ID_CARD: string = 'ID_CARD';
@@ -87,6 +88,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
 
   ngOnInit(): void {
     this.buildForm();
+    this.checkJaymart();
     // localStorage.setItem('priceOption', JSON.stringify(this.priceOptionMock));
     // this.route.paramMap.subscribe(params => {
     //   this.imei = params.get('imei');
@@ -97,6 +99,15 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
       this.priceOption.productDetail.imei = this.priceOption.productDetail.imei;
     } else {
       this.priceOption.productDetail.imei = MOCK_IMEI_TELEWIZ ? MOCK_IMEI_TELEWIZ : '';
+    }
+  }
+
+  checkJaymart(): void {
+    const retailChain = this.priceOption.queryParams.isRole;
+    if (retailChain && retailChain === 'Retail Chain') {
+      this.wizards = this.wizardJaymart;
+    } else {
+      this.wizards = this.wizardTelewiz;
     }
   }
 
