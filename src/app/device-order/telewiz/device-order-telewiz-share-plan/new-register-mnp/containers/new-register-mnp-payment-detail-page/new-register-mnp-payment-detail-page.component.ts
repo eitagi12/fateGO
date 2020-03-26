@@ -3,7 +3,8 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
 import {
-  WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ
+  WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ,
+  WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART
 } from 'src/app/device-order/constants/wizard.constant';
 import { ShoppingCart, ReceiptInfo, Utils, PaymentDetail, PaymentDetailBank, TokenService, User } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
@@ -24,7 +25,9 @@ import { RemoveCartService } from '../../services/remove-cart.service';
   styleUrls: ['./new-register-mnp-payment-detail-page.component.scss']
 })
 export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestroy {
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+  wizards: string[];
+  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
 
   shoppingCart: ShoppingCart;
   priceOption: PriceOption;
@@ -57,6 +60,7 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
   }
 
   ngOnInit(): void {
+    this.checkJaymart();
     this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
     const paymentMethod = this.priceOption.trade.payment ? this.priceOption.trade.payment.method : '';
     const productDetail = this.priceOption.productDetail || {};
@@ -129,6 +133,15 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
       telNo: receiptInfo.telNo
     };
 
+  }
+
+  checkJaymart(): void {
+    const retailChain = this.priceOption.queryParams.isRole;
+    if (retailChain && retailChain === 'Retail Chain') {
+      this.wizards = this.wizardJaymart;
+    } else {
+      this.wizards = this.wizardTelewiz;
+    }
   }
 
   onPaymentCompleted(payment: any): void {
