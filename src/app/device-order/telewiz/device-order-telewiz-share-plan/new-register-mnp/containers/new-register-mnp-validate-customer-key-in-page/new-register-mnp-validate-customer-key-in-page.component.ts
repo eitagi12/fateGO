@@ -23,7 +23,6 @@ const Moment = moment;
 })
 export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit, OnDestroy {
 
-  channelFlow: string;
   params: Params;
   transaction: Transaction;
   priceOption: PriceOption;
@@ -72,7 +71,6 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
 
   ngOnInit(): void {
     this.callService();
-    this.checkJaymart();
     this.createForm();
     this.imageReadSmartCard = this.transaction.data.customer;
   }
@@ -189,21 +187,6 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
     this.transaction.data.customer = this.validateCustomerService.mapCustomer(this.customerKeyinInfo, this.imageReadSmartCard);
   }
 
-  checkJaymart(): void {
-    const retailChain = this.priceOption.queryParams.isRole;
-    if (retailChain && retailChain === 'Retail Chain') {
-      this.channelFlow = 'isJaymart';
-    }
-  }
-
-  isJaymartRouteNextPage(): void {
-    if (this.channelFlow && this.channelFlow === 'isJaymart') {
-      this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE]);
-    } else {
-      this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
-    }
-  }
-
   onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_PAGE]);
   }
@@ -222,7 +205,7 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
         .then(() => {
           if (this.order) {
             this.setTransaction();
-            this.isJaymartRouteNextPage();
+            this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
           } else {
             // tslint:disable-next-line: max-line-length
             const body: any = this.validateCustomerService.getRequestAddDeviceSellingCartSharePlanASP(this.user, this.transaction, this.priceOption, { customer: this.transaction.data.customer });
@@ -260,7 +243,7 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
   setTransaction(): void {
     if (this.transaction.transactionId) {
       this.pageLoadingService.closeLoading();
-      this.isJaymartRouteNextPage();
+      this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
     } else {
       const transactionObject: any = this.validateCustomerService.buildTransaction({
         transaction: this.transaction,
@@ -274,7 +257,7 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
         this.pageLoadingService.closeLoading();
         if (resp.data.isSuccess) {
           this.transaction = transactionObject;
-          this.isJaymartRouteNextPage();
+          this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
         } else {
           this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
         }

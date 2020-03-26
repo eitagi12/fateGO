@@ -35,7 +35,6 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   user: User;
   priceOption: any;
   transactionId: string;
-  channelFlow: string;
 
   ID_CARD: string = 'ID_CARD';
   IMM_CARD: string = 'IMM_CARD';
@@ -87,7 +86,6 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   }
 
   ngOnInit(): void {
-    this.checkJaymart();
     this.buildForm();
     // localStorage.setItem('priceOption', JSON.stringify(this.priceOptionMock));
     // this.route.paramMap.subscribe(params => {
@@ -184,24 +182,6 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
 
   onCardImgPressCaller(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
-  }
-
-  checkJaymart(): void {
-    const retailChain = this.priceOption.queryParams.isRole;
-    if (retailChain && retailChain === 'Retail Chain') {
-      this.channelFlow = 'isJaymart';
-      this.wizards = this.wizardJaymart;
-    } else {
-      this.wizards = this.wizardTelewiz;
-    }
-  }
-
-  isJaymartRouteNextPage(): void {
-    if (this.channelFlow && this.channelFlow === 'isJaymart') {
-      this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE]);
-    } else {
-      this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
-    }
   }
 
   onNext(): void {
@@ -321,7 +301,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     this.transaction.data.action = TransactionAction.KEY_IN;
     if (this.transaction.transactionId) {
       this.pageLoadingService.closeLoading();
-      this.isJaymartRouteNextPage();
+      this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
     } else {
       const transactionObject: any = this.validateCustomerService.buildTransaction({
         transaction: this.transaction,
@@ -333,7 +313,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
         if (response.data.isSuccess) {
           this.transaction = transactionObject;
           this.transaction.data.action = TransactionAction.KEY_IN;
-          this.isJaymartRouteNextPage();
+          this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
         } else {
           this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
         }
