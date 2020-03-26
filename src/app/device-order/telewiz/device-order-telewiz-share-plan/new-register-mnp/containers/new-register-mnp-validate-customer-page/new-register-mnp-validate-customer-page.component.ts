@@ -13,6 +13,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Subscription } from 'rxjs';
 import { RemoveCartService } from '../../services/remove-cart.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
 
 @Component({
   selector: 'app-new-register-mnp-validate-customer-page',
@@ -33,9 +34,8 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   transaction: Transaction;
   order: Order;
   user: User;
-  priceOption: any;
+  priceOption: PriceOption;
   transactionId: string;
-  channelFlow: string;
 
   ID_CARD: string = 'ID_CARD';
   IMM_CARD: string = 'IMM_CARD';
@@ -87,8 +87,8 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   }
 
   ngOnInit(): void {
-    this.checkJaymart();
     this.buildForm();
+    this.checkJaymart();
     // localStorage.setItem('priceOption', JSON.stringify(this.priceOptionMock));
     // this.route.paramMap.subscribe(params => {
     //   this.imei = params.get('imei');
@@ -99,6 +99,15 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
       this.priceOption.productDetail.imei = this.priceOption.productDetail.imei;
     } else {
       this.priceOption.productDetail.imei = MOCK_IMEI_TELEWIZ ? MOCK_IMEI_TELEWIZ : '';
+    }
+  }
+
+  checkJaymart(): void {
+    const retailChain = this.priceOption.queryParams.isRole;
+    if (retailChain && retailChain === 'Retail Chain') {
+      this.wizards = this.wizardJaymart;
+    } else {
+      this.wizards = this.wizardTelewiz;
     }
   }
 
@@ -184,24 +193,6 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
 
   onCardImgPressCaller(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
-  }
-
-  checkJaymart(): void {
-    const retailChain = this.priceOption.queryParams.isRole;
-    if (retailChain && retailChain === 'Retail Chain') {
-      this.channelFlow = 'isJaymart';
-      this.wizards = this.wizardJaymart;
-    } else {
-      this.wizards = this.wizardTelewiz;
-    }
-  }
-
-  isJaymartRouteNextPage(): void {
-    if (this.channelFlow && this.channelFlow === 'isJaymart') {
-      this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE]);
-    } else {
-      this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
-    }
   }
 
   onNext(): void {
@@ -321,7 +312,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     this.transaction.data.action = TransactionAction.KEY_IN;
     if (this.transaction.transactionId) {
       this.pageLoadingService.closeLoading();
-      this.isJaymartRouteNextPage();
+      this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
     } else {
       const transactionObject: any = this.validateCustomerService.buildTransaction({
         transaction: this.transaction,
@@ -333,7 +324,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
         if (response.data.isSuccess) {
           this.transaction = transactionObject;
           this.transaction.data.action = TransactionAction.KEY_IN;
-          this.isJaymartRouteNextPage();
+          this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
         } else {
           this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
         }

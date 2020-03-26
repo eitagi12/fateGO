@@ -28,6 +28,7 @@ export class NewRegisterMnpEbillingPageComponent implements OnInit, OnDestroy {
   billCycleValid: boolean;
   billCycle: any;
   billCycles: Ebilling[];
+  action: number = 4;
 
   constructor(
     private router: Router,
@@ -74,6 +75,7 @@ export class NewRegisterMnpEbillingPageComponent implements OnInit, OnDestroy {
     const retailChain = this.priceOption.queryParams.isRole;
     if (retailChain && retailChain === 'Retail Chain') {
       this.wizards = this.wizardJaymart;
+      this.action = 5;
     } else {
       this.wizards = this.wizardTelewiz;
     }

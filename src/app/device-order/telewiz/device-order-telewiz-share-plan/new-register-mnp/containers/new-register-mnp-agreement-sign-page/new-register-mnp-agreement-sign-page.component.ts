@@ -161,7 +161,7 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
     const retailChain = this.priceOption.queryParams.isRole;
     if (retailChain && retailChain === 'Retail Chain') {
       this.wizards = this.wizardJaymart;
-      this.action = 4;
+      this.action = 5;
     } else {
       this.wizards = this.wizardTelewiz;
     }
