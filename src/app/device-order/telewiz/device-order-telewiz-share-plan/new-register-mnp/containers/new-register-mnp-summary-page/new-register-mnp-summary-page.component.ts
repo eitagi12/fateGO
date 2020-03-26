@@ -215,9 +215,10 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
       this.isChangeASC = true;
     } else if (ascCode.length === 6) {
       this.pageLoadingService.openLoading();
-      const queryAPI = '/api/easyapp/get-profile-by-ccsm?inEvent=evASCInfo&inASCCode=' + ascCode;
+      const queryAPI = `/api/easyapp/get-profile-by-ccsm?inEvent=evASCInfo&inASCCode= + ${ascCode}`;
       this.http.get(queryAPI).toPromise().then((res: any) => {
         this.pageLoadingService.closeLoading();
+        this.feedback = '';
         this.isChangeASC = true;
       }).catch((err: any) => {
         this.pageLoadingService.closeLoading();
