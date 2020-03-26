@@ -38,6 +38,7 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
   detailTemplate: any;
   modalRef: BsModalRef;
   detail: string;
+  feedback: string;
 
   priceOption: PriceOption;
   transaction: Transaction;
@@ -53,6 +54,7 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
 
   templatePopupRef: BsModalRef;
   action: number = 6;
+  isChangeASC: boolean;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -109,7 +111,7 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
     if (retailChain && retailChain === 'Retail Chain') {
       this.channelFlow = 'isJaymart';
       this.wizards = this.wizardJaymart;
-      this.action = 4;
+      this.action = 5;
     } else {
       this.wizards = this.wizardTelewiz;
     }
@@ -142,7 +144,7 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
           this.transaction.data.seller.sellerNo = this.sellerCode || '';
           this.transaction.data.seller.employeeId = ascCode;
           this.transaction.data.seller.sellerName =
-          user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username;
+            user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username;
           this.pageLoadingService.closeLoading();
           this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE]);
         } else {

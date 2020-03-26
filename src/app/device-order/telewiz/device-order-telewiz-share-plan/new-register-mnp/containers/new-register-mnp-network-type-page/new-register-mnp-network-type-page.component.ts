@@ -60,7 +60,7 @@ export class NewRegisterMnpNetworkTypePageComponent implements OnInit, OnDestroy
     const retailChain = this.priceOption.queryParams.isRole;
     if (retailChain && retailChain === 'Retail Chain') {
       this.wizards = this.wizardJaymart;
-      this.action = 3;
+      this.action = 4;
     } else {
       this.wizards = this.wizardTelewiz;
     }

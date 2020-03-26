@@ -21,7 +21,7 @@ export const WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ = [
 ];
 
 export const WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART = [
-    'สินค้าและโครงการ', 'ตรวจสอบสิทธิ์', 'เบอร์และแพ็กเกจ', 'สรุปรายการ', 'ชำระสินค้า', 'บันทึกการขาย'
+    'สินค้าและโครงการ', 'ตรวจสอบสิทธิ์', 'เบอร์และแพ็กเกจ', 'ระบุข้อมูลย้ายค่าย', 'สรุปรายการ', 'ชำระสินค้า', 'บันทึกการขาย'
 ];
 
 export const WIZARD_DEVICE_ORDER_ASP_DEVICE_SHARE_PLAN = [
