@@ -331,7 +331,7 @@ export class CreateOrderService {
       matAirTime: trade.advancePay ? trade.advancePay.matAirtime : '',
       tradeNo: trade.tradeNo || '',
       ussdCode: trade.ussdCode || '',
-      returnCode: simCard ? simCard.privilegeCode : '4GEYYY' || customer ? customer.privilegeCode : '4GEYYY' || '4GEYYY',
+      returnCode: simCard.privilegeCode || customer.privilegeCode || '4GEYYY',
       cashBackFlg: '',
       tradeAirtimeId: trade.advancePay ? trade.advancePay.tradeAirtimeId : '',
       tradeDiscountId: trade.discount ? trade.discount.tradeDiscountId : '',
