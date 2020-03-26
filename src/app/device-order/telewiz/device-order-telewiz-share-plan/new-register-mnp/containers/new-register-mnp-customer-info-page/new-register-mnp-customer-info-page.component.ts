@@ -10,12 +10,10 @@ import {
 } from 'src/app/device-order/constants/wizard.constant';
 import {
   ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_NUMBER_PAGE,
-  ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE,
-  ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_PAGE
+  ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE
 } from '../../constants/route-path.constant';
 import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { RemoveCartService } from '../../services/remove-cart.service';
-import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 @Component({
   selector: 'app-new-register-mnp-customer-info-page',
   templateUrl: './new-register-mnp-customer-info-page.component.html',
@@ -30,22 +28,17 @@ export class NewRegisterMnpCustomerInfoPageComponent implements OnInit, OnDestro
   customerInfo: CustomerInfo;
   shoppingCart: ShoppingCart;
   translateSubscription: Subscription;
-  channelFlow: string;
-  priceOption: any;
   constructor(
     private router: Router,
     private transactionService: TransactionService,
     private translateService: TranslateService,
-    private priceOptionService: PriceOptionService,
     private removeCartService: RemoveCartService
   ) {
     this.transaction = this.transactionService.load();
-    this.priceOption = this.priceOptionService.load();
   }
 
   ngOnInit(): void {
     const customer: Customer = this.transaction.data.customer;
-    this.checkJaymart();
     // delete this.shoppingCart.mobileNo;
     this.customerInfo = this.mappingCustomerInfo(customer);
     this.translateSubscription = this.translateService.onLangChange
@@ -68,26 +61,8 @@ export class NewRegisterMnpCustomerInfoPageComponent implements OnInit, OnDestro
     return this.translateService.currentLang === 'EN';
   }
 
-  checkJaymart(): void {
-    const retailChain = this.priceOption.queryParams.isRole;
-    if (retailChain && retailChain === 'Retail Chain') {
-      this.channelFlow = 'isJaymart';
-      this.wizards = this.wizardJaymart;
-    } else {
-      this.wizards = this.wizardTelewiz;
-    }
-  }
-
-  isJaymartRouteNextPage(): void {
-    if (this.channelFlow && this.channelFlow === 'isJaymart') {
-      this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_PAGE]);
-    } else {
-      this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
-    }
-  }
-
   onBack(): void {
-    this.isJaymartRouteNextPage();
+    this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
   }
 
   onNext(): void {
