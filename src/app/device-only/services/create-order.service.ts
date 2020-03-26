@@ -427,12 +427,12 @@ export class CreateOrderService {
       // QR code for device
       if (payment && payment.paymentType === 'QR_CODE') {
         data.qrTransId = payment.paymentType === 'QR_CODE' ? mpayPayment.tranId : null;
-        data.qrAmt = payment.paymentType === 'QR_CODE' && mpayPayment.tranId ? this.getQRAmt(trade, transaction) : null;
+        data.qrAmt = payment.paymentType === 'QR_CODE' && mpayPayment.tranId ? this.getQRAmt(priceOption, transaction) : null;
       }
       // QR code for airtime
       if (advancePayment && advancePayment.paymentType === 'QR_CODE') {
         data.qrAirtimeTransId = mpayPayment.qrAirtimeTransId || mpayPayment.tranId || null;
-        data.qrAirtimeAmt = this.getQRAmt(trade, transaction);
+        data.qrAirtimeAmt = this.getQRAmt(priceOption, transaction);
       }
     }
 
