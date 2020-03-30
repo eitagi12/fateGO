@@ -22,9 +22,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
   styleUrls: ['./new-register-mnp-select-reason-page.component.scss']
 })
 export class NewRegisterMnpSelectReasonPageComponent implements OnInit, OnDestroy {
-  wizards: string[];
-  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
-  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
   transaction: Transaction;
   reasonForm: FormGroup;
   reasons: any[];
@@ -44,19 +42,19 @@ export class NewRegisterMnpSelectReasonPageComponent implements OnInit, OnDestro
   }
 
   ngOnInit(): void {
-    this.checkJaymart();
+    // this.checkJaymart();
     this.createForm();
     this.callService();
   }
 
-  checkJaymart(): void {
-    const retailChain = this.priceOption.queryParams.isRole;
-    if (retailChain && retailChain === 'Retail Chain') {
-      this.wizards = this.wizardJaymart;
-    } else {
-      this.wizards = this.wizardTelewiz;
-    }
-  }
+  // checkJaymart(): void {
+  //   const retailChain = this.priceOption.queryParams.isRole;
+  //   if (retailChain && retailChain === 'Retail Chain') {
+  //     this.wizards = this.wizardJaymart;
+  //   } else {
+  //     this.wizards = this.wizardTelewiz;
+  //   }
+  // }
 
   onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_NETWORK_TYPE]);

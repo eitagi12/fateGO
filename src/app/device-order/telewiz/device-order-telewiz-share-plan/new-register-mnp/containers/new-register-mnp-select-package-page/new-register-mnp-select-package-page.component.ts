@@ -28,9 +28,7 @@ import { RemoveCartService } from '../../services/remove-cart.service';
   styleUrls: ['./new-register-mnp-select-package-page.component.scss']
 })
 export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestroy {
-  wizards: string[];
-  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
-  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
 
   @ViewChild('conditionTemplate')
   conditionTemplate: any;
@@ -71,20 +69,20 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
     this.callService();
-    this.checkJaymart();
+    // this.checkJaymart();
     if (this.transaction.data && this.transaction.data.mainPackage) {
         delete this.transaction.data.mainPackage;
     }
   }
 
-  checkJaymart(): void {
-    const retailChain = this.priceOption.queryParams.isRole;
-    if (retailChain && retailChain === 'Retail Chain') {
-      this.wizards = this.wizardJaymart;
-    } else {
-      this.wizards = this.wizardTelewiz;
-    }
-  }
+  // checkJaymart(): void {
+  //   const retailChain = this.priceOption.queryParams.isRole;
+  //   if (retailChain && retailChain === 'Retail Chain') {
+  //     this.wizards = this.wizardJaymart;
+  //   } else {
+  //     this.wizards = this.wizardTelewiz;
+  //   }
+  // }
 
   onCompleted(promotion: any): void {
     this.transaction.data.mainPackage = promotion;

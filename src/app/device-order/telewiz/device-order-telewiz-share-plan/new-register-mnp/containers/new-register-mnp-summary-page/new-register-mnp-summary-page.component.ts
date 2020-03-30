@@ -30,9 +30,7 @@ import { RemoveCartService } from '../../services/remove-cart.service';
 })
 export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
 
-  wizards: string[];
-  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
-  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
 
   @ViewChild('detailTemplate')
   detailTemplate: any;
@@ -53,8 +51,8 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
   channelFlow: string;
 
   templatePopupRef: BsModalRef;
-  action: number = 6;
-  isChangeASC: boolean;
+  // action: number = 6;
+  // isChangeASC: boolean;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -83,7 +81,7 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.pageLoadingService.openLoading();
-    this.checkJaymart();
+    // this.checkJaymart();
     const customer = this.transaction.data && this.transaction.data.billingInformation
       && this.transaction.data.billingInformation.billDeliveryAddress ?
       this.transaction.data.billingInformation.billDeliveryAddress : this.transaction.data.customer;
@@ -106,16 +104,16 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
     this.getSeller$();
   }
 
-  checkJaymart(): void {
-    const retailChain = this.priceOption.queryParams.isRole;
-    if (retailChain && retailChain === 'Retail Chain') {
-      this.channelFlow = 'isJaymart';
-      this.wizards = this.wizardJaymart;
-      this.action = 5;
-    } else {
-      this.wizards = this.wizardTelewiz;
-    }
-  }
+  // checkJaymart(): void {
+  //   const retailChain = this.priceOption.queryParams.isRole;
+  //   if (retailChain && retailChain === 'Retail Chain') {
+  //     this.channelFlow = 'isJaymart';
+  //     this.wizards = this.wizardJaymart;
+  //     this.action = 5;
+  //   } else {
+  //     this.wizards = this.wizardTelewiz;
+  //   }
+  // }
 
   createEmployeeForm(): void {
     this.employeeDetailForm = this.fb.group({
@@ -124,12 +122,12 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   onBack(): void {
-    const retailChain = this.priceOption.queryParams.isRole;
-    if (retailChain && retailChain === 'Retail Chain') {
-      this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_CONFIRM_USER_INFORMATION_PAGE]);
-    } else {
+    // const retailChain = this.priceOption.queryParams.isRole;
+    // if (retailChain && retailChain === 'Retail Chain') {
+    //   this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_CONFIRM_USER_INFORMATION_PAGE]);
+    // } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_MOBILE_CARE_PAGE]);
-    }
+    // }
   }
 
   onNext(): void {
@@ -152,11 +150,11 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
         }
       });
     } else {
-      const retailChain = this.priceOption.queryParams.isRole;
-      if (retailChain && retailChain === 'Retail Chain') {
-        this.transaction.data.seller.isRole = this.priceOption.queryParams.isRole;
-        this.transaction.data.seller.isPaymentId = this.priceOption.queryParams.isPaymentId;
-      }
+      // const retailChain = this.priceOption.queryParams.isRole;
+      // if (retailChain && retailChain === 'Retail Chain') {
+      //   this.transaction.data.seller.isRole = this.priceOption.queryParams.isRole;
+      //   this.transaction.data.seller.isPaymentId = this.priceOption.queryParams.isPaymentId;
+      // }
       this.transaction.data.seller.sellerNo = this.sellerCode ? this.sellerCode : '';
       this.transaction.data.seller.employeeId = ascCode;
       this.transaction.data.seller.sellerName = user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username;
@@ -201,36 +199,35 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
     }).then(() => {
       this.sellerCode = this.tokenService.getUser().ascCode ? this.tokenService.getUser().ascCode : '';
       this.employeeDetailForm.patchValue({ ascCode: this.sellerCode });
-      this.isChangeASC = true;
+      // this.isChangeASC = true;
       this.priceOption.productStock.locationName = this.seller$.locationName;
       this.transaction.data.seller = this.seller$;
       this.pageLoadingService.closeLoading();
     });
   }
 
-  isChangeASCCode(): void {
-    const ascCode = this.employeeDetailForm.controls['ascCode'].value;
-    if (ascCode.length === 0) {
-      this.feedback = '';
-      this.isChangeASC = true;
-    } else if (ascCode.length === 6) {
-      this.pageLoadingService.openLoading();
-      const queryAPI = `/api/easyapp/get-profile-by-ccsm?inEvent=evASCInfo&inASCCode= + ${ascCode}`;
-      this.http.get(queryAPI).toPromise().then((res: any) => {
-        this.pageLoadingService.closeLoading();
-        this.feedback = '';
-        this.isChangeASC = true;
-      }).catch((err: any) => {
-        this.pageLoadingService.closeLoading();
-        this.feedback = '*ไม่พบรหัส ASC Code กรุณาตรวจสอบใหม่';
-        this.isChangeASC = false;
-      });
-    } else {
-      this.feedback = '*กรุณาระบุรหัส ASC Code ให้ครบ 6 หลัก';
-      this.isChangeASC = false;
-    }
-
-  }
+  // isChangeASCCode(): void {
+  //   const ascCode = this.employeeDetailForm.controls['ascCode'].value;
+  //   if (ascCode.length === 0) {
+  //     this.feedback = '';
+  //     this.isChangeASC = true;
+  //   } else if (ascCode.length === 6) {
+  //     this.pageLoadingService.openLoading();
+  //     const queryAPI = `/api/easyapp/get-profile-by-ccsm?inEvent=evASCInfo&inASCCode= + ${ascCode}`;
+  //     this.http.get(queryAPI).toPromise().then((res: any) => {
+  //       this.pageLoadingService.closeLoading();
+  //       this.feedback = '';
+  //       this.isChangeASC = true;
+  //     }).catch((err: any) => {
+  //       this.pageLoadingService.closeLoading();
+  //       this.feedback = '*ไม่พบรหัส ASC Code กรุณาตรวจสอบใหม่';
+  //       this.isChangeASC = false;
+  //     });
+  //   } else {
+  //     this.feedback = '*กรุณาระบุรหัส ASC Code ให้ครบ 6 หลัก';
+  //     this.isChangeASC = false;
+  //   }
+  // }
 
   ngOnDestroy(): void {
     if (this.translateSubscription) {

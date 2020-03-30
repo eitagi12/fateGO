@@ -62,9 +62,7 @@ declare let window: any;
 })
 export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDestroy {
 
-  wizards: string[];
-  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
-  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
   // aisNative: any = window.aisNative;
 
   intervalCheckSimPresent: any;
@@ -131,7 +129,6 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
   simProgress: number;
   simStatus: any;
   persoSimConfig2: any;
-  action: number = 6;
 
   ws: any = new WebSocket(`${environment.WEB_CONNECT_URL}/SIMManager`);
   public simSerialForm: any = this.fb.group({
@@ -169,7 +166,6 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
   }
 
   ngOnInit(): void {
-    this.checkJaymart();
     this.masterSimCard = this.transaction.data.simCard;
     this.mobileNo = this.masterSimCard.mobileNo;
     this.createForm();
@@ -185,16 +181,6 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
       });
     }
     // this.onChecSim();
-  }
-
-  checkJaymart(): void {
-    const retailChain = this.priceOption.queryParams.isRole;
-    if (retailChain && retailChain === 'Retail Chain') {
-      this.wizards = this.wizardJaymart;
-      this.action = 5;
-    } else {
-      this.wizards = this.wizardTelewiz;
-    }
   }
 
   persoSimWebsocket(): any {

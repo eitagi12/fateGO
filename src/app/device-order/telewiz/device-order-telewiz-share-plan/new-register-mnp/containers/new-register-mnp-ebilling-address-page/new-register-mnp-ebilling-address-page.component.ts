@@ -24,9 +24,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 })
 export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDestroy {
 
-  wizards: string[];
-  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
-  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
 
   transaction: Transaction;
   priceOption: PriceOption;
@@ -41,7 +39,6 @@ export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDes
   billDeliveryAddress: CustomerAddress;
   translationSubscribe: Subscription;
   ebillingAddressValid: boolean;
-  action: number = 4;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -57,7 +54,6 @@ export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDes
   }
 
   ngOnInit(): void {
-    this.checkJaymart();
     this.callService();
     this.translationSubscribe = this.translation.onLangChange.pipe(debounceTime(750)).subscribe(() => {
       this.callService();
@@ -68,16 +64,6 @@ export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDes
       this.customerAddress.tumbol = null;
       this.customerAddress.province = null;
     });
-  }
-
-  checkJaymart(): void {
-    const retailChain = this.priceOption.queryParams.isRole;
-    if (retailChain && retailChain === 'Retail Chain') {
-      this.action = 5;
-      this.wizards = this.wizardJaymart;
-    } else {
-      this.wizards = this.wizardTelewiz;
-    }
   }
 
   callService(): void {

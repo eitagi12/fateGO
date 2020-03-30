@@ -9,7 +9,7 @@
     </mc-header>
     <div class="mc-flex-wrap">
         <div class="mb-3 mt-3">
-            <mc-wizard [wizards]="wizards" active="{{action}}"></mc-wizard>
+            <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
 
             <mc-ebilling [billCycle]="billCycle" [billCycles]="billCycles" (completed)="onCompleted($event)" (error)="onError($event)"></mc-ebilling>
 

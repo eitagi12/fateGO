@@ -31,9 +31,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
   kioskApi: boolean;
   isTelewiz: boolean = this.tokenService.isTelewizUser();
 
-  wizards: string[];
-  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
-  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
   // active: number = this.isTelewiz ? 2 : 1;
 
   transaction: Transaction;
@@ -81,20 +79,20 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
 
   ngOnInit(): void {
     this.readCardflowPC();
-    this.checkJaymart();
+    // this.checkJaymart();
     // if (this.isTelewiz) {
     //   console.log('isTelewiz2');
     // }
   }
 
-  checkJaymart(): void {
-    const retailChain = this.priceOption.queryParams.isRole;
-    if (retailChain && retailChain === 'Retail Chain') {
-      this.wizards = this.wizardJaymart;
-    } else {
-      this.wizards = this.wizardTelewiz;
-    }
-  }
+  // checkJaymart(): void {
+  //   const retailChain = this.priceOption.queryParams.isRole;
+  //   if (retailChain && retailChain === 'Retail Chain') {
+  //     this.wizards = this.wizardJaymart;
+  //   } else {
+  //     this.wizards = this.wizardTelewiz;
+  //   }
+  // }
 
   onError(valid: boolean): void {
     this.readCardValid = valid;
