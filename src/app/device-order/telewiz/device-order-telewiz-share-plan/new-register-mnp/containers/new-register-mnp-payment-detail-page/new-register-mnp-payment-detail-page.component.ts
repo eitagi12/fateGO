@@ -290,21 +290,21 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
           this.advancePaymentDesc = 'เงินสด';
           // this.qrcodePaymentGlobalService.setIsCashAdavancPay(true);
           // this.qrcodePaymentGlobalService.setIsSelectQRCodeAdvanc(false);
-          this.selectAdvancePaymentTypeEvent.emit(this.advancePaymentType);
+          // this.selectAdvancePaymentTypeEvent.emit(this.advancePaymentType);
           break;
         case 'credit':
           this.advancePaymentType = 'CC';
           this.advancePaymentDesc = 'เครดิต';
           // this.qrcodePaymentGlobalService.setIsCashAdavancPay(false);
           // this.qrcodePaymentGlobalService.setIsSelectQRCodeAdvanc(false);
-          this.selectAdvancePaymentTypeEvent.emit(this.advancePaymentType);
+          // this.selectAdvancePaymentTypeEvent.emit(this.advancePaymentType);
           break;
         case 'qrcode':
           this.advancePaymentType = 'CA';
           this.advancePaymentDesc = 'เงินสด';
           // this.qrcodePaymentGlobalService.setIsCashAdavancPay(false);
           // this.qrcodePaymentGlobalService.setIsSelectQRCodeAdvanc(true);
-          this.selectAdvancePaymentTypeEvent.emit(this.advancePaymentType);
+          // this.selectAdvancePaymentTypeEvent.emit(this.advancePaymentType);
           break;
         default:
           break;

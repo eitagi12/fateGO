@@ -162,16 +162,21 @@
                         <!-- Advance pay -->
                         <ng-container *ngIf="priceOption.trade.advancePay.amount !== 0">
                             <div *ngIf="priceOption.trade.advancePay.installmentFlag === 'N' || priceOption.trade.advancePay.installmentFlag === ''" class="pre-paid-package-container">
-                                <div class="card mb-3">
-                                    <div class="row align-middle align-justify font-dark-green">
-                                        <span class="col-sm-8">{{ 'แพ็กเกจชำระล่วงหน้า' | translate }}</span>
-                                        <span class="col-sm-4 text-right">฿ {{priceOption.trade.advancePay.amount | number }}</span>
+
+                                <div class="price-package-container font-dark-green">
+                                    <div class="row align-middle align-justify">
+                                        <div class="col-sm-8">
+                                            <span>{{ 'แพ็กเกจชำระล่วงหน้า' | translate }}</span>
+                                        </div>
+                                        <div class="col-sm-4 text-right">
+                                            <span>฿ {{priceOption.trade.advancePay.amount | number }}</span>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="content">
                                     <form [formGroup]="advancePaymentForm" novalidate>
-                                        <div class="row align-middle payment-cash-container">
+                                        <div class="col-sm-12 row align-middle payment-cash-container" style="padding: 0.5em 0em;border-bottom: 0.05em solid #cccccc;margin: auto;">
                                             <div class="col-sm-1">
                                                 <input autocomplete="off" type="radio" id="air-time-payment-cash" name="air-time-package-payment-type" name="advancePaymentType" value="cash" formControlName="advancePaymentType">
                                                 <label for="air-time-payment-cash" id="payment-cash">
@@ -180,14 +185,14 @@
                                                     </div> -->
                                                 </label>
                                             </div>
-                                            <div class="col-sm-4 text-left">
+                                            <div class="col-sm-4 text-left mt-2">
                                                 <label for="payment-cash">ชำระเงินด้วยเงินสด</label>
                                             </div>
                                             <div class="col-sm-5" style="margin-left: 1rem">
                                                 เต็มจำนวน
                                             </div>
                                         </div>
-                                        <div class="row align-middle payment-credit-container">
+                                        <div class="col-sm-12 row align-middle payment-credit-container" style="padding: 0.5em 0em;border-bottom: 0.05em solid #cccccc;margin: auto;">
                                             <div class="col-sm-1">
                                                 <input autocomplete="off" type="radio" id="air-time-payment-credit" name="air-time-package-payment-type" name="advancePaymentType" value="credit" formControlName="advancePaymentType">
                                                 <label for="air-time-payment-credit" id="payment-credit">
@@ -196,7 +201,7 @@
                                                     </div> -->
                                                 </label>
                                             </div>
-                                            <div class="col-sm-4">
+                                            <div class="col-sm-4 mt-2">
                                                 <label for="payment-credit">ชำระเงินด้วยบัตรเครดิต</label>
                                             </div>
                                             <div class="col-sm-5">
@@ -212,17 +217,14 @@
                                                 </div>
                                                 <div class="row align-middle">
 
-                                                    <!-- <div class="row collapse align-middle" *ngIf="priceOption.trade.banks.length !== 0">
-                                                        <div class="col-sm-12">
-                                                            <ng-container *ngFor="let bank of priceOption.trade.banks; let i = index;">
-                                                                <ng-container *ngIf="(i !== 0)">
-                                                                    <img *ngIf="i < 5" [src]="bank?.imageUrl" class="bank-images" />
-                                                                    <mc-bank-thumnail *ngIf="i < 5" [bankImage]="bank.image"></mc-bank-thumnail>
-                                                                </ng-container>
-                                                            </ng-container>
-                                                            <span id="view-all-text" class="mc-text-underline gray small-12 column"> More</span>
-                                                        </div>
-                                                    </div> -->
+                                                    <div class="row" *ngFor="let splittedBank of splittedBanks; let i = index">
+                                                        <ng-container *ngIf="i < maxRow || isShowAllBank">
+                                                            <div class="container" (click)="selectBankEvent.emit(bank)" [ngClass]="{'active': bank.abb === selectBank.abb}">
+                                                                <!-- <mc-lazyload-image [src]="bank.imageUrl"></mc-lazyload-image> -->
+                                                            </div>
+                                                        </ng-container>
+                                                    </div>
+
                                                     <!-- <mc-bank-thumnail-list style="width: 100%;" [maxRow]="MAX_BANK_ROW" [isShowAllBank]="isShowAllBank" [banks]="priceOptionPrivilegeTrade.banks" [selectBank]="selectBank" (selectBankEvent)="onSelectBank($event)"></mc-bank-thumnail-list> -->
                                                 </div>
                                                 <div *ngIf="priceOption.trade.banks.length > 5 * MAX_BANK_ROW && !isShowAllBank" class="row columns text-right">
