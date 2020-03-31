@@ -62,6 +62,15 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
   invalidSelectBank: boolean = true;
   selectBankInTrade: any;
 
+  splittedBanks: any;
+  _banks: any[];
+
+  advancePaymentForm: FormGroup;
+  advancePaymentType: string;
+  advancePaymentDesc: string;
+  selectAdvancePaymentTypeEvent: EventEmitter<string>;
+  MAX_BANK_ROW: number = 1;
+
   constructor(
     private fb: FormBuilder,
     private utils: Utils,
@@ -227,6 +236,11 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
       installment: ''
     });
 
+    this.advancePaymentForm = this.fb.group({
+      advancePaymentType: [{ disabled: false }],
+      fullPaidAndInstallment: [{ disabled: false }]
+    });
+
     // this.paymentForm.controls['fullPaidAndInstallment'].valueChanges.subscribe(fullPaidAndInstallment => {
     //   switch (fullPaidAndInstallment) {
     //     case 'full':
@@ -267,12 +281,38 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
         default:
           break;
       }
+    });
 
+    this.advancePaymentForm.controls['advancePaymentType'].valueChanges.subscribe(paymentType => {
+      switch (paymentType) {
+        case 'cash':
+          this.advancePaymentType = 'CA';
+          this.advancePaymentDesc = 'เงินสด';
+          // this.qrcodePaymentGlobalService.setIsCashAdavancPay(true);
+          // this.qrcodePaymentGlobalService.setIsSelectQRCodeAdvanc(false);
+          this.selectAdvancePaymentTypeEvent.emit(this.advancePaymentType);
+          break;
+        case 'credit':
+          this.advancePaymentType = 'CC';
+          this.advancePaymentDesc = 'เครดิต';
+          // this.qrcodePaymentGlobalService.setIsCashAdavancPay(false);
+          // this.qrcodePaymentGlobalService.setIsSelectQRCodeAdvanc(false);
+          this.selectAdvancePaymentTypeEvent.emit(this.advancePaymentType);
+          break;
+        case 'qrcode':
+          this.advancePaymentType = 'CA';
+          this.advancePaymentDesc = 'เงินสด';
+          // this.qrcodePaymentGlobalService.setIsCashAdavancPay(false);
+          // this.qrcodePaymentGlobalService.setIsSelectQRCodeAdvanc(true);
+          this.selectAdvancePaymentTypeEvent.emit(this.advancePaymentType);
+          break;
+        default:
+          break;
+      }
     });
   }
 
   private checkPaymentType(paymentTypes: any, banks: any): void {
-    console.log('paymentTypes', paymentTypes, 'banks', banks);
     if (!paymentTypes || !paymentTypes.length || paymentTypes.length === 0) {
       this.paymentType = 'CA/CC';
       this.setRadioPayment(this.paymentType);
@@ -306,13 +346,22 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
   }
 
   private setRadioPayment(paymentType: string): void {
-    console.log('paymentType', paymentType);
 
     switch (paymentType) {
       case 'CC':
         this.paymentForm.get('paymentType').disable();
         this.paymentForm.get('fullPaidAndInstallment').disable();
         this.paymentForm.controls['paymentType'].setValue('credit');
+        try {
+          this._banks = this.priceOption.trade.banks;
+          this.splittedBanks = [];
+          let i = 0;
+          while (i < this._banks.length) {
+            this.splittedBanks.push(this._banks.slice(i, i += 5));
+          }
+        } catch (error) {
+          console.log(error);
+        }
         break;
 
       case 'CA':
@@ -402,6 +451,18 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
       this.selectBankInTrade = this.selectBank;
       const select: any =  this.selectBank;
       localStorage.setItem('selectBank', JSON.stringify(select));
+    } catch (error) {
+      console.error('error', error);
+    }
+  }
+
+  onSelectBankAdvancePay(bank: any): void {
+    try {
+      this.selectBank = bank;
+      this.selectBankEvent.emit(this.selectBank);
+      const selectAdvancePay = this.selectBank;
+      localStorage.setItem('selectBankAirtime', JSON.stringify(selectAdvancePay));
+
     } catch (error) {
       console.error('error', error);
     }
