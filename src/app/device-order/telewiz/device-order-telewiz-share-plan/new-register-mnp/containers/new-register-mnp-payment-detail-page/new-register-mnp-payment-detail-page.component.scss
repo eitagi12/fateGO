@@ -1,0 +1,144 @@
+@import "src/assets/scss/util/color";
+@import "src/assets/scss/util/icon";
+@import 'node_modules/foundation-sites/scss/util/util';
+.payment-detail-container {
+    // background-color: $mc-white;
+    // border: 0.05em solid $mc-bright-gray;
+    border-radius: 0.2em;
+    .header {
+        @include breakpoint(small only) {
+            font-size: 1.4rem;
+        }
+        @include breakpoint(medium) {
+            font-size: 1.8rem;
+        }
+        background-color: $mc-orange;
+        padding: 1em;
+    }
+    .content {
+        color: $mc-darker-gray;
+        label {
+            color: $mc-darker-gray;
+            font-size: 1em;
+        }
+        select {
+            margin: 0em;
+        }
+        input {
+            margin: 0em;
+        }
+        .price-package-container {
+            padding: 0.5em;
+            border-bottom: 0.05em solid $mc-bright-gray;
+        }
+        .payment-container {
+            .payment-cash-container {
+                padding: 0.5em 0em;
+                border-bottom: 0.05em solid $mc-bright-gray;
+            }
+            .payment-credit-container {
+                padding: 0.5em 0em;
+                border-bottom: 0.05em solid $mc-bright-gray;
+            }
+            .payment-qr-container {
+                padding: 0.5em 0em;
+                border-bottom: 0.05em solid $mc-bright-gray;
+            }
+        }
+        .bank-selection-container {
+            padding: -0.95em 0em;
+            border-bottom: 0.05em solid $mc-bright-gray;
+            .promotion-value {
+                color: $mc-dark-green;
+                border: 2px solid $mc-bright-gray;
+                border-radius: 6px;
+            }
+        }
+        .qr-selection-container {
+            padding: -0.95em 0em;
+            border-bottom: 0.05em;
+        }
+        .installment-method-container {
+            padding: 0.5em 0em;
+            .select-text {
+                margin-bottom: 0.5em;
+            }
+        }
+        .discount-container {
+            margin: 0rem 2rem;
+        }
+        .disabled-radio {
+            background-color: $mc-light-gray;
+        }
+    }
+}
+
+// icon
+.icon {
+    width: 1.5em;
+}
+
+// Select Style
+select {
+    border: 2px solid $mc-bright-gray;
+    border-radius: 6px;
+    // background-image: url(/assets/images/icon/icon-green-arrow-down.png);
+    color: $mc-darker-gray;
+    background-size: 15px 10px;
+    @include breakpoint(small only) {
+        font-size: 12px;
+    }
+}
+
+// Check Box Style
+input[type=radio] {
+    position: absolute;
+    visibility: hidden;
+}
+
+input[type=radio]:checked~label>.check {
+    border: 0.1em solid $mc-green-yellow;
+    img {
+        visibility: visible;
+        padding: 0.4em;
+        @include breakpoint(small only) {
+            padding: 0.3em;
+        }
+    }
+}
+
+input[type=radio]:disabled~label>.check {
+    border: 0.1em solid $mc-darker-gray;
+}
+
+.check {
+    display: block;
+    border: 0.1em solid $mc-green-yellow;
+    border-radius: 100%;
+    @include breakpoint(medium) {
+        height: 30px;
+        width: 30px;
+    }
+    @include breakpoint(small only) {
+        height: 25px;
+        width: 25px;
+    }
+    transition: border .25s linear;
+    -webkit-transition: border .25s linear;
+    img {
+        visibility: hidden;
+    }
+    &::before {
+        display: block;
+        margin: auto;
+        transition: background 0.25s linear;
+        -webkit-transition: background 0.25s linear;
+    }
+}
+
+.more-installment-text {
+    color: $mc-dark-green;
+    text-decoration: underline;
+    text-decoration-color: $mc-dark-green;
+    cursor: pointer;
+}
