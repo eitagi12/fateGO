@@ -70,6 +70,7 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
   advancePaymentDesc: string;
   selectAdvancePaymentTypeEvent: EventEmitter<string>;
   MAX_BANK_ROW: number = 1;
+  outChnSaleFlow: string;
 
   constructor(
     private fb: FormBuilder,
@@ -89,6 +90,7 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
   }
 
   ngOnInit(): void {
+    this.isFlowJaymart();
     this.checkJaymart();
     this.createPaymentTypeForm();
 
@@ -165,11 +167,18 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
   }
 
   checkJaymart(): void {
-    const retailChain = this.priceOption.queryParams.isRole;
-    if (retailChain && retailChain === 'Retail Chain') {
+    const outChnSale = this.priceOption.queryParams.isRole;
+    if (outChnSale && outChnSale === 'Retail Chain') {
       this.wizards = this.wizardJaymart;
     } else {
       this.wizards = this.wizardTelewiz;
+    }
+  }
+
+  isFlowJaymart(): boolean {
+    this.outChnSaleFlow = 'Retail Chain';
+    if (this.outChnSaleFlow && this.outChnSaleFlow === 'Retail Chain') {
+      return true;
     }
   }
 
@@ -211,14 +220,23 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
   }
 
   isNext(): boolean {
-    return this.paymentDetailValid && this.receiptInfoValid;
+    if (this.isFlowJaymart()) {
+      return true;
+    } else {
+      return this.paymentDetailValid && this.receiptInfoValid;
+    }
   }
 
   onNext(): void {
-    this.transaction.data.payment = this.paymentDetailTemp.payment;
-    this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
-    this.transaction.data.receiptInfo = this.receiptInfoTemp;
-    this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE]);
+    if (!this.isFlowJaymart()) {
+      this.transaction.data.payment = this.paymentDetailTemp.payment;
+      this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
+      this.transaction.data.receiptInfo = this.receiptInfoTemp;
+      this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE]);
+    } else {
+      this.transaction.data.receiptInfo = this.receiptInfoTemp;
+      this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE]);
+    }
   }
 
   onHome(): void {
@@ -284,6 +302,9 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
     });
 
     this.advancePaymentForm.controls['advancePaymentType'].valueChanges.subscribe(paymentType => {
+      this.advancePaymentType = 'CA';
+      this.advancePaymentDesc = 'เงินสด';
+
       switch (paymentType) {
         case 'cash':
           this.advancePaymentType = 'CA';
@@ -313,6 +334,10 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
   }
 
   private checkPaymentType(paymentTypes: any, banks: any): void {
+    this.$isFullPayment = 'full';
+    this.paymentType = 'CA';
+    this.setRadioPayment(this.paymentType);
+
     if (!paymentTypes || !paymentTypes.length || paymentTypes.length === 0) {
       this.paymentType = 'CA/CC';
       this.setRadioPayment(this.paymentType);
@@ -326,12 +351,10 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
       if ($paymentType.method === 'CA') {
         this.$isFullPayment = 'full';
         this.paymentType = 'CA';
-        console.log('cash paymenttype', this.paymentType);
         this.setRadioPayment(this.paymentType);
       } else if ($paymentType.method === 'CC') {
         this.checkFullPaymentAllBank(banks);
         this.paymentType = 'CC';
-        console.log('credit card paymenttype', this.paymentType);
         this.setRadioPayment(this.paymentType);
       } else if (this.checkCashAndCreditCode($paymentType.method)) {
         this.$isFullPayment = 'full';
@@ -341,7 +364,7 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
         this.paymentType = 'CA/CC';
         this.setRadioPayment(this.paymentType);
       }
-      console.log('this.$isFullPayment', this.$isFullPayment);
+
     }
   }
 
@@ -428,10 +451,10 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
   private setRadioCash(): void {
     // let isSelectQRCode: boolean = this.qrcodePaymentGlobalService.getIsSelectQRCodePayment();
     // if (isSelectQRCode) {
-      // this.paymentForm.controls['paymentType'].setValue('qrcode');
+    // this.paymentForm.controls['paymentType'].setValue('qrcode');
     // } else {
-      this.paymentForm.controls['paymentType'].setValue('cash');
-      // this.qrcodePaymentGlobalService.setIsCashQRPayment(true);
+    this.paymentForm.controls['paymentType'].setValue('cash');
+    // this.qrcodePaymentGlobalService.setIsCashQRPayment(true);
     // }
   }
 
@@ -449,7 +472,7 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
       this.selectBankEvent.emit(this.selectBank);
       this.invalidSelectBank = false;
       this.selectBankInTrade = this.selectBank;
-      const select: any =  this.selectBank;
+      const select: any = this.selectBank;
       localStorage.setItem('selectBank', JSON.stringify(select));
     } catch (error) {
       console.error('error', error);
@@ -482,7 +505,7 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
     const installmentList = new Array<PrivilegeTradeInstallment>();
     const defaultPercentageAndMonthList = selectBank.installmentDatas.filter(
       installmentData => installmentData.installmentPercentage === defaultPercentage && installmentData.installmentMounth === defaultMonth
-      );
+    );
 
     if (defaultPercentageAndMonthList.length > 0) {
       const defaultPercentageAndMonth = defaultPercentageAndMonthList[0];
@@ -491,7 +514,7 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
 
     const filterInstallmentByNoDefaultInstallmentList = selectBank.installmentDatas.filter(
       installmentData => installmentData.installmentMounth !== defaultMonth || installmentData.installmentPercentage !== defaultPercentage
-      );
+    );
 
     if (filterInstallmentByNoDefaultInstallmentList.length > 0) {
       const sortBankInstallmentList = filterInstallmentByNoDefaultInstallmentList
