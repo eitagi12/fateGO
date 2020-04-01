@@ -71,8 +71,8 @@ export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDes
   }
 
   checkJaymart(): void {
-    const retailChain = this.priceOption.queryParams.isRole;
-    if (retailChain && retailChain === 'Retail Chain') {
+    const outChnSale = this.priceOption.queryParams.isRole;
+    if (outChnSale && (outChnSale === 'RetailChain' || outChnSale === 'RetailChain')) {
       this.action = 5;
       this.wizards = this.wizardJaymart;
     } else {

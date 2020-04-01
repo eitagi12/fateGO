@@ -90,10 +90,7 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
   }
 
   ngOnInit(): void {
-    this.isFlowJaymart();
     this.checkJaymart();
-    this.createPaymentTypeForm();
-
     this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
     const paymentMethod = this.priceOption.trade.payment ? this.priceOption.trade.payment.method : '';
     const productDetail = this.priceOption.productDetail || {};
@@ -110,7 +107,6 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
     if (productStock.color) {
       commercialName += ` ${this.translateService.instant('สี')} ${productStock.color}`;
     }
-    this.checkPaymentType(this.priceOption.trade.payments, this.priceOption.trade.banks);
     this.payementDetail = {
       commercialName: commercialName,
       promotionPrice: +(trade.promotionPrice || 0),
@@ -168,17 +164,13 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
 
   checkJaymart(): void {
     const outChnSale = this.priceOption.queryParams.isRole;
-    if (outChnSale && outChnSale === 'Retail Chain') {
+    if (outChnSale && (outChnSale === 'RetailChain' || outChnSale === 'RetailChain')) {
       this.wizards = this.wizardJaymart;
+      this.outChnSaleFlow = 'Retail Chain';
+      this.createPaymentTypeForm();
+      this.checkPaymentType(this.priceOption.trade.payments, this.priceOption.trade.banks);
     } else {
       this.wizards = this.wizardTelewiz;
-    }
-  }
-
-  isFlowJaymart(): boolean {
-    this.outChnSaleFlow = 'Retail Chain';
-    if (this.outChnSaleFlow && this.outChnSaleFlow === 'Retail Chain') {
-      return true;
     }
   }
 
@@ -220,7 +212,7 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
   }
 
   isNext(): boolean {
-    if (this.isFlowJaymart()) {
+    if (this.outChnSaleFlow === 'Retail Chain') {
       return true;
     } else {
       return this.paymentDetailValid && this.receiptInfoValid;
@@ -228,7 +220,7 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
   }
 
   onNext(): void {
-    if (!this.isFlowJaymart()) {
+    if (this.outChnSaleFlow !== 'Retail Chain') {
       this.transaction.data.payment = this.paymentDetailTemp.payment;
       this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
       this.transaction.data.receiptInfo = this.receiptInfoTemp;
@@ -364,7 +356,6 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
         this.paymentType = 'CA/CC';
         this.setRadioPayment(this.paymentType);
       }
-
     }
   }
 

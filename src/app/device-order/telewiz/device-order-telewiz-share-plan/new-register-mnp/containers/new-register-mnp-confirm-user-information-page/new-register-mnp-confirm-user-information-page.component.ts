@@ -130,8 +130,8 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
   }
 
   checkJaymart(): void {
-    const retailChain = this.priceOption.queryParams.isRole;
-    if (retailChain && retailChain === 'Retail Chain') {
+    const outChnSale = this.priceOption.queryParams.isRole;
+    if (outChnSale && (outChnSale === 'RetailChain' || outChnSale === 'RetailChain')) {
       this.wizards = this.wizardJaymart;
       this.action = 5;
     } else {
@@ -288,7 +288,7 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
   }
 
   onNext(): void {
-    const retailChain = this.priceOption.queryParams.isRole;
+    const outChnSale = this.priceOption.queryParams.isRole;
     if (!this.customerValid() && !this.isMergeBilling()) {
       this.alertService.warning(this.translateService.instant('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร'));
       return;
@@ -299,7 +299,7 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     billCycleData.billingMethodText = this.billingInfo.billingMethod.text;
     billCycleData.billCycleText = this.billingInfo.billingCycle.text;
 
-    if (retailChain && retailChain === 'Retail Chain') {
+    if (outChnSale && (outChnSale === 'RetailChain' || outChnSale === 'RetailChain')) {
       this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_SUMMARY_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_MOBILE_CARE_PAGE]);

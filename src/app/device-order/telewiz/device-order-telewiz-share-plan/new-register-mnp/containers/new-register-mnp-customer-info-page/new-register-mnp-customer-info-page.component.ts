@@ -52,8 +52,8 @@ export class NewRegisterMnpCustomerInfoPageComponent implements OnInit, OnDestro
   }
 
   checkJaymart(): void {
-    const retailChain = this.priceOption.queryParams.isRole;
-    if (retailChain && retailChain === 'Retail Chain') {
+    const outChnSale = this.priceOption.queryParams.isRole;
+    if (outChnSale && (outChnSale === 'RetailChain' || outChnSale === 'RetailChain')) {
       this.wizards = this.wizardJaymart;
     } else {
       this.wizards = this.wizardTelewiz;
