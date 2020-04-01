@@ -27,7 +27,9 @@ declare let $: any;
   styleUrls: ['./new-register-mnp-verify-instant-sim-page.component.scss']
 })
 export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDestroy {
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+  wizards: string[];
+ wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
   simSerialForm: FormGroup;
   transaction: Transaction;
   simSerial: SimSerial;
@@ -63,7 +65,7 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
   }
 
   ngOnInit(): void {
-    // this.checkJaymart();
+    this.checkJaymart();
     this.createForm();
     delete this.transaction.data.simCard;
     this.shoppingCart = Object.assign(this.shoppingCartService.getShoppingCartDataSuperKhum(), {
@@ -101,14 +103,14 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
     // console.log('isNativeApp= ' + this.isNativeApp);
   }
 
-  // checkJaymart(): void {
-  //   const retailChain = this.priceOption.queryParams.isRole;
-  //   if (retailChain && retailChain === 'Retail Chain') {
-  //     this.wizards = this.wizardJaymart;
-  //   } else {
-  //     this.wizards = this.wizardTelewiz;
-  //   }
-  // }
+  checkJaymart(): void {
+    const outChnSale = this.priceOption.queryParams.isRole;
+    if (outChnSale && (outChnSale === 'RetailChain' || outChnSale === 'RetailChain')) {
+      this.wizards = this.wizardJaymart;
+    } else {
+      this.wizards = this.wizardTelewiz;
+    }
+  }
 
   private createForm(): void {
     this.simSerialForm = this.fb.group({

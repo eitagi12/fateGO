@@ -23,10 +23,13 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
   styleUrls: ['./new-register-mnp-select-number.component.scss']
 })
 export class NewRegisterMnpSelectNumberComponent implements OnInit {
- wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+  wizards: string[];
+  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
   transaction: Transaction;
   shoppingCart: ShoppingCart;
   priceOption: PriceOption;
+  isJaymart: boolean = false;
 
   constructor(
     private router: Router,
@@ -42,6 +45,17 @@ export class NewRegisterMnpSelectNumberComponent implements OnInit {
 
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
+    this.checkJaymart();
+  }
+
+  checkJaymart(): void {
+    const outChnSale = this.priceOption.queryParams.isRole;
+    if (outChnSale && (outChnSale === 'RetailChain' || outChnSale === 'RetailChain')) {
+      this.wizards = this.wizardJaymart;
+      this.isJaymart = !this.isJaymart;
+    } else {
+      this.wizards = this.wizardTelewiz;
+    }
   }
 
   onVerifyInstantSim(): void {

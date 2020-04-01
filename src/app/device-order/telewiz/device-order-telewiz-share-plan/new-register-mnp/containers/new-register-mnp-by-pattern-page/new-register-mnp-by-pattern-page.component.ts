@@ -24,7 +24,9 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
   styleUrls: ['./new-register-mnp-by-pattern-page.component.scss']
 })
 export class NewRegisterMnpByPatternPageComponent implements OnInit, OnDestroy {
- wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+ wizards: string[];
+ wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
 
   shoppingCart: ShoppingCart;
   transaction: Transaction;
@@ -63,6 +65,15 @@ export class NewRegisterMnpByPatternPageComponent implements OnInit, OnDestroy {
     this.shoppingCart = Object.assign(this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz(), {
       mobileNo: ''
     });
+  }
+
+  checkJaymart(): void {
+    const outChnSale = this.priceOption.queryParams.isRole;
+    if (outChnSale && (outChnSale === 'RetailChain' || outChnSale === 'RetailChain')) {
+      this.wizards = this.wizardJaymart;
+    } else {
+      this.wizards = this.wizardTelewiz;
+    }
   }
 
   onSearch(mobileNoCondition: any): void {

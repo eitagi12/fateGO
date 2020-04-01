@@ -21,7 +21,9 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
   styleUrls: ['./new-register-mnp-validate-customer-page.component.scss']
 })
 export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDestroy {
- wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+ wizards: string[];
+ wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
   // priceOptionMock: any = require('../new-register-mnp-validate-customer-page/priceOption-Mock.json');
   identityType: string;
   identityForm: FormGroup;
@@ -86,7 +88,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
 
   ngOnInit(): void {
     this.buildForm();
-    // this.checkJaymart();
+    this.checkJaymart();
     // localStorage.setItem('priceOption', JSON.stringify(this.priceOptionMock));
     // this.route.paramMap.subscribe(params => {
     //   this.imei = params.get('imei');
@@ -100,14 +102,14 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     }
   }
 
-  // checkJaymart(): void {
-  //   const retailChain = this.priceOption.queryParams.isRole;
-  //   if (retailChain && retailChain === 'Retail Chain') {
-  //     this.wizards = this.wizardJaymart;
-  //   } else {
-  //     this.wizards = this.wizardTelewiz;
-  //   }
-  // }
+  checkJaymart(): void {
+    const outChnSale = this.priceOption.queryParams.isRole;
+    if (outChnSale && (outChnSale === 'RetailChain' || outChnSale === 'RetailChain')) {
+      this.wizards = this.wizardJaymart;
+    } else {
+      this.wizards = this.wizardTelewiz;
+    }
+  }
 
   buildForm(): void {
     this.identityForm = new FormGroup({

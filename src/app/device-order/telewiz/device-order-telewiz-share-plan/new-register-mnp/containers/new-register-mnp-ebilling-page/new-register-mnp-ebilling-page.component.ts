@@ -19,13 +19,16 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
   styleUrls: ['./new-register-mnp-ebilling-page.component.scss']
 })
 export class NewRegisterMnpEbillingPageComponent implements OnInit, OnDestroy {
- wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+ wizards: string[];
+ wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
 
   transaction: Transaction;
   priceOption: PriceOption;
   billCycleValid: boolean;
   billCycle: any;
   billCycles: Ebilling[];
+  action: number = 4;
 
   constructor(
     private router: Router,
@@ -43,6 +46,7 @@ export class NewRegisterMnpEbillingPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.checkJaymart();
     const customer: any = this.transaction.data.customer || {};
     const billingInformation: any = this.transaction.data.billingInformation || {};
     const billCycle = billingInformation.billCycle || {};
@@ -65,6 +69,16 @@ export class NewRegisterMnpEbillingPageComponent implements OnInit, OnDestroy {
         });
       }
     });
+  }
+
+  checkJaymart(): void {
+    const outChnSale = this.priceOption.queryParams.isRole;
+    if (outChnSale && (outChnSale === 'RetailChain' || outChnSale === 'RetailChain')) {
+      this.wizards = this.wizardJaymart;
+      this.action = 5;
+    } else {
+      this.wizards = this.wizardTelewiz;
+    }
   }
 
   setBillingDefault(ebilling: Ebilling[]): void {

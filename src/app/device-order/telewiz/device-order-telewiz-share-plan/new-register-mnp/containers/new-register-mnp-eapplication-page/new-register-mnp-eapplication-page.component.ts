@@ -26,7 +26,9 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 export class NewRegisterMnpEapplicationPageComponent implements OnInit, OnDestroy {
 
   selectedTab: string = 'hotdeal-superkhum-new-register';
- wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+ wizards: string[];
+ wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
   shoppingCart: ShoppingCart;
   transaction: Transaction;
   priceOption: PriceOption;
@@ -34,6 +36,7 @@ export class NewRegisterMnpEapplicationPageComponent implements OnInit, OnDestro
   eApplicationSuperKhumMnp: string;
   isSelect: boolean;
   translationSubscribe: Subscription;
+  action: number = 6;
   constructor(private router: Router,
     private createEapplicationService: CreateEapplicationService,
     private transactionService: TransactionService,
@@ -53,10 +56,21 @@ export class NewRegisterMnpEapplicationPageComponent implements OnInit, OnDestro
   }
 
   ngOnInit(): void {
+    this.checkJaymart();
     this.pageLoadingService.openLoading();
     this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
     this.callGenerateEappService(this.transaction, this.translateService.currentLang);
     this.isSelect = this.eApplicationSuperKhumNew ? true : false; // Get eApp for new ca first.
+  }
+
+  checkJaymart(): void {
+    const outChnSale = this.priceOption.queryParams.isRole;
+    if (outChnSale && (outChnSale === 'RetailChain' || outChnSale === 'RetailChain')) {
+      this.wizards = this.wizardJaymart;
+      this.action = 5;
+    } else {
+      this.wizards = this.wizardTelewiz;
+    }
   }
 
   callGenerateEappService(transaction: Transaction, language: string): void {

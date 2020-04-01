@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -7,7 +7,7 @@ import {
   WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART
 } from 'src/app/device-order/constants/wizard.constant';
 import { ShoppingCart, ReceiptInfo, Utils, PaymentDetail, PaymentDetailBank, TokenService, User } from 'mychannel-shared-libs';
-import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { PriceOption, PrivilegeTradeInstallment } from 'src/app/shared/models/price-option.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -19,13 +19,17 @@ import {
 import { BanksPromotionService } from 'src/app/device-order/services/banks-promotion.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { RemoveCartService } from '../../services/remove-cart.service';
+import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
+
 @Component({
   selector: 'app-new-register-mnp-payment-detail-page',
   templateUrl: './new-register-mnp-payment-detail-page.component.html',
   styleUrls: ['./new-register-mnp-payment-detail-page.component.scss']
 })
 export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestroy {
- wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+ wizards: string[];
+ wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
 
   shoppingCart: ShoppingCart;
   priceOption: PriceOption;
@@ -41,7 +45,35 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
   paymentDetailTemp: any;
   receiptInfoTemp: any;
   user: User;
+
+  paymentForm: FormGroup;
+  private paymentType: string;
+  paymentTypeRadio: any = {
+    type: '',
+    checked: ''
+  };
+  public disabledCreditCardRadio: boolean = true;
+  public $isFullPayment: string = 'installment';
+  private isDiscount: boolean;
+  private sortInstallmentList: any = new Array<PrivilegeTradeInstallment>();
+  private selectBank: any;
+  public selectBankInstallment: PrivilegeTradeInstallment;
+  selectBankEvent: EventEmitter<any>;
+  invalidSelectBank: boolean = true;
+  selectBankInTrade: any;
+
+  splittedBanks: any;
+  _banks: any[];
+
+  advancePaymentForm: FormGroup;
+  advancePaymentType: string;
+  advancePaymentDesc: string;
+  selectAdvancePaymentTypeEvent: EventEmitter<string>;
+  MAX_BANK_ROW: number = 1;
+  outChnSaleFlow: string;
+
   constructor(
+    private fb: FormBuilder,
     private utils: Utils,
     private router: Router,
     private tokenService: TokenService,
@@ -58,6 +90,7 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
   }
 
   ngOnInit(): void {
+    this.checkJaymart();
     this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
     const paymentMethod = this.priceOption.trade.payment ? this.priceOption.trade.payment.method : '';
     const productDetail = this.priceOption.productDetail || {};
@@ -74,7 +107,6 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
     if (productStock.color) {
       commercialName += ` ${this.translateService.instant('สี')} ${productStock.color}`;
     }
-
     this.payementDetail = {
       commercialName: commercialName,
       promotionPrice: +(trade.promotionPrice || 0),
@@ -83,7 +115,6 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
       advancePay: +(advancePay.amount || 0),
       qrCode: showQRCode
     };
-
     if (trade.banks && trade.banks.length > 0) {
       if (!this.isFullPayment()) {
         this.banks = (this.priceOption.trade.banks || []).map((b: any) => {
@@ -129,7 +160,18 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
       }),
       telNo: receiptInfo.telNo
     };
+  }
 
+  checkJaymart(): void {
+    const outChnSale = this.priceOption.queryParams.isRole;
+    if (outChnSale && (outChnSale === 'RetailChain' || outChnSale === 'RetailChain')) {
+      this.wizards = this.wizardJaymart;
+      this.outChnSaleFlow = 'Retail Chain';
+      this.createPaymentTypeForm();
+      this.checkPaymentType(this.priceOption.trade.payments, this.priceOption.trade.banks);
+    } else {
+      this.wizards = this.wizardTelewiz;
+    }
   }
 
   onPaymentCompleted(payment: any): void {
@@ -170,14 +212,23 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
   }
 
   isNext(): boolean {
-    return this.paymentDetailValid && this.receiptInfoValid;
+    if (this.outChnSaleFlow === 'Retail Chain') {
+      return true;
+    } else {
+      return this.paymentDetailValid && this.receiptInfoValid;
+    }
   }
 
   onNext(): void {
-    this.transaction.data.payment = this.paymentDetailTemp.payment;
-    this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
-    this.transaction.data.receiptInfo = this.receiptInfoTemp;
-    this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE]);
+    if (this.outChnSaleFlow !== 'Retail Chain') {
+      this.transaction.data.payment = this.paymentDetailTemp.payment;
+      this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
+      this.transaction.data.receiptInfo = this.receiptInfoTemp;
+      this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE]);
+    } else {
+      this.transaction.data.receiptInfo = this.receiptInfoTemp;
+      this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE]);
+    }
   }
 
   onHome(): void {
@@ -187,4 +238,294 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }
+
+  private createPaymentTypeForm(): void {
+    this.paymentForm = this.fb.group({
+      paymentType: [{ disabled: false }],
+      fullPaidAndInstallment: [{ disabled: false }],
+      installment: ''
+    });
+
+    this.advancePaymentForm = this.fb.group({
+      advancePaymentType: [{ disabled: false }],
+      fullPaidAndInstallment: [{ disabled: false }]
+    });
+
+    // this.paymentForm.controls['fullPaidAndInstallment'].valueChanges.subscribe(fullPaidAndInstallment => {
+    //   switch (fullPaidAndInstallment) {
+    //     case 'full':
+    //       this.isFullPayment = 'full';
+    //       break;
+    //     case 'installment':
+    //       this.isFullPayment = 'installment';
+    //       break;
+    //     default:
+    //       this.isFullPayment = 'installment';
+    //       break;
+    //   }
+    // });
+
+    this.paymentForm.controls['paymentType'].valueChanges.subscribe(paymentType => {
+      switch (paymentType) {
+        case 'cash':
+          // this.qrcodePaymentGlobalService.setIsCashQRPayment(true);
+          // this.qrcodePaymentGlobalService.setIsSelectQRCodePayment(false);
+          this.paymentType = 'CA';
+          this.paymentTypeRadio.type = 'cash';
+          // this.selectPaymentTypeEvent.emit(this.paymentType);
+          break;
+        case 'credit':
+          // this.qrcodePaymentGlobalService.setIsCashQRPayment(false);
+          // this.qrcodePaymentGlobalService.setIsSelectQRCodePayment(false);
+          this.paymentType = 'CC';
+          this.paymentTypeRadio.type = 'credit';
+          // this.selectPaymentTypeEvent.emit(this.paymentType);
+          break;
+        case 'qrcode':
+          // this.qrcodePaymentGlobalService.setIsSelectQRCodePayment(true);
+          // this.qrcodePaymentGlobalService.setIsCashQRPayment(false);
+          this.paymentType = 'CA';
+          this.paymentTypeRadio.type = 'qrcode';
+          // this.selectPaymentTypeEvent.emit(this.paymentType);
+          break;
+        default:
+          break;
+      }
+    });
+
+    this.advancePaymentForm.controls['advancePaymentType'].valueChanges.subscribe(paymentType => {
+      this.advancePaymentType = 'CA';
+      this.advancePaymentDesc = 'เงินสด';
+
+      switch (paymentType) {
+        case 'cash':
+          this.advancePaymentType = 'CA';
+          this.advancePaymentDesc = 'เงินสด';
+          // this.qrcodePaymentGlobalService.setIsCashAdavancPay(true);
+          // this.qrcodePaymentGlobalService.setIsSelectQRCodeAdvanc(false);
+          // this.selectAdvancePaymentTypeEvent.emit(this.advancePaymentType);
+          break;
+        case 'credit':
+          this.advancePaymentType = 'CC';
+          this.advancePaymentDesc = 'เครดิต';
+          // this.qrcodePaymentGlobalService.setIsCashAdavancPay(false);
+          // this.qrcodePaymentGlobalService.setIsSelectQRCodeAdvanc(false);
+          // this.selectAdvancePaymentTypeEvent.emit(this.advancePaymentType);
+          break;
+        case 'qrcode':
+          this.advancePaymentType = 'CA';
+          this.advancePaymentDesc = 'เงินสด';
+          // this.qrcodePaymentGlobalService.setIsCashAdavancPay(false);
+          // this.qrcodePaymentGlobalService.setIsSelectQRCodeAdvanc(true);
+          // this.selectAdvancePaymentTypeEvent.emit(this.advancePaymentType);
+          break;
+        default:
+          break;
+      }
+    });
+  }
+
+  private checkPaymentType(paymentTypes: any, banks: any): void {
+    this.$isFullPayment = 'full';
+    this.paymentType = 'CA';
+    this.setRadioPayment(this.paymentType);
+
+    if (!paymentTypes || !paymentTypes.length || paymentTypes.length === 0) {
+      this.paymentType = 'CA/CC';
+      this.setRadioPayment(this.paymentType);
+      return;
+    }
+
+    if (paymentTypes.length >= 1) {
+      this.isDiscount = false;
+      const filterPaymentTypes = paymentTypes.filter(paymentType => paymentType.method !== 'PP');
+      const $paymentType = filterPaymentTypes[0];
+      if ($paymentType.method === 'CA') {
+        this.$isFullPayment = 'full';
+        this.paymentType = 'CA';
+        this.setRadioPayment(this.paymentType);
+      } else if ($paymentType.method === 'CC') {
+        this.checkFullPaymentAllBank(banks);
+        this.paymentType = 'CC';
+        this.setRadioPayment(this.paymentType);
+      } else if (this.checkCashAndCreditCode($paymentType.method)) {
+        this.$isFullPayment = 'full';
+        this.paymentType = 'CA/CC';
+        this.setRadioPayment(this.paymentType);
+      } else {
+        this.paymentType = 'CA/CC';
+        this.setRadioPayment(this.paymentType);
+      }
+    }
+  }
+
+  private setRadioPayment(paymentType: string): void {
+
+    switch (paymentType) {
+      case 'CC':
+        this.paymentForm.get('paymentType').disable();
+        this.paymentForm.get('fullPaidAndInstallment').disable();
+        this.paymentForm.controls['paymentType'].setValue('credit');
+        try {
+          this._banks = this.priceOption.trade.banks;
+          this.splittedBanks = [];
+          let i = 0;
+          while (i < this._banks.length) {
+            this.splittedBanks.push(this._banks.slice(i, i += 5));
+          }
+        } catch (error) {
+          console.log(error);
+        }
+        break;
+
+      case 'CA':
+        this.disabledCreditCardRadio = false;
+        this.paymentForm.get('paymentType').enable();
+        this.paymentForm.get('fullPaidAndInstallment').disable();
+        this.setRadioCash();
+        // if (Object.keys(this.updatePaymentDetail).length !== 0) {
+        //   this.qrcodePaymentGlobalService.setIsCashQRPayment(false);
+        //   this.qrcodePaymentGlobalService.setIsSelectQRCodePayment(true);
+        //   this.paymentForm.controls['paymentType'].setValue('qrcode');
+        // } else {
+        //   this.paymentForm.controls['paymentType'].setValue('cash');
+        //   this.qrcodePaymentGlobalService.setIsCashQRPayment(true);
+        //   this.qrcodePaymentGlobalService.setIsSelectQRCodePayment(false);
+        // }
+        // if (this.qrcodePaymentGlobalService.getIsCashQRPayment()) {
+        //   this.paymentForm.controls['paymentType'].setValue('cash');
+        // } else {
+        //   this.paymentForm.controls['paymentType'].setValue('qrcode');
+        // }
+        break;
+
+      case 'CA/CC':
+        this.paymentForm.get('paymentType').enable();
+        this.paymentForm.get('fullPaidAndInstallment').disable();
+        this.paymentType = 'CA';
+        this.setRadioCash();
+        break;
+
+      default:
+        this.paymentForm.get('paymentType').enable();
+        this.paymentForm.get('fullPaidAndInstallment').disable();
+        this.paymentForm.controls['paymentType'].setValue('cash');
+        // this.qrcodePaymentGlobalService.setIsCashQRPayment(true);
+        // this.qrcodePaymentGlobalService.setIsSelectQRCodePayment(false);
+        break;
+    }
+  }
+
+  private checkFullPaymentAllBank(banks: any): void {
+    if (banks.length === 0) {
+      this.paymentForm.controls['fullPaidAndInstallment'].setValue('full');
+    }
+  }
+
+  private checkCashAndCreditCode($paymentMethod: string): any {
+    const paymentMethodList = $paymentMethod.split('/');
+    const cashMethod = 'CC';
+    const creditCardMethod = 'CA';
+
+    let isCashAndCreditCode = false;
+
+    for (const _paymentMethod of paymentMethodList) {
+      if (_paymentMethod === cashMethod || _paymentMethod === creditCardMethod) {
+        isCashAndCreditCode = true;
+      } else {
+        isCashAndCreditCode = false;
+      }
+    }
+    return isCashAndCreditCode;
+  }
+
+  private setRadioCash(): void {
+    // let isSelectQRCode: boolean = this.qrcodePaymentGlobalService.getIsSelectQRCodePayment();
+    // if (isSelectQRCode) {
+    // this.paymentForm.controls['paymentType'].setValue('qrcode');
+    // } else {
+    this.paymentForm.controls['paymentType'].setValue('cash');
+    // this.qrcodePaymentGlobalService.setIsCashQRPayment(true);
+    // }
+  }
+
+  onSelectBank(bank: any): void {
+    if (this.selectBank.abb !== bank.abb) {
+      this.selectBankInstallment = {
+        installmentPercentage: null,
+        installmentMonth: null
+      };
+    }
+    try {
+      this.selectBank = bank;
+      this.checkFullPaymentFromSelectBank(bank);
+      this.sortInstallmentList = this.getSortInstallmentBySelectBank(bank);
+      this.selectBankEvent.emit(this.selectBank);
+      this.invalidSelectBank = false;
+      this.selectBankInTrade = this.selectBank;
+      const select: any = this.selectBank;
+      localStorage.setItem('selectBank', JSON.stringify(select));
+    } catch (error) {
+      console.error('error', error);
+    }
+  }
+
+  onSelectBankAdvancePay(bank: any): void {
+    try {
+      this.selectBank = bank;
+      this.selectBankEvent.emit(this.selectBank);
+      const selectAdvancePay = this.selectBank;
+      localStorage.setItem('selectBankAirtime', JSON.stringify(selectAdvancePay));
+
+    } catch (error) {
+      console.error('error', error);
+    }
+  }
+
+  private checkFullPaymentFromSelectBank(bank: any): void {
+    if (bank.installmentDatas.length === 0) {
+      this.paymentForm.controls['fullPaidAndInstallment'].setValue('full');
+    } else {
+      this.paymentForm.controls['fullPaidAndInstallment'].setValue('installment');
+    }
+  }
+
+  private getSortInstallmentBySelectBank(selectBank: any): any {
+    const defaultPercentage = 0;
+    const defaultMonth = 10;
+    const installmentList = new Array<PrivilegeTradeInstallment>();
+    const defaultPercentageAndMonthList = selectBank.installmentDatas.filter(
+      installmentData => installmentData.installmentPercentage === defaultPercentage && installmentData.installmentMounth === defaultMonth
+    );
+
+    if (defaultPercentageAndMonthList.length > 0) {
+      const defaultPercentageAndMonth = defaultPercentageAndMonthList[0];
+      installmentList.push(defaultPercentageAndMonth);
+    }
+
+    const filterInstallmentByNoDefaultInstallmentList = selectBank.installmentDatas.filter(
+      installmentData => installmentData.installmentMounth !== defaultMonth || installmentData.installmentPercentage !== defaultPercentage
+    );
+
+    if (filterInstallmentByNoDefaultInstallmentList.length > 0) {
+      const sortBankInstallmentList = filterInstallmentByNoDefaultInstallmentList
+        .sort(
+          (a, b) => {
+            if (a.installmentPercentage !== b.installmentPercentage) {
+              return a.installmentPercentage < b.installmentPercentage ? -1 : 1;
+            } else {
+              if (a.installmentMounth !== b.installmentMounth) {
+                return a.installmentMounth < b.installmentMounth ? -1 : 1;
+              } else {
+                return 0;
+              }
+            }
+          });
+      for (const sortBankInstalment of sortBankInstallmentList) {
+        installmentList.push(sortBankInstalment);
+      }
+    }
+    return installmentList;
+  }
+
 }

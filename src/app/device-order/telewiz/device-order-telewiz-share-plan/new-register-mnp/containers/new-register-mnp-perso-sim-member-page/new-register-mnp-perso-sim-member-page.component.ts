@@ -35,7 +35,9 @@ declare let window: any;
 })
 export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDestroy {
 
- wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+ wizards: string[];
+ wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
   aisNative: any = window.aisNative;
 
   title: string;
@@ -89,6 +91,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
   simSerialKeyIn: string;
   simProgress: number;
   priceOption: PriceOption;
+  action: number = 6;
 
   constructor(
     private router: Router,
@@ -112,6 +115,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
   }
 
   ngOnInit(): void {
+    this.checkJaymart();
     this.memberSimCard = this.transaction.data.simCard.memberSimCard[0];
     this.checkOrderCounter = 0;
     this.getCommandCounter = false;
@@ -121,6 +125,16 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
       this.setConfigPersoSim().then((res: any) => {
         this.persoSimWebsocket();
       });
+    }
+  }
+
+  checkJaymart(): void {
+    const outChnSale = this.priceOption.queryParams.isRole;
+    if (outChnSale && (outChnSale === 'RetailChain' || outChnSale === 'RetailChain')) {
+      this.wizards = this.wizardJaymart;
+      this.action = 5;
+    } else {
+      this.wizards = this.wizardTelewiz;
     }
   }
 

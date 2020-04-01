@@ -26,12 +26,15 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
   styleUrls: ['./new-register-mnp-network-type-page.component.scss']
 })
 export class NewRegisterMnpNetworkTypePageComponent implements OnInit, OnDestroy {
- wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+ wizards: string[];
+ wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
 
   transaction: Transaction;
   priceOption: PriceOption;
   mnpForm: FormGroup;
   shoppingCart: ShoppingCart;
+  action: number = 4;
   constructor(
     private router: Router,
     private fb: FormBuilder,
@@ -48,8 +51,19 @@ export class NewRegisterMnpNetworkTypePageComponent implements OnInit, OnDestroy
   }
 
   ngOnInit(): void {
+    this.checkJaymart();
     this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
     this.createForm();
+  }
+
+  checkJaymart(): void {
+    const outChnSale = this.priceOption.queryParams.isRole;
+    if (outChnSale && (outChnSale === 'RetailChain' || outChnSale === 'RetailChain')) {
+      this.wizards = this.wizardJaymart;
+      this.action = 4;
+    } else {
+      this.wizards = this.wizardTelewiz;
+    }
   }
 
   onBack(): void {

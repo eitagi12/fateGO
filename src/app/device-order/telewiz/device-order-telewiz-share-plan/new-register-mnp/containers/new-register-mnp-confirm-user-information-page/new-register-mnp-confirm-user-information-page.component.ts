@@ -34,7 +34,9 @@ const Moment = moment;
 })
 export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit, OnDestroy {
 
- wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+ wizards: string[];
+ wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
 
   transaction: Transaction;
   priceOption: PriceOption;
@@ -54,6 +56,7 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
 
   templatePopupRef: BsModalRef;
   title: string;
+  action: number = 5;
 
   constructor(
     private router: Router,
@@ -77,6 +80,7 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
   }
 
   ngOnInit(): void {
+    this.checkJaymart();
     this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
     const mainPackage = this.transaction.data.mainPackage;
     const customer = this.transaction.data.customer;
@@ -123,6 +127,16 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     };
 
     this.initBillingInfo();
+  }
+
+  checkJaymart(): void {
+    const outChnSale = this.priceOption.queryParams.isRole;
+    if (outChnSale && (outChnSale === 'RetailChain' || outChnSale === 'RetailChain')) {
+      this.wizards = this.wizardJaymart;
+      this.action = 5;
+    } else {
+      this.wizards = this.wizardTelewiz;
+    }
   }
 
   changePackageDetailLanguage(mainPackage: any): string {
@@ -274,7 +288,7 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
   }
 
   onNext(): void {
-    // const retailChain = this.priceOption.queryParams.isRole;
+    const outChnSale = this.priceOption.queryParams.isRole;
     if (!this.customerValid() && !this.isMergeBilling()) {
       this.alertService.warning(this.translateService.instant('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร'));
       return;
@@ -285,12 +299,13 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     billCycleData.billingMethodText = this.billingInfo.billingMethod.text;
     billCycleData.billCycleText = this.billingInfo.billingCycle.text;
 
-    // if (retailChain && retailChain === 'Retail Chain') {
-    //   this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_SUMMARY_PAGE]);
-    // } else {
+    if (outChnSale && (outChnSale === 'RetailChain' || outChnSale === 'RetailChain')) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_SUMMARY_PAGE]);
+    } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_MOBILE_CARE_PAGE]);
-    // }
+    }
   }
+  
 
   onEditAddress(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_EDIT_BILLING_ADDRESS_PAGE]);

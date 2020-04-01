@@ -27,13 +27,16 @@ import { RemoveCartService } from '../../services/remove-cart.service';
 })
 export class NewRegisterMnpEcontactPageComponent implements OnInit, OnDestroy {
 
- wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+ wizards: string[];
+ wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
 
   priceOption: PriceOption;
   transaction: Transaction;
   shoppingCart: ShoppingCart;
   eContactSrc: string;
   agreement: boolean;
+  action: number = 6;
 
   translationSubcription: Subscription;
   currentLang: string;
@@ -60,8 +63,19 @@ export class NewRegisterMnpEcontactPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.checkJaymart();
     this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
     this.callService();
+  }
+
+  checkJaymart(): void {
+    const outChnSale = this.priceOption.queryParams.isRole;
+    if (outChnSale && (outChnSale === 'RetailChain' || outChnSale === 'RetailChain')) {
+      this.wizards = this.wizardJaymart;
+      this.action = 5;
+    } else {
+      this.wizards = this.wizardTelewiz;
+    }
   }
 
   onBack(): void {

@@ -23,13 +23,16 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 })
 export class NewRegisterMnpFaceCapturePageComponent implements OnInit, OnDestroy {
 
- wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
+ wizards: string[];
+ wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
   shoppingCart: ShoppingCart;
   openCamera: boolean;
   transaction: Transaction;
   priceOption: PriceOption;
   camera: EventEmitter<void> = new EventEmitter<void>();
   isCaptureSuccess: boolean = false;
+  action: number = 6;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -45,10 +48,20 @@ export class NewRegisterMnpFaceCapturePageComponent implements OnInit, OnDestroy
   }
 
   ngOnInit(): void {
+    this.checkJaymart();
     this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
     this.openCamera = !!(this.transaction.data.faceRecognition && this.transaction.data.faceRecognition.imageFaceUser);
   }
 
+  checkJaymart(): void {
+    const outChnSale = this.priceOption.queryParams.isRole;
+    if (outChnSale && (outChnSale === 'RetailChain' || outChnSale === 'RetailChain')) {
+      this.wizards = this.wizardJaymart;
+      this.action = 5;
+    } else {
+      this.wizards = this.wizardTelewiz;
+    }
+  }
 
   onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_AGREEMENT_SIGN_PAGE]);
