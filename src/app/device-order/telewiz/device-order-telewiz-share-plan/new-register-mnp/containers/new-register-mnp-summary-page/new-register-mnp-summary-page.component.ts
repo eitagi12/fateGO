@@ -83,7 +83,7 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.pageLoadingService.openLoading();
-    // this.checkJaymart();
+    this.checkJaymart();
     const customer = this.transaction.data && this.transaction.data.billingInformation
       && this.transaction.data.billingInformation.billDeliveryAddress ?
       this.transaction.data.billingInformation.billDeliveryAddress : this.transaction.data.customer;

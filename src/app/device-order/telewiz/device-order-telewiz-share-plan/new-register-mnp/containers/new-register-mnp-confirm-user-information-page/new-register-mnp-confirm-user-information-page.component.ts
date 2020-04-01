@@ -305,7 +305,6 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
       this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_MOBILE_CARE_PAGE]);
     }
   }
-  
 
   onEditAddress(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_EDIT_BILLING_ADDRESS_PAGE]);
