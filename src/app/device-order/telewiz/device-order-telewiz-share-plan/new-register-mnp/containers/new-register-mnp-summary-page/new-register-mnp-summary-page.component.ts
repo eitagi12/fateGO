@@ -108,7 +108,7 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
 
   checkJaymart(): void {
     const outChnSale = this.priceOption.queryParams.isRole;
-    if (outChnSale && (outChnSale === 'RetailChain' || outChnSale === 'RetailChain')) {
+    if (outChnSale && (outChnSale === 'Retail Chain' || outChnSale === 'RetailChain')) {
       this.channelFlow = 'isJaymart';
       this.wizards = this.wizardJaymart;
       this.action = 5;
@@ -125,7 +125,7 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
 
   onBack(): void {
     const outChnSale = this.priceOption.queryParams.isRole;
-    if (outChnSale && (outChnSale === 'RetailChain' || outChnSale === 'RetailChain')) {
+    if (outChnSale && (outChnSale === 'Retail Chain' || outChnSale === 'RetailChain')) {
       this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_CONFIRM_USER_INFORMATION_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_MOBILE_CARE_PAGE]);
@@ -153,7 +153,7 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
       });
     } else {
       const outChnSale = this.priceOption.queryParams.isRole;
-      if (outChnSale && (outChnSale === 'RetailChain' || outChnSale === 'RetailChain')) {
+      if (outChnSale && (outChnSale === 'Retail Chain' || outChnSale === 'RetailChain')) {
         this.transaction.data.seller.isRole = this.priceOption.queryParams.isRole;
         this.transaction.data.seller.isPaymentId = this.priceOption.queryParams.isPaymentId;
       }

@@ -164,7 +164,7 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
 
   checkJaymart(): void {
     const outChnSale = this.priceOption.queryParams.isRole;
-    if (outChnSale && (outChnSale === 'RetailChain' || outChnSale === 'RetailChain')) {
+    if (outChnSale && (outChnSale === 'Retail Chain' || outChnSale === 'RetailChain')) {
       this.wizards = this.wizardJaymart;
       this.outChnSaleFlow = 'Retail Chain';
       this.createPaymentTypeForm();
