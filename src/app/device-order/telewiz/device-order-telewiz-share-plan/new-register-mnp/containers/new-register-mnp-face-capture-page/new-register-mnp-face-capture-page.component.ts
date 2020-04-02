@@ -55,7 +55,7 @@ export class NewRegisterMnpFaceCapturePageComponent implements OnInit, OnDestroy
 
   checkJaymart(): void {
     const outChnSale = this.priceOption.queryParams.isRole;
-    if (outChnSale && (outChnSale === 'RetailChain' || outChnSale === 'RetailChain')) {
+    if (outChnSale && (outChnSale === 'Retail Chain' || outChnSale === 'RetailChain')) {
       this.wizards = this.wizardJaymart;
       this.action = 5;
     } else {

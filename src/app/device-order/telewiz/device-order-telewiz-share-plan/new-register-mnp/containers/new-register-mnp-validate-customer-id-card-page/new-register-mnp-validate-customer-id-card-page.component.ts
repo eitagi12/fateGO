@@ -89,7 +89,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
 
   checkJaymart(): void {
     const outChnSale = this.priceOption.queryParams.isRole;
-    if (outChnSale && (outChnSale === 'RetailChain' || outChnSale === 'RetailChain')) {
+    if (outChnSale && (outChnSale === 'Retail Chain' || outChnSale === 'RetailChain')) {
       this.wizards = this.wizardJaymart;
     } else {
       this.wizards = this.wizardTelewiz;

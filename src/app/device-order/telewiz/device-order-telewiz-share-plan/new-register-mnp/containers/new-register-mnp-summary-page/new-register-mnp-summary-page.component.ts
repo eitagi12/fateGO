@@ -38,7 +38,6 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
   detailTemplate: any;
   modalRef: BsModalRef;
   detail: string;
-  feedback: string;
 
   priceOption: PriceOption;
   transaction: Transaction;
@@ -54,7 +53,6 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
 
   templatePopupRef: BsModalRef;
   action: number = 6;
-  isChangeASC: boolean;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -108,7 +106,7 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
 
   checkJaymart(): void {
     const outChnSale = this.priceOption.queryParams.isRole;
-    if (outChnSale && (outChnSale === 'RetailChain' || outChnSale === 'RetailChain')) {
+    if (outChnSale && (outChnSale === 'Retail Chain' || outChnSale === 'RetailChain')) {
       this.channelFlow = 'isJaymart';
       this.wizards = this.wizardJaymart;
       this.action = 5;
@@ -125,7 +123,7 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
 
   onBack(): void {
     const outChnSale = this.priceOption.queryParams.isRole;
-    if (outChnSale && (outChnSale === 'RetailChain' || outChnSale === 'RetailChain')) {
+    if (outChnSale && (outChnSale === 'Retail Chain' || outChnSale === 'RetailChain')) {
       this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_CONFIRM_USER_INFORMATION_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_MOBILE_CARE_PAGE]);
@@ -138,22 +136,49 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
     const ascCode = this.employeeDetailForm.controls['ascCode'].value ? this.employeeDetailForm.controls['ascCode'].value : '';
 
     if (ascCode) {
-      this.http.get(`/api/customerportal/checkSeller/${ascCode.trim()}`).toPromise().then((resp: any) => {
-        const checkSeller: any = resp && resp.data ? resp.data : {};
-        if (checkSeller.condition) {
-          this.transaction.data.seller.sellerNo = this.sellerCode || '';
-          this.transaction.data.seller.employeeId = ascCode;
-          this.transaction.data.seller.sellerName =
+      if (this.channelFlow !== 'isJaymart') {
+        this.http.get(`/api/customerportal/checkSeller/${ascCode.trim()}`).toPromise().then((resp: any) => {
+          const checkSeller: any = resp && resp.data ? resp.data : {};
+          if (checkSeller.condition) {
+            this.transaction.data.seller.sellerNo = this.sellerCode || '';
+            this.transaction.data.seller.employeeId = ascCode;
+            this.transaction.data.seller.sellerName =
+              user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username;
+            this.pageLoadingService.closeLoading();
+            this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE]);
+          } else {
+            this.alertService.warning(checkSeller.message);
+          }
+        });
+      } else if (this.channelFlow === 'isJaymart') {
+        if (ascCode.length === 6) {
+          if (ascCode === '661111') {
+            this.transaction.data.seller.isRole = this.priceOption.queryParams.isRole;
+            this.transaction.data.seller.isPaymentId = this.priceOption.queryParams.isPaymentId;
+            this.transaction.data.seller.sellerNo = this.sellerCode ? this.sellerCode : '';
+            this.transaction.data.seller.employeeId = ascCode;
+            this.transaction.data.seller.sellerName =
             user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username;
-          this.pageLoadingService.closeLoading();
-          this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE]);
+            this.pageLoadingService.closeLoading();
+            this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE]);
+          } else {
+            const queryAPI = `/api/easyapp/get-profile-by-ccsm?inEvent=evASCInfo&inASCCode= + ${ascCode}`;
+            this.http.get(queryAPI).toPromise().then((res: any) => {
+              this.pageLoadingService.closeLoading();
+            }).catch((err: any) => {
+              this.pageLoadingService.closeLoading();
+              this.alertService.warning('ไม่พบรหัส ASC ภายใต้ Location กรุณาติดต่อ CCC 02-0789191');
+            });
+          }
         } else {
-          this.alertService.warning(checkSeller.message);
+          this.pageLoadingService.closeLoading();
+          this.alertService.warning('ไม่พบรหัส ASC ภายใต้ Location กรุณาติดต่อ CCC 02-0789191');
         }
-      });
+      }
+
     } else {
       const outChnSale = this.priceOption.queryParams.isRole;
-      if (outChnSale && (outChnSale === 'RetailChain' || outChnSale === 'RetailChain')) {
+      if (outChnSale && (outChnSale === 'Retail Chain' || outChnSale === 'RetailChain')) {
         this.transaction.data.seller.isRole = this.priceOption.queryParams.isRole;
         this.transaction.data.seller.isPaymentId = this.priceOption.queryParams.isPaymentId;
       }
@@ -201,43 +226,32 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
     }).then(() => {
       this.sellerCode = this.tokenService.getUser().ascCode ? this.tokenService.getUser().ascCode : '';
       this.employeeDetailForm.patchValue({ ascCode: this.sellerCode });
-      this.isChangeASC = true;
       this.priceOption.productStock.locationName = this.seller$.locationName;
       this.transaction.data.seller = this.seller$;
       this.pageLoadingService.closeLoading();
     });
   }
 
-  isChangeASCCode(): void {
-    if (this.channelFlow === 'isJaymart') {
-      const ascCode = this.employeeDetailForm.controls['ascCode'].value;
-      if (ascCode.length === 0) {
-        this.feedback = '';
-        this.isChangeASC = true;
-      } else if (ascCode.length === 6) {
-        this.pageLoadingService.openLoading();
-        if (ascCode === '661111') {
-          this.pageLoadingService.closeLoading();
-          this.feedback = '';
-          this.isChangeASC = true;
-        } else {
-          const queryAPI = `/api/easyapp/get-profile-by-ccsm?inEvent=evASCInfo&inASCCode= + ${ascCode}`;
-          this.http.get(queryAPI).toPromise().then((res: any) => {
-            this.pageLoadingService.closeLoading();
-            this.feedback = '';
-            this.isChangeASC = true;
-          }).catch((err: any) => {
-            this.pageLoadingService.closeLoading();
-            this.feedback = '*ไม่พบรหัส ASC Code กรุณาตรวจสอบใหม่';
-            this.isChangeASC = false;
-          });
-        }
-      } else {
-        this.feedback = '*กรุณาระบุรหัส ASC Code ให้ครบ 6 หลัก';
-        this.isChangeASC = false;
-      }
-    }
-  }
+  // isChangeASCCode(): void {
+  //   if (this.channelFlow === 'isJaymart') {
+  //     const ascCode = this.employeeDetailForm.controls['ascCode'].value;
+  //     if (ascCode.length === 0) {
+  //     } else if (ascCode.length === 6) {
+  //       this.pageLoadingService.openLoading();
+  //       if (ascCode === '661111') {
+  //         this.pageLoadingService.closeLoading();
+  //       } else {
+  //         const queryAPI = `/api/easyapp/get-profile-by-ccsm?inEvent=evASCInfo&inASCCode= + ${ascCode}`;
+  //         this.http.get(queryAPI).toPromise().then((res: any) => {
+  //           this.pageLoadingService.closeLoading();
+  //         }).catch((err: any) => {
+  //           this.pageLoadingService.closeLoading();
+  //         });
+  //       }
+  //     } else {
+  //     }
+  //   }
+  // }
 
   ngOnDestroy(): void {
     if (this.translateSubscription) {
