@@ -41,6 +41,8 @@ import { NewRegisterMnpPersoSimMasterPageComponent } from './containers/new-regi
 import { NewRegisterMnpPersoSimMemberPageComponent } from './containers/new-register-mnp-perso-sim-member-page/new-register-mnp-perso-sim-member-page.component';
 import { NewRegisterMnpSelectReasonPageComponent } from './containers/new-register-mnp-select-reason-page/new-register-mnp-select-reason-page.component';
 import { NewRegisterMnpSelectPackageMemberComponent } from './containers/new-register-mnp-select-package-member/new-register-mnp-select-package-member.component';
+import { PaymentDetailComponent } from './components/payment-detail/payment-detail.component';
+import { LazyLoadImageComponent } from './components/lazy-load-image/lazy-load-image.component';
 
 @NgModule({
   imports: [
@@ -88,7 +90,9 @@ import { NewRegisterMnpSelectPackageMemberComponent } from './containers/new-reg
     NewRegisterMnpPersoSimMasterPageComponent,
     NewRegisterMnpPersoSimMemberPageComponent,
     NewRegisterMnpSelectReasonPageComponent,
-    NewRegisterMnpSelectPackageMemberComponent
+    NewRegisterMnpSelectPackageMemberComponent,
+    PaymentDetailComponent,
+    LazyLoadImageComponent
   ]
 })
 export class NewRegisterMnpModule { }
