@@ -1,0 +1,4 @@
+<img [src]="loaderErr" class="img-fluid" [hidden]="!(state == 'error' && !errorSrc)" />
+<img [src]="errorSrc" class="img-fluid" [hidden]="!(state == 'error' && errorSrc)" />
+<img [src]="loaderSrc" class="img-fluid" [hidden]="!(state == 'loading')" />
+<img [src]="src" class="img-fluid" [hidden]="!(state == 'loaded')" />
