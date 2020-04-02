@@ -28,8 +28,8 @@ declare let $: any;
 })
 export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDestroy {
   wizards: string[];
-  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
-  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
   simSerialForm: FormGroup;
   transaction: Transaction;
   simSerial: SimSerial;

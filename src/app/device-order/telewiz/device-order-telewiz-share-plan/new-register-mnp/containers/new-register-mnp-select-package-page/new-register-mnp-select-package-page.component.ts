@@ -28,9 +28,9 @@ import { RemoveCartService } from '../../services/remove-cart.service';
   styleUrls: ['./new-register-mnp-select-package-page.component.scss']
 })
 export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestroy {
-  wizards: string[];
-  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
-  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizards: string[];
+ wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
 
   @ViewChild('conditionTemplate')
   conditionTemplate: any;

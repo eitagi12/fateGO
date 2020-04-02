@@ -27,19 +27,19 @@ import { RemoveCartService } from '../../services/remove-cart.service';
 })
 export class NewRegisterMnpEcontactPageComponent implements OnInit, OnDestroy {
 
-  wizards: string[];
-  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
-  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizards: string[];
+ wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
 
   priceOption: PriceOption;
   transaction: Transaction;
   shoppingCart: ShoppingCart;
   eContactSrc: string;
   agreement: boolean;
+  action: number = 6;
 
   translationSubcription: Subscription;
   currentLang: string;
-  action: number = 6;
   constructor(private router: Router,
     private homeService: HomeService,
     private http: HttpClient,
@@ -63,8 +63,8 @@ export class NewRegisterMnpEcontactPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
     this.checkJaymart();
+    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
     this.callService();
   }
 

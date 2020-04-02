@@ -24,8 +24,8 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 })
 export class NewRegisterMnpSelectNumberComponent implements OnInit {
   wizards: string[];
-  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
   wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
   transaction: Transaction;
   shoppingCart: ShoppingCart;
   priceOption: PriceOption;

@@ -31,9 +31,9 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
   kioskApi: boolean;
   isTelewiz: boolean = this.tokenService.isTelewizUser();
 
-  wizards: string[];
-  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
-  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizards: string[];
+ wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
   // active: number = this.isTelewiz ? 2 : 1;
 
   transaction: Transaction;

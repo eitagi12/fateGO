@@ -34,9 +34,9 @@ const Moment = moment;
 })
 export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit, OnDestroy {
 
-  wizards: string[];
-  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
-  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizards: string[];
+ wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
 
   transaction: Transaction;
   priceOption: PriceOption;
@@ -80,8 +80,8 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
   }
 
   ngOnInit(): void {
-    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
     this.checkJaymart();
+    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
     const mainPackage = this.transaction.data.mainPackage;
     const customer = this.transaction.data.customer;
     const simCard = this.transaction.data.simCard;

@@ -23,9 +23,9 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 })
 export class NewRegisterMnpFaceCapturePageComponent implements OnInit, OnDestroy {
 
-  wizards: string[];
-  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
-  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizards: string[];
+ wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
   shoppingCart: ShoppingCart;
   openCamera: boolean;
   transaction: Transaction;
@@ -48,8 +48,8 @@ export class NewRegisterMnpFaceCapturePageComponent implements OnInit, OnDestroy
   }
 
   ngOnInit(): void {
-    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
     this.checkJaymart();
+    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
     this.openCamera = !!(this.transaction.data.faceRecognition && this.transaction.data.faceRecognition.imageFaceUser);
   }
 

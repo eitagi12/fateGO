@@ -26,9 +26,9 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 export class NewRegisterMnpEapplicationPageComponent implements OnInit, OnDestroy {
 
   selectedTab: string = 'hotdeal-superkhum-new-register';
-  wizards: string[];
-  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
-  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizards: string[];
+ wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
   shoppingCart: ShoppingCart;
   transaction: Transaction;
   priceOption: PriceOption;
@@ -56,8 +56,8 @@ export class NewRegisterMnpEapplicationPageComponent implements OnInit, OnDestro
   }
 
   ngOnInit(): void {
-    this.pageLoadingService.openLoading();
     this.checkJaymart();
+    this.pageLoadingService.openLoading();
     this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
     this.callGenerateEappService(this.transaction, this.translateService.currentLang);
     this.isSelect = this.eApplicationSuperKhumNew ? true : false; // Get eApp for new ca first.

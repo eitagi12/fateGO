@@ -24,9 +24,9 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 })
 export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDestroy {
 
-  wizards: string[];
-  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
-  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizards: string[];
+ wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
 
   transaction: Transaction;
   priceOption: PriceOption;
@@ -57,8 +57,8 @@ export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDes
   }
 
   ngOnInit(): void {
-    this.checkJaymart();
     this.callService();
+    this.checkJaymart();
     this.translationSubscribe = this.translation.onLangChange.pipe(debounceTime(750)).subscribe(() => {
       this.callService();
       this.amphurs = [];

@@ -27,9 +27,9 @@ import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
   styleUrls: ['./new-register-mnp-payment-detail-page.component.scss']
 })
 export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestroy {
-  wizards: string[];
-  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
-  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizards: string[];
+ wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
 
   shoppingCart: ShoppingCart;
   priceOption: PriceOption;

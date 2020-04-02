@@ -21,9 +21,9 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
   styleUrls: ['./new-register-mnp-validate-customer-page.component.scss']
 })
 export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDestroy {
-  wizards: string[];
-  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
-  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizards: string[];
+ wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
   // priceOptionMock: any = require('../new-register-mnp-validate-customer-page/priceOption-Mock.json');
   identityType: string;
   identityForm: FormGroup;

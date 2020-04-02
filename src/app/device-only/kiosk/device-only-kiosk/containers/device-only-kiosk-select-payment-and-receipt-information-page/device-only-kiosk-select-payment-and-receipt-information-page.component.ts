@@ -13,6 +13,7 @@ import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 import { CreateOrderService } from 'src/app/device-only/services/create-order.service';
 import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
 import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/route-path.constant';
+import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
 
 @Component({
   selector: 'app-device-only-kiosk-select-payment-and-receipt-information-page',
@@ -36,6 +37,7 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
   localtion: any;
   addessValid: boolean;
   omiseBanks: PaymentDetailBank[];
+  mobileNo: any;
 
   constructor(
     private router: Router,
@@ -48,6 +50,7 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
     private alertService: AlertService,
     private homeButtonService: HomeButtonService,
     private tokenService: TokenService,
+    private customerInfoService: CustomerInformationService,
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -162,6 +165,16 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
       billDeliveryAddress: customerInfo.billDeliveryAddress
     };
     this.transaction.data.receiptInfo = customerInfo.receiptInfo;
+    this.mobileNo = this.customerInfoService.getSelectedMobileNo();
+    if (this.mobileNo) {
+      this.transaction.data.simCard = {
+        mobileNo: this.mobileNo
+      };
+    } else {
+      this.transaction.data.simCard = {
+        mobileNo: customerInfo.receiptInfo.telNo
+      };
+    }
   }
 
   onError(error: boolean): void {

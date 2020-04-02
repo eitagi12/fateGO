@@ -44,9 +44,9 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
   @ViewChild('signImage') signImage: ElementRef;
   signed: boolean = false;
 
-  wizards: string[];
-  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
-  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizards: string[];
+ wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
 
   transaction: Transaction;
   priceOption: PriceOption;
@@ -80,7 +80,7 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
   imageSignatureBase64: string;
   img: any;
   isSuccess: boolean;
-  action: number = 5;
+  action: number = 6;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -125,8 +125,8 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
   }
 
   ngOnInit(): void {
-    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
     this.checkJaymart();
+    this.shoppingCart = this.shoppingCartService.getShoppingCartDataSuperKhumTelewiz();
     this.isReadCard = this.transaction.data.action === 'READ_CARD' ? true : false;
     this.checkCaptureAndSign();
 

@@ -22,9 +22,9 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
   styleUrls: ['./new-register-mnp-customer-info-page.component.scss']
 })
 export class NewRegisterMnpCustomerInfoPageComponent implements OnInit, OnDestroy {
-  wizards: string[];
-  wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
-  wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizards: string[];
+ wizardJaymart: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_JAYMART;
+ wizardTelewiz: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN_TELEWIZ;
 
   transaction: Transaction;
   customerInfo: CustomerInfo;
@@ -43,8 +43,8 @@ export class NewRegisterMnpCustomerInfoPageComponent implements OnInit, OnDestro
   }
 
   ngOnInit(): void {
-    const customer: Customer = this.transaction.data.customer;
     this.checkJaymart();
+    const customer: Customer = this.transaction.data.customer;
     // delete this.shoppingCart.mobileNo;
     this.customerInfo = this.mappingCustomerInfo(customer);
     this.translateSubscription = this.translateService.onLangChange
