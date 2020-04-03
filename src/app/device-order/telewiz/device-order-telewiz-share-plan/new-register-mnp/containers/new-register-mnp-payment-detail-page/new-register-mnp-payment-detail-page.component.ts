@@ -220,15 +220,15 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
   }
 
   onNext(): void {
-    if (this.outChnSaleFlow !== 'Retail Chain') {
+    // if (this.outChnSaleFlow !== 'Retail Chain') {
       this.transaction.data.payment = this.paymentDetailTemp.payment;
       this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
       this.transaction.data.receiptInfo = this.receiptInfoTemp;
       this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE]);
-    } else {
-      this.transaction.data.receiptInfo = this.receiptInfoTemp;
-      this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE]);
-    }
+    // } else {
+      // this.transaction.data.receiptInfo = this.receiptInfoTemp;
+      // this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE]);
+    // }
   }
 
   onHome(): void {
