@@ -1019,21 +1019,19 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
   createOrderTDM(): any {
     this.pageLoadingService.openLoading();
     if (this.locationCode) {
-      this.queuePageService.getQueueAspAndTelewiz(this.locationCode)
-        .then((res: any) => {
+      this.queuePageService.getQueueAspAndTelewiz(this.locationCode).then((res: any) => {
           this.transaction.data.queue = {
             queueNo: res.data.queue ? res.data.queue : ''
           };
           // console.log('getQueueAspAndTelewiz   ', res);
-        })
-        .then((res) => {
+        }).then((res) => {
+          console.log('queue = ', this.transaction.data.queue);
           return this.queuePageService.createDeviceSellingOrderListSPKASP(this.transaction, this.priceOption, this.user) // New Service Que
             .then((ress: any) => {
               // console.log('createDeviceSellingOrderListSPKASP', ress);
               return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
             });
-        })
-        .then((res) => {
+        }).then((res) => {
           this.pageLoadingService.closeLoading();
           this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_PERSO_SIM_MEMBER_PAGE]);
         }).catch((err) => {
