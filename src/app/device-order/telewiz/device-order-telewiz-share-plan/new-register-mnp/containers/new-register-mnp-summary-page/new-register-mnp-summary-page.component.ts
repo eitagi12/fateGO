@@ -212,15 +212,18 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
     if (this.channelFlow === 'isJaymart') {
       const ascCode = this.employeeDetailForm.controls['ascCode'].value;
       if (ascCode.length === 0) {
+        this.feedback = '';
         this.isNext = true;
       } else if (ascCode.length === 6) {
         this.pageLoadingService.openLoading();
         if (ascCode === '661111') {
+          this.feedback = '';
           this.isNext = true;
           this.pageLoadingService.closeLoading();
         } else {
           const queryAPI = `/api/easyapp/get-profile-by-ccsm?inEvent=evASCInfo&inASCCode= + ${ascCode}`;
           this.http.get(queryAPI).toPromise().then((res: any) => {
+            this.feedback = '';
             this.isNext = true;
             this.pageLoadingService.closeLoading();
           }).catch((err: any) => {

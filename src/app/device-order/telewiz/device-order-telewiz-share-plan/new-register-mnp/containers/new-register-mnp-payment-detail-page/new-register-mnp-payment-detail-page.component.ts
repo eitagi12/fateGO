@@ -212,11 +212,11 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
   }
 
   isNext(): boolean {
-    if (this.outChnSaleFlow === 'Retail Chain') {
-      return true;
-    } else {
+    // if (this.outChnSaleFlow === 'Retail Chain') {
+    //   return true;
+    // } else {
       return this.paymentDetailValid && this.receiptInfoValid;
-    }
+    // }
   }
 
   onNext(): void {
