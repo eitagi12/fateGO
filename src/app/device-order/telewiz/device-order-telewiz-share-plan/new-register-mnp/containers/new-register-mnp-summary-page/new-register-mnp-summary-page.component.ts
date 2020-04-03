@@ -53,6 +53,8 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
 
   templatePopupRef: BsModalRef;
   action: number = 6;
+  feedback: string;
+  isNext: boolean = false;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -136,7 +138,6 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
     const ascCode = this.employeeDetailForm.controls['ascCode'].value ? this.employeeDetailForm.controls['ascCode'].value : '';
 
     if (ascCode) {
-      if (this.channelFlow !== 'isJaymart') {
         this.http.get(`/api/customerportal/checkSeller/${ascCode.trim()}`).toPromise().then((resp: any) => {
           const checkSeller: any = resp && resp.data ? resp.data : {};
           if (checkSeller.condition) {
@@ -150,32 +151,6 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
             this.alertService.warning(checkSeller.message);
           }
         });
-      } else if (this.channelFlow === 'isJaymart') {
-        if (ascCode.length === 6) {
-          if (ascCode === '661111') {
-            this.transaction.data.seller.isRole = this.priceOption.queryParams.isRole;
-            this.transaction.data.seller.isPaymentId = this.priceOption.queryParams.isPaymentId;
-            this.transaction.data.seller.sellerNo = this.sellerCode ? this.sellerCode : '';
-            this.transaction.data.seller.employeeId = ascCode;
-            this.transaction.data.seller.sellerName =
-            user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username;
-            this.pageLoadingService.closeLoading();
-            this.router.navigate([ROUTE_DEVICE_ORDER_TELEWIZ_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE]);
-          } else {
-            const queryAPI = `/api/easyapp/get-profile-by-ccsm?inEvent=evASCInfo&inASCCode= + ${ascCode}`;
-            this.http.get(queryAPI).toPromise().then((res: any) => {
-              this.pageLoadingService.closeLoading();
-            }).catch((err: any) => {
-              this.pageLoadingService.closeLoading();
-              this.alertService.warning('ไม่พบรหัส ASC ภายใต้ Location กรุณาติดต่อ CCC 02-0789191');
-            });
-          }
-        } else {
-          this.pageLoadingService.closeLoading();
-          this.alertService.warning('ไม่พบรหัส ASC ภายใต้ Location กรุณาติดต่อ CCC 02-0789191');
-        }
-      }
-
     } else {
       const outChnSale = this.priceOption.queryParams.isRole;
       if (outChnSale && (outChnSale === 'Retail Chain' || outChnSale === 'RetailChain')) {
@@ -228,30 +203,38 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
       this.employeeDetailForm.patchValue({ ascCode: this.sellerCode });
       this.priceOption.productStock.locationName = this.seller$.locationName;
       this.transaction.data.seller = this.seller$;
+      this.isNext = true;
       this.pageLoadingService.closeLoading();
     });
   }
 
-  // isChangeASCCode(): void {
-  //   if (this.channelFlow === 'isJaymart') {
-  //     const ascCode = this.employeeDetailForm.controls['ascCode'].value;
-  //     if (ascCode.length === 0) {
-  //     } else if (ascCode.length === 6) {
-  //       this.pageLoadingService.openLoading();
-  //       if (ascCode === '661111') {
-  //         this.pageLoadingService.closeLoading();
-  //       } else {
-  //         const queryAPI = `/api/easyapp/get-profile-by-ccsm?inEvent=evASCInfo&inASCCode= + ${ascCode}`;
-  //         this.http.get(queryAPI).toPromise().then((res: any) => {
-  //           this.pageLoadingService.closeLoading();
-  //         }).catch((err: any) => {
-  //           this.pageLoadingService.closeLoading();
-  //         });
-  //       }
-  //     } else {
-  //     }
-  //   }
-  // }
+  isChangeASCCode(): void {
+    if (this.channelFlow === 'isJaymart') {
+      const ascCode = this.employeeDetailForm.controls['ascCode'].value;
+      if (ascCode.length === 0) {
+        this.isNext = true;
+      } else if (ascCode.length === 6) {
+        this.pageLoadingService.openLoading();
+        if (ascCode === '661111') {
+          this.isNext = true;
+          this.pageLoadingService.closeLoading();
+        } else {
+          const queryAPI = `/api/easyapp/get-profile-by-ccsm?inEvent=evASCInfo&inASCCode= + ${ascCode}`;
+          this.http.get(queryAPI).toPromise().then((res: any) => {
+            this.isNext = true;
+            this.pageLoadingService.closeLoading();
+          }).catch((err: any) => {
+            this.pageLoadingService.closeLoading();
+            this.isNext = false;
+            this.feedback = '*ไม่พบรหัส ASC Code กรุณาตรวจสอบใหม่';
+          });
+        }
+      } else {
+        this.isNext = false;
+        this.feedback = '*กรุณาระบุรหัส ASC Code ให้ครบ 6 หลัก';
+      }
+    }
+  }
 
   ngOnDestroy(): void {
     if (this.translateSubscription) {
