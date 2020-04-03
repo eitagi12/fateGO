@@ -221,7 +221,7 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
           this.isNext = true;
           this.pageLoadingService.closeLoading();
         } else {
-          const queryAPI = `/api/easyapp/get-profile-by-ccsm?inEvent=evASCInfo&inASCCode= + ${ascCode}`;
+          const queryAPI = `/api/easyapp/get-profile-by-ccsm?inEvent=evASCInfo&inASCCode=${ascCode}`;
           this.http.get(queryAPI).toPromise().then((res: any) => {
             this.feedback = '';
             this.isNext = true;
