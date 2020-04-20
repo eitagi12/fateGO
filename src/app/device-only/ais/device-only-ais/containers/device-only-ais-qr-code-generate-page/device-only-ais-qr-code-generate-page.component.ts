@@ -54,7 +54,7 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
   diff: number;
   private subscription: Subscription;
   startTimeSixtyMinute: number = 60;
-  startTimeFifteenMinute = 15;
+  startTimeFifteenMinute: number = 15;
   currentDateTime: number;
   intravalTimeSubscription$: Subscription;
   isPaid: boolean = false;
@@ -274,13 +274,13 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
     }
   }
   inquiryMpay(): Promise<boolean> {
-    let bodyReq
-    if(this.priceOption.productStock.company === 'WDS'){
-      bodyReq = { 
+    let bodyReq;
+    if (this.priceOption.productStock.company === 'WDS') {
+      bodyReq = {
         orderId: this.orderID,
         company: 'WDS'
        };
-    }else {
+    } else {
       bodyReq = { orderId: this.orderID };
     }
     return this.qrcodePaymentService.getInquiryMpay(bodyReq).then((res: any) => {
