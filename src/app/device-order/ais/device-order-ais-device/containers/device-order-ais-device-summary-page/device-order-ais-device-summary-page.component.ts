@@ -32,16 +32,18 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit, OnDestr
   transaction: Transaction;
   shoppingCart: ShoppingCart;
   customerAddress: string;
+  shippingAddress: string;
   telNoBillingInfo: TelNoBillingInfo;
   seller: Seller;
   sellerCode: string;
   employeeDetailForm: FormGroup;
+  shipCusNameFormControl: FormGroup;
+  isEditShipCusName: boolean = false;
 
   constructor(
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private translation: TranslateService,
     private modalService: BsModalService,
     private fb: FormBuilder,
     private http: HttpClient,
@@ -77,8 +79,18 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit, OnDestr
     // tslint:disable-next-line:max-line-length
     const customer = this.transaction.data && this.transaction.data.billingInformation && this.transaction.data.billingInformation.billDeliveryAddress ?
       this.transaction.data.billingInformation.billDeliveryAddress : this.transaction.data.customer;
+    const shippingInfo = this.transaction.data && this.transaction.data.shippingInfo ?
+      this.transaction.data.shippingInfo : this.transaction.data.customer;
 
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+    this.setCustomerAddress(customer);
+    this.setShippingAddress(shippingInfo);
+    this.createEmployeeForm();
+    this.shipCusNameFormControlForm();
+    this.getSeller();
+  }
+
+  private setCustomerAddress(customer: any): void {
     this.customerAddress = this.utils.getCurrentAddress({
       homeNo: customer.homeNo,
       moo: customer.moo,
@@ -92,8 +104,22 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit, OnDestr
       province: customer.province,
       zipCode: customer.zipCode
     });
-    this.createEmployeeForm();
-    this.getSeller();
+  }
+
+  private setShippingAddress(shippingInfo: any): void {
+    this.shippingAddress = this.utils.getCurrentAddress({
+      homeNo: shippingInfo.homeNo,
+      moo: shippingInfo.moo,
+      room: shippingInfo.room,
+      floor: shippingInfo.floor,
+      buildingName: shippingInfo.buildingName,
+      soi: shippingInfo.soi,
+      street: shippingInfo.street,
+      tumbol: shippingInfo.tumbol,
+      amphur: shippingInfo.amphur,
+      province: shippingInfo.province,
+      zipCode: shippingInfo.zipCode
+    });
   }
 
   getSeller(): void {
@@ -125,6 +151,14 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit, OnDestr
   createEmployeeForm(): void {
     this.employeeDetailForm = this.fb.group({
       ascCode: ['', Validators.compose([Validators.required, Validators.pattern(/^[0-9]+$/)])]
+    });
+  }
+
+  shipCusNameFormControlForm(): void {
+    const shippingInfo: any = this.transaction.data && this.transaction.data.shippingInfo ? this.transaction.data.shippingInfo : {};
+    this.shipCusNameFormControl = this.fb.group({
+      name: [shippingInfo.firstName || '', [Validators.required]],
+      surname: [shippingInfo.lastName || '', [Validators.required]],
     });
   }
 
@@ -194,6 +228,10 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit, OnDestr
       }
       Promise.all(promiseAll).then(() => resolve());
     });
+  }
+
+  editShipCusName(): void {
+    this.isEditShipCusName = !this.isEditShipCusName;
   }
 
   ngOnDestroy(): void {

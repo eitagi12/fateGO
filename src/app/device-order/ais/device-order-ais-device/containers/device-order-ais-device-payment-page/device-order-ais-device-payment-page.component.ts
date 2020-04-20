@@ -513,9 +513,30 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
     this.transaction.data.receiptInfo = this.receiptInfo;
     this.transaction.data.receiptInfo.telNo = this.receiptInfoForm.value.telNo;
+    this.setShippingInfo(this.transaction.data.customer);
     this.returnStock().then(() => {
       this.addDeviceSellingCart(this.transaction);
     });
+  }
+
+  setShippingInfo(customer: Customer): void {
+    this.transaction.data.shippingInfo = {
+      titleName: 'คุณ',
+      firstName: customer.firstName,
+      lastName: customer.lastName,
+      homeNo: customer.homeNo || '',
+      moo: customer.moo || '',
+      mooBan: customer.mooBan || '',
+      room: customer.room || '',
+      floor: customer.floor || '',
+      buildingName: customer.buildingName || '',
+      soi: customer.soi || '',
+      street: customer.street || '',
+      tumbol: customer.tumbol,
+      amphur: customer.amphur,
+      province: customer.province,
+      zipCode: customer.zipCode
+    };
   }
 
   addDeviceSellingCart(transaction: Transaction): void {
