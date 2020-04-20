@@ -53,13 +53,15 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
   private $counter: Observable<number>;
   diff: number;
   private subscription: Subscription;
-  startTimeInMininte: number = 5;
+  startTimeSixtyMinute: number = 60;
+  startTimeFifteenMinute = 15;
   currentDateTime: number;
   intravalTimeSubscription$: Subscription;
   isPaid: boolean = false;
   deposit: number;
   refreshCount: number = 1;
   price: String;
+  warehouseLocation: string = '63259';
 
   constructor(
     private router: Router,
@@ -148,7 +150,7 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
     if (qrCodeResponse && qrCodeResponse.data) {
       this.textQRCode = qrCodeResponse.data.qrCodeStr;
       this.currentDateTime = qrCodeResponse.data.currentDate;
-      const validTime: number = this.getFiveMinuteValidTime(qrCodeResponse.data.currentDate);
+      const validTime: number = this.getMinuteValidTime(qrCodeResponse.data.currentDate);
       this.getTimeCounter(validTime);
       this.renderTime();
 
@@ -165,8 +167,12 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
       });
     }
   }
-  getFiveMinuteValidTime(currentDateTime: number): number {
-    return currentDateTime + (60000 * this.startTimeInMininte);
+  getMinuteValidTime(currentDateTime: number): number {
+    if (this.isQRCode('THAI_QR') && this.tokenService.getUser().locationCode === this.warehouseLocation) {
+      return currentDateTime + (60000 * this.startTimeSixtyMinute);
+    } else {
+      return currentDateTime + (60000 * this.startTimeFifteenMinute);
+    }
   }
 
   getTimeCounter(furture: number): void {
@@ -268,7 +274,16 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
     }
   }
   inquiryMpay(): Promise<boolean> {
-    return this.qrcodePaymentService.getInquiryMpay({ orderId: this.orderID }).then((res: any) => {
+    let bodyReq
+    if(this.priceOption.productStock.company === 'WDS'){
+      bodyReq = { 
+        orderId: this.orderID,
+        company: 'WDS'
+       };
+    }else {
+      bodyReq = { orderId: this.orderID };
+    }
+    return this.qrcodePaymentService.getInquiryMpay(bodyReq).then((res: any) => {
 
       if (res && res.data && res.data.status && res.data.status === 'SUCCESS') {
         this.qrCodePrePostMpayModel.status = res.data.status;
