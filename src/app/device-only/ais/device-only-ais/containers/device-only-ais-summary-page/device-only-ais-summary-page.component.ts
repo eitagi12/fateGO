@@ -18,7 +18,7 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './device-only-ais-summary-page.component.html',
   styleUrls: ['./device-only-ais-summary-page.component.scss']
 })
-export class DeviceOnlyAisSummaryPageComponent implements OnInit , OnDestroy {
+export class DeviceOnlyAisSummaryPageComponent implements OnInit, OnDestroy {
 
   @ViewChild(SummarySellerCodeComponent) summarySellerCode: SummarySellerCodeComponent;
 
@@ -33,6 +33,8 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit , OnDestroy {
   isNext: boolean;
   isReasonNotBuyMobileCare: boolean;
   editName: any;
+  sellerCode: string;
+  seller: Seller;
 
   constructor(
     private router: Router,
@@ -53,23 +55,25 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit , OnDestroy {
   ngOnInit(): void {
     this.homeButtonService.initEventButtonHome();
     this.checkShowBalance();
+    this.callServiceEmployee();
   }
 
   checkSeller(seller: Seller): void {
+    const user = this.tokenService.getUser();
     if (!seller.sellerNo) {
       this.alertService.warning('กรุณากรอกข้อมูลให้ถูกต้อง');
       return;
     }
+    this.pageLoadingService.openLoading();
     this.sellerService.checkSeller(seller.sellerNo).then((shopCheckSeller: ShopCheckSeller) => {
+      this.pageLoadingService.closeLoading();
       if (shopCheckSeller.condition) {
-        if (!this.transaction.data.seller) {
-          this.transaction.data.seller = {
-            sellerNo: seller.sellerNo,
-            locationCode: this.tokenService.getUser().locationCode
-          };
-        } else {
-        this.transaction.data.seller.sellerNo = seller.sellerNo;
-        }
+        this.transaction.data.seller = {
+          ...this.seller,
+          sellerNo: this.sellerCode || '',
+          employeeId: seller.sellerNo || '',
+          locationCode: this.tokenService.getUser().locationCode
+        };
         if (this.transaction.data.payment.paymentType === 'QR_CODE') {
           this.router.navigate([ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_QR_CODE_PAGE]);
         } else {
@@ -79,8 +83,30 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit , OnDestroy {
         this.alertService.warning(shopCheckSeller.message);
       }
     })
-    .catch(() => {
-      this.alertService.warning('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+      .catch(() => {
+        this.pageLoadingService.closeLoading();
+        this.alertService.warning('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+      });
+  }
+
+  callServiceEmployee(): void {
+    const user = this.tokenService.getUser();
+    this.http.get(`/api/salesportal/location-by-code?code=${user.locationCode}`).toPromise().then((response: any) => {
+      this.seller = {
+        sellerName: user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username,
+        locationName: response.data.displayName,
+        locationCode: user.locationCode
+      };
+      this.transaction.data.seller = this.seller;
+      return this.http.get(`/api/customerportal/newRegister/getEmployeeDetail/username/${user.username}`).toPromise()
+        .then((emResponse: any) => {
+          if (emResponse && emResponse.data) {
+            const emId = emResponse.data.pin;
+            this.sellerCode = emId;
+          }
+        }).catch(() => {
+          this.sellerCode = '';
+        });
     });
   }
 
