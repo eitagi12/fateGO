@@ -133,7 +133,7 @@
                 <div class="col-12 col-sm-8">
                     <div *ngIf="!editName">
                         <p>
-                            <span>
+                            <span class="text-green">
                               คุณ {{$customer}}
                             </span>
                             <a class="col-sm-4" href="#" [hidden]="view" (click)="$event.preventDefault(); showEditCustomerName()">Edit</a>
@@ -168,7 +168,7 @@
                 </div>
                 <div class="col-12 col-sm-8">
                     <div class="row">
-                        <div class="col-sm-6">{{ billingAddress?.text }}</div>
+                        <div class="col-sm-6 text-green">{{ billingAddress?.text }}</div>
                         <a href="#" class="pull-right" [hidden]="view" (click)="$event.preventDefault(); billingAddress?.onEdit()">Edit</a>
                     </div>
                 </div>

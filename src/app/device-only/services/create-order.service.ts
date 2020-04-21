@@ -8,6 +8,8 @@ import { User } from 'mychannel-shared-libs';
 import { map } from 'rxjs/operators';
 import { QrCodeOmiseService } from 'src/app/device-only/services/qr-code-omise.service';
 import { CustomerGroup } from 'src/app/buy-product/services/flow.service';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { TranslateService } from '@ngx-translate/core';
 @Injectable({
   providedIn: 'root'
 })
@@ -16,6 +18,9 @@ export class CreateOrderService {
   user: User;
   terminalId: any;
   serviceId: any;
+  transaction: Transaction;
+  provinces: string[];
+  addrShipping: string;
   private readonly CASH_PAYMENT: string = '[CA]';
   private readonly CREDIT_CARD_PAYMENT: string = '[CC]';
   private readonly BANK: string = '[B]';
@@ -40,8 +45,11 @@ export class CreateOrderService {
     private tokenService: TokenService,
     public qrCodeOmiseService: QrCodeOmiseService,
     private sharedTransactionService: SharedTransactionService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private transactionService: TransactionService,
+    private translation: TranslateService
   ) {
+    this.transaction = this.transactionService.load();
     this.user = this.tokenService.getUser();
   }
 
@@ -424,6 +432,15 @@ export class CreateOrderService {
         data.qrAirtimeTransId = omise.tranId;
         data.qrAirtimeAmt = this.getOnlinePaymentAmt(trade, transaction);
       }
+      // for location 63259
+      if (user.locationCode === '63259') {
+        const shippingInfo = this.transaction.data.shippingInfo;
+        const fullname = shippingInfo.titleName + ' ' + shippingInfo.firstName + ' ' + shippingInfo.lastName;
+        data.shipCusName = fullname;
+        this.checkBangkok(shippingInfo.zipCode).then((res: string) => {
+          data.shipCusAddr = res;
+        });
+      }
 
     }
 
@@ -792,6 +809,64 @@ export class CreateOrderService {
       cost += +trade.advancePay.amount;
     }
     return cost ? cost.toFixed(2) : undefined;
+  }
+
+  checkBangkok(zipCode: string): Promise<string> {
+    this.http.get('/api/customerportal/newRegister/getAllProvinces'
+       , {
+         params: {
+           provinceSubType: this.translation.currentLang === 'TH' ? 'THA' : 'ENG'
+         }
+       }).subscribe((resp: any) => {
+         this.provinces = (resp.data.provinces || []);
+       });
+
+    return this.http.get('/api/customerportal/newRegister/getProvinceIdByZipcode', {
+      params: { zipcode: zipCode }
+    }).toPromise()
+      .then((resp: any) => {
+        const province: any = this.provinces.find((prov: any) => prov.id === resp.data.provinceId);
+        const shippingInfo = this.transaction.data.shippingInfo;
+        if (!province) {
+          return;
+        }
+        const isBangkok = province.name === 'กรุงเทพ' ? true : false;
+        return this.convertBillingAddressToString(shippingInfo, isBangkok);
+      });
+  }
+
+  convertBillingAddressToString(billDeliveryAddress: any, isBangkok: boolean): string {
+    let addressCus: any;
+    const _tumbol = isBangkok ? 'แขวง ' : 'ตำบล ';
+    const _amphur = isBangkok ? 'เขต ' : 'อำเภอ ';
+    addressCus = {
+      homeNo: billDeliveryAddress.homeNo || '',
+      moo: billDeliveryAddress.moo ? 'หมู่ ' + billDeliveryAddress.moo : '',
+      mooBan: billDeliveryAddress.mooBan ? 'หมู่บ้าน ' + billDeliveryAddress.mooBan : '',
+      buildingName: billDeliveryAddress.buildingName ? 'อาคาร ' + billDeliveryAddress.buildingName : '',
+      floor: billDeliveryAddress.floor ? 'ชั้น ' + billDeliveryAddress.floor : '',
+      room: billDeliveryAddress.room ? 'ห้อง ' + billDeliveryAddress.room : '',
+      soi: billDeliveryAddress.soi ? 'ซอย ' + billDeliveryAddress.soi : '',
+      street: billDeliveryAddress.street ? 'ถนน ' + billDeliveryAddress.street : '',
+      tumbol: billDeliveryAddress.tumbol ? _tumbol + billDeliveryAddress.tumbol : '',
+      amphur: billDeliveryAddress.amphur ? _amphur + billDeliveryAddress.amphur : '',
+      province: billDeliveryAddress.province ? 'จังหวัด ' + billDeliveryAddress.province : '',
+      // tslint:disable-next-line: max-line-length
+      zipCode: billDeliveryAddress.zipCode || billDeliveryAddress.portalCode ? billDeliveryAddress.zipCode || billDeliveryAddress.portalCode : '',
+    };
+    let str: string = '';
+    for (const item in addressCus) {
+      if (addressCus.hasOwnProperty(item)) {
+        if (addressCus[item] !== '') {
+          str += ' ' + addressCus[item];
+        }
+        if (item === 'street' || item === 'amphur' || item === 'province') {
+          str += '|';
+        }
+      }
+    }
+    console.log(str);
+    return str;
   }
 
 }

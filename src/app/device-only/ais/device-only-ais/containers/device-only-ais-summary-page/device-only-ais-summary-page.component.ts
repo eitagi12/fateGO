@@ -46,7 +46,7 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit, OnDestroy {
     private sellerService: SellerService,
     private tokenService: TokenService,
     private pageLoadingService: PageLoadingService,
-    private http: HttpClient
+    private http: HttpClient,
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();

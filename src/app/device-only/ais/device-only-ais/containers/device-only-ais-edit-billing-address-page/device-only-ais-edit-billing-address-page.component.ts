@@ -59,7 +59,12 @@ export class DeviceOnlyAisEditBillingAddressPageComponent implements OnInit, OnD
 
    callService(): void {
      const billingInformation = this.transaction.data.billingInformation || {};
-     const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
+     let customer;
+     if (this.transaction.data.shippingInfo && this.transaction.data.shippingInfo.firstName) {
+      customer = this.transaction.data.shippingInfo;
+     } else {
+      customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
+     }
 
      this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {
        this.allZipCodes = resp.data.zipcodes || [];
