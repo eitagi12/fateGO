@@ -147,8 +147,8 @@
                                       คุณ
                                     </span>
                                 </p>
-                                <input type="text" class="col-sm-2 mr-3 mb-3" formControlName="firstName">
-                                <input type="text" class="col-sm-2 mb-3" formControlName="lastName">
+                                <input type="text" (ngModelChange)="onComplete()" class="col-sm-2 mr-3 mb-3" formControlName="firstName">
+                                <input type="text" (ngModelChange)="onComplete()" class="col-sm-2 mb-3" formControlName="lastName">
                             </div>
                         </form>
                     </div>
@@ -165,7 +165,6 @@
                         </span>
 
                     </p>
-
                 </div>
                 <div class="col-12 col-sm-8">
                     <div class="row">

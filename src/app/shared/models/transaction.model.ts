@@ -100,6 +100,7 @@ export interface TransactionData {
   // Omise
   omise?: Omise;
   handsetSim5G?: HandsetSim5G;
+  shippingInfo?: ShippingInfo;
 }
 
 export interface Omise {
@@ -121,6 +122,25 @@ export interface Omise {
   qrCodeStr?: string;
   creditCardNo?: string;
   cardExpireDate?: string;
+}
+
+export interface ShippingInfo {
+  titleName?: string;
+  firstName?: string;
+  lastName?: string;
+  homeNo?: string;
+  moo?: string;
+  mooBan?: string;
+  buildingName?: string;
+  floor?: string;
+  room?: string;
+  street?: string;
+  soi?: string;
+  tumbol?: string;
+  amphur?: string;
+  province?: string;
+  zipCode?: string;
+  telNo?: string;
 }
 
 export interface HandsetSim5G {

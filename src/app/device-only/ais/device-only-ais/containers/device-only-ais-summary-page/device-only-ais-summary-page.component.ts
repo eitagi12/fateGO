@@ -32,6 +32,7 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit , OnDestroy {
   isShowBalance: boolean;
   isNext: boolean;
   isReasonNotBuyMobileCare: boolean;
+  editName: any;
 
   constructor(
     private router: Router,
@@ -88,12 +89,20 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit , OnDestroy {
   }
 
   onNext(): void {
+    if (this.editName) {
+      this.transaction.data.shippingInfo.firstName = this.editName.firstName;
+      this.transaction.data.shippingInfo.lastName = this.editName.lastName;
+    }
     const seller: Seller = this.summarySellerCode.getSeller();
     this.checkSeller(seller);
   }
 
   onHome(): void {
     this.homeService.goToHome();
+  }
+
+  onComplete(value: any): void {
+    this.editName = value;
   }
 
   checkShowBalance(): void {

@@ -176,29 +176,12 @@ export class DeviceOnlyAisEditBillingAddressPageComponent implements OnInit, OnD
    }
 
    mapCustomerAddress(customer: any): void {
-     const birthdate = this.transaction.data.customer.birthdate;
-     const idCardNo = this.transaction.data.customer.idCardNo;
-     const titleName = this.transaction.data.customer.titleName;
-     const idCardType = this.transaction.data.customer.idCardType;
-     const firstName = this.transaction.data.customer.firstName;
-     const lastName = this.transaction.data.customer.lastName;
-     const mobileNo = this.transaction.data.customer.mobileNo;
-     const imageSignature = this.transaction.data.customer.imageSignature;
-     const imageSmartCard = this.transaction.data.customer.imageSmartCard;
-     const imageReadSmartCard = this.transaction.data.customer.imageReadSmartCard;
-     const gender = this.transaction.data.customer.gender;
-     const expireDate = this.transaction.data.customer.expireDate;
-     const customerPinCode = this.transaction.data.customer.customerPinCode;
      this.transaction.data = {
        ...this.transaction.data,
-       customer: {
-         idCardNo: idCardNo,
-         idCardType: idCardType || '',
-         titleName: titleName || '',
-         firstName: firstName || '',
-         lastName: lastName || '',
-         birthdate: birthdate || '',
-         gender: gender || '',
+       shippingInfo: {
+         titleName: this.transaction.data.shippingInfo.titleName,
+         firstName: this.transaction.data.shippingInfo.firstName,
+         lastName: this.transaction.data.shippingInfo.lastName,
          homeNo: customer.homeNo || '',
          moo: customer.moo || '',
          mooBan: customer.mooBan || '',
@@ -210,20 +193,7 @@ export class DeviceOnlyAisEditBillingAddressPageComponent implements OnInit, OnD
          tumbol: customer.tumbol || '',
          amphur: customer.amphur,
          province: customer.province || customer.provinceName || '',
-         firstNameEn: '',
-         lastNameEn: '',
-         issueDate: birthdate || '',
-         expireDate: expireDate || '',
          zipCode: customer.zipCode || '',
-         mainMobile: customer.mainMobile || '',
-         mainPhone: customer.mainPhone || '',
-         billCycle: customer.billCycle || '',
-         caNumber: customer.caNumber || '',
-         mobileNo: mobileNo || '',
-         imageSignature: imageSignature || '',
-         imageSmartCard: imageSmartCard || '',
-         imageReadSmartCard: imageReadSmartCard || '',
-         customerPinCode: customerPinCode
        }
      };
    }
@@ -237,16 +207,16 @@ export class DeviceOnlyAisEditBillingAddressPageComponent implements OnInit, OnD
    }
 
    onNext(): void {
-     if (!this.transaction.data.customer.caNumber) {
+    //  if (!this.transaction.data.customer.caNumber) {
        this.mapCustomerAddress(this.customerAddressTemp);
-     }
-     const billingInformation = this.transaction.data.billingInformation || {};
-     const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
-     this.transactionService.update(this.transaction);
-     this.transaction.data.billingInformation.billDeliveryAddress = Object.assign(
-       Object.assign({}, customer),
-       this.customerAddressTemp
-     );
+    //  }
+    //  const billingInformation = this.transaction.data.billingInformation || {};
+    //  const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
+    //  this.transactionService.update(this.transaction);
+    //  this.transaction.data.billingInformation.billDeliveryAddress = Object.assign(
+    //    Object.assign({}, customer),
+    //    this.customerAddressTemp
+    //  );
      this.router.navigate([ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE]);
    }
 
