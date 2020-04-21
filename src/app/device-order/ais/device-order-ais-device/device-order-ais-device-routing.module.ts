@@ -10,6 +10,7 @@ import { DeviceOrderAisDeviceQrCodeSummaryPageComponent } from 'src/app/device-o
 import { DeviceOrderAisDeviceQrCodeResultPageComponent } from 'src/app/device-order/ais/device-order-ais-device/containers/device-order-ais-device-qr-code-result-page/device-order-ais-device-qr-code-result-page.component';
 import { DeviceOrderAisDeviceQrCodeQueuePageComponent } from 'src/app/device-order/ais/device-order-ais-device/containers/device-order-ais-device-qr-code-queue-page/device-order-ais-device-qr-code-queue-page.component';
 import { DeviceOrderAisDeviceQrCodeGeneratorPageComponent } from 'src/app/device-order/ais/device-order-ais-device/containers/device-order-ais-device-qr-code-generator-page/device-order-ais-device-qr-code-generator-page.component';
+import { DeviceOrderAisDeviceEshippingAddressPageComponent } from './containers/device-order-ais-device-eshipping-address-page/device-order-ais-device-eshipping-address-page.component';
 const routes: Routes = [
   { path: '', redirectTo: 'payment', pathMatch: 'full' },
   {
@@ -23,6 +24,10 @@ const routes: Routes = [
   {
     path: 'summary',
     component: DeviceOrderAisDeviceSummaryPageComponent
+  },
+  {
+    path: 'eshipping-address',
+    component: DeviceOrderAisDeviceEshippingAddressPageComponent
   },
   {
     path: 'aggregate',

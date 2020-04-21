@@ -14,6 +14,7 @@ import { DeviceOrderAisDeviceQrCodeGeneratorPageComponent } from './containers/d
 import { DeviceOrderAisDeviceQrCodeQueuePageComponent } from './containers/device-order-ais-device-qr-code-queue-page/device-order-ais-device-qr-code-queue-page.component';
 import { DeviceOrderAisDeviceQrCodeResultPageComponent } from './containers/device-order-ais-device-qr-code-result-page/device-order-ais-device-qr-code-result-page.component';
 import { DeviceOrderAisDeviceQrCodeSummaryPageComponent } from './containers/device-order-ais-device-qr-code-summary-page/device-order-ais-device-qr-code-summary-page.component';
+import { DeviceOrderAisDeviceEshippingAddressPageComponent } from './containers/device-order-ais-device-eshipping-address-page/device-order-ais-device-eshipping-address-page.component';
 
 @NgModule({
   imports: [
@@ -34,6 +35,7 @@ import { DeviceOrderAisDeviceQrCodeSummaryPageComponent } from './containers/dev
   DeviceOrderAisDeviceQrCodeGeneratorPageComponent,
   DeviceOrderAisDeviceQrCodeQueuePageComponent,
   DeviceOrderAisDeviceQrCodeResultPageComponent,
-  DeviceOrderAisDeviceQrCodeSummaryPageComponent]
+  DeviceOrderAisDeviceQrCodeSummaryPageComponent,
+  DeviceOrderAisDeviceEshippingAddressPageComponent]
 })
 export class DeviceOrderAisDeviceModule { }

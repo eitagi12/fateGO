@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { HomeService, TelNoBillingInfo, TokenService, PageLoadingService, AlertService, ShoppingCart, Utils } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, Seller } from 'src/app/shared/models/transaction.model';
-import { TranslateService } from '@ngx-translate/core';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -12,7 +11,7 @@ import { WIZARD_DEVICE_ODER_AIS_DEVICE } from 'src/app/device-order/constants/wi
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
-import { ROUTE_DEVICE_AIS_DEVICE_PAYMENT_PAGE, ROUTE_DEVICE_AIS_DEVICE_AGGREGATE_PAGE } from 'src/app/device-order/ais/device-order-ais-device/constants/route-path.constant';
+import { ROUTE_DEVICE_AIS_DEVICE_PAYMENT_PAGE, ROUTE_DEVICE_AIS_DEVICE_AGGREGATE_PAGE, ROUTE_DEVICE_AIS_DEVICE_EDIT_SHIPPING_ADDRESS_PAGE } from 'src/app/device-order/ais/device-order-ais-device/constants/route-path.constant';
 import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
 
 @Component({
@@ -236,6 +235,10 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit, OnDestr
 
   ngOnDestroy(): void {
     this.transactionService.save(this.transaction);
+  }
+
+  editAddressDelivery(): void {
+    this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_EDIT_SHIPPING_ADDRESS_PAGE]);
   }
 
 }
