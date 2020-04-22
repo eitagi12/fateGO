@@ -59,7 +59,7 @@
                     </div>
 
 
-                    <ng-container [ngSwitch]="queueType">
+                    <ng-container *ngIf="user.locationCode != '63259'" [ngSwitch]="queueType">
 
                         <ng-container *ngSwitchCase="'SMART_SHOP'">
                             <div class="container pt-3">
@@ -132,11 +132,11 @@
         </div>
         <div class="container-fluid my-5">
             <div class="text-center">
-                <button class="btn btn-success btn-lg" id="button-next" (click)="onNext()" [disabled]="checkValid()">
+                <button *ngIf="user.locationCode != '63259'" class="btn btn-success btn-lg" id="button-next" (click)="onNext()" [disabled]="checkValid()">
                   NEXT
                 </button>
                 <button *ngIf="enableSkip()" class="btn btn-secondary btn-lg" (click)="onSkip()" [disabled]="checkSkip()">
-                  Auto Q
+                  Auto Queue
                 </button>
             </div>
         </div>

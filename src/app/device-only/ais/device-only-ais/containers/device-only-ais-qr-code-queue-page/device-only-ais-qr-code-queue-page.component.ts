@@ -198,7 +198,7 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
   }
 
   enableSkip(): boolean {
-    if (this.user.locationCode === '1213' || this.user.locationCode === '63259' || this.user.locationCode === '1100') {
+    if (this.user.locationCode === '1213' || this.user.locationCode === '63259') {
       return true;
     } else {
       return false;

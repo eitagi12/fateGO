@@ -121,7 +121,7 @@
             </div>
         </div>
 
-        <div class="container-fluid mt-3 mb-3">
+        <div *ngIf="!isLineShop" class="container-fluid mt-3 mb-3">
             <div class="row">
                 <div class="col-8">
                     <img src="assets/images/icon/phone_qrcode.png" />
@@ -144,7 +144,39 @@
                 </div>
             </div>
         </div>
+
+        <div *ngIf="isLineShop" class="container-fluid mt-3 mb-3">
+            <div class="col-12 text-center">
+                <!-- <img src="assets/images/icon/phone_qrcode.png" /> -->
+                <div>
+                    <span>
+                      กรุณาระบุเบอร์โทรเพื่อรับ SMS สำหรับการชำระเงิน ผ่าน บัตรเคดิต ออนไลน์
+                    </span>
+                </div>
+                <div>
+                    <p>
+                        จำนวน
+                        <span class="text-green">
+                            ฿{{summary([+price, deposit]) | number}} บาท
+                        </span>
+                    </p>
+                </div>
+                <div class="col-12">
+                    <form class="col-3" style="margin: auto;" [formGroup]="phoneSMSForm">
+                        <div class="form-group">
+                            <input class="form-control" maxlength="10" type="text" formControlName="phoneNo" [ngClass]="{ 'is-invalid' : phoneSMSForm.controls.phoneNo.invalid && phoneSMSForm.controls.phoneNo.touched && phoneSMSForm.controls.phoneNo.errors }">
+                            <small class="invalid-feedback" *ngIf="phoneSMSForm.controls.phoneNo.touched && phoneSMSForm.controls.phoneNo.errors">
+                                *กรุณาระบุเบอร์มือถือ
+                            </small>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
     </div>
+
+
 
     <mc-footer>
         <button class="btn btn-secondary" id="button-back" (click)="onBack()">CANCEL</button>

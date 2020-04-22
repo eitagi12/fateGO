@@ -136,7 +136,7 @@
                             <span class="text-green">
                               คุณ {{$customer}}
                             </span>
-                            <a class="col-sm-4" href="#" [hidden]="view" (click)="$event.preventDefault(); showEditCustomerName()">Edit</a>
+                            <a class="col-sm-4" href="#" [hidden]="view" (click)="$event.preventDefault(); showEditCustomerName()"><img src="assets/images/icon/icon-edit.png"></a>
                         </p>
                     </div>
                     <div *ngIf="editName" class="col-sm-8">
@@ -169,7 +169,7 @@
                 <div class="col-12 col-sm-8">
                     <div class="row">
                         <div class="col-sm-6 text-green">{{ billingAddress?.text }}</div>
-                        <a href="#" class="pull-right" [hidden]="view" (click)="$event.preventDefault(); billingAddress?.onEdit()">Edit</a>
+                        <a href="#" class="pull-right" [hidden]="view" (click)="$event.preventDefault(); billingAddress?.onEdit()"><img src="assets/images/icon/icon-edit.png"></a>
                     </div>
                 </div>
             </ng-container>
