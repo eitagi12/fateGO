@@ -7,7 +7,7 @@ import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { HttpClient } from '@angular/common/http';
-import { WIZARD_DEVICE_ODER_AIS_DEVICE } from 'src/app/device-order/constants/wizard.constant';
+import { WIZARD_DEVICE_ORDER_AIS_DEVICE } from 'src/app/device-order/constants/wizard.constant';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE, ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE } from 'src/app/device-order/ais/device-order-ais-device/constants/route-path.constant';
 import { Subscription, zip } from 'rxjs';
@@ -31,7 +31,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
   shoppingCart: ShoppingCart;
   priceOption: PriceOption;
   transaction: Transaction;
-  wizards: string[] = WIZARD_DEVICE_ODER_AIS_DEVICE;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE;
   payementDetail: PaymentDetail;
   banks: PaymentDetailBank[];
   paymentDetailValid: boolean;
@@ -540,7 +540,8 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
       tumbol: customer.tumbol,
       amphur: customer.amphur,
       province: customer.province,
-      zipCode: customer.zipCode
+      zipCode: customer.zipCode,
+      telNo: this.receiptInfoForm.value.telNo
     };
   }
 

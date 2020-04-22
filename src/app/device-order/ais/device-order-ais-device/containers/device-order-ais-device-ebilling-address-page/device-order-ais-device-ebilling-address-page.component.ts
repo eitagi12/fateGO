@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, CustomerAddress, CustomerService, AlertService, ReadCardService, ReadCard, ReadCardProfile, ReadCardEvent } from 'mychannel-shared-libs';
+import { HomeService, CustomerAddress, CustomerService, AlertService, ReadCardService, ReadCard, ReadCardProfile, ReadCardEvent, User, TokenService } from 'mychannel-shared-libs';
 import {
   ROUTE_ORDER_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE
 } from 'src/app/order/order-new-register/constants/route-path.constant';
@@ -11,7 +11,7 @@ import { NgxResource, LocalStorageService } from 'ngx-store';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription, Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import { WIZARD_DEVICE_ODER_AIS_DEVICE } from 'src/app/device-order/constants/wizard.constant';
+import { WIZARD_DEVICE_ORDER_AIS_DEVICE } from 'src/app/device-order/constants/wizard.constant';
 import { ROUTE_DEVICE_AIS_DEVICE_PAYMENT_PAGE } from 'src/app/device-order/ais/device-order-ais-device/constants/route-path.constant';
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -24,7 +24,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 })
 export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit, OnDestroy {
 
-  wizards: string[] = WIZARD_DEVICE_ODER_AIS_DEVICE;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE;
 
   transaction: Transaction;
   priceOption: PriceOption;
@@ -52,19 +52,22 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
   customerProfile: ReadCardProfile;
   readCard: ReadCard;
   dataReadIdCard: any;
+  user: User;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private http: HttpClient,
-    private localStorageService: LocalStorageService,
     private translation: TranslateService,
     private customerService: CustomerService,
     public fb: FormBuilder,
     private alertService: AlertService,
-    private readCardService: ReadCardService
+    private readCardService: ReadCardService,
+    private tokenService: TokenService,
   ) {
+    this.user = this.tokenService.getUser();
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
@@ -286,10 +289,9 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
       const promiseAll = [];
       if (transaction.data) {
         if (transaction.data.order && transaction.data.order.soId) {
-          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
-            location: this.priceOption.productStock.location,
+          const order = this.http.post('/api/salesportal/dt/remove-cart', {
             soId: transaction.data.order.soId,
-            transactionId: transaction.transactionId
+            userId: this.user.username
           }).toPromise().catch(() => Promise.resolve());
           promiseAll.push(order);
         }
