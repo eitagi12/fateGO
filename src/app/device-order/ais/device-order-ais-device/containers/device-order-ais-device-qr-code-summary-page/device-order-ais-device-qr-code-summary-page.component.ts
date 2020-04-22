@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, AlertService } from 'mychannel-shared-libs';
+import { HomeService, AlertService, User } from 'mychannel-shared-libs';
 import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -18,6 +18,7 @@ export class DeviceOrderAisDeviceQrCodeSummaryPageComponent implements OnInit, O
 
   transaction: Transaction;
   priceOption: PriceOption;
+  user: User;
 
   constructor(
     private router: Router,
@@ -27,6 +28,7 @@ export class DeviceOrderAisDeviceQrCodeSummaryPageComponent implements OnInit, O
     private priceOptionService: PriceOptionService,
     private http: HttpClient,
     private alertService: AlertService
+
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -46,7 +48,7 @@ export class DeviceOrderAisDeviceQrCodeSummaryPageComponent implements OnInit, O
   ngOnInit(): void {
     if (!this.transaction.data.mpayPayment) {
       this.createMpayStatus();
-  }
+    }
   }
 
   createMpayStatus(): void {
@@ -135,10 +137,9 @@ export class DeviceOrderAisDeviceQrCodeSummaryPageComponent implements OnInit, O
       const promiseAll = [];
       if (transaction.data) {
         if (transaction.data.order && transaction.data.order.soId) {
-          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
-            location: this.priceOption.productStock.location,
+          const order = this.http.post('/api/salesportal/dt/remove-cart', {
             soId: transaction.data.order.soId,
-            transactionId: transaction.transactionId
+            userId: this.user.username
           }).toPromise().catch(() => Promise.resolve());
           promiseAll.push(order);
         }

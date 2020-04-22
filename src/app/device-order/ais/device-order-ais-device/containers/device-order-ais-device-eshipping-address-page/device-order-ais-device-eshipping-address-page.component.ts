@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { CustomerAddress, HomeService, AlertService } from 'mychannel-shared-libs';
+import { CustomerAddress, HomeService, AlertService, TokenService, User } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -28,6 +28,7 @@ export class DeviceOrderAisDeviceEshippingAddressPageComponent implements OnInit
   zipCodes: string[];
   shippinAddressTemp: CustomerAddress;
   eShippingValid: boolean;
+  user: User;
 
   constructor(
     private router: Router,
@@ -35,8 +36,10 @@ export class DeviceOrderAisDeviceEshippingAddressPageComponent implements OnInit
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private http: HttpClient,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private tokenService: TokenService
   ) {
+    this.user = this.tokenService.getUser();
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
@@ -190,10 +193,9 @@ export class DeviceOrderAisDeviceEshippingAddressPageComponent implements OnInit
       const promiseAll = [];
       if (transaction.data) {
         if (transaction.data.order && transaction.data.order.soId) {
-          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
-            location: this.priceOption.productStock.location,
+          const order = this.http.post('/api/salesportal/dt/remove-cart', {
             soId: transaction.data.order.soId,
-            transactionId: transaction.transactionId
+            userId: this.user.username
           }).toPromise().catch(() => Promise.resolve());
           promiseAll.push(order);
         }

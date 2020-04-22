@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, CustomerAddress, CustomerService, AlertService, ReadCardService, ReadCard, ReadCardProfile, ReadCardEvent } from 'mychannel-shared-libs';
+import { HomeService, CustomerAddress, CustomerService, AlertService, ReadCardService, ReadCard, ReadCardProfile, ReadCardEvent, User, TokenService } from 'mychannel-shared-libs';
 import {
   ROUTE_ORDER_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE
 } from 'src/app/order/order-new-register/constants/route-path.constant';
@@ -52,19 +52,22 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
   customerProfile: ReadCardProfile;
   readCard: ReadCard;
   dataReadIdCard: any;
+  user: User;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private http: HttpClient,
-    private localStorageService: LocalStorageService,
     private translation: TranslateService,
     private customerService: CustomerService,
     public fb: FormBuilder,
     private alertService: AlertService,
-    private readCardService: ReadCardService
+    private readCardService: ReadCardService,
+    private tokenService: TokenService,
   ) {
+    this.user = this.tokenService.getUser();
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
@@ -286,10 +289,9 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
       const promiseAll = [];
       if (transaction.data) {
         if (transaction.data.order && transaction.data.order.soId) {
-          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
-            location: this.priceOption.productStock.location,
+          const order = this.http.post('/api/salesportal/dt/remove-cart', {
             soId: transaction.data.order.soId,
-            transactionId: transaction.transactionId
+            userId: this.user.username
           }).toPromise().catch(() => Promise.resolve());
           promiseAll.push(order);
         }

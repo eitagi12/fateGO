@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, TelNoBillingInfo, TokenService, PageLoadingService, AlertService, ShoppingCart, Utils } from 'mychannel-shared-libs';
+import { HomeService, TelNoBillingInfo, TokenService, PageLoadingService, AlertService, ShoppingCart, Utils, User } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, Seller } from 'src/app/shared/models/transaction.model';
 import { BsModalService } from 'ngx-bootstrap/modal';
@@ -38,6 +38,7 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit, OnDestr
   employeeDetailForm: FormGroup;
   shipCusNameFormControl: FormGroup;
   isEditShipCusName: boolean = false;
+  user: User;
 
   constructor(
     private router: Router,
@@ -55,6 +56,7 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit, OnDestr
     public summaryPageService: SummaryPageService,
 
   ) {
+    this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
     if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
@@ -227,10 +229,9 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit, OnDestr
       const promiseAll = [];
       if (transaction.data) {
         if (transaction.data.order && transaction.data.order.soId) {
-          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
-            location: this.priceOption.productStock.location,
+          const order = this.http.post('/api/salesportal/dt/remove-cart', {
             soId: transaction.data.order.soId,
-            transactionId: transaction.transactionId
+            userId: this.user.username
           }).toPromise().catch(() => Promise.resolve());
           promiseAll.push(order);
         }
