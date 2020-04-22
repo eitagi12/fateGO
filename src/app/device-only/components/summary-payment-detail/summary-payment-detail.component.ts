@@ -61,7 +61,8 @@ export class SummaryPaymentDetailComponent implements OnInit {
   getDataCustomer(): void {
     const customer = this.transaction.data.customer;
     if (this.isLineShop) {
-      if (!this.transaction.data.shippingInfo && !this.transaction.data.shippingInfo.firstName) {
+      const shippingInfo: any = this.transaction.data.shippingInfo || '';
+      if (!shippingInfo && !shippingInfo.firstName) {
         this.$customer = customer.firstName + ' ' + customer.lastName;
       } else {
         this.$customer = this.transaction.data.shippingInfo.firstName + ' ' + this.transaction.data.shippingInfo.lastName;
@@ -111,7 +112,8 @@ export class SummaryPaymentDetailComponent implements OnInit {
 
   getCustomerAddress(): void {
     let customer;
-    if (this.transaction.data.shippingInfo && this.transaction.data.shippingInfo.firstName) {
+    const shippingInfo: any = this.transaction.data.shippingInfo || '';
+    if (shippingInfo && shippingInfo.firstName) {
       customer = this.transaction.data.shippingInfo;
     } else {
       customer = this.transaction.data.customer;
@@ -138,20 +140,19 @@ export class SummaryPaymentDetailComponent implements OnInit {
       };
     }
 
-    const shippingInfo = this.transaction.data.shippingInfo;
     const customerAddress = this.utils.getCurrentAddress({
-      homeNo: shippingInfo.homeNo,
-      moo: shippingInfo.moo,
-      mooBan: shippingInfo.mooBan,
-      room: shippingInfo.room,
-      floor: shippingInfo.floor,
-      buildingName: shippingInfo.buildingName,
-      soi: shippingInfo.soi,
-      street: shippingInfo.street,
-      tumbol: shippingInfo.tumbol,
-      amphur: shippingInfo.amphur,
-      province: shippingInfo.province,
-      zipCode: shippingInfo.zipCode
+      homeNo: customer.homeNo,
+      moo: customer.moo,
+      mooBan: customer.mooBan,
+      room: customer.room,
+      floor: customer.floor,
+      buildingName: customer.buildingName,
+      soi: customer.soi,
+      street: customer.street,
+      tumbol: customer.tumbol,
+      amphur: customer.amphur,
+      province: customer.province,
+      zipCode: customer.zipCode
     });
 
     this.billingAddress = {
