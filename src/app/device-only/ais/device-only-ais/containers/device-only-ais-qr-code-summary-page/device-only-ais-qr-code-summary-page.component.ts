@@ -47,9 +47,12 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
       this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
       this.homeButtonService.initEventButtonHome();
       this.calculateSummary(this.deposit);
-      if (this.user.locationCode === '63259') {
-        this.isLineShop = true;
-        this.createQueueForm();
+      if (this.user.locationCode === '63259' &&
+        this.transaction.data.payment.paymentForm === 'FULL' &&
+        this.transaction.data.payment.paymentOnlineCredit === true &&
+        this.transaction.data.payment.paymentType === 'CREDIT') {
+          this.isLineShop = true;
+          this.createQueueForm();
       }
     }
 
@@ -83,7 +86,7 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
     }
 
     onNext(): void {
-      if (this.user.locationCode === '63259') {
+      if (this.isLineShop) {
         if (this.phoneSMSForm.controls['phoneNo'].valid) {
           this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE]);
         }

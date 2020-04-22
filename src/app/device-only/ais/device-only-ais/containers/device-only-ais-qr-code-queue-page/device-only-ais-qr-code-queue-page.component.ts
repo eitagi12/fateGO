@@ -37,6 +37,7 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
   inputType: string;
   user: User;
   skipQueue: boolean = false;
+  isLineShop: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -56,6 +57,12 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     this.user = this.tokenService.getUser();
+    if (this.user.locationCode === '63259' &&
+      this.transaction.data.payment.paymentForm === 'FULL' &&
+      this.transaction.data.payment.paymentOnlineCredit === true &&
+      this.transaction.data.payment.paymentType === 'CREDIT') {
+      this.isLineShop = true;
+    }
   }
 
   ngOnInit(): void {
@@ -198,7 +205,7 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
   }
 
   enableSkip(): boolean {
-    if (this.user.locationCode === '1213' || this.user.locationCode === '63259') {
+    if (this.user.locationCode === '1213' || this.isLineShop) {
       return true;
     } else {
       return false;
@@ -206,7 +213,7 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
   }
 
   onSkip(): void {
-    if (this.user.locationCode === '63259') {
+    if (this.isLineShop) {
       this.queueService.getQueueNewMatic(this.mobileNo).then((respQueue: any) => {
         const data = respQueue.data && respQueue.data.result ? respQueue.data.result : {};
         this.transaction.data.queue = { queueNo: data.queueNo };

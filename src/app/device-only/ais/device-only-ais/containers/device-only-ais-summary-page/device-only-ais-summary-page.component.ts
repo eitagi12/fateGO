@@ -115,12 +115,20 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   onNext(): void {
-    if (this.editName) {
-      this.transaction.data.shippingInfo.firstName = this.editName.firstName;
-      this.transaction.data.shippingInfo.lastName = this.editName.lastName;
+    if (this.transaction.data.payment.paymentForm === 'FULL' &&
+        this.transaction.data.payment.paymentOnlineCredit === true &&
+        this.transaction.data.payment.paymentType === 'CREDIT' &&
+        this.editName) {
+      if (this.editName.firstName && this.editName.lastName) {
+        this.transaction.data.shippingInfo.firstName = this.editName.firstName;
+        this.transaction.data.shippingInfo.lastName = this.editName.lastName;
+        const seller: Seller = this.summarySellerCode.getSeller();
+        this.checkSeller(seller);
+      }
+    } else {
+      const seller: Seller = this.summarySellerCode.getSeller();
+      this.checkSeller(seller);
     }
-    const seller: Seller = this.summarySellerCode.getSeller();
-    this.checkSeller(seller);
   }
 
   onHome(): void {
