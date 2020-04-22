@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { WIZARD_DEVICE_ODER_AIS_DEVICE } from 'src/app/device-order/constants/wizard.constant';
+import { WIZARD_DEVICE_ORDER_AIS_DEVICE } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { CustomerAddress, HomeService, AlertService } from 'mychannel-shared-libs';
@@ -16,7 +16,7 @@ import { ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE } from '../../constants/route-path
 })
 export class DeviceOrderAisDeviceEshippingAddressPageComponent implements OnInit, OnDestroy {
 
-  wizards: string[] = WIZARD_DEVICE_ODER_AIS_DEVICE;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE;
 
   transaction: Transaction;
   priceOption: PriceOption;

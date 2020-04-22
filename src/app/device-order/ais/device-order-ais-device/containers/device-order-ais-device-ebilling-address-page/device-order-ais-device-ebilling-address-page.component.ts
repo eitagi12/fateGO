@@ -11,7 +11,7 @@ import { NgxResource, LocalStorageService } from 'ngx-store';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription, Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import { WIZARD_DEVICE_ODER_AIS_DEVICE } from 'src/app/device-order/constants/wizard.constant';
+import { WIZARD_DEVICE_ORDER_AIS_DEVICE } from 'src/app/device-order/constants/wizard.constant';
 import { ROUTE_DEVICE_AIS_DEVICE_PAYMENT_PAGE } from 'src/app/device-order/ais/device-order-ais-device/constants/route-path.constant';
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -24,7 +24,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 })
 export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit, OnDestroy {
 
-  wizards: string[] = WIZARD_DEVICE_ODER_AIS_DEVICE;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE;
 
   transaction: Transaction;
   priceOption: PriceOption;

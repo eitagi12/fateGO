@@ -7,7 +7,7 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { WIZARD_DEVICE_ODER_AIS_DEVICE } from 'src/app/device-order/constants/wizard.constant';
+import { WIZARD_DEVICE_ORDER_AIS_DEVICE } from 'src/app/device-order/constants/wizard.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
@@ -20,7 +20,7 @@ import { SummaryPageService } from 'src/app/device-order/services/summary-page.s
   styleUrls: ['./device-order-ais-device-summary-page.component.scss']
 })
 export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit, OnDestroy {
-  wizards: string[] = WIZARD_DEVICE_ODER_AIS_DEVICE;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE;
 
   @ViewChild('detailTemplate')
   detailTemplate: any;
