@@ -135,17 +135,13 @@
                 <i class="fa fa-circle mr-3 text-green"></i>
                 {{ 'ชื่อผู้รับสินค้า' | translate }}
               </p>
-              <p class="col-12 col-sm-7" *ngIf="!isEditShipCusName">
+              <p class="col-12 col-sm-7 text-green" *ngIf="!isEditShipCusName">
                 {{ transaction?.data?.customer?.titleName }}
                 {{ transaction?.data?.customer?.firstName }}
                 {{ transaction?.data?.customer?.lastName }}
               </p>
               <p class="col-12 col-sm-1" *ngIf="!isEditShipCusName">
-                <label style="cursor: pointer" class="text-lime" (click)="editShipCusName()">
-                  <u>
-                    EDIT
-                  </u>
-                </label>
+                <img class="icon" src="assets/images/icon/icon-edit.png" style="cursor: pointer" (click)="editShipCusName()">
               </p>
 
               <form [formGroup]="shipCusNameFormControl" *ngIf="isEditShipCusName" class="col-12 col-sm-8">
@@ -160,15 +156,11 @@
                 <i class="fa fa-circle mr-3 text-green"></i>
                 {{ 'ที่อยู่ในการจัดส่งสินค้า' | translate }}
               </p>
-              <p class="col-12 col-sm-7">
+              <p class="col-12 col-sm-7 text-green">
                 {{ shippingAddress }}
               </p>
               <p class="col-12 col-sm-1">
-                <label style="cursor: pointer" class="text-lime" (click)="editAddressDelivery()">
-                  <u>
-                    EDIT
-                  </u>
-                </label>
+                <img class="icon" src="assets/images/icon/icon-edit.png" style="cursor: pointer" (click)="editAddressDelivery()">
               </p>
             </div>
           </div>
