@@ -144,10 +144,10 @@
                 <img class="icon" src="assets/images/icon/icon-edit.png" style="cursor: pointer" (click)="editShipCusName()">
               </p>
 
-              <form [formGroup]="shipCusNameFormControl" *ngIf="isEditShipCusName" class="col-12 col-sm-8">
+              <form [formGroup]="shipCusNameFormControl" *ngIf="isEditShipCusName" class="col-12 col-sm-8 flex">
                 {{ transaction?.data?.shippingInfo?.titleName }}
-                <input class="form-control" type="text" formControlName="firstName" id="firstName" maxlength="50" />
-                <input class="form-control" type="text" formControlName="lastName" id="lastName" maxlength="50" />
+                <input class="form-control col-5 mr-2 ml-2" type="text" formControlName="firstName" id="firstName" maxlength="50" />
+                <input class="form-control col-5" type="text" formControlName="lastName" id="lastName" maxlength="50" />
               </form>
 
 
