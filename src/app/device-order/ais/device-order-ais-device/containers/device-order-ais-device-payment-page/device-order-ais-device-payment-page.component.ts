@@ -540,7 +540,8 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
       tumbol: customer.tumbol,
       amphur: customer.amphur,
       province: customer.province,
-      zipCode: customer.zipCode
+      zipCode: customer.zipCode,
+      telNo: this.receiptInfoForm.value.telNo
     };
   }
 
