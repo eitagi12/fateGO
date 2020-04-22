@@ -689,4 +689,5 @@ export interface ShippingInfo {
   amphur?: string;
   province?: string;
   zipCode?: string;
+  telNo?: string;
 }
