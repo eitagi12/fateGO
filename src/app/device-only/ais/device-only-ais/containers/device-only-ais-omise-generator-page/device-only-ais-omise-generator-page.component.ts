@@ -3,12 +3,13 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-import { HomeService, PageLoadingService, AlertService, TokenService } from 'mychannel-shared-libs';
+import { HomeService, PageLoadingService, AlertService, TokenService, User } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { QrCodeOmiseService } from 'src/app/device-only/services/qr-code-omise.service';
 import { environment } from 'src/environments/environment';
 import * as moment from 'moment';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-device-only-ais-omise-generator-page',
@@ -27,6 +28,8 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
   countdown: string;
   refreshCount: number = 0;
   totalAmount: number;
+  user: User;
+  shortURL: string;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -35,10 +38,12 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
     private pageLoadingService: PageLoadingService,
     private alertService: AlertService,
     private tokenService: TokenService,
+    private http: HttpClient,
     private qrCodeOmiseService: QrCodeOmiseService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
+    this.user = this.tokenService.getUser();
   }
 
   ngOnInit(): void {
@@ -49,8 +54,42 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
     this.totalAmount = this.getTotalAmount();
     const orderId = this.transaction.data.omise.orderId || '';
     const qrCodeStr = this.transaction.data.omise.qrCodeStr || '';
+    const data = this.createDataGenerateQR();
+
+    this.http.post('api/payments/super-duper/create-order', data).subscribe((resp: any) => {
+      if (resp && resp.data) {
+        this.shortURL = resp.data.redirectUrl;
+        this.http.get('api/newregister/send-sms').toPromise().then((res: any) => {
+          console.log(res);
+        });
+      }
+      console.log(resp);
+    });
 
     this.handlerQRCodeMpay(orderId, qrCodeStr);
+  }
+
+  createDataGenerateQR(): any {
+    const shippingInfo = this.transaction.data.shippingInfo;
+    const customer = shippingInfo.firstName + ' ' + shippingInfo.lastName;
+    const productStock = this.priceOption.productStock;
+    const productDetail = this.priceOption.productDetail;
+    const trade = this.priceOption.trade;
+    const phoneNo = localStorage.getItem('phoneNoQR');
+    return {
+      companyCode: productStock.company,
+      companyName: 'บริษัท แอดวานซ์ ไวร์เลส เน็ทเวอร์ค จำกัด',
+      locationCode: this.user.locationCode,
+      locationName: productStock.locationName,
+      mobileNo: phoneNo,
+      customer: customer,
+      orderList : [
+        {
+          name: productDetail.name + 'สี' + productStock.color,
+          price: trade.normalPrice
+        }
+      ]
+    };
   }
 
   handlerQRCodeMpay(orderId: string, qrCodeStr: string): void {
@@ -195,6 +234,7 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
     if (this.checkResponseOmiseSubscription) {
       this.checkResponseOmiseSubscription.unsubscribe();
     }
+    localStorage.removeItem('phoneNoQR');
   }
 
   isDeveloperMode(): boolean {

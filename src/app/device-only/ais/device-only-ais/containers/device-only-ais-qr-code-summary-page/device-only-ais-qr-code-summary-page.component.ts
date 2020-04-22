@@ -88,6 +88,7 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
     onNext(): void {
       if (this.isLineShop) {
         if (this.phoneSMSForm.controls['phoneNo'].valid) {
+          localStorage.setItem('phoneNoQR', this.phoneSMSForm.controls['phoneNo'].value);
           this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE]);
         }
       } else {
