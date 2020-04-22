@@ -1,0 +1,67 @@
+<div class="mc-flex">
+  <mc-header title="{{'ซื้อเครื่องเปล่า'| translate}}">
+    <div class="header-icon-left  w-25">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right w-25 text-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()" [hidden]="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'SUCCESS'"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <div class="my-3">
+      <div class="container-fluid">
+        <div class="card mb-5">
+          <div class="card-header bg-lime text-white" translate>ข้อมูลการชำระ</div>
+          <div class="card-body text-light-grey">
+            <div class="border-bottom pb-3 mb-3">
+              {{'ชำระโดย'| translate}}
+              <span class="pull-right">
+                ออนไลน์บัตรเครดิต
+              </span>
+            </div>
+            <div class="text-right h5 text-green">
+              {{'ยอดชำระ'| translate}}
+              <span class="total pull-right ">฿ {{ totalAmount | number }}</span>
+            </div>
+          </div>
+        </div>
+
+        <ng-container *ngIf="qrCode">
+          <div class="text-center mb-3">
+            <div translate>กรุณาสแกน QR Code รับ Link ชำระเงินทันทีด้วยบัตรเครดิต</div>
+            <div translate>เพื่อทำรายการชำระค่าสินค้าและบริการ</div>
+          </div>
+          <div class="qr-code border bg-white mb-3">
+            <img src="assets/images/icon/Branner-Thai-Qr-code.png" class="d-block w-100" />
+            <div class="mt-2">
+              <img src="assets/images/icon/Icon-Card.png" class="d-block w-25 m-auto" />
+            </div>
+            <div>
+              <img [src]="qrCode" class="w-100 d-block m-auto" alt="QR CODE ERROR" />
+            </div>
+          </div>
+          <div class="text-center">
+            <h3 [ngClass]="{ 'text-pink': warningTimeOut() }">{{ countdown || '00 : 00' }}</h3>
+            <div>" {{'กรุณาชำระเงินภายในเวลาที่กำหนด'| translate}} "</div>
+          </div>
+        </ng-container>
+
+        <div class="card mb-5">
+          <div class="card-body text-light-grey">
+          <div class="text-center">
+            <label>กรุณาระบุเบอร์โทรเพื่อรับ sms สำหรับการชำระเงิน ผ่าน บัตรเคดิต ออนไลน์</label>
+            <input type="tel" id="mobile" name="mobile">
+            <button class="btn btn-success">ส่ง sms อีกครั้ง</button>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <mc-footer>
+    <!-- <button class="btn btn-success" (click)="onGenerateQRCode()">REFRESH</button> -->
+    <button class="btn btn-secondary" (click)="onBack()">Back</button>
+    <!-- <button class="btn btn-success" (click)="onNext()">Next</button> -->
+  </mc-footer>
+</div>
