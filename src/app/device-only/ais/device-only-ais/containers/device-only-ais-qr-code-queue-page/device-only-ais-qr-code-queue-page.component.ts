@@ -197,6 +197,14 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
     return this.mobileFrom.value['mobileNo'] ? true : false;
   }
 
+  enableSkip(): boolean {
+    if (this.user.locationCode === '1213' || this.user.locationCode === '63259' || this.user.locationCode === '1100') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   onSkip(): void {
     if (this.user.locationCode === '63259') {
       this.queueService.getQueueNewMatic(this.mobileNo).then((respQueue: any) => {

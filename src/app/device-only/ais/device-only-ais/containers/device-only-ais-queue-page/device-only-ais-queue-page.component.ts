@@ -100,32 +100,18 @@ export class DeviceOnlyAisQueuePageComponent implements OnInit, OnDestroy {
   }
 
   onSkip(): void {
-    if (this.user.locationCode === '63259') {
-      this.queueService.getQueueNewMatic(this.mobileNo).then((respQueue: any) => {
-        const data = respQueue.data && respQueue.data.result ? respQueue.data.result : {};
-        this.transaction.data.queue = { queueNo: data.queueNo };
+    this.queueService.getQueueZ(this.user.locationCode)
+      .then((resp: any) => {
+        const queueNo = resp.data.queue;
         this.skipQueue = true;
-        this.createOrderService.createDeviceSellingOrderList(this.transaction, this.priceOption).then((res) => {
+        this.transaction.data.queue = { queueNo: queueNo };
+        this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).then((res) => {
           return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
             this.pageLoadingService.closeLoading();
             this.router.navigate([ROUTE_DEVICE_ONLY_AIS_RESULT_QUEUE_PAGE]);
           });
         });
       });
-    } else {
-      this.queueService.getQueueZ(this.user.locationCode)
-        .then((resp: any) => {
-          const queueNo = resp.data.queue;
-          this.skipQueue = true;
-          this.transaction.data.queue = { queueNo: queueNo };
-          this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).then((res) => {
-            return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
-              this.pageLoadingService.closeLoading();
-              this.router.navigate([ROUTE_DEVICE_ONLY_AIS_RESULT_QUEUE_PAGE]);
-            });
-          });
-        });
-    }
   }
 
   onNext(): void {
@@ -217,13 +203,4 @@ export class DeviceOnlyAisQueuePageComponent implements OnInit, OnDestroy {
   checkSkip(): boolean {
     return this.mobileFrom.value['mobileNo'] ? true : false;
   }
-
-  enableSkip(): boolean {
-    if (this.user.locationCode === '1213' || this.user.locationCode === '63259') {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
 }
