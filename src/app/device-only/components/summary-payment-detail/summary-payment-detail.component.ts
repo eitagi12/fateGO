@@ -27,6 +27,7 @@ export class SummaryPaymentDetailComponent implements OnInit {
   editName: boolean = false;
   editCustomerName: FormGroup;
   billingAddress: any;
+  isLineShop: boolean = false;
 
   constructor(
     private priceOptionService: PriceOptionService,
@@ -39,12 +40,17 @@ export class SummaryPaymentDetailComponent implements OnInit {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
     this.user = this.tokenService.getUser();
+    if (this.user.locationCode === '63259') {
+      this.isLineShop = true;
+    }
   }
 
   ngOnInit(): void {
     this.checkUserType();
     this.getDataCustomer();
-    this.getCustomerAddress();
+    if (this.isLineShop) {
+      this.getCustomerAddress();
+    }
     this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
   }
 
@@ -54,10 +60,12 @@ export class SummaryPaymentDetailComponent implements OnInit {
 
   getDataCustomer(): void {
     const customer = this.transaction.data.customer;
-    if (!this.transaction.data.shippingInfo.firstName && !this.transaction.data.shippingInfo.lastName) {
-      this.$customer = customer.firstName + ' ' + customer.lastName;
-    } else {
-      this.$customer = this.transaction.data.shippingInfo.firstName + ' ' + this.transaction.data.shippingInfo.lastName;
+    if (this.isLineShop) {
+      if (!this.transaction.data.shippingInfo && !this.transaction.data.shippingInfo.firstName) {
+        this.$customer = customer.firstName + ' ' + customer.lastName;
+      } else {
+        this.$customer = this.transaction.data.shippingInfo.firstName + ' ' + this.transaction.data.shippingInfo.lastName;
+      }
     }
     if (customer) {
       this.customerAddress = this.utils.getCurrentAddress({
