@@ -14,7 +14,6 @@ import { Subscription, zip } from 'rxjs';
 import { BsModalService, BsModalRef, isArray } from 'ngx-bootstrap';
 import { BillingAccount } from '../../../device-order-ais-mnp/containers/device-order-ais-mnp-effective-start-date-page/device-order-ais-mnp-effective-start-date-page.component';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
-import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/route-path.constant';
 import { ROUTE_BUY_GADGET_CAMPAIGN_PAGE } from 'src/app/buy-gadget/constants/route-path.constant';
 @Component({
   selector: 'app-device-order-ais-device-payment-page',
@@ -57,6 +56,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
   location: string;
   billingAccountList: BillingAccount;
   mobileNo: any;
+  oldMobileNo: any;
   cardStatus: string;
   user: User;
   zipCode: string;
@@ -108,6 +108,9 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     this.createForm();
     this.createSearchByMobileNoForm();
     this.createSelectBillAddForm();
+    if (this.transaction && this.transaction.data && this.transaction.data.simCard && this.transaction.data.simCard.mobileNo) {
+      this.oldMobileNo = this.transaction.data.simCard.mobileNo;
+    }
     const productDetail = this.priceOption.productDetail || {};
     const productStock = this.priceOption.productStock || {};
     const customer: any = this.transaction.data && this.transaction.data.customer ? this.transaction.data.customer : {};
@@ -513,7 +516,9 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
     this.transaction.data.receiptInfo = this.receiptInfo;
     this.transaction.data.receiptInfo.telNo = this.receiptInfoForm.value.telNo;
-    this.setShippingInfo(this.transaction.data.customer);
+    if (this.transaction.data.simCard.mobileNo !==  this.oldMobileNo) {
+      this.setShippingInfo(this.transaction.data.customer);
+    }
     this.returnStock().then(() => {
       this.addDeviceSellingCart(this.transaction);
     });
