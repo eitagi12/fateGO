@@ -156,8 +156,8 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit, OnDestr
   shipCusNameFormControlForm(): void {
     const shippingInfo: any = this.transaction.data && this.transaction.data.shippingInfo ? this.transaction.data.shippingInfo : {};
     this.shipCusNameFormControl = this.fb.group({
-      name: [shippingInfo.firstName || '', [Validators.required]],
-      surname: [shippingInfo.lastName || '', [Validators.required]],
+      firstName: [shippingInfo.firstName || '', [Validators.required]],
+      lastName: [shippingInfo.lastName || '', [Validators.required]],
     });
   }
 
@@ -184,9 +184,19 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit, OnDestr
     this.http.get(`/api/customerportal/checkSeller/${ascCode.trim()}`).toPromise().then((resp: any) => {
       const checkSeller: any = resp && resp.data ? resp.data : {};
       if (checkSeller.condition) {
-        this.transaction.data.seller.sellerNo = this.sellerCode;
-        this.transaction.data.seller.employeeId = ascCode;
-        this.transaction.data.seller.sellerName = user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username;
+        this.transaction.data.seller = {
+          ...this.transaction.data.seller,
+          sellerNo: this.sellerCode,
+          employeeId: ascCode,
+          sellerName: user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username
+        };
+        if (this.editShipCusName) {
+          this.transaction.data.shippingInfo = {
+            ...this.transaction.data.shippingInfo,
+            firstName: this.shipCusNameFormControl.value.firstName,
+            lastName: this.shipCusNameFormControl.value.lastName
+          };
+        }
         this.pageLoadingService.closeLoading();
         this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_AGGREGATE_PAGE]);
       } else {

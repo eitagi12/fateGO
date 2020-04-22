@@ -53,7 +53,7 @@ export class DeviceOrderAisDeviceEshippingAddressPageComponent implements OnInit
           });
       };
     }
-   }
+  }
 
   ngOnInit(): void {
     this.callService();
@@ -175,7 +175,8 @@ export class DeviceOrderAisDeviceEshippingAddressPageComponent implements OnInit
   }
 
   onNext(): void {
-    this.transaction.data.shippingInfo = this.shippinAddressTemp;
+    this.transaction.data.shippingInfo = Object.assign(this.transaction.data.shippingInfo,
+      this.shippinAddressTemp);
     this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE]);
   }
 

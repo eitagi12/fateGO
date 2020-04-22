@@ -136,9 +136,9 @@
                 {{ 'ชื่อผู้รับสินค้า' | translate }}
               </p>
               <p class="col-12 col-sm-7 text-green" *ngIf="!isEditShipCusName">
-                {{ transaction?.data?.customer?.titleName }}
-                {{ transaction?.data?.customer?.firstName }}
-                {{ transaction?.data?.customer?.lastName }}
+                {{ transaction?.data?.shippingInfo?.titleName }}
+                {{ transaction?.data?.shippingInfo?.firstName }}
+                {{ transaction?.data?.shippingInfo?.lastName }}
               </p>
               <p class="col-12 col-sm-1" *ngIf="!isEditShipCusName">
                 <img class="icon" src="assets/images/icon/icon-edit.png" style="cursor: pointer" (click)="editShipCusName()">
@@ -146,8 +146,8 @@
 
               <form [formGroup]="shipCusNameFormControl" *ngIf="isEditShipCusName" class="col-12 col-sm-8">
                 {{ transaction?.data?.shippingInfo?.titleName }}
-                <input class="form-control" type="text" formControlName="name" maxlength="50" />
-                <input class="form-control" type="text" formControlName="surname" maxlength="50" />
+                <input class="form-control" type="text" formControlName="firstName" id="firstName" maxlength="50" />
+                <input class="form-control" type="text" formControlName="lastName" id="lastName" maxlength="50" />
               </form>
 
 
