@@ -198,18 +198,31 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
   }
 
   onSkip(): void {
-    this.queueService.getQueueZ(this.user.locationCode)
-      .then((resp: any) => {
-        const queueNo = resp.data.queue;
+    if (this.user.locationCode === '63259') {
+      this.queueService.getQueueNewMatic(this.mobileNo).then((respQueue: any) => {
+        const data = respQueue.data && respQueue.data.result ? respQueue.data.result : {};
+        this.transaction.data.queue = { queueNo: data.queueNo };
         this.skipQueue = true;
-        this.transaction.data.queue = { queueNo: queueNo };
-        this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).then(() => {
+        this.createOrderService.createDeviceSellingOrderList(this.transaction, this.priceOption).then((res) => {
           return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
             this.pageLoadingService.closeLoading();
             this.router.navigate([ROUTE_DEVICE_ONLY_AIS_RESULT_QUEUE_PAGE]);
           });
         });
       });
+    } else {
+      this.queueService.getQueueZ(this.user.locationCode)
+        .then((resp: any) => {
+          const queueNo = resp.data.queue;
+          this.skipQueue = true;
+          this.transaction.data.queue = { queueNo: queueNo };
+          this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).then(() => {
+            return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
+              this.pageLoadingService.closeLoading();
+              this.router.navigate([ROUTE_DEVICE_ONLY_AIS_RESULT_QUEUE_PAGE]);
+            });
+          });
+        });
+    }
   }
-
 }

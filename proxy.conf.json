@@ -1,6 +1,6 @@
 {
     "/api": {
-        "target": "http://10.137.16.46:8080",
+        "target": "http://110.49.202.163/mychannel/sit",
         "secure": false
     }
 }
