@@ -9,6 +9,8 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { QRCodePaymentService, ImageBrannerQRCode } from 'src/app/shared/services/qrcode-payment.service';
 import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { QrCodeOmiseService } from 'src/app/device-only/services/qr-code-omise.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-device-only-ais-qr-code-summary-page',
@@ -33,7 +35,9 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
     private homeButtonService: HomeButtonService,
     private priceOptionService: PriceOptionService,
     private qrcodePaymentService: QRCodePaymentService,
-    private tokenService: TokenService
+    private qrCodeOmiseService: QrCodeOmiseService,
+    private tokenService: TokenService,
+    private http: HttpClient
     ) {
       this.user = this.tokenService.getUser();
       this.transaction = this.transactionService.load();
@@ -88,12 +92,49 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
     onNext(): void {
       if (this.isLineShop) {
         if (this.phoneSMSForm.controls['phoneNo'].valid) {
-          localStorage.setItem('phoneNoQR', this.phoneSMSForm.controls['phoneNo'].value);
-          this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE]);
+          const params = this.createDataGenerateQR();
+          this.qrCodeOmiseService.createOrder(params).then((res: any) => {
+            const data = res && res.data;
+            this.transaction.data.omise.qrCodeStr = data.redirectUrl;
+            this.transaction.data.omise.orderId = data.orderId;
+            this.transactionService.update(this.transaction);
+          }).then(() => {
+            const data = {
+              content: 'สำหรับการชำระเงินค่าสินค้าผ่านบัตรเครดิตออนไลน์ คลิก ' + this.transaction.data.omise.qrCodeStr,
+              sender: this.phoneSMSForm.controls['phoneNo'].value
+            };
+            this.http.post('api/newregister/send-sms', data).toPromise()
+            .then(() => {
+              this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE]);
+            });
+          });
         }
       } else {
         this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE]);
       }
+    }
+
+    createDataGenerateQR(): any {
+      const shippingInfo = this.transaction.data.shippingInfo;
+      const customer = shippingInfo.firstName + ' ' + shippingInfo.lastName;
+      const productStock = this.priceOption.productStock;
+      const productDetail = this.priceOption.productDetail;
+      const trade = this.priceOption.trade;
+      const phoneNo = this.phoneSMSForm.controls['phoneNo'].value;
+      return {
+        companyCode: productStock.company,
+        companyName: 'บริษัท แอดวานซ์ ไวร์เลส เน็ทเวอร์ค จำกัด',
+        locationCode: this.user.locationCode,
+        locationName: productStock.locationName,
+        mobileNo: phoneNo,
+        customer: customer,
+        orderList : [
+          {
+            name: productDetail.name + 'สี' + productStock.color,
+            price: trade.promotionPrice
+          }
+        ]
+      };
     }
 
     onHome(): void {
