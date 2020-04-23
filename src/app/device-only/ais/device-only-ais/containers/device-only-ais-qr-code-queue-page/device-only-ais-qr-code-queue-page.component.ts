@@ -57,10 +57,7 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     this.user = this.tokenService.getUser();
-    if (this.user.locationCode === '63259' &&
-      this.transaction.data.payment.paymentForm === 'FULL' &&
-      this.transaction.data.payment.paymentOnlineCredit === true &&
-      this.transaction.data.payment.paymentType === 'CREDIT') {
+    if (this.user.locationCode === '63259') {
       this.isLineShop = true;
     }
   }

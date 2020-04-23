@@ -164,9 +164,9 @@
                 <div class="col-12">
                     <form class="col-3" style="margin: auto;" [formGroup]="phoneSMSForm">
                         <div class="form-group">
-                            <input class="form-control" maxlength="10" type="text" formControlName="phoneNo" [ngClass]="{ 'is-invalid' : phoneSMSForm.controls.phoneNo.invalid && phoneSMSForm.controls.phoneNo.touched && phoneSMSForm.controls.phoneNo.errors }">
-                            <small class="invalid-feedback" *ngIf="phoneSMSForm.controls.phoneNo.touched && phoneSMSForm.controls.phoneNo.errors">
-                                *กรุณาระบุเบอร์มือถือ
+                            <input class="form-control text-center" maxlength="10" type="text" formControlName="phoneNo">
+                            <small class="feedback text-red" *ngIf="phoneSMSForm.controls.phoneNo.invalid">
+                                {{feedback}}
                             </small>
                         </div>
                     </form>
@@ -180,6 +180,6 @@
 
     <mc-footer>
         <button class="btn btn-secondary" id="button-back" (click)="onBack()">CANCEL</button>
-        <button class="btn btn-success" id="button-next" (click)="onNext()">PAY NOW</button>
+        <button class="btn btn-success" id="button-next" (click)="onNext()" [disabled]="checkEnabled()">PAY NOW</button>
     </mc-footer>
 </div>

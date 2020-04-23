@@ -27,6 +27,7 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
   phoneSMSForm: FormGroup;
   user: User;
   isLineShop: boolean = false;
+  feedback: string = '*กรุณาระบุเบอร์มือถือ';
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -51,10 +52,7 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
       this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
       this.homeButtonService.initEventButtonHome();
       this.calculateSummary(this.deposit);
-      if (this.user.locationCode === '63259' &&
-        this.transaction.data.payment.paymentForm === 'FULL' &&
-        this.transaction.data.payment.paymentOnlineCredit === true &&
-        this.transaction.data.payment.paymentType === 'CREDIT') {
+      if (this.user.locationCode === '63259') {
           this.isLineShop = true;
           this.createQueueForm();
       }
@@ -97,9 +95,13 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
           const msisdn = `66${phoneNo.substring(1, phoneNo.length)}`;
           this.qrCodeOmiseService.createOrder(params).then((res: any) => {
             const data = res && res.data;
-            this.transaction.data.omise.qrCodeStr = data.redirectUrl;
-            this.transaction.data.omise.orderId = data.orderId;
+            this.transaction.data.omise = {
+              ...this.transaction.data.omise,
+              qrCodeStr: data.redirectUrl,
+              orderId: data.orderId
+            };
             this.transactionService.update(this.transaction);
+            console.log(this.transaction);
           }).then(() => {
             const bodyRequest: any = {
               recipient: {
@@ -109,10 +111,8 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
               content: 'สำหรับการชำระเงินค่าสินค้าผ่านบัตรเครดิตออนไลน์ คลิก ' + this.transaction.data.omise.qrCodeStr,
               sender: 'AIS'
             };
-            this.http.post('api/newregister/send-sms', bodyRequest).toPromise()
-            .then(() => {
-              this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE]);
-            });
+            this.http.post('api/newregister/send-sms', bodyRequest).toPromise();
+            this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE]);
           });
         }
       } else {
@@ -145,6 +145,14 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
 
     onHome(): void {
       this.homeService.goToHome();
+    }
+
+    checkEnabled(): boolean {
+      if (this.isLineShop && this.phoneSMSForm.controls['phoneNo'].invalid) {
+        return true;
+      } else {
+        return false;
+      }
     }
 
 }
