@@ -59,7 +59,7 @@
                     </div>
 
 
-                    <ng-container *ngIf="isLineShop" [ngSwitch]="queueType">
+                    <ng-container *ngIf="!isLineShop" [ngSwitch]="queueType">
 
                         <ng-container *ngSwitchCase="'SMART_SHOP'">
                             <div class="container pt-3">
