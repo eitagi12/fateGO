@@ -15,6 +15,7 @@ import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { TabsModule } from 'ngx-bootstrap';
 import { MobileCareAspComponent } from '../components/mobile-care-asp/mobile-care-asp.component';
 import { CustomerAddressDeviceOnlyComponent } from '../components/customer-address-device-only/customer-address-device-only.component';
+import { PaymentDetailComponent } from '../components/payment-detail/payment-detail.component';
 
 @NgModule({
   imports: [
@@ -37,6 +38,7 @@ import { CustomerAddressDeviceOnlyComponent } from '../components/customer-addre
     SummaryPaymentDetailComponent,
     SummaryProductAndServiceComponent,
     SummarySellerCodeComponent,
+    PaymentDetailComponent
   ],
   exports: [
     BillingAddressComponent,
@@ -49,7 +51,8 @@ import { CustomerAddressDeviceOnlyComponent } from '../components/customer-addre
     SummaryOrderDetailComponent,
     SummaryPaymentDetailComponent,
     SummaryProductAndServiceComponent,
-    SummarySellerCodeComponent
+    SummarySellerCodeComponent,
+    PaymentDetailComponent
   ],
   providers: []
 })
