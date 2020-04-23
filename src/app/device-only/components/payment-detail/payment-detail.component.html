@@ -8,8 +8,8 @@
         <span class="pull-right">฿ {{paymentDetail.promotionPrice | number}}</span>
       </div>
     </div>
-    <div class="card-body py-2 border-top bg-transparent">
-      <input type="radio" id="omise" name="payment" value="omise" [checked]="true"
+    <div [hidden]="!isAWN" class="card-body py-2 border-top bg-transparent">
+      <input type="radio" id="omise" name="payment" value="omise" [checked]="defaultChecked()" 
         (change)="onPaymentTypeChange($event.target.value)" />
       <label for="omise">{{ 'ชำระด้วยบัตรเครดิตออนไลน์ (เต็มจำนวน)' | translate }}</label>
       <div [hidden]="!isShowCreditOnline" class="col-12 col-sm-6">
@@ -19,7 +19,7 @@
       </div>
     </div>
     <div class="card-body py-2 border-top bg-transparent">
-      <input type="radio" id="qrcode" name="payment" value="qrcode"
+      <input type="radio" id="qrcode" name="payment" value="qrcode" [checked]="!defaultChecked()"
         (change)="onPaymentTypeChange($event.target.value)" />
       <label for="qrcode">{{ 'ชำระด้วย QR Code (เต็มจำนวน)' | translate }}</label>
       <div [hidden]="!isShowQrCode" class="row" id="qr">
@@ -36,6 +36,11 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="card-body py-2 border-top bg-transparent">
+      <input type="radio" id="debit" name="payment" value="debit"
+        (change)="onPaymentTypeChange($event.target.value)" />
+      <label for="debit">{{ 'ชำระที่เคาน์เตอร์ (เต็มจำนวน)' | translate }}</label>
     </div>
   </div>
 </div>

@@ -1,4 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
 
 @Component({
   selector: 'app-payment-detail',
@@ -15,18 +17,32 @@ export class PaymentDetailComponent implements OnInit {
 
   @Input()
   paymentDetail: any;
+
+  priceOption: PriceOption;
   paymentValue: any;
   isShowCreditOnline: boolean = true;
   isShowQrCode: boolean;
   paymentQrCodeType: any;
+  isAWN: boolean;
 
   constructor(
-  ) { }
+    private priceOptionService: PriceOptionService
+  ) {
+    this.priceOption = this.priceOptionService.load();
+   }
 
   ngOnInit(): void {
     this.checkQrCodeSelected();
     this.setPaymentValue();
-    this.setPaymentValueOnlineCredit();
+
+    if (this.priceOption.productStock.company === 'AWN') {
+      this.isAWN = true;
+      this.setPaymentValueOnlineCredit();
+    } else {
+      this.isAWN = false;
+      this.isShowQrCode = true;
+      this.error.emit(false);
+    }
   }
 
   checkQrCodeSelected(): void {
@@ -53,7 +69,7 @@ export class PaymentDetailComponent implements OnInit {
       this.setPaymentValueOnlineCredit();
       this.isShowCreditOnline = true;
       this.isShowQrCode = false;
-    } else {
+    } else if (value === 'qrcode') {
       if (this.paymentQrCodeType) {
         this.setPaymentValueQrCode(this.paymentQrCodeType);
       } else {
@@ -61,6 +77,10 @@ export class PaymentDetailComponent implements OnInit {
       }
       this.isShowCreditOnline = false;
       this.isShowQrCode = true;
+    } else {
+      this.setPaymentValueDebit();
+      this.isShowCreditOnline = false;
+      this.isShowQrCode = false;
     }
   }
 
@@ -91,6 +111,22 @@ export class PaymentDetailComponent implements OnInit {
     this.paymentValue.payment.paymentType = 'QR_CODE';
     this.completed.emit(this.paymentValue);
     this.error.emit(true);
+  }
+
+  setPaymentValueDebit(): void {
+    this.paymentValue.payment.paymentOnlineCredit = false;
+    this.paymentValue.payment.paymentQrCodeType = '';
+    this.paymentValue.payment.paymentType = 'DEBIT';
+    this.completed.emit(this.paymentValue);
+    this.error.emit(true);
+  }
+
+  defaultChecked(): boolean {
+    if (this.isAWN) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
 }
