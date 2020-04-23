@@ -40,10 +40,7 @@ export class SummaryPaymentDetailComponent implements OnInit {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
     this.user = this.tokenService.getUser();
-    if (this.user.locationCode === '63259' &&
-      this.transaction.data.payment.paymentForm === 'FULL' &&
-      this.transaction.data.payment.paymentOnlineCredit === true &&
-      this.transaction.data.payment.paymentType === 'CREDIT') {
+    if (this.user.locationCode === '63259') {
       this.isLineShop = true;
     }
   }
@@ -102,11 +99,9 @@ export class SummaryPaymentDetailComponent implements OnInit {
       'lastName': ['', Validators.compose([Validators.required])],
     });
     if (!this.transaction.data.shippingInfo.firstName && !this.transaction.data.shippingInfo.lastName) {
-      console.log('1');
       this.editCustomerName.controls['firstName'].setValue(customer.firstName);
       this.editCustomerName.controls['lastName'].setValue(customer.lastName);
     } else {
-      console.log('2');
       const shippingInfo = this.transaction.data.shippingInfo;
       this.editCustomerName.controls['firstName'].setValue(shippingInfo.firstName);
       this.editCustomerName.controls['lastName'].setValue(shippingInfo.lastName);

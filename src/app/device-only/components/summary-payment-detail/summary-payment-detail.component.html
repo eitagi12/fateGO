@@ -147,11 +147,8 @@
                                       คุณ
                                     </span>
                                 </p>
-                                <input type="text" (ngModelChange)="onComplete()" class="col-sm-2 mr-3 mb-3 form-control" formControlName="firstName" [ngClass]="{ 'is-invalid' : editCustomerName.controls.firstName.invalid && editCustomerName.controls.firstName.touched && editCustomerName.controls.firstName.errors }">
-                                <input type="text" (ngModelChange)="onComplete()" class="col-sm-2 mb-3 form-control" formControlName="lastName" [ngClass]="{ 'is-invalid' : editCustomerName.controls.lastName.invalid && editCustomerName.controls.lastName.touched && editCustomerName.controls.lastName.errors }">
-                                <small class="invalid-feedback" *ngIf="(editCustomerName.controls.lastName.touched && editCustomerName.controls.lastName.errors) || (editCustomerName.controls.firstName.touched && editCustomerName.controls.firstName.errors)">
-                                  *กรุณาระบุชื่อและนามสกุล
-                              </small>
+                                <input type="text" (ngModelChange)="onComplete()" class="col-sm-2 mr-3 mb-3 form-control" formControlName="firstName">
+                                <input type="text" (ngModelChange)="onComplete()" class="col-sm-2 mb-3 form-control" formControlName="lastName">
                             </div>
                         </form>
                     </div>
