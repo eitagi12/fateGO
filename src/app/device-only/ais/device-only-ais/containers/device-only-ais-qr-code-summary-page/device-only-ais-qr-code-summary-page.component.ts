@@ -93,17 +93,23 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
       if (this.isLineShop) {
         if (this.phoneSMSForm.controls['phoneNo'].valid) {
           const params = this.createDataGenerateQR();
+          const phoneNo = this.phoneSMSForm.controls['phoneNo'].value;
+          const msisdn = `66${phoneNo.substring(1, phoneNo.length)}`;
           this.qrCodeOmiseService.createOrder(params).then((res: any) => {
             const data = res && res.data;
             this.transaction.data.omise.qrCodeStr = data.redirectUrl;
             this.transaction.data.omise.orderId = data.orderId;
             this.transactionService.update(this.transaction);
           }).then(() => {
-            const data = {
+            const bodyRequest: any = {
+              recipient: {
+                recipientIdType: '0',
+                recipientIdData: msisdn
+              },
               content: 'สำหรับการชำระเงินค่าสินค้าผ่านบัตรเครดิตออนไลน์ คลิก ' + this.transaction.data.omise.qrCodeStr,
-              sender: this.phoneSMSForm.controls['phoneNo'].value
+              sender: 'AIS'
             };
-            this.http.post('api/newregister/send-sms', data).toPromise()
+            this.http.post('api/newregister/send-sms', bodyRequest).toPromise()
             .then(() => {
               this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE]);
             });
