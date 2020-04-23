@@ -9,6 +9,8 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { QrCodeOmiseService } from 'src/app/device-only/services/qr-code-omise.service';
 import { environment } from 'src/environments/environment';
 import * as moment from 'moment';
+import { HttpClient } from '@angular/common/http';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ROUTE_DEVICE_ONLY_AIS_QR_CODE_QUEUE_PAGE, ROUTE_DEVICE_ONLY_AIS_QR_CODE_SUMMARY_PAGE } from '../../constants/route-path.constant';
 
 @Component({
@@ -23,6 +25,7 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
 
   timeCounterSubscription: Subscription;
   checkResponseOmiseSubscription: Subscription;
+  phoneSMSForm: FormGroup;
 
   qrCode: string;
   countdown: string;
@@ -35,7 +38,9 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
     private priceOptionService: PriceOptionService,
     private pageLoadingService: PageLoadingService,
     private alertService: AlertService,
-    private qrCodeOmiseService: QrCodeOmiseService
+    private qrCodeOmiseService: QrCodeOmiseService,
+    private http: HttpClient,
+    private fb: FormBuilder,
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -43,6 +48,19 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
 
   ngOnInit(): void {
     this.onGenerateQRCode();
+    this.createQueueForm();
+  }
+
+  public createQueueForm(): void {
+    this.phoneSMSForm = this.fb.group({
+      phoneNo: (['', Validators.compose([
+        Validators.required,
+        Validators.minLength(10),
+        Validators.pattern(/([0-9]{10})/)
+      ])])
+    });
+    this.phoneSMSForm.valueChanges.subscribe((value) => {
+    });
   }
 
   onGenerateQRCode(): void {
@@ -173,6 +191,24 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
     return amount.reduce((prev, curr) => {
       return prev + curr;
     }, 0);
+  }
+
+  sendSms(): void {
+    const phoneNo = this.phoneSMSForm.controls['phoneNo'].value;
+    console.log('phoneNo', phoneNo);
+
+    const msisdn = `66${phoneNo.substring(1, phoneNo.length)}`;
+    const bodyRequest: any = {
+      recipient: {
+        recipientIdType: '0',
+        recipientIdData: msisdn
+      },
+      content: 'สำหรับการชำระเงินค่าสินค้าผ่านบัตรเครดิตออนไลน์ คลิก ' + this.transaction.data.omise.qrCodeStr,
+      sender: 'AIS'
+    };
+    this.http.post('api/customerportal/newregister/send-sms', bodyRequest).toPromise()
+      .then(() => {
+      });
   }
 
   onBack(): void {
