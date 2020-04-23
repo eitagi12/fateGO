@@ -10,12 +10,12 @@
     </mc-header>
     <div class="mc-flex-wrap">
         <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
-        <div [hidden]="this.user.locationCode != '63259'">
+        <div [hidden]="this.user.locationCode == '63259'">
             <mc-payment-detail [paymentDetail]="paymentDetail" [banks]="banks"
                 (completed)="onPaymentDetailCompleted($event)" (error)="onPaymentDetailError($event)">
             </mc-payment-detail>
         </div>
-        <div [hidden]="this.user.locationCode == '63259'">
+        <div [hidden]="this.user.locationCode != '63259'">
             <app-payment-detail [paymentDetail]="paymentDetail" (completed)="onPaymentDetailCompleted($event)"
                 (error)="onPaymentDetailError($event)"></app-payment-detail>
         </div>
