@@ -39,6 +39,7 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit, OnDestr
   shipCusNameFormControl: FormGroup;
   isEditShipCusName: boolean = false;
   user: User;
+  warehouse: boolean = false;
 
   constructor(
     private router: Router,
@@ -76,7 +77,7 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit, OnDestr
   }
 
   ngOnInit(): void {
-
+    this.warehouse = this.user.locationCode === '63259';
     // tslint:disable-next-line:max-line-length
     const customer = this.transaction.data && this.transaction.data.billingInformation && this.transaction.data.billingInformation.billDeliveryAddress ?
       this.transaction.data.billingInformation.billDeliveryAddress : this.transaction.data.customer;
