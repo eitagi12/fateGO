@@ -81,10 +81,10 @@
                     </ng-container>
 
                     <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">
-                        <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType !== 'QR_CODE'">
+                        <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType !== 'QR_CODE' && !isLineShop">
                           (ชำระโดย เงินสด)
                         </small>
-                        <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType === 'QR_CODE'">
+                        <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType === 'QR_CODE' || isLineShop">
                           (
                           ชำระโดย
                           <span *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'THAI_QR'">
@@ -93,7 +93,7 @@
                           <span *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'LINE_QR'">
                             Rabbit Line Pay
                           </span>
-                          <span *ngIf="transaction?.data?.payment?.paymentOnlineCredit === true">
+                          <span *ngIf="isLineShop">
                             บัตรเครดิต ออนไลน์
                           </span>
                           )
@@ -111,7 +111,7 @@
                           )
                         </span>
                     </ng-container>
-                    <ng-container *ngIf="transaction?.data?.payment?.paymentForm !== 'INSTALLMENT' && transaction?.data?.payment?.paymentType === 'CREDIT'">
+                    <ng-container *ngIf="transaction?.data?.payment?.paymentForm !== 'INSTALLMENT' && transaction?.data?.payment?.paymentType === 'CREDIT' && !isLineShop">
                         <span class="text-grey" id="text-credit-summary">
                           (
                           ชำระโดย เครดิตธนาคาร
