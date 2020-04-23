@@ -39,6 +39,7 @@ export class CreateOrderService {
   private readonly COMMA: string = ',';
   private readonly PROMPT_PAY_PAYMENT: string = '[PB]';
   private readonly RABBIT_LINE_PAY_PAYMENT: string = '[RL]';
+  private readonly RECEIPTINFO_MOBILE_NUMBER: string = '[RM]';
 
   constructor(
     private http: HttpClient,
@@ -312,7 +313,7 @@ export class CreateOrderService {
 
     const discount = trade.discount;
     const customer = transactionData.customer;
-    const simCard = transactionData.simCard;
+    const simCard = transactionData.simCard || '';
     const order = transactionData.order;
     const mainPackage = transaction.data.mainPackage && transaction.data.mainPackage.customAttributes || {};
     const contract = transaction.data.contractFirstPack || {};
@@ -339,7 +340,7 @@ export class CreateOrderService {
       matAirTime: trade.advancePay ? trade.advancePay.matAirtime : '',
       tradeNo: trade.tradeNo || '',
       ussdCode: trade.ussdCode || '',
-      returnCode: simCard.privilegeCode || customer.privilegeCode || '4GEYYY',
+      returnCode: simCard ? simCard.privilegeCode || customer.privilegeCode : '4GEYYY',
       cashBackFlg: '',
       tradeAirtimeId: trade.advancePay ? trade.advancePay.tradeAirtimeId : '',
       tradeDiscountId: trade.discount ? trade.discount.tradeDiscountId : '',
@@ -653,7 +654,9 @@ export class CreateOrderService {
   private getOrderRemark(transaction: Transaction, priceOption: PriceOption): string {
     const installment = this.getInstallmentRemark(transaction, priceOption);
     const information = this.getInformationRemark(transaction, priceOption);
-    return `${this.PROMOTION_NAME}${this.SPACE}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW_LINE}`;
+    const receiptMobile = this.RECEIPTINFO_MOBILE_NUMBER + this.SPACE + transaction.data.receiptInfo.telNo;
+    // tslint:disable-next-line:max-line-length
+    return `${this.PROMOTION_NAME}${this.SPACE}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW_LINE}${receiptMobile}`;
   }
 
   private getQRAmt(priceOption: PriceOption, transaction: Transaction): any {

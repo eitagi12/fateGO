@@ -74,8 +74,9 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit, OnDestroy {
           employeeId: seller.sellerNo || '',
           locationCode: this.tokenService.getUser().locationCode
         };
-        if (this.transaction.data.payment.paymentType === 'QR_CODE') {
-          this.router.navigate([ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_QR_CODE_PAGE]);
+        if (this.transaction.data.payment.paymentType === 'QR_CODE' ||
+          this.transaction.data.payment.paymentOnlineCredit === true) {
+            this.router.navigate([ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_QR_CODE_PAGE]);
         } else {
           this.router.navigate([ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_PAGE]);
         }
