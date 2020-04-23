@@ -9,6 +9,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { QrCodeOmiseService } from 'src/app/device-only/services/qr-code-omise.service';
 import { environment } from 'src/environments/environment';
 import * as moment from 'moment';
+import { ROUTE_DEVICE_ONLY_AIS_QR_CODE_QUEUE_PAGE, ROUTE_DEVICE_ONLY_AIS_QR_CODE_SUMMARY_PAGE } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-device-only-ais-omise-generator-page',
@@ -175,11 +176,11 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
   }
 
   onBack(): void {
-    //   this.router.navigate([ROUTE_DEVICE_ONLY_KIOSK_OMISE_SUMMARY_PAGE]);
+      this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_SUMMARY_PAGE]);
   }
 
   onNext(): void {
-    //   this.router.navigate([ROUTE_DEVICE_ONLY_KIOSK_OMISE_QUEUE_PAGE]);
+      this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_QUEUE_PAGE]);
   }
 
   onHome(): void {

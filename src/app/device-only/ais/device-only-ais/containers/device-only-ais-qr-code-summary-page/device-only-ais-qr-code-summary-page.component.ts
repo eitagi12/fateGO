@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_QR_CODE_PAGE, ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_QR_CODE_PAGE, ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE, ROUTE_DEVICE_ONLY_AIS_OMISE_GENERATE_PAGE } from '../../constants/route-path.constant';
 import { Router } from '@angular/router';
 import { HomeService, AlertService, User, TokenService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -112,7 +112,7 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
               sender: 'AIS'
             };
             this.http.post('api/newregister/send-sms', bodyRequest).toPromise();
-            this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE]);
+            this.router.navigate([ROUTE_DEVICE_ONLY_AIS_OMISE_GENERATE_PAGE]);
           });
         }
       } else {
