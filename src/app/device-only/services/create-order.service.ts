@@ -846,7 +846,7 @@ export class CreateOrderService {
       homeNo: billDeliveryAddress.homeNo || '',
       moo: billDeliveryAddress.moo ? 'หมู่ ' + billDeliveryAddress.moo : '',
       mooBan: billDeliveryAddress.mooBan ? 'หมู่บ้าน ' + billDeliveryAddress.mooBan : '',
-      buildingName: billDeliveryAddress.buildingName ? 'อาคาร ' + billDeliveryAddress.buildingName : '',
+      buildingName: billDeliveryAddress.buildingName || '',
       floor: billDeliveryAddress.floor ? 'ชั้น ' + billDeliveryAddress.floor : '',
       room: billDeliveryAddress.room ? 'ห้อง ' + billDeliveryAddress.room : '',
       soi: billDeliveryAddress.soi ? 'ซอย ' + billDeliveryAddress.soi : '',
