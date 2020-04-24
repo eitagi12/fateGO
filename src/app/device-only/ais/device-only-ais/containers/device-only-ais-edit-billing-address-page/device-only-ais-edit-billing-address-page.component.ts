@@ -184,9 +184,9 @@ export class DeviceOnlyAisEditBillingAddressPageComponent implements OnInit, OnD
      this.transaction.data = {
        ...this.transaction.data,
        shippingInfo: {
-         titleName: this.transaction.data.shippingInfo.titleName,
-         firstName: this.transaction.data.shippingInfo.firstName,
-         lastName: this.transaction.data.shippingInfo.lastName,
+         titleName: 'คุณ',
+         firstName: this.transaction.data.customer.firstName,
+         lastName: this.transaction.data.customer.lastName,
          homeNo: customer.homeNo || '',
          moo: customer.moo || '',
          mooBan: customer.mooBan || '',
