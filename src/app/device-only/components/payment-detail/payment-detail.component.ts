@@ -1,6 +1,4 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { PriceOption } from 'src/app/shared/models/price-option.model';
 
 @Component({
   selector: 'app-payment-detail',
@@ -18,7 +16,6 @@ export class PaymentDetailComponent implements OnInit {
   @Input()
   paymentDetail: any;
 
-  priceOption: PriceOption;
   paymentValue: any;
   isShowCreditOnline: boolean = true;
   isShowQrCode: boolean;
@@ -26,16 +23,13 @@ export class PaymentDetailComponent implements OnInit {
   isAWN: boolean;
 
   constructor(
-    private priceOptionService: PriceOptionService
-  ) {
-    this.priceOption = this.priceOptionService.load();
-   }
+  ) {}
 
   ngOnInit(): void {
     this.checkQrCodeSelected();
     this.setPaymentValue();
 
-    if (this.priceOption.productStock.company === 'AWN') {
+    if (this.paymentDetail.omisePayment) {
       this.isAWN = true;
       this.setPaymentValueOnlineCredit();
     } else {
