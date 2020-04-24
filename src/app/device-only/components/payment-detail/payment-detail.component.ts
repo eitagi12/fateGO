@@ -16,6 +16,9 @@ export class PaymentDetailComponent implements OnInit {
   @Input()
   paymentDetail: any;
 
+  @Input()
+  location: string;
+
   paymentValue: any;
   isShowCreditOnline: boolean = true;
   isShowQrCode: boolean;
@@ -23,19 +26,21 @@ export class PaymentDetailComponent implements OnInit {
   isAWN: boolean;
 
   constructor(
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.checkQrCodeSelected();
     this.setPaymentValue();
 
-    if (this.paymentDetail.omisePayment) {
-      this.isAWN = true;
-      this.setPaymentValueOnlineCredit();
-    } else {
-      this.isAWN = false;
-      this.isShowQrCode = true;
-      this.error.emit(false);
+    if (this.location && this.location === '63259') {
+      if (this.paymentDetail.omisePayment) {
+        this.isAWN = true;
+        this.setPaymentValueOnlineCredit();
+      } else {
+        this.isAWN = false;
+        this.isShowQrCode = true;
+        this.error.emit(false);
+      }
     }
   }
 
