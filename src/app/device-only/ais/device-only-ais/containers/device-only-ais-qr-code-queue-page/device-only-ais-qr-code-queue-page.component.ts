@@ -205,7 +205,7 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
   }
 
   enableSkip(): boolean {
-    if (this.user.locationCode === '1213' || this.isLineShop) {
+    if (this.user.locationCode === '1213' || this.user.locationCode === '63259') {
       return true;
     } else {
       return false;
@@ -213,7 +213,7 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
   }
 
   onSkip(): void {
-    if (this.isLineShop) {
+    if (this.user.locationCode === '63259') {
       this.queueService.getQueueL(this.user.locationCode).then((respQueue: any) => {
         const data = respQueue.data ? respQueue.data : {};
         this.transaction.data.queue = { queueNo: data.queue };
