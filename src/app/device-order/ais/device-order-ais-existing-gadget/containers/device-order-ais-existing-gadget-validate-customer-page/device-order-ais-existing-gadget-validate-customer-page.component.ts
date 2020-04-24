@@ -110,23 +110,23 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
       // KEY-IN MobileNo
       this.transaction.data.action = TransactionAction.KEY_IN_MOBILE_NO;
       this.customerInfoService.getCustomerProfilePostpaidByMobileNo(this.identity).then((customer: Customer) => {
-        return this.privilegeService.checkAndGetPrivilegeCodeAndCriteria(this.identity, this.priceOption.trade.ussdCode)
-          .then((privligeCode) => {
+        // return this.privilegeService.checkAndGetPrivilegeCodeAndCriteria(this.identity, this.priceOption.trade.ussdCode)
+        //   .then((privligeCode) => {
             // if (privligeCode.errorMessage && privligeCode.errorMessage === 'MT_INVALID_CRITERIA_MAINPRO') {
             //   this.transaction.data.customer = customer;
             //   this.transaction.data.simCard = { mobileNo: this.identity };
             //   this.pageLoadingService.closeLoading();
             //   this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CHANGE_PACKAGE_PAGE]);
             // } else {
-            customer.privilegeCode = privligeCode;
+            // customer.privilegeCode = privligeCode;
             this.transaction.data.customer = customer;
             this.transaction.data.simCard = { mobileNo: this.identity };
             this.checkRoutePath();
             // }
-          }).catch((error: any) => {
-            this.alertService.warning(error);
-            console.log('checkAndGetPrivilegeCodeAndCriteria error :', error);
-          });
+          // }).catch((error: any) => {
+          //   this.alertService.warning(error);
+          //   console.log('checkAndGetPrivilegeCodeAndCriteria error :', error);
+          // });
       }).catch((error: any) => {
         this.alertService.warning(error); // alert check mobileNo for postpaid only
         console.log('getCustomerProfilePostpaidByMobileNo error :', error);
@@ -189,6 +189,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
               .then((resp: any) => {
                 const data = resp.data || {};
                 this.transaction.data.customer = customer;
+                this.setShippingInfo(this.transaction.data.customer);
                 this.transaction.data.action = TransactionAction.KEY_IN;
                 this.transaction.data.billingInformation = {
                   billCycles: data.billingAccountList,
@@ -214,6 +215,27 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
           }
         });
     }
+  }
+
+  setShippingInfo(customer: Customer): void {
+    this.transaction.data.shippingInfo = {
+      titleName: 'คุณ',
+      firstName: customer.firstName,
+      lastName: customer.lastName,
+      homeNo: customer.homeNo || '',
+      moo: customer.moo || '',
+      mooBan: customer.mooBan || '',
+      room: customer.room || '',
+      floor: customer.floor || '',
+      buildingName: customer.buildingName || '',
+      soi: customer.soi || '',
+      street: customer.street || '',
+      tumbol: customer.tumbol,
+      amphur: customer.amphur,
+      province: customer.province,
+      zipCode: customer.zipCode,
+      telNo: ''
+    };
   }
 
   conditionIdentityValid(): Promise<string> {

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, Utils, TokenService, PageLoadingService, ShoppingCart, PaymentDetail, PaymentDetailBank, ReceiptInfo, AlertService } from 'mychannel-shared-libs';
+import { HomeService, Utils, TokenService, PageLoadingService, ShoppingCart, PaymentDetail, PaymentDetailBank, ReceiptInfo, AlertService, User } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
@@ -36,6 +36,8 @@ export class DeviceOrderAisExistingGadgetPaymentDetailPageComponent implements O
   paymentDetailTemp: any;
   receiptInfoTemp: any;
   depositOrDiscount: boolean;
+  user: User;
+  warehouse: boolean = false;
 
   constructor(
     private router: Router,
@@ -50,6 +52,7 @@ export class DeviceOrderAisExistingGadgetPaymentDetailPageComponent implements O
     private fb: FormBuilder,
     private alertService: AlertService
   ) {
+    this.user = this.tokenService.getUser();
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     this.homeService.callback = () => {
@@ -66,6 +69,7 @@ export class DeviceOrderAisExistingGadgetPaymentDetailPageComponent implements O
   }
 
   ngOnInit(): void {
+    this.warehouse = this.user.locationCode === '63259';
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
 
     const productDetail = this.priceOption.productDetail || {};
@@ -163,7 +167,12 @@ export class DeviceOrderAisExistingGadgetPaymentDetailPageComponent implements O
     this.transaction.data.payment = this.paymentDetailTemp.payment;
     this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
     this.transaction.data.receiptInfo = this.receiptInfoTemp;
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_SUMMARY_PAGE]);
+    this.transaction.data.shippingInfo.telNo = this.receiptInfoTemp.telNo;
+    if (this.warehouse && !this.receiptInfoTemp.telNo) {
+       this.alertService.warning('กรุณากรอกเบอร์ติดต่อ');
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_SUMMARY_PAGE]);
+    }
 
     /* ยกเลิกเปลี่ยน main pro รอคุย solution การเปลี่ยน main pro ที่ MC
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_SELECT_PACKAGE_PAGE]);
