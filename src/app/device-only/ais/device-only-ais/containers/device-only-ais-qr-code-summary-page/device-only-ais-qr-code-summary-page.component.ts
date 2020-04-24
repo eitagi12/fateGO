@@ -100,7 +100,6 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
               orderId: data.orderId
             };
             this.transactionService.update(this.transaction);
-            console.log(this.transaction);
           }).then(() => {
             const bodyRequest: any = {
               recipient: {

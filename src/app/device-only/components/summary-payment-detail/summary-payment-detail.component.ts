@@ -40,8 +40,11 @@ export class SummaryPaymentDetailComponent implements OnInit {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
     this.user = this.tokenService.getUser();
-    if (this.user.locationCode === '63259') {
-      this.isLineShop = true;
+    if (this.user.locationCode === '63259' &&
+        this.transaction.data.payment.paymentForm === 'FULL' &&
+        this.transaction.data.payment.paymentOnlineCredit === true &&
+        this.transaction.data.payment.paymentType === 'CREDIT') {
+          this.isLineShop = true;
     }
   }
 

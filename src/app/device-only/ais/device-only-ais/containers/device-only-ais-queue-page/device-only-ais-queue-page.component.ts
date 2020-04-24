@@ -100,7 +100,20 @@ export class DeviceOnlyAisQueuePageComponent implements OnInit, OnDestroy {
   }
 
   onSkip(): void {
-    this.queueService.getQueueZ(this.user.locationCode)
+    if (this.user.locationCode === '63259') {
+      this.queueService.getQueueL(this.user.locationCode).then((respQueue: any) => {
+        const data = respQueue.data ? respQueue.data : {};
+        this.transaction.data.queue = { queueNo: data.queue };
+        this.skipQueue = true;
+        this.createOrderService.createDeviceSellingOrderList(this.transaction, this.priceOption).then((res) => {
+          return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
+            this.pageLoadingService.closeLoading();
+            this.router.navigate([ROUTE_DEVICE_ONLY_AIS_RESULT_QUEUE_PAGE]);
+          });
+        });
+      });
+    } else {
+      this.queueService.getQueueZ(this.user.locationCode)
       .then((resp: any) => {
         const queueNo = resp.data.queue;
         this.skipQueue = true;
@@ -112,6 +125,7 @@ export class DeviceOnlyAisQueuePageComponent implements OnInit, OnDestroy {
           });
         });
       });
+    }
   }
 
   onNext(): void {
