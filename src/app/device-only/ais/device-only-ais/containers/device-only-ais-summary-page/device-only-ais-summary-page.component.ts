@@ -116,23 +116,48 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   onNext(): void {
+    const shippingInfo = this.transaction.data.shippingInfo;
+    const customer = this.transaction.data.customer;
     if (this.transaction.data.payment.paymentForm === 'FULL' &&
         this.transaction.data.payment.paymentOnlineCredit === true &&
-        this.transaction.data.payment.paymentType === 'CREDIT' &&
-        this.editName) {
-      if (this.editName.firstName && this.editName.lastName) {
-        this.transaction.data.shippingInfo.firstName = this.editName.firstName;
-        this.transaction.data.shippingInfo.lastName = this.editName.lastName;
-      } else {
-        this.transaction.data.shippingInfo.firstName = this.transaction.data.customer.firstName;
-        this.transaction.data.shippingInfo.lastName = this.transaction.data.customer.lastName;
-      }
-      const seller: Seller = this.summarySellerCode.getSeller();
-      this.checkSeller(seller);
+        this.transaction.data.payment.paymentType === 'CREDIT') {
+          if (shippingInfo && this.editName && this.editName.firstName && this.editName.lastName) {
+            this.transaction.data.shippingInfo.firstName = this.editName.firstName;
+            this.transaction.data.shippingInfo.lastName = this.editName.lastName;
+          } else {
+            this.mapShippingInfo(customer);
+          }
+          const seller: Seller = this.summarySellerCode.getSeller();
+          this.checkSeller(seller);
+
     } else {
       const seller: Seller = this.summarySellerCode.getSeller();
       this.checkSeller(seller);
     }
+  }
+
+  mapShippingInfo(customer: any): void {
+    this.transaction.data = {
+      ...this.transaction.data,
+      shippingInfo: {
+        titleName: 'คุณ',
+        firstName: this.transaction.data.customer.firstName,
+        lastName: this.transaction.data.customer.lastName,
+        homeNo: customer.homeNo || '',
+        moo: customer.moo || '',
+        mooBan: customer.mooBan || '',
+        buildingName: customer.buildingName || '',
+        floor: customer.floor || '',
+        room: customer.room || '',
+        street: customer.street || '',
+        soi: customer.soi || '',
+        tumbol: customer.tumbol || '',
+        amphur: customer.amphur,
+        province: customer.province || customer.provinceName || '',
+        zipCode: customer.zipCode || '',
+      }
+    };
+    this.transactionService.update(this.transaction);
   }
 
   onHome(): void {
