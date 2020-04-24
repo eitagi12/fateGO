@@ -80,10 +80,6 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
           Validators.pattern(/([0-9]{10})/)
         ])])
       });
-      this.phoneSMSForm.valueChanges.subscribe((value) => {
-        console.log(value);
-        // this.queue = value.queue;
-      });
     }
 
     onBack(): void {
@@ -130,6 +126,7 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
       const productDetail = this.priceOption.productDetail;
       const trade = this.priceOption.trade;
       const phoneNo = this.phoneSMSForm.controls['phoneNo'].value;
+      const color = productStock.colorName || productStock.color;
       return {
         companyCode: productStock.company,
         companyName: 'บริษัท แอดวานซ์ ไวร์เลส เน็ทเวอร์ค จำกัด',
@@ -139,7 +136,7 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
         customer: customer,
         orderList : [
           {
-            name: productDetail.name + 'สี' + productStock.colorName,
+            name: productDetail.name + 'สี' + color,
             price: trade.promotionPrice
           }
         ]
