@@ -95,6 +95,6 @@
 
     <mc-footer>
         <button class="btn btn-success" (click)="onNext()" [disabled]="checkValid()">NEXT</button>
-        <button *ngIf="user?.locationCode === '1213'" class="btn btn-success" (click)="onSkip()" [disabled]="checkSkip()">SKIP</button>
+        <button *ngIf="user?.locationCode === '1213' || user?.locationCode === '63259'" class="btn btn-success" (click)="onSkip()" [disabled]="checkSkip()">Auto Queue</button>
     </mc-footer>
 </div>

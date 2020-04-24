@@ -139,7 +139,7 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
         customer: customer,
         orderList : [
           {
-            name: productDetail.name + 'สี' + productStock.color,
+            name: productDetail.name + 'สี' + productStock.colorName,
             price: trade.promotionPrice
           }
         ]
