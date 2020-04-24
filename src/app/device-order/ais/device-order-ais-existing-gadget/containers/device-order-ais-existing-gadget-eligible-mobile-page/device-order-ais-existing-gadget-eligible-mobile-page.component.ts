@@ -87,7 +87,7 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
         });
         this.eligibleMobileNo = eligibleMobile || [];
         this.pageLoadingService.closeLoading();
-      }).catch((error: any) => {
+      }).catch(() => {
         this.pageLoadingService.closeLoading();
         this.eligibleMobileNo = [];
       });
@@ -102,9 +102,15 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
       chkMainProFlg: true
     }).toPromise()
       .then((response: any) => {
+        const eligibleMobile: EligibleMobile[] = [];
+        response.data.fbbLists.filter(res => {
+          return res.privilegeMessage !== 'MT_INVALID_CRITERIA_MAINPRO';
+        }).map(res => {
+          eligibleMobile.push(res);
+        });
+        this.eligibleMobileFbb = eligibleMobile || [];
         this.pageLoadingService.closeLoading();
-        this.eligibleMobileFbb = response.data.fbbLists || [];
-      }).catch((error: any) => {
+      }).catch(() => {
         this.pageLoadingService.closeLoading();
         this.eligibleMobileFbb = [];
       });
