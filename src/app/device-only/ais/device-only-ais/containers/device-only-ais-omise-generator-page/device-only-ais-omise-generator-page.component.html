@@ -4,8 +4,7 @@
             <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
         </div>
         <div class="header-icon-right w-25 text-right">
-            <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"
-                [hidden]="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'SUCCESS'"></mc-header-icon>
+            <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()" [hidden]="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'SUCCESS'"></mc-header-icon>
         </div>
     </mc-header>
     <div class="mc-flex-wrap">
@@ -34,8 +33,7 @@
                     </div>
                     <div class="col-12">
                         <div class="col-12 col-sm-3 m-auto">
-                            <img src="assets\images\icon\PaymentOnlineCreditCard.png"
-                                class="d-block w-100 m-auto border" />
+                            <img src="assets\images\icon\PaymentOnlineCreditCard.png" class="d-block w-100 m-auto border" />
                         </div>
                     </div>
                     <div class="qr-code border bg-white mb-3">
@@ -45,18 +43,21 @@
                     </div>
                     <div class="text-center">
                         <div class="col-12 col-sm-4 border border-red m-auto text-red">
-                            {{'กรณีลูกค้าไม่ได้รับ SMS ให้ส่ง QR ให้ลูกค้าแทน' | translate}}</div>
+                            {{'กรณีลูกค้าไม่ได้รับ SMS ให้ส่ง QRCode ให้ลูกค้าแทน' | translate}}</div>
                         <h3 [ngClass]="{ 'text-pink': warningTimeOut() }">{{ countdown || '00 : 00' }}</h3>
+                        <div class="col-sm-5 border m-auto">
+                            <a href="#" (click)="$event.preventDefault(); copyShortUrl(transaction?.data?.omise?.qrCodeStr)" style="color: cornflowerblue;">
+                                {{transaction?.data?.omise?.qrCodeStr}}
+                            </a>
+                        </div>
                         <div class="row justify-content-center mb-4">
                             <label class="mt-2">กรุณาระบุเบอร์โทรเพื่อรับ sms สำหรับการชำระเงิน</label>
                             <form class="col-sm-3" [formGroup]="phoneSMSForm">
-                                <input type="tel" class="form-control" id="mobile" name="mobile" maxlength="10"
-                                    formControlName="phoneNo">
+                                <input type="tel" class="form-control" id="mobile" name="mobile" maxlength="10" formControlName="phoneNo">
                             </form>
                             <button class="btn btn-success" (click)="sendSms()">ส่ง sms อีกครั้ง</button>
                         </div>
-                        <div class="col-sm-5 border m-auto" style="color: cornflowerblue;">
-                            {{transaction?.data?.omise?.qrCodeStr}}</div>
+
                         <div>" {{'กรุณาชำระเงินภายในเวลาที่กำหนด'| translate}} "</div>
                     </div>
                 </ng-container>

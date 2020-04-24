@@ -136,10 +136,10 @@
                             <span class="text-green">
                               คุณ {{$customer}}
                             </span>
-                            <a class="col-sm-4" href="#" [hidden]="view" (click)="$event.preventDefault(); showEditCustomerName()"><img src="assets/images/icon/icon-edit.png"></a>
+                            <a class="col-sm-2" href="#" [hidden]="view" (click)="$event.preventDefault(); showEditCustomerName()"><img src="assets/images/icon/icon-edit.png"></a>
                         </p>
                     </div>
-                    <div *ngIf="editName" class="col-sm-8">
+                    <div *ngIf="editName" class="col-sm-10">
                         <form [formGroup]="editCustomerName">
                             <div class="row">
                                 <p class="mr-2">
@@ -147,8 +147,8 @@
                                       คุณ
                                     </span>
                                 </p>
-                                <input type="text" (ngModelChange)="onComplete()" class="col-sm-2 mr-3 mb-3 form-control" formControlName="firstName">
-                                <input type="text" (ngModelChange)="onComplete()" class="col-sm-2 mb-3 form-control" formControlName="lastName">
+                                <input type="text" (ngModelChange)="onComplete()" class="col-sm-5 mr-3 mb-3 form-control" formControlName="firstName">
+                                <input type="text" (ngModelChange)="onComplete()" class="col-sm-5 mb-3 form-control" formControlName="lastName">
                             </div>
                         </form>
                     </div>

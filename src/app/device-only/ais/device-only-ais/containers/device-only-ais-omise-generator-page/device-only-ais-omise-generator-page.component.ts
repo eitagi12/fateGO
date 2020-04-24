@@ -211,6 +211,20 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
       });
   }
 
+  copyShortUrl(shortUrl: string): void {
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = shortUrl;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+  }
+
   onBack(): void {
       this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_SUMMARY_PAGE]);
   }
