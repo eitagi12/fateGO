@@ -130,7 +130,7 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
         companyCode: productStock.company,
         companyName: 'บริษัท แอดวานซ์ ไวร์เลส เน็ทเวอร์ค จำกัด',
         locationCode: this.user.locationCode,
-        locationName: productStock.locationName,
+        locationName: this.transaction.data.seller.locationName,
         mobileNo: phoneNo,
         customer: customer,
         orderList : [
