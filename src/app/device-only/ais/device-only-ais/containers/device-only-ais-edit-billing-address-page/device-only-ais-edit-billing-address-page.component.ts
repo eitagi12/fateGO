@@ -181,12 +181,14 @@ export class DeviceOnlyAisEditBillingAddressPageComponent implements OnInit, OnD
    }
 
    mapCustomerAddress(customer: any): void {
+     const shippingInfo = this.transaction.data.shippingInfo;
+     const $customer = this.transaction.data.customer;
      this.transaction.data = {
        ...this.transaction.data,
        shippingInfo: {
          titleName: 'คุณ',
-         firstName: this.transaction.data.customer.firstName,
-         lastName: this.transaction.data.customer.lastName,
+         firstName: shippingInfo ? shippingInfo.firstName : $customer.firstName,
+         lastName: shippingInfo ? shippingInfo.lastName : $customer.lastName,
          homeNo: customer.homeNo || '',
          moo: customer.moo || '',
          mooBan: customer.mooBan || '',
