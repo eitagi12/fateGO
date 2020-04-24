@@ -214,9 +214,9 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
 
   onSkip(): void {
     if (this.isLineShop) {
-      this.queueService.getQueueNewMatic(this.mobileNo).then((respQueue: any) => {
-        const data = respQueue.data && respQueue.data.result ? respQueue.data.result : {};
-        this.transaction.data.queue = { queueNo: data.queueNo };
+      this.queueService.getQueueL(this.user.locationCode).then((respQueue: any) => {
+        const data = respQueue.data ? respQueue.data : {};
+        this.transaction.data.queue = { queueNo: data.queue };
         this.skipQueue = true;
         this.createOrderService.createDeviceSellingOrderList(this.transaction, this.priceOption).then((res) => {
           return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
