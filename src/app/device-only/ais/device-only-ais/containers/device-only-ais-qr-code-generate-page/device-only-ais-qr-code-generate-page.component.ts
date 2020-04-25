@@ -53,8 +53,8 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
   private $counter: Observable<number>;
   diff: number;
   private subscription: Subscription;
-  startTimeSixtyMinute: number = 60;
-  startTimeFifteenMinute: number = 15;
+  startTimeTwentyMinute: number = 20;
+  startTimeFiveMinute: number = 5;
   currentDateTime: number;
   intravalTimeSubscription$: Subscription;
   isPaid: boolean = false;
@@ -168,10 +168,10 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
     }
   }
   getMinuteValidTime(currentDateTime: number): number {
-    if (this.isQRCode('THAI_QR') && this.tokenService.getUser().locationCode === this.warehouseLocation) {
-      return currentDateTime + (60000 * this.startTimeSixtyMinute);
+    if (this.tokenService.getUser().locationCode === this.warehouseLocation) {
+      return currentDateTime + (60000 * this.startTimeTwentyMinute);
     } else {
-      return currentDateTime + (60000 * this.startTimeFifteenMinute);
+      return currentDateTime + (60000 * this.startTimeFiveMinute);
     }
   }
 

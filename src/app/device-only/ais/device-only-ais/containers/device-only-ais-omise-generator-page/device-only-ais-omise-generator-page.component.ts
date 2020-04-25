@@ -100,7 +100,7 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
             }
           });
 
-        this.timeCounterSubscription = this.qrCodeOmiseService.getTimeCounter(900) // 15 minute
+        this.timeCounterSubscription = this.qrCodeOmiseService.getTimeCounter(1200) // 20 minute
           .subscribe(obs => {
             if (obs) {
               this.countdown = moment.utc(obs).format('mm : ss');
