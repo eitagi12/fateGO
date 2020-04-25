@@ -8,24 +8,26 @@
         <span class="pull-right">฿ {{paymentDetail.promotionPrice | number}}</span>
       </div>
     </div>
-    <div [hidden]="!isAWN" class="card-body py-2 border-top bg-transparent">
-      <div class="row">
-        <div class="col-sm-6">
-          <input type="radio" id="omise" name="payment" value="omise" [checked]="defaultChecked()"
-            (change)="onPaymentTypeChange($event.target.value)" />
-          <label for="omise">{{ 'ชำระด้วยบัตรเครดิตออนไลน์' | translate }}</label>
-        </div>
-        <div class="col-sm-6">
-          <select class="form-control" disabled>
-            <option value="full">เต็มจำนวน</option>
-          </select>
+    <div [hidden]="!isAWN">
+      <div class="card-body py-2 border-top bg-transparent">
+        <div class="row">
+          <div class="col-sm-6">
+            <input type="radio" id="omise" name="payment" value="omise" [checked]="defaultChecked()"
+              (change)="onPaymentTypeChange($event.target.value)" />
+            <label for="omise">{{ 'ชำระด้วยบัตรเครดิตออนไลน์' | translate }}</label>
+          </div>
+          <div class="col-sm-6">
+            <select class="form-control" disabled>
+              <option value="full">เต็มจำนวน</option>
+            </select>
+          </div>
         </div>
       </div>
-    </div>
-    <div [hidden]="!isShowCreditOnline" class="card-body py-2 bg-transparent border-top">
-      <button class="btn-omise text-white mb-3 ml-5" id="omise">ชำระทันที</button>
-      <div class="branner ml-5">
-        <img src="assets/images/icon/payment_online_creditcard.svg" class="rounded border credit-logo w-100" />
+      <div [hidden]="!isShowCreditOnline" class="card-body py-2 bg-transparent border-top">
+        <button class="btn-omise text-white mb-3 ml-5" id="omise">ชำระทันที</button>
+        <div class="branner ml-5">
+          <img src="assets/images/icon/payment_online_creditcard.svg" class="rounded border credit-logo w-100" />
+        </div>
       </div>
     </div>
     <div class="card-body py-2 border-top bg-transparent">
