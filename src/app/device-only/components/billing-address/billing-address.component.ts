@@ -247,11 +247,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       if (this.keyInCustomerAddressTemp || this.readCardCustomerAddressTemp) {
         this.error.emit(this.customerAddressForm.valid);
       } else {
-        if (this.customerAddressForm.valid) {
           this.error.emit(true);
-        } else {
-          this.error.emit(false);
-        }
       }
       if (this.customerAddressForm.valid && this.customerAddressForm.controls.idCardNo.value) {
         const idCardNo = this.customerAddressForm.controls.idCardNo.value;

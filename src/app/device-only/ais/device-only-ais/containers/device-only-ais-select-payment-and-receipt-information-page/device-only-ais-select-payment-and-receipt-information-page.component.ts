@@ -31,6 +31,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   paymentDetail: PaymentDetail;
   paymentDetailTemp: any;
   paymentDetailValid: boolean;
+  paymentDetailWarehouseValid: boolean;
   customerInfoTemp: any;
   user: User;
   localtion: any;
@@ -229,6 +230,10 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
     this.paymentDetailValid = valid;
   }
 
+  onPaymentDetailWarehouseError(valid: boolean): void {
+    this.paymentDetailWarehouseValid = valid;
+  }
+
   isFullPayment(): boolean {
     const trade = this.priceOption.trade || {};
     const payment = (trade.payments || []).find(p => p.method !== 'PP') || {};
@@ -247,10 +252,15 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   }
 
   isNotFormValid(): boolean {
-    return !(this.isReceiptInformationValid && this.paymentDetailValid && this.addessValid);
+    if (this.user.locationCode === this.warehouse) {
+      return !(this.isReceiptInformationValid && this.paymentDetailValid && this.addessValid);
+    } else {
+      return !(this.isReceiptInformationValid && this.paymentDetailWarehouseValid && this.addessValid);
+    }
   }
 
   ngOnDestroy(): void {
     this.transactionService.save(this.transaction);
   }
+
 }
