@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE, ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_PAGE, ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_QR_CODE_PAGE } from 'src/app/device-only/ais/device-only-ais/constants/route-path.constant';
-import { HomeService, AlertService, TokenService, ShoppingCart, PageLoadingService } from 'mychannel-shared-libs';
+import { HomeService, AlertService, TokenService, ShoppingCart, PageLoadingService, User } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction, Seller } from 'src/app/shared/models/transaction.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -35,6 +35,7 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit, OnDestroy {
   editName: any;
   sellerCode: string;
   seller: Seller;
+  user: User;
 
   constructor(
     private router: Router,
@@ -50,6 +51,7 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit, OnDestroy {
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
+    this.user = this.tokenService.getUser();
   }
 
   ngOnInit(): void {
@@ -118,12 +120,9 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit, OnDestroy {
   onNext(): void {
     const shippingInfo = this.transaction.data.shippingInfo;
     const customer = this.transaction.data.customer;
-    if (this.transaction.data.payment.paymentForm === 'FULL' &&
-        this.transaction.data.payment.paymentOnlineCredit === true &&
-        this.transaction.data.payment.paymentType === 'CREDIT') {
-          if (shippingInfo && this.editName && this.editName.firstName && this.editName.lastName) {
-            this.transaction.data.shippingInfo.firstName = this.editName.firstName;
-            this.transaction.data.shippingInfo.lastName = this.editName.lastName;
+    if (this.user.locationCode === '63259') {
+          if (shippingInfo) {
+            this.mapShippingInfo(shippingInfo);
           } else {
             this.mapShippingInfo(customer);
           }
@@ -137,12 +136,14 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   mapShippingInfo(customer: any): void {
+    const editName = this.editName;
+    const cusName = editName ? editName : '';
     this.transaction.data = {
       ...this.transaction.data,
       shippingInfo: {
         titleName: 'คุณ',
-        firstName: this.transaction.data.customer.firstName,
-        lastName: this.transaction.data.customer.lastName,
+        firstName: cusName ? cusName.firstName : customer.firstName,
+        lastName: cusName ? cusName.lastName : customer.lastName,
         homeNo: customer.homeNo || '',
         moo: customer.moo || '',
         mooBan: customer.mooBan || '',

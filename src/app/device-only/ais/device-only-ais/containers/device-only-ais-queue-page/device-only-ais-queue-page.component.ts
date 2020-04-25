@@ -105,6 +105,7 @@ export class DeviceOnlyAisQueuePageComponent implements OnInit, OnDestroy {
         const data = respQueue.data ? respQueue.data : {};
         this.transaction.data.queue = { queueNo: data.queue };
         this.skipQueue = true;
+        console.log('1');
         this.createOrderService.createDeviceSellingOrderList(this.transaction, this.priceOption).then((res) => {
           return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
             this.pageLoadingService.closeLoading();

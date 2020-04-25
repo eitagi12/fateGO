@@ -305,6 +305,7 @@ export class CreateOrderService {
   }
 
   private getRequestCreateDeviceSellingOrderList(transaction: Transaction, priceOption: PriceOption): any {
+    console.log('2');
     const user = this.tokenService.getUser();
     const productStock = priceOption.productStock;
     const productDetail = priceOption.productDetail;
@@ -324,6 +325,8 @@ export class CreateOrderService {
     const mpayPayment: any = transactionData.mpayPayment || {};
     const advancePayment = transactionData.advancePayment;
     const omise: Omise = transactionData.omise || {};
+    const shippingInfo = transactionData.shippingInfo;
+    const fullname = shippingInfo.titleName + ' ' + shippingInfo.firstName + ' ' + shippingInfo.lastName;
 
     const product: any = {
       productType: productStock.productType || productDetail.productType || 'DEVICE',
@@ -358,7 +361,7 @@ export class CreateOrderService {
       userId: user.username,
       queueNo: queue.queueNo || '',
       cusNameOrder: `${customer.titleName || ''} ${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
-      soChannelType: 'CSP',
+      soChannelType: omise ? 'MC_KIOSK' : 'CSP',
       soDocumentType: 'RESERVED',
       productList: [product],
       grandTotalAmt: (+this.getGrandTotalAmt(trade, prebooking)).toFixed(2),
@@ -390,8 +393,8 @@ export class CreateOrderService {
       preBookingNo: prebooking ? prebooking.preBookingNo : '',
       depositAmt: prebooking ? prebooking.depositAmt : '',
       convertToNetwotkType: '',
-      shipCusName: '',
-      shipCusAddr: '',
+      shipCusName: user.locationCode === '63259' ? fullname : '',
+      shipCusAddr: user.locationCode === '63259' ? this.checkBangkok(customer.province, shippingInfo) : '',
       storeName: '',
       shipLocation: '',
       remarkReceipt: '',
@@ -432,19 +435,6 @@ export class CreateOrderService {
         data.qrAirtimeTransId = omise.tranId;
         data.qrAirtimeAmt = this.getOnlinePaymentAmt(trade, transaction);
       }
-      // for location 63259
-      if (user.locationCode === '63259' &&
-          payment.paymentForm === 'FULL' &&
-          payment.paymentOnlineCredit === true &&
-          payment.paymentType === 'CREDIT') {
-            const shippingInfo = transactionData.shippingInfo;
-            const fullname = shippingInfo.titleName + ' ' + shippingInfo.firstName + ' ' + shippingInfo.lastName;
-            data.shipCusName = fullname;
-            this.checkBangkok(shippingInfo.zipCode).then((res: string) => {
-              data.shipCusAddr = res;
-            });
-      }
-
     }
 
     // payment with QR code
@@ -650,12 +640,10 @@ export class CreateOrderService {
     }
   }
 
-  private getOrderRemark(transaction: Transaction, priceOption: PriceOption): string {
+  public getOrderRemark(transaction: Transaction, priceOption: PriceOption): string {
     const installment = this.getInstallmentRemark(transaction, priceOption);
     const information = this.getInformationRemark(transaction, priceOption);
-    const receiptMobile = this.RECEIPTINFO_MOBILE_NUMBER + this.SPACE + transaction.data.receiptInfo.telNo;
-    // tslint:disable-next-line:max-line-length
-    return `${this.PROMOTION_NAME}${this.SPACE}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW_LINE}${receiptMobile}`;
+    return `${this.PROMOTION_NAME}${this.SPACE}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW_LINE}`;
   }
 
   private getQRAmt(priceOption: PriceOption, transaction: Transaction): any {
@@ -758,6 +746,7 @@ export class CreateOrderService {
     const mobileCarePackage = transaction.data.mobileCarePackage || {};
     const queue: any = transaction.data.queue || {};
     const customAttributes = mobileCarePackage.customAttributes || {};
+    const receiptMobile = this.RECEIPTINFO_MOBILE_NUMBER + this.SPACE + transaction.data.receiptInfo.telNo;
 
     if ('MC001' === customerGroup.code) {
       customerGroupName = 'New Register';
@@ -773,6 +762,9 @@ export class CreateOrderService {
     message += this.MOBILE_CARE + this.SPACE + (customAttributes.shortNameThai || '') + this.COMMA + this.SPACE;
     message += this.PRIVILEGE_DESC + this.SPACE + (trade.tradeDesc || '') + this.COMMA + this.SPACE;
     message += this.QUEUE_NUMBER + this.SPACE + queue.queueNo;
+    if (this.user.locationCode === '63259') {
+      message += this.COMMA + this.SPACE + receiptMobile;
+    }
     return message;
   }
 
@@ -816,28 +808,9 @@ export class CreateOrderService {
     return cost ? cost.toFixed(2) : undefined;
   }
 
-  checkBangkok(zipCode: string): Promise<string> {
-    this.http.get('/api/customerportal/newRegister/getAllProvinces'
-       , {
-         params: {
-           provinceSubType: this.translation.currentLang === 'TH' ? 'THA' : 'ENG'
-         }
-       }).subscribe((resp: any) => {
-         this.provinces = (resp.data.provinces || []);
-       });
-
-    return this.http.get('/api/customerportal/newRegister/getProvinceIdByZipcode', {
-      params: { zipcode: zipCode }
-    }).toPromise()
-      .then((resp: any) => {
-        const province: any = this.provinces.find((prov: any) => prov.id === resp.data.provinceId);
-        const shippingInfo = this.transaction.data.shippingInfo;
-        if (!province) {
-          return;
-        }
-        const isBangkok = province.name === 'กรุงเทพ' ? true : false;
-        return this.convertBillingAddressToString(shippingInfo, isBangkok);
-      });
+  checkBangkok(provinceCus: string, shipInfo: any): string {
+      const isBangkok = provinceCus === 'กรุงเทพ' ? true : false;
+      return this.convertBillingAddressToString(shipInfo, isBangkok);
   }
 
   convertBillingAddressToString(billDeliveryAddress: any, isBangkok: boolean): string {
