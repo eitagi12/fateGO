@@ -234,7 +234,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       province: ['', [Validators.required]],
       amphur: ['', [Validators.required]],
       tumbol: ['', [Validators.required]],
-      zipCode: ['', [Validators.required, Validators.maxLength(5)]],
+      zipCode: ['', [Validators.required, Validators.maxLength(5), Validators.minLength(5), Validators.pattern(/^[0-9^/]*$/)]],
     });
 
     // CHECK SELECT VALUE
