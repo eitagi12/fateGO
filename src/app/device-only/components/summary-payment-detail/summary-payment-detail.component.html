@@ -109,8 +109,10 @@
                       จังหวัด {{ transaction?.data?.customer?.province }}</span>
                     <span *ngIf="transaction?.data?.customer?.amphur">
                       อำเภอ{{ transaction?.data?.customer?.amphur }}</span>
-                    <span *ngIf="transaction?.data?.customer?.tumbol">
-                      ตำบล/แขวง{{ transaction?.data?.customer?.tumbol }}</span> {{ transaction?.data?.customer?.zipCode }}
+                    <span *ngIf="transaction?.data?.customer?.tumbol && transaction?.data?.customer?.province !== 'กรุงเทพ'">
+                      ตำบล{{ transaction?.data?.customer?.tumbol }}</span>
+                    <span *ngIf="transaction?.data?.customer?.tumbol && transaction?.data?.customer?.province === 'กรุงเทพ'">
+                      แขวง{{ transaction?.data?.customer?.tumbol }}</span> {{ transaction?.data?.customer?.zipCode }}
                 </p>
             </div>
         </div>

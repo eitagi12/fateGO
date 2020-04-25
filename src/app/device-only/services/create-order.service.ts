@@ -434,15 +434,15 @@ export class CreateOrderService {
       }
       // for location 63259
       if (user.locationCode === '63259' &&
-        this.transaction.data.payment.paymentForm === 'FULL' &&
-        this.transaction.data.payment.paymentOnlineCredit === true &&
-        this.transaction.data.payment.paymentType === 'CREDIT') {
-          const shippingInfo = this.transaction.data.shippingInfo;
-          const fullname = shippingInfo.titleName + ' ' + shippingInfo.firstName + ' ' + shippingInfo.lastName;
-          data.shipCusName = fullname;
-          this.checkBangkok(shippingInfo.zipCode).then((res: string) => {
-            data.shipCusAddr = res;
-          });
+          payment.paymentForm === 'FULL' &&
+          payment.paymentOnlineCredit === true &&
+          payment.paymentType === 'CREDIT') {
+            const shippingInfo = transactionData.shippingInfo;
+            const fullname = shippingInfo.titleName + ' ' + shippingInfo.firstName + ' ' + shippingInfo.lastName;
+            data.shipCusName = fullname;
+            this.checkBangkok(shippingInfo.zipCode).then((res: string) => {
+              data.shipCusAddr = res;
+            });
       }
 
     }
