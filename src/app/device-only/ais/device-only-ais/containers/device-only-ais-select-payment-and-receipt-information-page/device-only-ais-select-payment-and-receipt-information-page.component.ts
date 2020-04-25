@@ -12,6 +12,7 @@ import { WIZARD_DEVICE_ONLY_AIS } from 'src/app/device-only/constants/wizard.con
 import { CreateOrderService } from 'src/app/device-only/services/create-order.service';
 import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
 import { Product } from 'src/app/device-only/models/product.model';
+import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
 
 @Component({
   selector: 'app-device-only-ais-select-payment-and-receipt-information-page',
@@ -34,6 +35,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   user: User;
   localtion: any;
   addessValid: boolean;
+  mobileNo: any;
   warehouse: string = '63259';
 
   constructor(
@@ -47,6 +49,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
     private alertService: AlertService,
     private homeButtonService: HomeButtonService,
     private tokenService: TokenService,
+    private customerInfoService: CustomerInformationService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -180,6 +183,16 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       billDeliveryAddress: customerInfo.billDeliveryAddress
     };
     this.transaction.data.receiptInfo = customerInfo.receiptInfo;
+    this.mobileNo = this.customerInfoService.getSelectedMobileNo();
+    if (this.mobileNo) {
+      this.transaction.data.simCard = {
+        mobileNo: this.mobileNo
+      };
+    } else {
+      this.transaction.data.simCard = {
+        mobileNo: customerInfo.receiptInfo.telNo
+      };
+    }
   }
 
   onError(error: boolean): void {
