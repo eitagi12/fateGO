@@ -63,8 +63,10 @@ export class SummaryPaymentDetailComponent implements OnInit {
     if (this.isLineShop) {
       const shippingInfo: any = this.transaction.data.shippingInfo || '';
       if (!shippingInfo && !shippingInfo.firstName) {
+        console.log('1');
         this.$customer = customer.firstName + ' ' + customer.lastName;
       } else {
+        console.log('2');
         this.$customer = this.transaction.data.shippingInfo.firstName + ' ' + this.transaction.data.shippingInfo.lastName;
       }
     }
@@ -95,8 +97,8 @@ export class SummaryPaymentDetailComponent implements OnInit {
   createForm(): void {
     const customer = this.transaction.data.customer;
     this.editCustomerName = this.formBuilder.group({
-      'firstName': ['', Validators.compose([Validators.required])],
-      'lastName': ['', Validators.compose([Validators.required])],
+      'firstName': ['', Validators.compose([Validators.pattern('^[ก-ํ\s]+$')])],
+      'lastName': ['', Validators.compose([Validators.pattern('^[ก-ํ\s]+$')])],
     });
     if (!this.transaction.data.shippingInfo.firstName && !this.transaction.data.shippingInfo.lastName) {
       this.editCustomerName.controls['firstName'].setValue(customer.firstName);
@@ -110,6 +112,7 @@ export class SummaryPaymentDetailComponent implements OnInit {
 
   getCustomerAddress(): void {
     let customer;
+    let customerAddress = '';
     const shippingInfo: any = this.transaction.data.shippingInfo || '';
     if (shippingInfo && shippingInfo.firstName) {
       customer = this.transaction.data.shippingInfo;
@@ -138,7 +141,7 @@ export class SummaryPaymentDetailComponent implements OnInit {
       };
     }
 
-    const customerAddress = this.utils.getCurrentAddress({
+    const _customerAddress = this.utils.getCurrentAddress({
       homeNo: customer.homeNo,
       moo: customer.moo,
       mooBan: customer.mooBan,
@@ -153,6 +156,24 @@ export class SummaryPaymentDetailComponent implements OnInit {
       zipCode: customer.zipCode
     });
 
+    let _tumbol;
+    let _amphur;
+    if (customer.province === 'กรุงเทพ') {
+      _tumbol = 'แขวง';
+      _amphur = 'เขต';
+    } else {
+      _tumbol = 'ตำบล';
+      _amphur = 'อำเภอ';
+    }
+    const strArr = _customerAddress.split(' ');
+    for (const i of Object.keys(strArr)) {
+      if (strArr[i] === 'ตำบล/แขวง') {
+        strArr[i] = _tumbol;
+      } else if (strArr[i] === 'อำเภอ/เขต') {
+        strArr[i] = _amphur;
+      }
+      customerAddress += strArr[i] + ' ';
+    }
     this.billingAddress = {
       text: customerAddress,
       onEdit: () => {
@@ -163,10 +184,14 @@ export class SummaryPaymentDetailComponent implements OnInit {
   }
 
   onComplete(): void {
-    this.completed.emit({
-      firstName: this.editCustomerName.controls['firstName'].value,
-      lastName: this.editCustomerName.controls['lastName'].value
-    });
+    if (this.editCustomerName.controls['firstName'].valid && this.editCustomerName.controls['lastName'].valid) {
+      this.completed.emit({
+        firstName: this.editCustomerName.controls['firstName'].value,
+        lastName: this.editCustomerName.controls['lastName'].value
+      });
+    } else {
+      this.completed.emit(false);
+    }
   }
 
 }

@@ -221,6 +221,7 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
     document.body.appendChild(selBox);
     selBox.focus();
     selBox.select();
+    selBox.setSelectionRange(0, 99999);
     document.execCommand('copy');
     document.body.removeChild(selBox);
   }

@@ -105,14 +105,20 @@
                       ซอย {{ transaction?.data?.customer?.soi }}</span>
                     <span *ngIf="transaction?.data?.customer?.street">
                       ถนน{{ transaction?.data?.customer?.street }}</span>
-                    <span *ngIf="transaction?.data?.customer?.province">
-                      จังหวัด {{ transaction?.data?.customer?.province }}</span>
-                    <span *ngIf="transaction?.data?.customer?.amphur">
-                      อำเภอ{{ transaction?.data?.customer?.amphur }}</span>
                     <span *ngIf="transaction?.data?.customer?.tumbol && transaction?.data?.customer?.province !== 'กรุงเทพ'">
                       ตำบล{{ transaction?.data?.customer?.tumbol }}</span>
                     <span *ngIf="transaction?.data?.customer?.tumbol && transaction?.data?.customer?.province === 'กรุงเทพ'">
-                      แขวง{{ transaction?.data?.customer?.tumbol }}</span> {{ transaction?.data?.customer?.zipCode }}
+                      แขวง{{ transaction?.data?.customer?.tumbol }}
+                    </span>
+                    <span *ngIf="transaction?.data?.customer?.amphur && transaction?.data?.customer?.province !== 'กรุงเทพ'">
+                      อำเภอ{{ transaction?.data?.customer?.amphur }}
+                    </span>
+                    <span *ngIf="transaction?.data?.customer?.amphur && transaction?.data?.customer?.province === 'กรุงเทพ'">
+                      เขต{{ transaction?.data?.customer?.amphur }}
+                    </span>
+                    <span *ngIf="transaction?.data?.customer?.province">
+                      จังหวัด {{ transaction?.data?.customer?.province }}
+                    </span> {{ transaction?.data?.customer?.zipCode }}
                 </p>
             </div>
         </div>

@@ -117,6 +117,14 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit, OnDestroy {
     this.router.navigate([ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE]);
   }
 
+  checkEditing(): boolean {
+    if (this.editName === false) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   onNext(): void {
     const shippingInfo = this.transaction.data.shippingInfo;
     const customer = this.transaction.data.customer;
@@ -136,14 +144,15 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   mapShippingInfo(customer: any): void {
-    const editName = this.editName;
-    const cusName = editName ? editName : '';
+    const editName = this.editName ? this.editName : '';
+    const firstName = editName ? editName.firstName ? editName.firstName : customer.firstName : customer.firstName;
+    const lastName = editName ? editName.lastName ? editName.lastName : customer.lastName : customer.lastName;
     this.transaction.data = {
       ...this.transaction.data,
       shippingInfo: {
         titleName: 'คุณ',
-        firstName: cusName ? cusName.firstName : customer.firstName,
-        lastName: cusName ? cusName.lastName : customer.lastName,
+        firstName: firstName,
+        lastName: lastName,
         homeNo: customer.homeNo || '',
         moo: customer.moo || '',
         mooBan: customer.mooBan || '',
@@ -166,6 +175,7 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   onComplete(value: any): void {
+    console.log(value);
     this.editName = value;
   }
 
