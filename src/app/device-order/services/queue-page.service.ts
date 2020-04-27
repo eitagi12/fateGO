@@ -81,6 +81,12 @@ export class QueuePageService {
     ).toPromise();
   }
 
+  getQueueL(locationCode: any): Promise<any> {
+    return this.http.get('/api/salesportal/device-sell/gen-queue-with-prefix', {
+    params: { locationCode: locationCode, prefix: 'L' }
+    }).toPromise();
+  }
+
   private getRequestCreateDeviceSellingOrderList(transaction: Transaction, priceOption: PriceOption): any {
     const user = this.tokenService.getUser();
     const productStock = priceOption.productStock;
