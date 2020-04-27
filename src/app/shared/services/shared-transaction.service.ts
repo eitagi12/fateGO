@@ -145,6 +145,10 @@ export class SharedTransactionService {
       params.data.deleteOntopPackage = transaction.data.deleteOntopPackage;
     }
 
+    if (data.seller.locationCode !== '63259') {
+      delete params.data.shipping_information;
+    }
+
     // เดี๋ยวปรับอีกทีว่าเก็บอะไรบ้าง
     params.data.main_promotion = {
       campaign: priceOption.campaign,
