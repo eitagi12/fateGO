@@ -335,6 +335,9 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   }
 
   validateZipCode(control: AbstractControl): ValidationErrors | null {
+    if (!this.zipCodesAllProvince) {
+      return null;
+    }
     const isZipCode = (this.zipCodesAllProvince || []).find(zipCode => zipCode === control.value);
     if (isZipCode) {
       return null;
