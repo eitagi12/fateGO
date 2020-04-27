@@ -11,6 +11,8 @@ import { DeviceOrderAisDeviceQrCodeResultPageComponent } from 'src/app/device-or
 import { DeviceOrderAisDeviceQrCodeQueuePageComponent } from 'src/app/device-order/ais/device-order-ais-device/containers/device-order-ais-device-qr-code-queue-page/device-order-ais-device-qr-code-queue-page.component';
 import { DeviceOrderAisDeviceQrCodeGeneratorPageComponent } from 'src/app/device-order/ais/device-order-ais-device/containers/device-order-ais-device-qr-code-generator-page/device-order-ais-device-qr-code-generator-page.component';
 import { DeviceOrderAisDeviceEshippingAddressPageComponent } from './containers/device-order-ais-device-eshipping-address-page/device-order-ais-device-eshipping-address-page.component';
+import { DeviceOrderAisDeviceOmiseSummaryPageComponent } from './containers/device-order-ais-device-omise-summary-page/device-order-ais-device-omise-summary-page.component';
+import { DeviceOrderAisDeviceOmiseGeneratorPageComponent } from './containers/device-order-ais-device-omise-generator-page/device-order-ais-device-omise-generator-page.component';
 const routes: Routes = [
   { path: '', redirectTo: 'payment', pathMatch: 'full' },
   {
@@ -56,6 +58,14 @@ const routes: Routes = [
   {
     path: 'qr-code-result',
     component: DeviceOrderAisDeviceQrCodeResultPageComponent
+  },
+  {
+    path: 'omise-summary',
+    component: DeviceOrderAisDeviceOmiseSummaryPageComponent
+  },
+  {
+    path: 'omise-generator',
+    component: DeviceOrderAisDeviceOmiseGeneratorPageComponent
   }
 ];
 
