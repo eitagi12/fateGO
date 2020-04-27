@@ -125,7 +125,6 @@ export class SharedTransactionService {
           sharedUser: !!data.seller ? data.seller.sharedUser : '',
           shareUser: !!data.seller ? data.seller.shareUser : ''
         },
-        shipping_information: data.shippingInfo,
         status: data.status || {}
       }
     };
@@ -137,16 +136,16 @@ export class SharedTransactionService {
       params.data.main_package = data.mainPackage;
     }
 
+    if (data.shippingInfo) {
+      params.data.shipping_information = data.shippingInfo;
+    }
+
     if (data.preBooking) {
       params.data.pre_booking = transaction.data.preBooking;
     }
     // delete ontop
     if (data.deleteOntopPackage) {
       params.data.deleteOntopPackage = transaction.data.deleteOntopPackage;
-    }
-
-    if (data.seller.locationCode !== '63259') {
-      delete params.data.shipping_information;
     }
 
     // เดี๋ยวปรับอีกทีว่าเก็บอะไรบ้าง
