@@ -234,7 +234,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       province: ['', [Validators.required]],
       amphur: ['', [Validators.required]],
       tumbol: ['', [Validators.required]],
-      zipCode: ['', [Validators.required, Validators.maxLength(5), Validators.minLength(5), Validators.pattern(/^[0-9^/]*$/)]],
+      zipCode: ['', [Validators.required, Validators.maxLength(5), Validators.minLength(5), this.validateZipCode.bind(this)]],
     });
 
     // CHECK SELECT VALUE
@@ -335,7 +335,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   }
 
   validateZipCode(control: AbstractControl): ValidationErrors | null {
-    const isZipCode = (this.zipCodes || []).find(zipCode => zipCode === control.value);
+    const isZipCode = (this.zipCodesAllProvince || []).find(zipCode => zipCode === control.value);
     if (isZipCode) {
       return null;
     }

@@ -12,7 +12,7 @@
       <div class="card-body py-2 border-top bg-transparent">
         <div class="row">
           <div class="col-sm-6">
-            <input type="radio" id="omise" name="payment" value="omise" [checked]="defaultChecked()"
+            <input type="radio" id="omise" name="payment" value="omise" [checked]="defaultChecked() === 'CREDIT'"
               (change)="onPaymentTypeChange($event.target.value)" />
             <label for="omise">{{ 'ชำระด้วยบัตรเครดิตออนไลน์' | translate }}</label>
           </div>
@@ -33,7 +33,7 @@
     <div class="card-body py-2 border-top bg-transparent">
       <div class="row">
         <div class="col-sm-6">
-          <input type="radio" id="qrcode" name="payment" value="qrcode" [checked]="!defaultChecked()"
+          <input type="radio" id="qrcode" name="payment" value="qrcode" [checked]="defaultChecked() === 'QR_CODE'"
             (change)="onPaymentTypeChange($event.target.value)" />
           <label for="qrcode">{{ 'ชำระด้วย QR Code' | translate }}</label>
         </div>
@@ -59,7 +59,7 @@
     <div class="card-body py-2 border-top bg-transparent">
       <div class="row">
         <div class="col-sm-6">
-          <input type="radio" id="debit" name="payment" value="debit"
+          <input type="radio" id="debit" name="payment" value="debit" [checked]="defaultChecked() === 'DEBIT'"
             (change)="onPaymentTypeChange($event.target.value)" />
           <label for="debit">{{ 'ชำระที่เคาน์เตอร์' | translate }}</label>
         </div>

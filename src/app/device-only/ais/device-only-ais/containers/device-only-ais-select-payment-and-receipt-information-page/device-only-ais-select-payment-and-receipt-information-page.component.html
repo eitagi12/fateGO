@@ -16,7 +16,7 @@
             </mc-payment-detail>
         </div>
         <div [hidden]="this.user.locationCode != '63259'">
-            <app-payment-detail [paymentDetail]="paymentDetail" [location]="warehouse" (completed)="onPaymentDetailCompleted($event)"
+            <app-payment-detail [paymentDetail]="paymentDetail" (completed)="onPaymentDetailCompleted($event)"
                 (error)="onPaymentDetailWarehouseError($event)"></app-payment-detail>
         </div>
         <div class="my-3">

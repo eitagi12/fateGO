@@ -1,4 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Transaction } from 'src/app/shared/models/transaction.model';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
 
 @Component({
   selector: 'app-payment-detail',
@@ -16,31 +18,35 @@ export class PaymentDetailComponent implements OnInit {
   @Input()
   paymentDetail: any;
 
-  @Input()
-  location: string;
-
   paymentValue: any;
   isShowCreditOnline: boolean = true;
   isShowQrCode: boolean;
   paymentQrCodeType: any;
   isAWN: boolean;
+  transaction: Transaction;
+  payment: any;
 
   constructor(
-  ) { }
+    private transactionService: TransactionService,
+  ) {
+    this.transaction = this.transactionService.load();
+  }
 
   ngOnInit(): void {
     this.checkQrCodeSelected();
     this.setPaymentValue();
+    if (this.paymentDetail.omisePayment) {
+      this.isAWN = true;
+      this.setPaymentValueOnlineCredit();
+    } else {
+      this.isAWN = false;
+      this.isShowQrCode = true;
+      this.error.emit(false);
+    }
 
-    if (this.location && this.location === '63259') {
-      if (this.paymentDetail.omisePayment) {
-        this.isAWN = true;
-        this.setPaymentValueOnlineCredit();
-      } else {
-        this.isAWN = false;
-        this.isShowQrCode = true;
-        this.error.emit(false);
-      }
+    if (this.transaction && this.transaction.data && this.transaction.data.payment) {
+      this.payment = this.transaction.data.payment;
+      this.defaultPaymentValue();
     }
   }
 
@@ -120,11 +126,36 @@ export class PaymentDetailComponent implements OnInit {
     this.error.emit(true);
   }
 
-  defaultChecked(): boolean {
-    if (this.isAWN) {
-      return true;
+  defaultPaymentValue(): void {
+    if (this.payment) {
+      if (this.payment.paymentType === 'QR_CODE') {
+        this.paymentQrCodeType = this.payment.paymentType;
+        this.setPaymentValueQrCode(this.payment.paymentQrCodeType);
+        this.isShowCreditOnline = false;
+        this.isShowQrCode = true;
+        if (this.payment.paymentQrCodeType === 'LINE_QR') {
+          document.getElementById('lineQr').className += ' active';
+        } else if (this.payment.paymentQrCodeType === 'THAI_QR') {
+          document.getElementById('thaiQr').className += ' active';
+        }
+      } else if (this.payment.paymentType === 'CREDIT') {
+        this.setPaymentValueOnlineCredit();
+        this.isShowCreditOnline = true;
+        this.isShowQrCode = false;
+      } else {
+        this.setPaymentValueDebit();
+        this.isShowCreditOnline = false;
+        this.isShowQrCode = false;
+      }
+    }
+  }
+
+  defaultChecked(): string {
+    if (this.payment) {
+      return this.payment.paymentType;
     } else {
-      return false;
+      const paymentType = this.isAWN ? 'CREDIT' : 'QR_CODE';
+      return paymentType;
     }
   }
 
