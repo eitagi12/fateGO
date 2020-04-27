@@ -125,6 +125,7 @@ export class SharedTransactionService {
           sharedUser: !!data.seller ? data.seller.sharedUser : '',
           shareUser: !!data.seller ? data.seller.shareUser : ''
         },
+        shipping_information: data.shippingInfo,
         status: data.status || {}
       }
     };
