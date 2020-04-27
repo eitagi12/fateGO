@@ -324,8 +324,8 @@ export class CreateOrderService {
     const mpayPayment: any = transactionData.mpayPayment || {};
     const advancePayment = transactionData.advancePayment;
     const omise: Omise = transactionData.omise || {};
-    const shippingInfo = transactionData.shippingInfo;
-    const fullname = shippingInfo.titleName + ' ' + shippingInfo.firstName + ' ' + shippingInfo.lastName;
+    const shippingInfo = transactionData.shippingInfo || {};
+    const fullname = shippingInfo.titleName + ' ' + shippingInfo.firstName + ' ' + shippingInfo.lastName || '';
 
     const product: any = {
       productType: productStock.productType || productDetail.productType || 'DEVICE',
@@ -360,7 +360,7 @@ export class CreateOrderService {
       userId: user.username,
       queueNo: queue.queueNo || '',
       cusNameOrder: `${customer.titleName || ''} ${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
-      soChannelType: omise ? 'MC_KIOSK' : 'CSP',
+      soChannelType: 'MC_KIOSK',
       soDocumentType: 'RESERVED',
       productList: [product],
       grandTotalAmt: (+this.getGrandTotalAmt(trade, prebooking)).toFixed(2),
@@ -453,6 +453,11 @@ export class CreateOrderService {
         data.qrAirtimeTransId = mpayPayment.qrAirtimeTransId || mpayPayment.tranId || null;
         data.qrAirtimeAmt = this.getQRAmt(priceOption, transaction);
       }
+    }
+
+    if (user.locationCode !== '63259') {
+      delete data.shipCusName;
+      delete data.shipCusAddr;
     }
 
     // ผ่อนชำระ
