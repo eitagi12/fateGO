@@ -28,6 +28,7 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
   user: User;
   isLineShop: boolean = false;
   feedback: string = '*กรุณาระบุเบอร์มือถือ';
+  shortUrlQrCodeStr: string = 'https://stg-m.ais.co.th/mc?orderId=';
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -94,6 +95,7 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
           const msisdn = `66${phoneNo.substring(1, phoneNo.length)}`;
           this.qrCodeOmiseService.createOrder(params).then((res: any) => {
             const data = res && res.data;
+            this.shortUrlQrCodeStr += data.orderId;
             this.transaction.data.omise = {
               ...this.transaction.data.omise,
               qrCodeStr: data.redirectUrl,
@@ -106,7 +108,7 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
                 recipientIdType: '0',
                 recipientIdData: msisdn
               },
-              content: 'สำหรับการชำระเงินค่าสินค้าผ่านบัตรเครดิตออนไลน์ คลิก ' + this.transaction.data.omise.qrCodeStr,
+              content: 'สำหรับการชำระเงินค่าสินค้าผ่านบัตรเครดิตออนไลน์ คลิก ' + this.shortUrlQrCodeStr,
               sender: 'AIS'
             };
             this.http.post('api/customerportal/newregister/send-sms', bodyRequest).toPromise();

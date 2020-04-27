@@ -45,12 +45,12 @@
                         <div class="col-12 col-sm-4 border border-red m-auto text-red">
                             {{'กรณีลูกค้าไม่ได้รับ SMS ให้ส่ง QRCode ให้ลูกค้าแทน' | translate}}</div>
                         <h3 [ngClass]="{ 'text-pink': warningTimeOut() }">{{ countdown || '00 : 00' }}</h3>
-                        <div class="col-sm-5 border m-auto">
-                            <p (click)="$event.preventDefault(); copyShortUrl(transaction?.data?.omise?.qrCodeStr)" style="color: cornflowerblue;">
-                                " URL : {{transaction?.data?.omise?.qrCodeStr}} "
-                            </p>
+                        <div class="col-sm-10 border m-auto">
+                            <!-- <p (click)="$event.preventDefault(); copyShortUrl(transaction?.data?.omise?.qrCodeStr)" style="color: cornflowerblue;"> -->
+                                <input class="form-control-plaintext text-center" value="URL : {{this.shortUrlQrCodeStr}}" disabled>
+                            <!-- </p> -->
                         </div>
-                        <div class="row justify-content-center mb-4">
+                        <div class="row justify-content-center mb-4 mt-2">
                             <label class="mt-2">กรุณาระบุเบอร์โทรเพื่อรับ sms สำหรับการชำระเงิน</label>
                             <form class="col-sm-3" [formGroup]="phoneSMSForm">
                                 <input type="tel" class="form-control" id="mobile" name="mobile" maxlength="10" formControlName="phoneNo">

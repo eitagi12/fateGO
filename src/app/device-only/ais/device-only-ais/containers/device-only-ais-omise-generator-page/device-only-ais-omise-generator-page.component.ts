@@ -31,6 +31,7 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
   countdown: string;
   refreshCount: number = 0;
   totalAmount: number;
+  shortUrlQrCodeStr: string = 'https://stg-m.ais.co.th/mc?orderId=';
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -49,6 +50,7 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
   ngOnInit(): void {
     this.onGenerateQRCode();
     this.createQueueForm();
+    this.shortUrlQrCodeStr += this.transaction.data.omise.orderId;
   }
 
   public createQueueForm(): void {
@@ -202,7 +204,7 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
         recipientIdType: '0',
         recipientIdData: msisdn
       },
-      content: 'สำหรับการชำระเงินค่าสินค้าผ่านบัตรเครดิตออนไลน์ คลิก ' + this.transaction.data.omise.qrCodeStr,
+      content: 'สำหรับการชำระเงินค่าสินค้าผ่านบัตรเครดิตออนไลน์ คลิก ' + this.shortUrlQrCodeStr,
       sender: 'AIS'
     };
     this.http.post('api/customerportal/newregister/send-sms', bodyRequest).toPromise()
