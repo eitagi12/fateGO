@@ -195,7 +195,6 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
 
   sendSms(): void {
     const phoneNo = this.phoneSMSForm.controls['phoneNo'].value;
-    console.log('phoneNo', phoneNo);
 
     const msisdn = `66${phoneNo.substring(1, phoneNo.length)}`;
     const bodyRequest: any = {

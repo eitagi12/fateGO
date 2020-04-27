@@ -63,10 +63,8 @@ export class SummaryPaymentDetailComponent implements OnInit {
     if (this.isLineShop) {
       const shippingInfo: any = this.transaction.data.shippingInfo || '';
       if (!shippingInfo && !shippingInfo.firstName) {
-        console.log('1');
         this.$customer = customer.firstName + ' ' + customer.lastName;
       } else {
-        console.log('2');
         this.$customer = this.transaction.data.shippingInfo.firstName + ' ' + this.transaction.data.shippingInfo.lastName;
       }
     }

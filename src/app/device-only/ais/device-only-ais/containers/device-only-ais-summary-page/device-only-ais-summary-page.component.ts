@@ -165,6 +165,7 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit, OnDestroy {
         amphur: customer.amphur,
         province: customer.province || customer.provinceName || '',
         zipCode: customer.zipCode || '',
+        telNo: this.transaction.data.receiptInfo.telNo
       }
     };
     this.transactionService.update(this.transaction);
@@ -175,7 +176,6 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   onComplete(value: any): void {
-    console.log(value);
     this.editName = value;
   }
 
