@@ -22,3 +22,5 @@ export const ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QR_CODE_SUMMARY_PAGE = '/dev
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QR_CODE_GENERATOR_PAGE = '/device-order/ais/existing-gadget/qr-code-generator';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QR_CODE_QUEUE_PAGE = '/device-order/ais/existing-gadget/qr-code-queue';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QR_CODE_RESULT_PAGE = '/device-order/ais/existing-gadget/qr-code-result';
+
+export const ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_EDIT_SHIPPING_ADDRESS_PAGE = '/device-order/ais/existing-gadget/edit-shipping';

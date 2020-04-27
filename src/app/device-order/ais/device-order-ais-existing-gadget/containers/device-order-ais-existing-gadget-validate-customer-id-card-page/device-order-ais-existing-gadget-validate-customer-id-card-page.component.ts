@@ -122,6 +122,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent imp
         .then((customer: any) => { // load bill cycle
           if (customer && (customer.caNumber || customer.idCardType || customer.idCardNo)) {
             this.transaction.data.customer = Object.assign(this.profile, customer);
+            this.setShippingInfo(this.transaction.data.customer);
             return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
               .then((resp: any) => {
                 const data = resp.data || {};
@@ -160,6 +161,27 @@ export class DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent imp
           }
         });
     });
+  }
+
+  setShippingInfo(customer: Customer): void {
+    this.transaction.data.shippingInfo = {
+      titleName: 'คุณ',
+      firstName: customer.firstName,
+      lastName: customer.lastName,
+      homeNo: customer.homeNo || '',
+      moo: customer.moo || '',
+      mooBan: customer.mooBan || '',
+      room: customer.room || '',
+      floor: customer.floor || '',
+      buildingName: customer.buildingName || '',
+      soi: customer.soi || '',
+      street: customer.street || '',
+      tumbol: customer.tumbol,
+      amphur: customer.amphur,
+      province: customer.province,
+      zipCode: customer.zipCode,
+      telNo: ''
+    };
   }
 
   conditionIdentityValid(): Promise<string> {

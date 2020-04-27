@@ -113,6 +113,7 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyPageComponent implement
               this.transaction.data.customer = customerInfo;
               this.transaction.data.customer.privilegeCode = privilege;
             }
+            this.setShippingInfo(this.transaction.data.customer);
             this.transaction.data.billingInformation = {};
             this.http.get(`/api/customerportal/newRegister/${this.identity}/queryBillingAccount`).toPromise()
               .then((resp: any) => {
@@ -156,6 +157,27 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyPageComponent implement
         this.alertService.error('ไม่สามารถทำรายการได้ ข้อมูลการแสดงตนไม่ถูกต้อง');
       }
     });
+  }
+
+  setShippingInfo(customer: any): void {
+    this.transaction.data.shippingInfo = {
+      titleName: 'คุณ',
+      firstName: customer.firstName,
+      lastName: customer.lastName,
+      homeNo: customer.homeNo || '',
+      moo: customer.moo || '',
+      mooBan: customer.mooBan || '',
+      room: customer.room || '',
+      floor: customer.floor || '',
+      buildingName: customer.buildingName || '',
+      soi: customer.soi || '',
+      street: customer.street || '',
+      tumbol: customer.tumbol,
+      amphur: customer.amphur,
+      province: customer.province,
+      zipCode: customer.zipCode,
+      telNo: ''
+    };
   }
 
   conditionIdentityValid(): Promise<string> {

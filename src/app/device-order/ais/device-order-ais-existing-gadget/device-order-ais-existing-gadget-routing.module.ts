@@ -23,6 +23,7 @@ import { DeviceOrderAisExistingGadgetSelectPackagePageComponent } from 'src/app/
 import { DeviceOrderAisExistingGadgetEffectiveStartDatePageComponent } from 'src/app/device-order/ais/device-order-ais-existing-gadget/containers/device-order-ais-existing-gadget-effective-start-date-page/device-order-ais-existing-gadget-effective-start-date-page.component';
 import { DeviceOrderAisExistingGadgetSelectPackageOntopPageComponent } from 'src/app/device-order/ais/device-order-ais-existing-gadget/containers/device-order-ais-existing-gadget-select-package-ontop-page/device-order-ais-existing-gadget-select-package-ontop-page.component';
 import { DeviceOrderAisExistingGadgetQrCodeResultPageComponent } from 'src/app/device-order/ais/device-order-ais-existing-gadget/containers/device-order-ais-existing-gadget-qr-code-result-page/device-order-ais-existing-gadget-qr-code-result-page.component';
+import { DeviceOrderAisExistingGadgetEshippingAddressPageComponent } from './containers/device-order-ais-existing-gadget-eshipping-address-page/device-order-ais-existing-gadget-eshipping-address-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'validate-customer', pathMatch: 'full' },
@@ -48,7 +49,8 @@ const routes: Routes = [
   { path: 'econtract', component: DeviceOrderAisExistingGadgetEcontractPageComponent },
   { path: 'aggregate', component: DeviceOrderAisExistingGadgetAggregatePageComponent },
   { path: 'queue', component: DeviceOrderAisExistingGadgetQueuePageComponent },
-  { path: 'result', component: DeviceOrderAisExistingGadgetResultPageComponent }
+  { path: 'result', component: DeviceOrderAisExistingGadgetResultPageComponent },
+  { path: 'edit-shipping', component: DeviceOrderAisExistingGadgetEshippingAddressPageComponent }
 ];
 
 @NgModule({
