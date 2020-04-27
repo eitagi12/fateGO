@@ -252,7 +252,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   }
 
   isNotFormValid(): boolean {
-    if (this.user.locationCode === this.warehouse) {
+    if (this.user.locationCode !== this.warehouse) {
       return !(this.isReceiptInformationValid && this.paymentDetailValid && this.addessValid);
     } else {
       return !(this.isReceiptInformationValid && this.paymentDetailWarehouseValid && this.addessValid);
