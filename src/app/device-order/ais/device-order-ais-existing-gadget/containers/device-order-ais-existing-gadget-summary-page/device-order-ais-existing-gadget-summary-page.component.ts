@@ -87,7 +87,7 @@ export class DeviceOrderAisExistingGadgetSummaryPageComponent implements OnInit,
   }
 
   ngOnInit(): void {
-    this.warehouse = this.user.locationCode === '63259';
+    this.warehouse = this.user.locationCode !== '63259';
     const customer = this.transaction.data.customer;
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.packageOntopList = this.transaction.data.deleteOntopPackage;
@@ -170,6 +170,13 @@ export class DeviceOrderAisExistingGadgetSummaryPageComponent implements OnInit,
             ...this.seller,
             sellerNo: this.sellerCode
           };
+          if (this.editShipCusName) {
+            this.transaction.data.shippingInfo = {
+              ...this.transaction.data.shippingInfo,
+              firstName: this.shipCusNameFormControl.value.firstName,
+              lastName: this.shipCusNameFormControl.value.lastName
+            };
+          }
           this.pageLoadingService.closeLoading();
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_ECONTRACT_PAGE]);
         } else {
