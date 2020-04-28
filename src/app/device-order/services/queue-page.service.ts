@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TokenService, User } from 'mychannel-shared-libs';
-import { Transaction, Payment, Prebooking, Customer, Queue, Omise, ShippingInfo } from 'src/app/shared/models/transaction.model';
+import { Transaction, Payment, Prebooking, Customer, Queue, Omise, ShippingInfo, ReceiptInfo } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { HttpClient } from '@angular/common/http';
 import { CustomerGroup } from 'src/app/buy-product/services/flow.service';
@@ -98,7 +98,6 @@ export class QueuePageService {
     const customer = transactionData.customer;
     const simCard = transactionData.simCard;
     const order = transactionData.order;
-    const currentPackage = transactionData.currentPackage || {};
     const mainPackage = transaction.data.mainPackage && transaction.data.mainPackage.customAttributes || {};
     const contract = transaction.data.contractFirstPack || {};
     const queue: any = transactionData.queue || {};
@@ -108,6 +107,7 @@ export class QueuePageService {
     const mpayPayment: any = transactionData.mpayPayment || {};
     const advancePayment = transactionData.advancePayment;
     const omise: Omise = transactionData.omise || {};
+    const receiptInfo: ReceiptInfo = transactionData.receiptInfo;
     const shippingInfo: ShippingInfo = transactionData.shippingInfo || {};
     const warehouse: boolean = user.locationCode === '63259';
 
@@ -151,7 +151,7 @@ export class QueuePageService {
       grandTotalAmt: (+this.getGrandTotalAmt(trade, prebooking)).toFixed(2),
       saleCode: this.tokenService.isAisUser() ? (seller.sellerNo || '') : (seller.sellerNo || user.ascCode),
       taxCardId: customer.idCardNo || '',
-      cusMobileNoOrder: simCard.mobileNo || '',
+      cusMobileNoOrder: warehouse ? receiptInfo.telNo : (simCard.mobileNo || ''),
       customerAddress: {
         addrNo: customer.homeNo,
         room: customer.room,
@@ -249,77 +249,6 @@ export class QueuePageService {
     }
     return data;
   }
-
-  // private getRequestCreateDeviceSellingOrderListSPKASP(transaction: Transaction, priceOption: PriceOption, user: User): any {
-
-  //   const customer = transaction.data.customer;
-  //   const productStock = priceOption.productStock;
-  //   const productDetail = priceOption.productDetail;
-  //   const trade = priceOption.trade;
-  //   const payment = transaction.data.payment;
-  //   const simCard = transaction.data.simCard;
-  //   const queue = transaction.data.queue;
-  //   const seller = transaction.data.seller;
-  //   const prebooking = transaction.data.preBooking;
-  //   const mobileCare = transaction.data.mobileCarePackage;
-  //   const order = transaction.data.order;
-  //   const paymentTrade = trade.payments[0];
-
-  //   let qrAmt;
-  //   if (payment.paymentType === 'QR_CODE' && transaction.transactionId) {
-  //     qrAmt = this.getQrAmount(trade.normalPrice, trade.discount);
-  //   }
-
-  //   const paymentMethod = (payment.paymentType === 'QR_CODE' && transaction.transactionId) ?
-  //     this.replacePaymentMethodForQRCodeWithOutAirtime(payment.paymentQrCodeType) : paymentTrade.method;
-
-  //   const data: any = {
-  //     soId: order.soId,
-  //     soCompany: productStock.company,
-  //     locationSource: user.locationCode,
-  //     locationReceipt: user.locationCode,
-  //     productType: productDetail.productType || 'DEVICE',
-  //     productSubType: productDetail.productSubtype || 'HANDSET',
-  //     brand: productDetail.brand,
-  //     model: productDetail.model,
-  //     color: productStock.color,
-  //     matCode: '',
-  //     priceIncAmt: (+trade.normalPrice).toFixed(2),
-  //     priceDiscountAmt: (+trade.discount.amount || 0).toFixed(2),
-  //     grandTotalAmt: this.getGrandTotalAmt(trade, prebooking),
-  //     userId: user.username,
-  //     saleCode: seller && seller.sellerNo ? seller.sellerNo : '',
-  //     queueNo: queue.queueNo || '',
-  //     cusNameOrder: `${customer.titleName || ''}${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
-  //     taxCardId: customer && customer.idCardNo || '',
-  //     cusMobileNoOrder: simCard && simCard.mobileNo || '',
-  //     customerAddress: this.getCustomerAddress(customer),
-  //     tradeNo: trade && trade.tradeNo || '',
-  //     ussdCode: trade && trade.ussdCode || '',
-  //     returnCode: customer.privilegeCode || '',
-  //     cashBackFlg: '',
-  //     matAirTime: trade.advancePay ? trade.advancePay.matAirtime : '',
-  //     matCodeFreeGoods: '',
-  //     paymentRemark: this.getOrderRemarkSPK(trade, payment, mobileCare, queue.queueNo, transaction),
-  //     installmentTerm: payment.paymentMethod.month, // this.getInstallmentTerm(payment),
-  //     installmentRate: payment.paymentMethod.percentage, // this.getInstallmentRate(payment),
-  //     mobileAisFlg: 'Y',
-  //     paymentMethod: this.getPaymentMethod(transaction),
-  //     bankCode: payment && payment.paymentBank ? payment.paymentBank.abb : '',
-  //     tradeFreeGoodsId: trade.freeGoods[0] ? trade.freeGoods[0].tradeFreegoodsId : '',
-  //     matairtimeId: '',
-  //     tradeDiscountId: trade.discount ? trade.discount.tradeAirtimeId : '',
-  //     tradeAirtimeId: trade.advancePay ? trade.advancePay.tradeAirtimeId : '',
-  //     focCode: '',
-  //     bankAbbr: payment && payment.paymentBank ? payment.paymentBank.abb : '',
-  //     preBookingNo: prebooking ? prebooking.preBookingNo : '',
-  //     depositAmt: prebooking ? prebooking.depositAmt : '',
-  //     qrTransId: transaction.transactionId ? transaction.transactionId : '',
-  //     qrAmt: qrAmt
-  //   };
-
-  //   return data;
-  // }
 
   mapCreateOrderSpkAsp(transaction: Transaction, priceOption: PriceOption, user: User): any {
     const simCard = transaction.data.simCard;
