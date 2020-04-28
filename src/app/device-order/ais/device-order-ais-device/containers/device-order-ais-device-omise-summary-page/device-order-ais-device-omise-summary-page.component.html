@@ -169,7 +169,7 @@
         </div>
       </div>
 
-      <ng-container *ngIf="locationCode === '1100'" >
+      <ng-container *ngIf="locationCode === '63259'" >
         <div class="mr-5 col-12 title-center mt-4">
           กรุณาระบุเบอร์โทรเพื่อรับ SMS สำหรับการชำระเงิน ผ่าน บัตรเคดิต ออนไลน์
         </div>
@@ -180,14 +180,20 @@
           </div>
         </div>
         <form class="mr-5 col-12 title-center mt-2" [formGroup]="mobileNoForm">
-          <input type="text" maxlength="10" formControlName="mobileNo" placeholder="ระบุเบอร์" class="col-3 text-center">
-         
+          <input id="mobileNo" type="text" formControlName="mobileNo" placeholder="ระบุเบอร์" class="col-3 text-center form-control"
+          [ngClass]="{ 'is-invalid' : mobileNoForm.controls.mobileNo.invalid && mobileNoForm.controls.mobileNo.touched }"
+          (keypress)="keyPress($event)">
+          <small class="form-text invalid-feedback text-center"
+          *ngIf="mobileNoForm?.controls?.mobileNo?.touched && mobileNoForm?.controls?.mobileNo?.errors">
+          {{ '* กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง' | translate }}
+        </small>
         </form>
       </ng-container>
 
       <div class="text-center mt-5">
         <button class="btn btn-secondary btn-lg mr-3 pl-5 pr-5" (click)="onBack()" [hidden]="transaction?.data?.omise?.omiseStatus?.statusDevice === 'SUCCESS'">CANCEL</button>
-        <button class="btn btn-success btn-lg pl-5 pr-5" (click)="onNext()" >PAY NOW</button>
+        <button class="btn btn-success btn-lg pl-5 pr-5" [disabled]="!isNext() mobileNoForm?.controls?.mobileNo?.errors"
+        (click)="onNext()" >PAY NOW</button>
       </div>
     </div>
   </div>
