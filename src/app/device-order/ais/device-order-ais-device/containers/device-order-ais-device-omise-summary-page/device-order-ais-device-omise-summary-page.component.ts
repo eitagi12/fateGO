@@ -134,10 +134,6 @@ export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, On
     }
   }
 
-  onCancel(): void {
-    this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_AGGREGATE_PAGE]);
-  }
-
   onNext(): void {
     this.pageLoadingService.openLoading();
     const user = this.tokenService.getUser();
