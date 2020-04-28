@@ -76,29 +76,6 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
       qrCode: true,
       omisePayment: this.isFullPayment() && this.priceOption.productStock.company !== 'WDS'
     };
-
-    if (this.user.locationCode !== '63259') {
-      this.paymentDetail = {
-        commercialName: commercialName,
-        promotionPrice: this.priceOption.trade.priceType === 'NORMAL' ? +
-        (this.priceOption.trade.normalPrice) : +(this.priceOption.trade.promotionPrice),
-        isFullPayment: this.isFullPayment(),
-        installmentFlag: false,
-        advancePay: 0,
-        qrCode: true
-      };
-    } else {
-      this.paymentDetail = {
-        commercialName: commercialName,
-        promotionPrice: this.priceOption.trade.priceType === 'NORMAL' ? +
-        (this.priceOption.trade.normalPrice) : +(this.priceOption.trade.promotionPrice),
-        isFullPayment: this.isFullPayment(),
-        installmentFlag: false,
-        advancePay: 0,
-        qrCode: true,
-        omisePayment: this.isFullPayment() && this.priceOption.productStock.company !== 'WDS'
-      };
-    }
     this.http.get('/api/salesportal/omise/get-bank').toPromise()
       .then((res: any) => {
         const data = res.data || [];
