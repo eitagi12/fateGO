@@ -1,11 +1,5 @@
 <div class="mc-flex">
-  <mc-header title="{{'ซื้อเครื่องเปล่า'| translate}}">
-      <div class="header-icon-left  w-25">
-          <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
-      </div>
-      <div class="header-icon-right w-25 text-right">
-          <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()" [hidden]="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'SUCCESS'"></mc-header-icon>
-      </div>
+  <mc-header title="ชำระค่าสินค้า">
   </mc-header>
   <div class="mc-flex-wrap">
       <div class="my-3">
@@ -46,28 +40,22 @@
                           {{'กรณีลูกค้าไม่ได้รับ SMS ให้ส่ง QRCode ให้ลูกค้าแทน' | translate}}</div>
                       <h3 [ngClass]="{ 'text-pink': warningTimeOut() }">{{ countdown || '00 : 00' }}</h3>
                       <div class="col-sm-10 border m-auto">
-                          <!-- <p (click)="$event.preventDefault(); copyShortUrl(transaction?.data?.omise?.qrCodeStr)" style="color: cornflowerblue;"> -->
-                              <input class="form-control-plaintext text-center" value="URL : {{this.shortUrlQrCodeStr}}" disabled>
-                          <!-- </p> -->
+                              <input class="form-control-plaintext text-center" value="URL : {{this.shortUrl}}" disabled>
                       </div>
                       <div class="row justify-content-center mb-4 mt-2">
-                          <label class="mt-2">กรุณาระบุเบอร์โทรเพื่อรับ sms สำหรับการชำระเงิน</label>
+                          <label class="mt-2">ระบุเบอร์โทรเพื่อรับ sms ชำระเงิน</label>
                           <form class="col-sm-3" [formGroup]="phoneSMSForm">
                               <input type="tel" class="form-control" id="mobile" name="mobile" maxlength="10" formControlName="phoneNo">
                           </form>
-                          <button class="btn btn-success" (click)="sendSms()">ส่ง sms อีกครั้ง</button>
+                          <button class="btn btn-success" (click)="onSentSms()">ส่ง sms อีกครั้ง</button>
                       </div>
-
                       <div>" {{'กรุณาชำระเงินภายในเวลาที่กำหนด'| translate}} "</div>
                   </div>
               </ng-container>
           </div>
       </div>
   </div>
-
   <mc-footer>
-      <!-- <button class="btn btn-success" (click)="onGenerateQRCode()">REFRESH</button> -->
-      <button class="btn btn-secondary" (click)="onBack()">Back</button>
-      <button class="btn btn-success" (click)="onNext()">Pay Now</button>
+      <button class="btn btn-success" (click)="onGenerateQRCode()">REFRESH</button>
   </mc-footer>
 </div>

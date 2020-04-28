@@ -196,8 +196,10 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit, OnDestr
         if (this.editShipCusName) {
           this.transaction.data.shippingInfo = {
             ...this.transaction.data.shippingInfo,
-            firstName: this.shipCusNameFormControl.value.firstName,
-            lastName: this.shipCusNameFormControl.value.lastName
+            firstName: this.shipCusNameFormControl.value.firstName ? this.shipCusNameFormControl.value.firstName
+              : this.transaction.data.shippingInfo.firstName,
+            lastName: this.shipCusNameFormControl.value.lastName ? this.shipCusNameFormControl.value.lastName
+              : this.transaction.data.shippingInfo.lastName
           };
         }
         this.pageLoadingService.closeLoading();
