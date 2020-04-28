@@ -36,10 +36,4 @@ export class QueueService {
     }).toPromise();
   }
 
-  getQueueL(locationCode: any): Promise<any> {
-    return this.http.get('/api/salesportal/device-sell/gen-queue-with-prefix', {
-    params: { locationCode: locationCode, prefix: 'L' }
-    }).toPromise();
-  }
-
 }
