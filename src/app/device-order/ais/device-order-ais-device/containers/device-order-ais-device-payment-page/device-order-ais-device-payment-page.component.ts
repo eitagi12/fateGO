@@ -168,7 +168,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
       branch: ['', []],
       buyer: ['', []],
       buyerAddress: ['', []],
-      telNo: ['', [Validators.pattern(this.REGEX_MOBILE)]]
+      telNo: ['', [Validators.pattern(/^0[6-9]\d{8}$/)]]
     });
     this.receiptInfoForm.patchValue({
       taxId: customer.idCardNo || '',
@@ -299,9 +299,13 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     this.transaction.data.simCard = {
       mobileNo: mobileNo
     };
-    this.receiptInfoForm.patchValue({
-      telNo: mobileNo,
-    });
+
+    if (this.utils.isMobileNo(mobileNo)) {
+      this.receiptInfoForm.patchValue({
+        telNo: mobileNo,
+      });
+    }
+
     this.checkMobileStatus(mobileNo);
   }
 
@@ -527,7 +531,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
     this.transaction.data.receiptInfo = this.receiptInfo;
     this.transaction.data.receiptInfo.telNo = this.receiptInfoForm.value.telNo;
-    if (this.transaction.data.simCard.mobileNo !==  this.oldMobileNo) {
+    if (this.transaction.data.simCard.mobileNo !== this.oldMobileNo) {
       this.setShippingInfo(this.transaction.data.customer);
     }
     this.returnStock().then(() => {
