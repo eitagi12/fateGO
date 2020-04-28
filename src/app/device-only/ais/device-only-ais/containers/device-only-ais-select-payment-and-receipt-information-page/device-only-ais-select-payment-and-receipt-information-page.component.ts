@@ -6,12 +6,13 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
-import { HomeService, ApiRequestService, AlertService, PaymentDetail, User, TokenService , PaymentDetailBank} from 'mychannel-shared-libs';
+import { HomeService, ApiRequestService, AlertService, PaymentDetail, User, TokenService, PaymentDetailBank } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { WIZARD_DEVICE_ONLY_AIS } from 'src/app/device-only/constants/wizard.constant';
 import { CreateOrderService } from 'src/app/device-only/services/create-order.service';
 import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
 import { Product } from 'src/app/device-only/models/product.model';
+import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
 
 @Component({
   selector: 'app-device-only-ais-select-payment-and-receipt-information-page',
@@ -30,10 +31,13 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   paymentDetail: PaymentDetail;
   paymentDetailTemp: any;
   paymentDetailValid: boolean;
+  paymentDetailWarehouseValid: boolean;
   customerInfoTemp: any;
   user: User;
   localtion: any;
   addessValid: boolean;
+  mobileNo: any;
+  warehouse: string = '63259';
 
   constructor(
     private router: Router,
@@ -46,6 +50,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
     private alertService: AlertService,
     private homeButtonService: HomeButtonService,
     private tokenService: TokenService,
+    private customerInfoService: CustomerInformationService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -61,15 +66,28 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       commercialName += ` สี ${this.priceOption.productStock.colorName}`;
     }
     // REFACTOR IT'S
-    this.paymentDetail = {
-      commercialName: commercialName,
-      // tslint:disable-next-line:max-line-length
-      promotionPrice: this.priceOption.trade.priceType === 'NORMAL' ? +(this.priceOption.trade.normalPrice) : +(this.priceOption.trade.promotionPrice),
-      isFullPayment: this.isFullPayment(),
-      installmentFlag: false,
-      advancePay: 0,
-      qrCode: true
-    };
+    if (this.user.locationCode !== this.warehouse) {
+      this.paymentDetail = {
+        commercialName: commercialName,
+        // tslint:disable-next-line:max-line-length
+        promotionPrice: this.priceOption.trade.priceType === 'NORMAL' ? +(this.priceOption.trade.normalPrice) : +(this.priceOption.trade.promotionPrice),
+        isFullPayment: this.isFullPayment(),
+        installmentFlag: false,
+        advancePay: 0,
+        qrCode: true
+      };
+    } else {
+      this.paymentDetail = {
+        commercialName: commercialName,
+        promotionPrice: this.priceOption.trade.priceType === 'NORMAL' ? +(this.priceOption.trade.normalPrice)
+          : +(this.priceOption.trade.promotionPrice),
+        isFullPayment: this.isFullPayment(),
+        installmentFlag: false,
+        advancePay: 0,
+        qrCode: true,
+        omisePayment: this.isFullPayment() && this.priceOption.productStock.company !== 'WDS'
+      };
+    }
 
     if (this.priceOption.trade.banks && this.priceOption.trade.banks.length > 0) {
       if (this.isFullPayment()) {
@@ -94,7 +112,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       this.localtion = this.user.locationCode;
       this.http.post('/api/salesportal/banks-promotion', {
         localtion: this.localtion
-      }).toPromise().then((response: any) => this.banks = response.data  || '');
+      }).toPromise().then((response: any) => this.banks = response.data || '');
     }
 
     if (!this.transaction.data) {
@@ -121,25 +139,25 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
 
   clearstock(): any {
     this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
-    .then((response: any) => {
-      if (response.value === true) {
-        this.createOrderService.cancelOrder(this.transaction).then((isSuccess: any) => {
-          this.transactionService.remove();
-          window.location.href = this.setPath();
-        });
-      }
-    }).catch((err: any) => {
-      this.transactionService.remove();
-    });
+      .then((response: any) => {
+        if (response.value === true) {
+          this.createOrderService.cancelOrder(this.transaction).then((isSuccess: any) => {
+            this.transactionService.remove();
+            window.location.href = this.setPath();
+          });
+        }
+      }).catch((err: any) => {
+        this.transactionService.remove();
+      });
   }
 
   onBack(): any {
     this.transactionService.remove();
-      if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
-        this.clearstock();
-      } else {
-        window.location.href = this.setPath();
-      }
+    if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      this.clearstock();
+    } else {
+      window.location.href = this.setPath();
+    }
   }
 
   setPath(): any {
@@ -152,7 +170,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       '?modelColor=' + this.product.color +
       '&productType' + this.product.productType +
       '&productSubType' + this.product.productSubtype;
-      return url + queryParams;
+    return url + queryParams;
   }
 
   onNext(): void {
@@ -166,6 +184,16 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       billDeliveryAddress: customerInfo.billDeliveryAddress
     };
     this.transaction.data.receiptInfo = customerInfo.receiptInfo;
+    this.mobileNo = this.customerInfoService.getSelectedMobileNo();
+    if (this.mobileNo) {
+      this.transaction.data.simCard = {
+        mobileNo: this.mobileNo
+      };
+    } else {
+      this.transaction.data.simCard = {
+        mobileNo: customerInfo.receiptInfo.telNo
+      };
+    }
   }
 
   onError(error: boolean): void {
@@ -202,6 +230,10 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
     this.paymentDetailValid = valid;
   }
 
+  onPaymentDetailWarehouseError(valid: boolean): void {
+    this.paymentDetailWarehouseValid = valid;
+  }
+
   isFullPayment(): boolean {
     const trade = this.priceOption.trade || {};
     const payment = (trade.payments || []).find(p => p.method !== 'PP') || {};
@@ -220,10 +252,15 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   }
 
   isNotFormValid(): boolean {
-    return !(this.isReceiptInformationValid && this.paymentDetailValid && this.addessValid);
+    if (this.user.locationCode !== this.warehouse) {
+      return !(this.isReceiptInformationValid && this.paymentDetailValid && this.addessValid);
+    } else {
+      return !(this.isReceiptInformationValid && this.paymentDetailWarehouseValid && this.addessValid);
+    }
   }
 
   ngOnDestroy(): void {
     this.transactionService.save(this.transaction);
   }
+
 }

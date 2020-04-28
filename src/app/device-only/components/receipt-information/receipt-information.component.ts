@@ -187,7 +187,7 @@ export class ReceiptInformationComponent implements OnInit {
     this.actionType = data.action;
     this.nameText = data.customer.titleName + ' ' + data.customer.firstName + ' ' + data.customer.lastName;
     this.billingAddressText = this.customerInfoService.convertBillingAddressToString(customer);
-
+    this.allProvinces = this.provincesData;
   }
 
   setCustomerInfo(data: any): void {
@@ -256,6 +256,7 @@ export class ReceiptInformationComponent implements OnInit {
                     action: TransactionAction.KEY_IN,
                     mobileNo: mobileNo
                   });
+                  this.allProvinces = this.provincesData;
                   this.errorAddessValid.emit(true);
                   this.customerInfoService.setSelectedMobileNo(mobileNo);
                   this.pageLoadingService.closeLoading();

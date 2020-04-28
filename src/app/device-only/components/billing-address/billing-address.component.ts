@@ -89,6 +89,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   zipCodeSelected: any;
 
   customerChanges: any;
+  addessValidate: boolean = true;
 
   constructor(
     public fb: FormBuilder,
@@ -234,7 +235,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       province: ['', [Validators.required]],
       amphur: ['', [Validators.required]],
       tumbol: ['', [Validators.required]],
-      zipCode: ['', [Validators.required, Validators.maxLength(5)]],
+      zipCode: ['', [Validators.required, Validators.maxLength(5), Validators.minLength(5), this.validateZipCode.bind(this)]],
     });
 
     // CHECK SELECT VALUE
@@ -247,7 +248,12 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       if (this.keyInCustomerAddressTemp || this.readCardCustomerAddressTemp) {
         this.error.emit(this.customerAddressForm.valid);
       } else {
-        this.error.emit(true);
+        if (this.addessValidate) {
+          this.error.emit(true);
+          this.addessValidate = !this.addessValidate;
+        } else {
+          this.error.emit(this.customerAddressForm.valid);
+        }
       }
       if (this.customerAddressForm.valid && this.customerAddressForm.controls.idCardNo.value) {
         const idCardNo = this.customerAddressForm.controls.idCardNo.value;
@@ -308,6 +314,9 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       this.customerAddressForm.controls['amphur'].enable();
       this.customerAddressForm.controls['tumbol'].disable();
       if (provinceName) {
+        if (this.customerAddressForm.controls['zipCode'].invalid) {
+          this.customerAddressForm.controls['zipCode'].setValue(null);
+        }
         const controlsZipCode = this.customerAddressForm.controls['zipCode'];
         this.provinceSelected = {
           provinceName: provinceName,
@@ -316,7 +325,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
         this.customerAddress = {
           province: provinceName
         };
-        this.queryAmphur(this.provinceSelected);
+          this.queryAmphur(this.provinceSelected);
       }
     });
   }
@@ -332,7 +341,10 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   }
 
   validateZipCode(control: AbstractControl): ValidationErrors | null {
-    const isZipCode = (this.zipCodes || []).find(zipCode => zipCode === control.value);
+    if (!this.zipCodesAllProvince) {
+      return null;
+    }
+    const isZipCode = (this.zipCodesAllProvince || []).find(zipCode => zipCode === control.value);
     if (isZipCode) {
       return null;
     }

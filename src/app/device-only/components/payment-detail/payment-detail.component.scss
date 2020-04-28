@@ -1,0 +1,26 @@
+.branner {
+    width: 300px;
+    margin: 0 auto;
+}
+
+.branner-qr {
+    width: 90px;
+    margin: 0 auto;
+}
+
+img.qr-logo:hover {
+    background-color: #74a822;
+}
+
+.active {
+    background-color: #74a822;
+}
+
+.btn-omise {
+    background: #32CEB0;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.20rem;
+    height: calc(2.25rem + 4px);
+    width: 100px;
+}

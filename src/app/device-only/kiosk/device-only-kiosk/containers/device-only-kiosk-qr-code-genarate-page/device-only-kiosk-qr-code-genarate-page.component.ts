@@ -267,7 +267,16 @@ export class DeviceOnlyKioskQrCodeGenaratePageComponent implements OnInit, OnDes
     }
   }
   inquiryMpay(): Promise<boolean> {
-    return this.qrcodePaymentService.getInquiryMpay({ orderId: this.orderID }).then((res: any) => {
+    let bodyReq;
+    if (this.priceOption.productStock.company === 'WDS') {
+      bodyReq = {
+        orderId: this.orderID,
+        company: 'WDS'
+       };
+    } else {
+      bodyReq = { orderId: this.orderID };
+    }
+    return this.qrcodePaymentService.getInquiryMpay(bodyReq).then((res: any) => {
 
       if (res && res.data && res.data.status && res.data.status === 'SUCCESS') {
         this.qrCodePrePostMpayModel.status = res.data.status;

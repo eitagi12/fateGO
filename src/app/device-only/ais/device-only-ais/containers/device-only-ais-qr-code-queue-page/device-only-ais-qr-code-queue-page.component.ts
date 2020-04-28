@@ -37,6 +37,7 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
   inputType: string;
   user: User;
   skipQueue: boolean = false;
+  isLineShop: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -56,6 +57,12 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     this.user = this.tokenService.getUser();
+    if (this.user.locationCode === '63259' &&
+      this.transaction.data.payment.paymentForm === 'FULL' &&
+      this.transaction.data.payment.paymentOnlineCredit === true &&
+      this.transaction.data.payment.paymentType === 'CREDIT') {
+        this.isLineShop = true;
+    }
   }
 
   ngOnInit(): void {
@@ -121,7 +128,7 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
     this.pageLoadingService.openLoading();
     if (!this.queueType || this.queueType === 'MANUAL' || this.inputType === 'queue') {
       this.transaction.data.queue = { queueNo: this.queue };
-      this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).then(() => {
+      this.createOrderService.createDeviceSellingOrderList(this.transaction, this.priceOption).then(() => {
         return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
           this.pageLoadingService.closeLoading();
           this.router.navigate([ROUTE_DEVICE_ONLY_AIS_RESULT_QUEUE_PAGE]);
@@ -139,7 +146,7 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
       this.onSendSMSQueue(this.mobileNo).then((queue) => {
         if (queue) {
           this.transaction.data.queue = { queueNo: queue };
-          return this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).then(() => {
+          return this.createOrderService.createDeviceSellingOrderList(this.transaction, this.priceOption).then(() => {
             return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
               this.pageLoadingService.closeLoading();
               this.router.navigate([ROUTE_DEVICE_ONLY_AIS_RESULT_QUEUE_PAGE]);
@@ -197,19 +204,40 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
     return this.mobileFrom.value['mobileNo'] ? true : false;
   }
 
+  enableSkip(): boolean {
+    if (this.user.locationCode === '1213' || this.user.locationCode === '63259') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   onSkip(): void {
-    this.queueService.getQueueZ(this.user.locationCode)
-      .then((resp: any) => {
-        const queueNo = resp.data.queue;
+    if (this.user.locationCode === '63259') {
+      this.queueService.getQueueL(this.user.locationCode).then((respQueue: any) => {
+        const data = respQueue.data ? respQueue.data : {};
+        this.transaction.data.queue = { queueNo: data.queue };
         this.skipQueue = true;
-        this.transaction.data.queue = { queueNo: queueNo };
-        this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).then(() => {
+        this.createOrderService.createDeviceSellingOrderList(this.transaction, this.priceOption).then((res) => {
           return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
             this.pageLoadingService.closeLoading();
             this.router.navigate([ROUTE_DEVICE_ONLY_AIS_RESULT_QUEUE_PAGE]);
           });
         });
       });
+    } else {
+      this.queueService.getQueueZ(this.user.locationCode)
+        .then((resp: any) => {
+          const queueNo = resp.data.queue;
+          this.skipQueue = true;
+          this.transaction.data.queue = { queueNo: queueNo };
+          this.createOrderService.createDeviceSellingOrderList(this.transaction, this.priceOption).then(() => {
+            return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
+              this.pageLoadingService.closeLoading();
+              this.router.navigate([ROUTE_DEVICE_ONLY_AIS_RESULT_QUEUE_PAGE]);
+            });
+          });
+        });
+    }
   }
-
 }

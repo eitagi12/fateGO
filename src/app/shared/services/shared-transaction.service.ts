@@ -136,6 +136,10 @@ export class SharedTransactionService {
       params.data.main_package = data.mainPackage;
     }
 
+    if (data.shippingInfo) {
+      params.data.shipping_information = data.shippingInfo;
+    }
+
     if (data.preBooking) {
       params.data.pre_booking = transaction.data.preBooking;
     }

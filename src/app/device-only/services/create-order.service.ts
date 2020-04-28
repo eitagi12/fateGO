@@ -8,6 +8,8 @@ import { User } from 'mychannel-shared-libs';
 import { map } from 'rxjs/operators';
 import { QrCodeOmiseService } from 'src/app/device-only/services/qr-code-omise.service';
 import { CustomerGroup } from 'src/app/buy-product/services/flow.service';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { TranslateService } from '@ngx-translate/core';
 @Injectable({
   providedIn: 'root'
 })
@@ -16,6 +18,9 @@ export class CreateOrderService {
   user: User;
   terminalId: any;
   serviceId: any;
+  transaction: Transaction;
+  provinces: string[];
+  addrShipping: string;
   private readonly CASH_PAYMENT: string = '[CA]';
   private readonly CREDIT_CARD_PAYMENT: string = '[CC]';
   private readonly BANK: string = '[B]';
@@ -34,14 +39,18 @@ export class CreateOrderService {
   private readonly COMMA: string = ',';
   private readonly PROMPT_PAY_PAYMENT: string = '[PB]';
   private readonly RABBIT_LINE_PAY_PAYMENT: string = '[RL]';
+  private readonly RECEIPTINFO_MOBILE_NUMBER: string = '[RM]';
 
   constructor(
     private http: HttpClient,
     private tokenService: TokenService,
     public qrCodeOmiseService: QrCodeOmiseService,
     private sharedTransactionService: SharedTransactionService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private transactionService: TransactionService,
+    private translation: TranslateService
   ) {
+    this.transaction = this.transactionService.load();
     this.user = this.tokenService.getUser();
   }
 
@@ -304,7 +313,7 @@ export class CreateOrderService {
 
     const discount = trade.discount;
     const customer = transactionData.customer;
-    const simCard = transactionData.simCard;
+    const simCard = transactionData.simCard || '';
     const order = transactionData.order;
     const mainPackage = transaction.data.mainPackage && transaction.data.mainPackage.customAttributes || {};
     const contract = transaction.data.contractFirstPack || {};
@@ -315,6 +324,8 @@ export class CreateOrderService {
     const mpayPayment: any = transactionData.mpayPayment || {};
     const advancePayment = transactionData.advancePayment;
     const omise: Omise = transactionData.omise || {};
+    const shippingInfo = transactionData.shippingInfo || {};
+    const fullname = shippingInfo.titleName + ' ' + shippingInfo.firstName + ' ' + shippingInfo.lastName || '';
 
     const product: any = {
       productType: productStock.productType || productDetail.productType || 'DEVICE',
@@ -331,7 +342,7 @@ export class CreateOrderService {
       matAirTime: trade.advancePay ? trade.advancePay.matAirtime : '',
       tradeNo: trade.tradeNo || '',
       ussdCode: trade.ussdCode || '',
-      returnCode: simCard.privilegeCode || customer.privilegeCode || '4GEYYY',
+      returnCode: simCard ? simCard.privilegeCode || customer.privilegeCode : '4GEYYY',
       cashBackFlg: '',
       tradeAirtimeId: trade.advancePay ? trade.advancePay.tradeAirtimeId : '',
       tradeDiscountId: trade.discount ? trade.discount.tradeDiscountId : '',
@@ -349,10 +360,9 @@ export class CreateOrderService {
       userId: user.username,
       queueNo: queue.queueNo || '',
       cusNameOrder: `${customer.titleName || ''} ${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
-      soChannelType: 'CSP',
+      soChannelType: 'MC_KIOSK',
       soDocumentType: 'RESERVED',
       productList: [product],
-
       grandTotalAmt: (+this.getGrandTotalAmt(trade, prebooking)).toFixed(2),
       saleCode: this.tokenService.isAisUser() ? (seller.sellerNo || '') : (seller.sellerNo || user.ascCode),
       taxCardId: customer.idCardNo || '',
@@ -382,8 +392,8 @@ export class CreateOrderService {
       preBookingNo: prebooking ? prebooking.preBookingNo : '',
       depositAmt: prebooking ? prebooking.depositAmt : '',
       convertToNetwotkType: '',
-      shipCusName: '',
-      shipCusAddr: '',
+      shipCusName: user.locationCode === '63259' ? fullname : '',
+      shipCusAddr: user.locationCode === '63259' ? this.convertBillingAddressToString(shippingInfo) : '',
       storeName: '',
       shipLocation: '',
       remarkReceipt: '',
@@ -424,7 +434,6 @@ export class CreateOrderService {
         data.qrAirtimeTransId = omise.tranId;
         data.qrAirtimeAmt = this.getOnlinePaymentAmt(trade, transaction);
       }
-
     }
 
     // payment with QR code
@@ -444,6 +453,16 @@ export class CreateOrderService {
         data.qrAirtimeTransId = mpayPayment.qrAirtimeTransId || mpayPayment.tranId || null;
         data.qrAirtimeAmt = this.getQRAmt(priceOption, transaction);
       }
+    }
+
+    if (user.locationCode !== '63259') {
+      delete data.shipCusName;
+      delete data.shipCusAddr;
+      // if (!data.cusMobileNoOrder) {
+      //   data.cusMobileNoOrder = transactionData.receiptInfo.telNo;
+      // }
+    } else {
+      data.cusMobileNoOrder = shippingInfo.telNo;
     }
 
     // ผ่อนชำระ
@@ -630,7 +649,7 @@ export class CreateOrderService {
     }
   }
 
-  private getOrderRemark(transaction: Transaction, priceOption: PriceOption): string {
+  public getOrderRemark(transaction: Transaction, priceOption: PriceOption): string {
     const installment = this.getInstallmentRemark(transaction, priceOption);
     const information = this.getInformationRemark(transaction, priceOption);
     return `${this.PROMOTION_NAME}${this.SPACE}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW_LINE}`;
@@ -736,6 +755,7 @@ export class CreateOrderService {
     const mobileCarePackage = transaction.data.mobileCarePackage || {};
     const queue: any = transaction.data.queue || {};
     const customAttributes = mobileCarePackage.customAttributes || {};
+    const shipMobile = this.RECEIPTINFO_MOBILE_NUMBER + this.SPACE + transaction.data.shippingInfo.telNo;
 
     if ('MC001' === customerGroup.code) {
       customerGroupName = 'New Register';
@@ -751,6 +771,9 @@ export class CreateOrderService {
     message += this.MOBILE_CARE + this.SPACE + (customAttributes.shortNameThai || '') + this.COMMA + this.SPACE;
     message += this.PRIVILEGE_DESC + this.SPACE + (trade.tradeDesc || '') + this.COMMA + this.SPACE;
     message += this.QUEUE_NUMBER + this.SPACE + queue.queueNo;
+    if (this.user.locationCode === '63259') {
+      message += this.COMMA + this.SPACE + shipMobile;
+    }
     return message;
   }
 
@@ -792,6 +815,48 @@ export class CreateOrderService {
       cost += +trade.advancePay.amount;
     }
     return cost ? cost.toFixed(2) : undefined;
+  }
+
+  convertBillingAddressToString(billDeliveryAddress: any): string {
+    let addressCus: any;
+    let _tumbol: string;
+    let _amphur: string;
+    if (billDeliveryAddress.province === 'กรุงเทพ') {
+      billDeliveryAddress.province = 'กรุงเทพมหานคร';
+      _tumbol = 'แขวง';
+      _amphur = 'เขต';
+    } else {
+      _tumbol = 'ตำบล';
+      _amphur = 'อำเภอ';
+    }
+
+    addressCus = {
+      homeNo: billDeliveryAddress.homeNo || '',
+      moo: billDeliveryAddress.moo ? 'หมู่' + billDeliveryAddress.moo : '',
+      mooBan: billDeliveryAddress.mooBan ? 'หมู่บ้าน' + billDeliveryAddress.mooBan : '',
+      buildingName: billDeliveryAddress.buildingName ? 'อาคาร' + billDeliveryAddress.buildingName : '',
+      floor: billDeliveryAddress.floor ? 'ชั้น' + billDeliveryAddress.floor : '',
+      room: billDeliveryAddress.room ? 'ห้อง' + billDeliveryAddress.room : '',
+      soi: billDeliveryAddress.soi ? 'ซอย' + billDeliveryAddress.soi : '',
+      street: billDeliveryAddress.street ? 'ถนน' + billDeliveryAddress.street : '',
+      tumbol: billDeliveryAddress.tumbol ? _tumbol + billDeliveryAddress.tumbol : '',
+      amphur: billDeliveryAddress.amphur ? _amphur + billDeliveryAddress.amphur : '',
+      province: billDeliveryAddress.province ? 'จังหวัด' + billDeliveryAddress.province : '',
+      // tslint:disable-next-line: max-line-length
+      zipCode: billDeliveryAddress.zipCode || billDeliveryAddress.portalCode ? billDeliveryAddress.zipCode || billDeliveryAddress.portalCode : '',
+    };
+    let str: string = '';
+    for (const item in addressCus) {
+      if (addressCus.hasOwnProperty(item)) {
+        if (addressCus[item] !== '') {
+          str += ' ' + addressCus[item];
+        }
+        if (item === 'street' || item === 'amphur' || item === 'province') {
+          str += '|';
+        }
+      }
+    }
+    return str;
   }
 
 }

@@ -1,61 +1,60 @@
 <div class="card mb-3">
-  <div class="card-header text-white" style="background: #FF80AB;">
-    {{ 'รายละเอียดการชำระ' | translate }}
-  </div>
-  <div class="card-body">
-    <p>
-    {{ 'ข้อมูลการชำระสินค้า' | translate }}
-    </p>
-    <ng-container *ngIf="!priceOption?.trade?.advancePay || priceOption?.trade?.advancePay?.installmentFlag === 'N'">
-      <p>
-        <i class="fa fa-circle mr-3 text-lime"></i>
-        <span class="text-grey" id="text-name-payment-summary">
-          {{ priceOption?.productDetail?.name }}
-        </span>
-        <span class="text-grey" id="text-color-summary" *ngIf="priceOption?.productStock?.colorName">
-          {{ priceOption?.productStock?.colorName?'สี': '' }} {{ priceOption?.productStock?.colorName }}
-        </span>
-        <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'"> : {{ 'ชำระเต็มจำนวน' | translate }}</span>
-        <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'"> :
-           {{ 'ผ่อนชำระบัตรเครดิต' | translate }}</span>
-        <span class="pull-right text-green" id="text-price-summary">
-          ฿ {{ price | number }}
-        </span>
-      </p>
-    </ng-container>
+    <div class="card-header text-white" style="background: #FF80AB;">
+        {{ 'รายละเอียดการชำระ' | translate }}
+    </div>
+    <div class="card-body">
+        <p>
+            {{ 'ข้อมูลการชำระสินค้า' | translate }}
+        </p>
+        <ng-container *ngIf="!priceOption?.trade?.advancePay || priceOption?.trade?.advancePay?.installmentFlag === 'N'">
+            <p>
+                <i class="fa fa-circle mr-3 text-lime"></i>
+                <span class="text-grey" id="text-name-payment-summary">
+                  {{ priceOption?.productDetail?.name }}
+                </span>
+                <span class="text-grey" id="text-color-summary" *ngIf="priceOption?.productStock?.colorName">
+                  {{ priceOption?.productStock?.colorName?'สี': '' }} {{ priceOption?.productStock?.colorName }}
+                </span>
+                <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'"> : {{ 'ชำระเต็มจำนวน' | translate }}</span>
+                <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'"> :
+                  {{ 'ผ่อนชำระบัตรเครดิต' | translate }}</span>
+                <span class="pull-right text-green" id="text-price-summary">
+                  ฿ {{ price | number }}
+                </span>
+            </p>
+        </ng-container>
 
-    <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">
-      <span class="text-grey" id="text-credit-summary">
-        ( 
-         {{ 'ชำระโดย เครดิตธนาคาร' | translate }}
-        {{ transaction?.data?.payment?.paymentMethod?.name }}
-        {{ transaction?.data?.payment?.paymentMethod?.percentage }} %
-        {{ transaction?.data?.payment?.paymentMethod?.month }} เดือน
-        {{ ((+price) + (priceOption?.trade?.advancePay?.installmentFlag === 'N' ? +priceOption?.trade?.advancePay?.amount : 0)) / transaction?.data?.payment?.paymentMethod?.month | number: '1.2-2' }}
-        บาทต่อเดือน
-        )
-      </span>
-    </ng-container>
-    <ng-container
-      *ngIf="transaction?.data?.payment?.paymentForm !== 'INSTALLMENT' && transaction?.data?.payment?.paymentType === 'CREDIT'">
-      <span class="text-grey" id="text-credit-summary">
-        (
-        {{ (transaction?.data?.payment?.paymentOnlineCredit ? 'ชำระโดย ชำระเงินออนไลน์ด้วยบัตรเครดิต' : 'ชำระโดย เครดิตธนาคาร') | translate }}
-        {{ transaction?.data?.payment?.paymentMethod?.name }}
-        {{ transaction?.data?.payment?.paymentBank?.name}}
-        )
-      </span>
-    </ng-container>
+        <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">
+            <span class="text-grey" id="text-credit-summary">
+              ( 
+               {{ 'ชำระโดย เครดิตธนาคาร' | translate }}
+              {{ transaction?.data?.payment?.paymentMethod?.name }}
+              {{ transaction?.data?.payment?.paymentMethod?.percentage }} %
+              {{ transaction?.data?.payment?.paymentMethod?.month }} เดือน
+              {{ ((+price) + (priceOption?.trade?.advancePay?.installmentFlag === 'N' ? +priceOption?.trade?.advancePay?.amount : 0)) / transaction?.data?.payment?.paymentMethod?.month | number: '1.2-2' }}
+              บาทต่อเดือน
+              )
+            </span>
+        </ng-container>
+        <ng-container *ngIf="transaction?.data?.payment?.paymentForm !== 'INSTALLMENT' && transaction?.data?.payment?.paymentType === 'CREDIT'">
+            <span class="text-grey" id="text-credit-summary">
+              (
+              {{ (transaction?.data?.payment?.paymentOnlineCredit ? 'ชำระโดย ชำระเงินออนไลน์ด้วยบัตรเครดิต' : 'ชำระโดย เครดิตธนาคาร') | translate }}
+              {{ transaction?.data?.payment?.paymentMethod?.name }}
+              {{ transaction?.data?.payment?.paymentBank?.name}}
+              )
+            </span>
+        </ng-container>
 
-    <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">
-      <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType !== 'QR_CODE' && 
-      transaction?.data?.payment?.paymentType !== 'CREDIT'">
-         ({{ 'ชำระโดย' | translate }} {{ 'เงินสด' | translate }})
-      </small>
-      <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType === 'QR_CODE'">
-        (
-        {{ 'ชำระโดย' | translate }}
-        <span *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'THAI_QR'">
+        <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">
+            <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType !== 'QR_CODE' && 
+              transaction?.data?.payment?.paymentType !== 'CREDIT'">
+               ({{ 'ชำระโดย' | translate }} {{ 'เงินสด' | translate }})
+            </small>
+            <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType === 'QR_CODE'">
+              (
+              {{ 'ชำระโดย' | translate }}
+              <span *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'THAI_QR'">
           Thai QR Promptpay
         </span>
         <span *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'LINE_QR'">
@@ -63,59 +62,128 @@
         </span>
         )
       </small>
-    </ng-container>
+        </ng-container>
 
-  </div>
-  <div *ngIf="isShowReceiptTnfomation" class="card-footer bg-transparent ">
-    <p>
-      {{ 'ข้อมูลใบเสร็จรับเงิน' | translate }}
-    </p>
-    <div class="row">
-      <div class="col-12 col-sm-4">
-        <i class="fa fa-circle mr-3 text-lime"></i>
-        <span class="text-grey">
+    </div>
+    <div *ngIf="isShowReceiptTnfomation" class="card-footer bg-transparent ">
+        <p>
+            {{ 'ข้อมูลใบเสร็จรับเงิน' | translate }}
+        </p>
+        <div class="row">
+            <div class="col-12 col-sm-4">
+                <i class="fa fa-circle mr-3 text-lime"></i>
+                <span class="text-grey">
           {{ 'ผู้ซื้อ' | translate }}
         </span>
-      </div>
-      <div class="col-12 col-sm-8">
-        <p class="text-green" id="text-receipt-customer-name">
-          {{ transaction?.data?.customer?.titleName }} {{ transaction?.data?.customer?.firstName }} {{ transaction?.data?.customer?.lastName
-          }}
-        </p>
-      </div>
-      <div class="col-12 col-sm-4">
-        <i class="fa fa-circle mr-3 text-lime"></i>
-        <span class="text-grey">
-          {{ 'ที่อยู่ในใบเสร็จรับเงิน' | translate }}
-        </span>
-      </div>
-      <div class="col-12 col-sm-8">
-        <p class="text-green" id="text-receipt-billing-address">
-          {{ transaction?.data?.customer?.homeNo }}
-          <span *ngIf="transaction?.data?.customer?.moo">
-            หมู่ {{ transaction?.data?.customer?.moo }}
-          </span>
-          <span *ngIf="transaction?.data?.customer?.mooBan">
-            หมู่บ้าน{{ transaction?.data?.customer?.mooBan }}</span>
-          <span *ngIf="transaction?.data?.customer?.room">
-            ห้อง{{ transaction?.data?.customer?.room }}</span>
-          <span *ngIf="transaction?.data?.customer?.floor">
-            ชั้น {{ transaction?.data?.customer?.floor }}</span>
-          <span *ngIf="transaction?.data?.customer?.buildingName">
-            อาคาร{{ transaction?.data?.customer?.buildingName }}</span>
-          <span *ngIf="transaction?.data?.customer?.soi">
-            ซอย {{ transaction?.data?.customer?.soi }}</span>
-          <span *ngIf="transaction?.data?.customer?.street">
-            ถนน{{ transaction?.data?.customer?.street }}</span>
-          <span *ngIf="transaction?.data?.customer?.province">
-            จังหวัด {{ transaction?.data?.customer?.province }}</span>
-          <span *ngIf="transaction?.data?.customer?.amphur">
-            อำเภอ{{ transaction?.data?.customer?.amphur }}</span>
-          <span *ngIf="transaction?.data?.customer?.tumbol">
-            ตำบล/แขวง{{ transaction?.data?.customer?.tumbol }}</span>
-          {{ transaction?.data?.customer?.zipCode }}
-        </p>
-      </div>
+            </div>
+            <div class="col-12 col-sm-8">
+                <p class="text-green" id="text-receipt-customer-name">
+                    {{ transaction?.data?.customer?.titleName }} {{ transaction?.data?.customer?.firstName }} {{ transaction?.data?.customer?.lastName }}
+                </p>
+            </div>
+            <div class="col-12 col-sm-4">
+                <i class="fa fa-circle mr-3 text-lime"></i>
+                <span class="text-grey">
+                  {{ 'ที่อยู่ในใบเสร็จรับเงิน' | translate }}
+                </span>
+            </div>
+            <div class="col-12 col-sm-8">
+                <p class="text-green" id="text-receipt-billing-address">
+                    {{ transaction?.data?.customer?.homeNo }}
+                    <span *ngIf="transaction?.data?.customer?.moo">
+                      หมู่ {{ transaction?.data?.customer?.moo }}
+                    </span>
+                    <span *ngIf="transaction?.data?.customer?.mooBan">
+                      หมู่บ้าน{{ transaction?.data?.customer?.mooBan }}</span>
+                    <span *ngIf="transaction?.data?.customer?.room">
+                      ห้อง{{ transaction?.data?.customer?.room }}</span>
+                    <span *ngIf="transaction?.data?.customer?.floor">
+                      ชั้น {{ transaction?.data?.customer?.floor }}</span>
+                    <span *ngIf="transaction?.data?.customer?.buildingName">
+                      อาคาร{{ transaction?.data?.customer?.buildingName }}</span>
+                    <span *ngIf="transaction?.data?.customer?.soi">
+                      ซอย {{ transaction?.data?.customer?.soi }}</span>
+                    <span *ngIf="transaction?.data?.customer?.street">
+                      ถนน{{ transaction?.data?.customer?.street }}</span>
+                    <span *ngIf="transaction?.data?.customer?.tumbol && transaction?.data?.customer?.province !== 'กรุงเทพ'">
+                      ตำบล{{ transaction?.data?.customer?.tumbol }}</span>
+                    <span *ngIf="transaction?.data?.customer?.tumbol && transaction?.data?.customer?.province === 'กรุงเทพ'">
+                      แขวง{{ transaction?.data?.customer?.tumbol }}
+                    </span>
+                    <span *ngIf="transaction?.data?.customer?.amphur && transaction?.data?.customer?.province !== 'กรุงเทพ'">
+                      อำเภอ{{ transaction?.data?.customer?.amphur }}
+                    </span>
+                    <span *ngIf="transaction?.data?.customer?.amphur && transaction?.data?.customer?.province === 'กรุงเทพ'">
+                      เขต{{ transaction?.data?.customer?.amphur }}
+                    </span>
+                    <span *ngIf="transaction?.data?.customer?.province">
+                      จังหวัด {{ transaction?.data?.customer?.province }}
+                    </span> {{ transaction?.data?.customer?.zipCode }}
+                </p>
+            </div>
+        </div>
     </div>
-  </div>
+
+    <div *ngIf="isLineShop" class="card-body">
+        <p>
+            {{ 'ที่อยู่จัดส่งเอกสาร' | translate }}
+        </p>
+        <div class="row">
+            <ng-container>
+                <div class="col-12 col-sm-4">
+                    <p>
+                        <i class="fa fa-circle mr-3 text-lime"></i>
+                        <span class="text-grey">
+                          {{ 'ชื่อผู้รับสินค้า' | translate}}
+                        </span>
+                    </p>
+                </div>
+                <div class="col-12 col-sm-8">
+                    <div *ngIf="!editName">
+                        <p>
+                            <span class="text-green">
+                              คุณ {{$customer}}
+                            </span>
+                            <a class="col-sm-2" href="#" [hidden]="view" (click)="$event.preventDefault(); showEditCustomerName()"><img src="assets/images/icon/icon-edit.png"></a>
+                        </p>
+                    </div>
+                    <div *ngIf="editName" class="col-sm-10">
+                        <form [formGroup]="editCustomerName">
+                            <div class="row">
+                                <p class="mr-2">
+                                    <span>
+                                      คุณ
+                                    </span>
+                                </p>
+                                <input type="text" (ngModelChange)="onComplete()" class="col-sm-5 mr-3 mb-3 form-control" formControlName="firstName">
+                                <input type="text" (ngModelChange)="onComplete()" class="col-sm-5 mb-3 form-control" formControlName="lastName">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+        <div class="row">
+            <ng-container>
+                <div class="col-12 col-sm-4">
+                    <p>
+                        <i class="fa fa-circle mr-3 text-lime"></i>
+                        <span class="text-grey">
+                          {{ 'ที่อยู่การจัดส่งสินค้า' | translate}}
+                        </span>
+
+                    </p>
+                </div>
+                <div class="col-12 col-sm-8">
+                    <p>
+                        <span class="text-green">
+                              {{ billingAddress?.text }}
+                            </span>
+                        <a href="#" class="col-sm-2" [hidden]="view" (click)="$event.preventDefault(); billingAddress?.onEdit()"><img src="assets/images/icon/icon-edit.png"></a>
+                    </p>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+
 </div>

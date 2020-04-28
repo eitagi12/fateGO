@@ -10,3 +10,5 @@ export const ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE = '/device-only/ais/qr-
 export const ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_QR_CODE_PAGE = '/device-only/ais/checkout-payment-qr-code';
 export const ROUTE_DEVICE_ONLY_AIS_QR_CODE_QUEUE_PAGE = '/device-only/ais/qr-code-queue';
 export const ROUTE_DEVICE_ONLY_AIS_RESULT_QUEUE_PAGE = '/device-only/ais/result-queue';
+export const ROUTE_DEVICE_ONLY_AIS_EDIT_BILLING_ADDRESS_PAGE = '/device-only/ais/edit-billing-address';
+export const ROUTE_DEVICE_ONLY_AIS_OMISE_GENERATE_PAGE = '/device-only/ais/omise-generator';
