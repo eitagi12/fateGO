@@ -458,6 +458,11 @@ export class CreateOrderService {
     if (user.locationCode !== '63259') {
       delete data.shipCusName;
       delete data.shipCusAddr;
+      // if (!data.cusMobileNoOrder) {
+      //   data.cusMobileNoOrder = transactionData.receiptInfo.telNo;
+      // }
+    } else {
+      data.cusMobileNoOrder = shippingInfo.telNo;
     }
 
     // ผ่อนชำระ
