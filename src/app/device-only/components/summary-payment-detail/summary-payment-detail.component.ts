@@ -95,8 +95,8 @@ export class SummaryPaymentDetailComponent implements OnInit {
   createForm(): void {
     const customer = this.transaction.data.customer;
     this.editCustomerName = this.formBuilder.group({
-      'firstName': ['', Validators.compose([Validators.pattern('^[ก-ํ\s]+$')])],
-      'lastName': ['', Validators.compose([Validators.pattern('^[ก-ํ\s]+$')])],
+      'firstName': ['', Validators.compose([Validators.required, Validators.pattern('^[a-zA-Zก-ํ\s]+$')])],
+      'lastName': ['', Validators.compose([Validators.required, Validators.pattern('^[ก-ํ\s]+$')])],
     });
     if (!this.transaction.data.shippingInfo.firstName && !this.transaction.data.shippingInfo.lastName) {
       this.editCustomerName.controls['firstName'].setValue(customer.firstName);

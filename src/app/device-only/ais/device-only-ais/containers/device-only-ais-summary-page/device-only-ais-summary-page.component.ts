@@ -203,6 +203,18 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    const shippingInfo = this.transaction.data.shippingInfo;
+    const editName = this.editName || '';
+    if (editName) {
+      const firstName = editName.firstName;
+      const lastName = editName.lastName;
+      if (shippingInfo) {
+        this.transaction.data.shippingInfo.firstName = firstName ? firstName : shippingInfo.firstName;
+        this.transaction.data.shippingInfo.lastName = lastName ? lastName : shippingInfo.lastName;
+      } else {
+        this.mapShippingInfo(this.transaction.data.customer);
+      }
+    }
     this.transactionService.save(this.transaction);
   }
 }
