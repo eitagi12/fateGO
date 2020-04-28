@@ -32,7 +32,7 @@ export class DeviceOrderAisDeviceQrCodeQueuePageComponent implements OnInit, OnD
   queueType: string;
   errorQueue: boolean = false;
   skipQueue: boolean = false;
-  warehouse: boolean = false;
+  warehouse: boolean;
 
   constructor(
     private router: Router,

@@ -50,7 +50,7 @@ export class DeviceOrderAisExistingGadgetSummaryPageComponent implements OnInit,
   shipCusNameFormControl: FormGroup;
   isEditShipCusName: boolean = false;
   user: User;
-  warehouse: boolean = false;
+  warehouse: boolean;
   shippingAddress: string;
 
   constructor(

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TokenService, User } from 'mychannel-shared-libs';
-import { Transaction, Payment, Prebooking, Customer, Queue, Omise } from 'src/app/shared/models/transaction.model';
+import { Transaction, Payment, Prebooking, Customer, Queue, Omise, ShippingInfo } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { HttpClient } from '@angular/common/http';
 import { CustomerGroup } from 'src/app/buy-product/services/flow.service';
@@ -108,6 +108,8 @@ export class QueuePageService {
     const mpayPayment: any = transactionData.mpayPayment || {};
     const advancePayment = transactionData.advancePayment;
     const omise: Omise = transactionData.omise || {};
+    const shippingInfo: ShippingInfo = transactionData.shippingInfo || {};
+    const warehouse: boolean = user.locationCode === '63259';
 
     const product: any = {
       productType: productStock.productType || productDetail.productType || 'DEVICE',
@@ -175,8 +177,8 @@ export class QueuePageService {
       preBookingNo: prebooking ? prebooking.preBookingNo : '',
       depositAmt: prebooking ? prebooking.depositAmt : '',
       convertToNetwotkType: '',
-      shipCusName: '',
-      shipCusAddr: '',
+      shipCusName: warehouse ? `คุณ${shippingInfo.firstName} ${shippingInfo.lastName}` : '',
+      shipCusAddr: warehouse ? this.mapShipCusAddr(shippingInfo) : '' ,
       storeName: '',
       shipLocation: '',
       remarkReceipt: '',
@@ -741,5 +743,43 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
     return this.http.get('/api/salesportal/check-queue-location').toPromise().then((response: any) => {
       return response && response.data && response.data.queueType ? response.data.queueType : undefined;
     }).catch((e) => false);
+  }
+
+  private mapShipCusAddr(shippingInfo: any): string {
+    let address: string = '';
+    if ((shippingInfo.province || '').replace(/มหานคร$/, '') === 'กรุงเทพ') {
+      address = shippingInfo.homeNo ? `${shippingInfo.homeNo} ` : '';
+      address += shippingInfo.buildingName ? `อาคาร${shippingInfo.buildingName} ` : '';
+      address += shippingInfo.floor ? `ชั้น${shippingInfo.floor} ` : '';
+      address += shippingInfo.room ? `ห้อง${shippingInfo.room} ` : '';
+      address += shippingInfo.moo ? `หมู่${shippingInfo.moo} ` : '';
+      address += shippingInfo.mooBan ? `หมู่บ้าน${shippingInfo.mooBan} ` : '';
+      address += shippingInfo.soi ? `ซอย${shippingInfo.soi} ` : '';
+      address += shippingInfo.street ? `ถนน${shippingInfo.street}` : '';
+      address += '|';
+      address += shippingInfo.tumbol ? `แขวง${shippingInfo.tumbol} ` : '';
+      address += shippingInfo.amphur ? `เขต${shippingInfo.amphur}` : '';
+      address += '|';
+      address += shippingInfo.province ? `จังหวัด${shippingInfo.province}` : '';
+      address += '|';
+      address += shippingInfo.zipCode ? `${shippingInfo.zipCode}` : '';
+    } else {
+      address = shippingInfo.homeNo ? `${shippingInfo.homeNo} ` : '';
+      address += shippingInfo.buildingName ? `อาคาร${shippingInfo.buildingName} ` : '';
+      address += shippingInfo.floor ? `ชั้น${shippingInfo.floor} ` : '';
+      address += shippingInfo.room ? `ห้อง${shippingInfo.room} ` : '';
+      address += shippingInfo.moo ? `หมู่${shippingInfo.moo} ` : '';
+      address += shippingInfo.mooBan ? `หมู่บ้าน${shippingInfo.mooBan} ` : '';
+      address += shippingInfo.soi ? `ซอย${shippingInfo.soi} ` : '';
+      address += shippingInfo.street ? `ถนน${shippingInfo.street}` : '';
+      address += '|';
+      address += shippingInfo.tumbol ? `ตำบล${shippingInfo.tumbol} ` : '';
+      address += shippingInfo.amphur ? `อำเภอ${shippingInfo.amphur}` : '';
+      address += '|';
+      address += shippingInfo.province ? `จังหวัด${shippingInfo.province}` : '';
+      address += '|';
+      address += shippingInfo.zipCode ? `${shippingInfo.zipCode}` : '';
+    }
+    return address;
   }
 }

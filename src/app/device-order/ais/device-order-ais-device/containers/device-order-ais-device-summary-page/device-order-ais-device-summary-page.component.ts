@@ -39,7 +39,7 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit, OnDestr
   shipCusNameFormControl: FormGroup;
   isEditShipCusName: boolean = false;
   user: User;
-  warehouse: boolean = false;
+  warehouse: boolean;
 
   constructor(
     private router: Router,

@@ -37,7 +37,7 @@ export class DeviceOrderAisExistingGadgetPaymentDetailPageComponent implements O
   receiptInfoTemp: any;
   depositOrDiscount: boolean;
   user: User;
-  warehouse: boolean = false;
+  warehouse: boolean;
 
   constructor(
     private router: Router,

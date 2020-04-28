@@ -29,7 +29,7 @@ export class DeviceOrderAisDeviceQueuePageComponent implements OnInit, OnDestroy
   inputType: string;
   errorQueue: boolean = false;
   skipQueue: boolean = false;
-  warehouse: boolean = false;
+  warehouse: boolean;
 
   constructor(
     private router: Router,

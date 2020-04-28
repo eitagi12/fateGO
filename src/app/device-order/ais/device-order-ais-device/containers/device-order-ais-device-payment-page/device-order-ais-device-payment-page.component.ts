@@ -62,6 +62,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
   zipCode: string;
   isReadCard: boolean = false;
   REGEX_MOBILE: RegExp = /^(88[0-9]\d{7})|(0[6-9]\d{8})$/;
+  warehouse: boolean;
 
   constructor(
     private router: Router,
@@ -80,6 +81,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     private route: ActivatedRoute
   ) {
     this.user = this.tokenService.getUser();
+    this.warehouse = this.user.locationCode === '63259';
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
     if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
@@ -115,41 +117,30 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     const productStock = this.priceOption.productStock || {};
     const customer: any = this.transaction.data && this.transaction.data.customer ? this.transaction.data.customer : {};
     const trade: any = this.priceOption.trade || {};
-    const advancePay: any = trade.advancePay || {};
     let commercialName = productDetail.name;
     if (productStock.color) {
       commercialName += ` สี ${productStock.color}`;
     }
 
-    if (this.user.locationCode === '63259') {
-      this.paymentDetail = {
-        commercialName: commercialName,
-        promotionPrice: +(trade.promotionPrice || 0),
-        isFullPayment: this.isFullPayment(),
-        qrCode: true,
-        omisePayment: this.isFullPayment() && this.priceOption.productStock.company === 'AWN'
-      };
-    } else {
-      this.paymentDetail = {
-        commercialName: commercialName,
-        promotionPrice: +(trade.promotionPrice || 0),
-        isFullPayment: this.isFullPayment(),
-        advancePay: +(advancePay.amount || 0),
-        qrCode: !!(productStock.company && productStock.company !== 'WDS')
-      };
+    this.paymentDetail = {
+      commercialName: commercialName,
+      promotionPrice: +(trade.promotionPrice || 0),
+      isFullPayment: this.isFullPayment(),
+      qrCode: !!(productStock.company && productStock.company !== 'WDS'),
+      omisePayment: this.warehouse ? true : false
+    };
 
-      this.banks = trade.banks || [];
+    this.banks = trade.banks || [];
 
-      if (!this.banks.length) {
-        // ถ้าไม่มี bank ให้ get bank จาก location ร้าน
-        this.http.post(`/api/salesportal/banks-promotion`, {
-          location: this.tokenService.getUser().locationCode
-        }).toPromise()
-          .then((resp: any) => {
-            this.banks = resp.data;
-            this.priceOption.trade.banks = resp.data;
-          });
-      }
+    if (!this.banks.length) {
+      // ถ้าไม่มี bank ให้ get bank จาก location ร้าน
+      this.http.post(`/api/salesportal/banks-promotion`, {
+        location: this.user.locationCode
+      }).toPromise()
+        .then((resp: any) => {
+          this.banks = resp.data;
+          this.priceOption.trade.banks = resp.data;
+        });
     }
     this.createReceiptInfo(customer);
     this.checkBillFormChanged();
@@ -566,12 +557,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
         if (resp.data && resp.data.resultCode === 'S') {
           this.transaction.data.order = { soId: resp.data.soId };
           this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-          console.log('Transaction', this.transaction);
-         if (this.user.locationCode === '63259') {
-            this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_OMISE_SUMMARY_PAGE]);
-          } else {
-            this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE]);
-          }
+          this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE]);
         } else {
           const msg = resp.data && resp.data.resultMessage ? resp.data.resultMessage : 'ระบบไม่สามารถทำรายการได้ในขณะนี้';
           this.alertService.error(msg);
