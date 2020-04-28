@@ -173,7 +173,7 @@ export class DeviceOrderAisDeviceOmiseGeneratorPageComponent implements OnInit, 
   getTotalAmount(): number {
     const trade = this.priceOption.trade;
     const payment: any = this.transaction.data.payment || {};
-  //  const advancePayment: any = this.transaction.data.advancePayment || {};
+    //  const advancePayment: any = this.transaction.data.advancePayment || {};
     let total: number = 0;
     const advancePay = trade.advancePay || {};
 
@@ -205,7 +205,7 @@ export class DeviceOrderAisDeviceOmiseGeneratorPageComponent implements OnInit, 
         recipientIdType: '0',
         recipientIdData: msisdn
       },
-      content: 'สำหรับการชำระเงินค่าสินค้าผ่านบัตรเครดิตออนไลน์ คลิก ' + this.shortUrlQrCodeStr + this.orderId ,
+      content: 'สำหรับการชำระเงินค่าสินค้าผ่านบัตรเครดิตออนไลน์ คลิก ' + this.shortUrlQrCodeStr + this.orderId,
       sender: 'AIS'
     };
     this.http.post('api/customerportal/newregister/send-sms', bodyRequest).toPromise()
@@ -229,11 +229,11 @@ export class DeviceOrderAisDeviceOmiseGeneratorPageComponent implements OnInit, 
   }
 
   onBack(): void {
-      this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_OMISE_SUMMARY_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_OMISE_SUMMARY_PAGE]);
   }
 
   onNext(): void {
-      this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_OMISE_QUEUE_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_OMISE_QUEUE_PAGE]);
   }
 
   onHome(): void {

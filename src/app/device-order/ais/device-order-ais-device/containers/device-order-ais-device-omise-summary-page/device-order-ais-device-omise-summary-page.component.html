@@ -1,8 +1,5 @@
 <div class="mc-flex">
   <mc-header title="{{ 'ซื้อเครื่องเปล่า' | translate }}">
-    <div class="header-icon-left  w-25">
-      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
-    </div>
     <div class="header-icon-right w-25 text-right">
       <!-- <mc-dropdown-language></mc-dropdown-language> -->
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()" [hidden]="transaction?.data?.omise?.omiseStatus?.statusDevice === 'SUCCESS'"></mc-header-icon>
@@ -157,15 +154,6 @@
               <img class="img-fluid w-75" src="assets/images/icon/Rabbit_Line_Pay.png" />
             </div>
           </div>
-          <!-- <div class="col-12 mt-5">
-            <form class="form-inline pull-right">
-              <div class="form-group">
-                <label for="summaryInput" class="text-green">จำนวน</label>
-                <input style="text-align: center" type="text" id="summaryInput" disabled class="form-control ml-3 text-green"
-                  value="฿ {{ getTotal() | number }}">
-              </div>
-            </form>
-          </div> -->
         </div>
       </div>
 
@@ -180,7 +168,7 @@
           </div>
         </div>
         <form class="mr-5 col-12 title-center mt-2" [formGroup]="mobileNoForm">
-          <input id="mobileNo" type="text" formControlName="mobileNo" placeholder="ระบุเบอร์" class="col-3 text-center form-control"
+          <input id="mobileNo" type="text" minlength="10" maxlength="10" formControlName="mobileNo" placeholder="ระบุเบอร์" class="col-3 text-center form-control"
           [ngClass]="{ 'is-invalid' : mobileNoForm.controls.mobileNo.invalid && mobileNoForm.controls.mobileNo.touched }"
           (keypress)="keyPress($event)">
           <small class="form-text invalid-feedback text-center"
@@ -191,8 +179,8 @@
       </ng-container>
 
       <div class="text-center mt-5">
-        <button class="btn btn-secondary btn-lg mr-3 pl-5 pr-5" (click)="onBack()" [hidden]="transaction?.data?.omise?.omiseStatus?.statusDevice === 'SUCCESS'">CANCEL</button>
-        <button class="btn btn-success btn-lg pl-5 pr-5" [disabled]="!isNext() mobileNoForm?.controls?.mobileNo?.errors"
+        <button class="btn btn-secondary btn-lg mr-3 pl-5 pr-5" (click)="onCancel()" [hidden]="transaction?.data?.omise?.omiseStatus?.statusDevice === 'SUCCESS'">CANCEL</button>
+        <button class="btn btn-success btn-lg pl-5 pr-5" [disabled]="mobileNoForm?.controls?.mobileNo?.errors"
         (click)="onNext()" >PAY NOW</button>
       </div>
     </div>
