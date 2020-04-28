@@ -1,0 +1,69 @@
+<div class="container-fluid">
+  <div class="card mb-3">
+    <div class="card-header bg-orange text-white">
+      {{ 'รูปแบบชำระเงิน' }}
+    </div>
+    <div class="card-body py-2 bg-transparent">
+      <div class="text-green">ค่าเครื่อง {{paymentDetail.commercialName}}
+        <span class="pull-right">฿ {{paymentDetail.promotionPrice | number}}</span>
+      </div>
+    </div>
+    <div [hidden]="!isAWN">
+      <div class="card-body py-2 border-top bg-transparent">
+        <div class="row">
+          <div class="col-6 px-2">
+            <input type="radio" id="omise" name="payment" value="omise" [checked]="defaultChecked() === 'CREDIT'"
+              (change)="onPaymentTypeChange($event.target.value)" />
+            <label for="omise">{{ 'ชำระด้วยบัตรเครดิตออนไลน์' | translate }}</label>
+          </div>
+          <div class="col-6 px-2">
+            <input type="text" disabled="" class="form-control-plaintext ml-2" value="เต็มจำนวน">
+          </div>
+        </div>
+      </div>
+      <div [hidden]="!isShowCreditOnline" class="card-body py-2 bg-transparent border-top">
+        <div class="branner ml-3">
+          <img src="assets/images/icon/icon_payment_online_creditcard.svg" class="rounded border credit-logo w-100" />
+        </div>
+      </div>
+    </div>
+    <div class="card-body py-2 border-top bg-transparent">
+      <div class="row">
+        <div class="col-6 px-2">
+          <input type="radio" id="qrcode" name="payment" value="qrcode" [checked]="defaultChecked() === 'QR_CODE'"
+            (change)="onPaymentTypeChange($event.target.value)" />
+          <label for="qrcode">{{ 'ชำระด้วย QR Code' | translate }}</label>
+        </div>
+        <div class="col-6 px-2">
+          <input type="text" disabled="" class="form-control-plaintext ml-2" value="เต็มจำนวน">
+        </div>
+      </div>
+      <div [hidden]="!isShowQrCode" class="row" id="qr">
+        <div class="col-2 p-2 ml-2">
+          <div class="branner-qr">
+            <a><img src="assets/images/icon/Rabbit_Line_Pay.png" class="qr-logo w-100 p-1" id="lineQr"
+                (click)="selectQrCode('LINE_QR')" /></a>
+          </div>
+        </div>
+        <div class="col-2 p-2 ml-4">
+          <div class="branner-qr">
+            <img src="assets/images/icon/Thai_Qr_Payment.png" class="qr-logo w-100 p-1" id="thaiQr"
+              (click)="selectQrCode('THAI_QR')" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body py-2 border-top bg-transparent">
+      <div class="row">
+        <div class="col-6 px-2">
+          <input type="radio" id="debit" name="payment" value="debit" [checked]="defaultChecked() === 'DEBIT'"
+            (change)="onPaymentTypeChange($event.target.value)" />
+          <label for="debit">{{ 'ชำระที่เคาน์เตอร์' | translate }}</label>
+        </div>
+        <div class="col-6 px-2">
+          <input type="text" disabled="" class="form-control-plaintext ml-2" value="เต็มจำนวน">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
