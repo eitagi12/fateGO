@@ -1,20 +1,15 @@
 import { Router } from '@angular/router';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import {
-  HomeService, PageLoadingService, REGEX_MOBILE, User, AlertService, TokenService
-} from 'mychannel-shared-libs';
-import {
-  Transaction
-} from 'src/app/shared/models/transaction.model';
+import { PageLoadingService, User, TokenService } from 'mychannel-shared-libs';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { QueuePageService } from 'src/app/device-order/services/queue-page.service';
-import { ROUTE_DEVICE_AIS_DEVICE_AGGREGATE_PAGE, ROUTE_DEVICE_AIS_DEVICE_RESULT_PAGE } from 'src/app/device-order/ais/device-order-ais-device/constants/route-path.constant';
+import { ROUTE_DEVICE_AIS_DEVICE_RESULT_PAGE } from 'src/app/device-order/ais/device-order-ais-device/constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
-import { LocalStorage } from 'ngx-store';
 
 @Component({
   selector: 'app-device-order-ais-device-queue-page',
@@ -34,24 +29,23 @@ export class DeviceOrderAisDeviceQueuePageComponent implements OnInit, OnDestroy
   inputType: string;
   errorQueue: boolean = false;
   skipQueue: boolean = false;
+  warehouse: boolean = false;
 
   constructor(
-    private fb: FormBuilder,
     private router: Router,
     private http: HttpClient,
-    private homeService: HomeService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private queuePageService: QueuePageService,
     private sharedTransactionService: SharedTransactionService,
     private formBuilder: FormBuilder,
-    private tokenService: TokenService,
-    private alertService: AlertService
+    private tokenService: TokenService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     this.user = this.tokenService.getUser();
+    this.warehouse = this.user.locationCode === '63259';
   }
 
   ngOnInit(): void {
@@ -108,7 +102,9 @@ export class DeviceOrderAisDeviceQueuePageComponent implements OnInit, OnDestroy
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    if (!this.queueType || this.queueType === 'MANUAL' || this.inputType === 'queue') {
+    if (this.warehouse) {
+      this.genQueueL();
+    } else if (!this.queueType || this.queueType === 'MANUAL' || this.inputType === 'queue') {
       this.transaction.data.queue = { queueNo: this.queue };
       this.createOrderAndupdateTransaction();
     } else {
@@ -159,6 +155,17 @@ export class DeviceOrderAisDeviceQueuePageComponent implements OnInit, OnDestroy
         this.errorQueue = true;
         this.pageLoadingService.closeLoading();
       });
+  }
+
+  genQueueL(): void {
+    this.queuePageService.getQueueL(this.user.locationCode).then((response: any) => {
+      const data = response.data ? response.data : { queue: 'L9999' };
+      this.transaction.data.queue = { queueNo: data.queue };
+      this.createOrderAndupdateTransaction();
+    }).catch(() => {
+      this.transaction.data.queue = { queueNo: 'L9999' };
+      this.createOrderAndupdateTransaction();
+    });
   }
 
   createOrderAndupdateTransaction(): void {

@@ -58,6 +58,7 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit, OnDestr
 
   ) {
     this.user = this.tokenService.getUser();
+    this.warehouse = this.user.locationCode === '63259';
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
     if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
@@ -77,7 +78,6 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit, OnDestr
   }
 
   ngOnInit(): void {
-    this.warehouse = this.user.locationCode === '63259';
     // tslint:disable-next-line:max-line-length
     const customer = this.transaction.data && this.transaction.data.billingInformation && this.transaction.data.billingInformation.billDeliveryAddress ?
       this.transaction.data.billingInformation.billDeliveryAddress : this.transaction.data.customer;

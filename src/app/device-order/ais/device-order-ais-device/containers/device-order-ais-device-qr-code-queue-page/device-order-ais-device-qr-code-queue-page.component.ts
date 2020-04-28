@@ -32,6 +32,7 @@ export class DeviceOrderAisDeviceQrCodeQueuePageComponent implements OnInit, OnD
   queueType: string;
   errorQueue: boolean = false;
   skipQueue: boolean = false;
+  warehouse: boolean = false;
 
   constructor(
     private router: Router,
@@ -47,6 +48,7 @@ export class DeviceOrderAisDeviceQrCodeQueuePageComponent implements OnInit, OnD
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     this.user = this.tokenService.getUser();
+    this.warehouse = this.user.locationCode === '63259';
   }
 
   ngOnInit(): void {
@@ -59,7 +61,9 @@ export class DeviceOrderAisDeviceQrCodeQueuePageComponent implements OnInit, OnD
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    if (!this.queueType || this.queueType === 'MANUAL' || this.inputType === 'queue') {
+    if (this.warehouse) {
+      this.genQueueL();
+    } else if (!this.queueType || this.queueType === 'MANUAL' || this.inputType === 'queue') {
       this.transaction.data.queue = { queueNo: this.queue };
       this.createOrderAndupdateTransaction();
     } else {
@@ -116,6 +120,17 @@ export class DeviceOrderAisDeviceQrCodeQueuePageComponent implements OnInit, OnD
         this.transaction.data.queue = { queueNo: queueNo };
         this.createOrderAndupdateTransaction();
       });
+  }
+
+  genQueueL(): void {
+    this.queuePageService.getQueueL(this.user.locationCode).then((response: any) => {
+      const data = response.data ? response.data : { queue: 'L9999' };
+      this.transaction.data.queue = { queueNo: data.queue };
+      this.createOrderAndupdateTransaction();
+    }).catch(() => {
+      this.transaction.data.queue = { queueNo: 'L9999' };
+      this.createOrderAndupdateTransaction();
+    });
   }
 
   createOrderAndupdateTransaction(): void {
