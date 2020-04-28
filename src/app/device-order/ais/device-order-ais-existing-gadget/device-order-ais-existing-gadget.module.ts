@@ -31,6 +31,9 @@ import { DeviceOrderAisExistingGadgetAggregatePageComponent } from 'src/app/devi
 import { DeviceOrderAisExistingGadgetSelectPackageOntopPageComponent } from './containers/device-order-ais-existing-gadget-select-package-ontop-page/device-order-ais-existing-gadget-select-package-ontop-page.component';
 import { DeviceOrderAisExistingGadgetQrCodeResultPageComponent } from './containers/device-order-ais-existing-gadget-qr-code-result-page/device-order-ais-existing-gadget-qr-code-result-page.component';
 import { DeviceOrderAisExistingGadgetEshippingAddressPageComponent } from './containers/device-order-ais-existing-gadget-eshipping-address-page/device-order-ais-existing-gadget-eshipping-address-page.component';
+import { DeviceOrderAisExistingGadgetOmiseGeneratorPageComponent } from './containers/device-order-ais-existing-gadget-omise-generator-page/device-order-ais-existing-gadget-omise-generator-page.component';
+import { DeviceOrderAisExistingGadgetOmiseQueuePageComponent } from './containers/device-order-ais-existing-gadget-omise-queue-page/device-order-ais-existing-gadget-omise-queue-page.component';
+import { DeviceOrderAisExistingGadgetOmiseSummaryPageComponent } from './containers/device-order-ais-existing-gadget-omise-summary-page/device-order-ais-existing-gadget-omise-summary-page.component';
 
 @NgModule({
   imports: [
@@ -66,7 +69,10 @@ import { DeviceOrderAisExistingGadgetEshippingAddressPageComponent } from './con
     DeviceOrderAisExistingGadgetChangePackagePageComponent,
     DeviceOrderAisExistingGadgetSelectPackageOntopPageComponent,
     DeviceOrderAisExistingGadgetQrCodeResultPageComponent,
-    DeviceOrderAisExistingGadgetEshippingAddressPageComponent
+    DeviceOrderAisExistingGadgetEshippingAddressPageComponent,
+    DeviceOrderAisExistingGadgetOmiseGeneratorPageComponent,
+    DeviceOrderAisExistingGadgetOmiseQueuePageComponent,
+    DeviceOrderAisExistingGadgetOmiseSummaryPageComponent
   ]
 })
 export class DeviceOrderAisExistingGadgetModule { }
