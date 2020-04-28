@@ -289,11 +289,9 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
       mobileNo: mobileNo
     };
 
-    if (this.utils.isMobileNo(mobileNo)) {
-      this.receiptInfoForm.patchValue({
-        telNo: mobileNo,
-      });
-    }
+    this.receiptInfoForm.patchValue({
+      telNo: this.utils.isMobileNo(mobileNo) ? mobileNo : '',
+    });
 
     this.checkMobileStatus(mobileNo);
   }
