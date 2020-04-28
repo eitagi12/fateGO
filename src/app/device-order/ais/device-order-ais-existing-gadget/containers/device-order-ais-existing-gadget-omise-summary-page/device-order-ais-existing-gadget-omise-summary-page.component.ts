@@ -134,10 +134,6 @@ export class DeviceOrderAisExistingGadgetOmiseSummaryPageComponent implements On
     }
   }
 
-  onCancel(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_AGGREGATE_PAGE]);
-  }
-
   onNext(): void {
     this.pageLoadingService.openLoading();
     const user = this.tokenService.getUser();
