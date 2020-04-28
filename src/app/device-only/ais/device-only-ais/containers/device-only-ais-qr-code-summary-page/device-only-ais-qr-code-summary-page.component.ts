@@ -111,7 +111,7 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
               content: 'สำหรับการชำระเงินค่าสินค้าผ่านบัตรเครดิตออนไลน์ คลิก ' + this.shortUrlQrCodeStr,
               sender: 'AIS'
             };
-            this.http.post('api/customerportal/newregister/send-sms', bodyRequest).toPromise();
+            this.http.post('/api/customerportal/newregister/send-sms', bodyRequest).toPromise();
             this.router.navigate([ROUTE_DEVICE_ONLY_AIS_OMISE_GENERATE_PAGE]);
           });
         }

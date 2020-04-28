@@ -207,7 +207,7 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
       content: 'สำหรับการชำระเงินค่าสินค้าผ่านบัตรเครดิตออนไลน์ คลิก ' + this.shortUrlQrCodeStr,
       sender: 'AIS'
     };
-    this.http.post('api/customerportal/newregister/send-sms', bodyRequest).toPromise()
+    this.http.post('/api/customerportal/newregister/send-sms', bodyRequest).toPromise()
       .then(() => {
       });
   }
