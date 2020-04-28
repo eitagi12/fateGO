@@ -24,3 +24,7 @@ export const ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QR_CODE_QUEUE_PAGE = '/devic
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QR_CODE_RESULT_PAGE = '/device-order/ais/existing-gadget/qr-code-result';
 
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_EDIT_SHIPPING_ADDRESS_PAGE = '/device-order/ais/existing-gadget/edit-shipping';
+
+export const ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_OMISE_SUMMARY_PAGE = '/device-order/ais/existing-gadget/omise-summary';
+export const ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_OMISE_GENERATOR_PAGE = '/device-order/ais/existing-gadget/omise-generator';
+export const ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_OMISE_QUEUE_PAGE = '/device-order/ais/existing-gadget/omise-queue';
