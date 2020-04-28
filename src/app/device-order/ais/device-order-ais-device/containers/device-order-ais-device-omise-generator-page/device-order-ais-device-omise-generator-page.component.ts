@@ -255,5 +255,4 @@ export class DeviceOrderAisDeviceOmiseGeneratorPageComponent implements OnInit, 
     return 'LOCAL' === environment.name;
   }
 
-
 }
