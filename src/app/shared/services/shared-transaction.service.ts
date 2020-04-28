@@ -317,9 +317,6 @@ export class SharedTransactionService {
       params.data.mpay_payment = data.mpayPayment;
     }
 
-    if (data.shippingInfo) {
-      params.data.shipping_info = data.shippingInfo;
-    }
     return params;
   }
 
