@@ -175,10 +175,12 @@
                     </p>
                 </div>
                 <div class="col-12 col-sm-8">
-                    <div class="row">
-                        <div class="col-sm-6 text-green">{{ billingAddress?.text }}</div>
-                        <a href="#" class="pull-right" [hidden]="view" (click)="$event.preventDefault(); billingAddress?.onEdit()"><img src="assets/images/icon/icon-edit.png"></a>
-                    </div>
+                    <p>
+                        <span class="text-green">
+                              {{ billingAddress?.text }}
+                            </span>
+                        <a href="#" class="col-sm-2" [hidden]="view" (click)="$event.preventDefault(); billingAddress?.onEdit()"><img src="assets/images/icon/icon-edit.png"></a>
+                    </p>
                 </div>
             </ng-container>
         </div>

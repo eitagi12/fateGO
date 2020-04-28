@@ -89,6 +89,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   zipCodeSelected: any;
 
   customerChanges: any;
+  addessValidate: boolean = true;
 
   constructor(
     public fb: FormBuilder,
@@ -247,7 +248,12 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       if (this.keyInCustomerAddressTemp || this.readCardCustomerAddressTemp) {
         this.error.emit(this.customerAddressForm.valid);
       } else {
+        if (this.addessValidate) {
           this.error.emit(true);
+          this.addessValidate = !this.addessValidate;
+        } else {
+          this.error.emit(this.customerAddressForm.valid);
+        }
       }
       if (this.customerAddressForm.valid && this.customerAddressForm.controls.idCardNo.value) {
         const idCardNo = this.customerAddressForm.controls.idCardNo.value;

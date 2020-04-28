@@ -35,7 +35,7 @@ export class PaymentDetailComponent implements OnInit {
   ngOnInit(): void {
     this.checkQrCodeSelected();
     this.setPaymentValue();
-    if (this.paymentDetail.omisePayment) {
+    if (this.paymentDetail && this.paymentDetail.omisePayment) {
       this.isAWN = true;
       this.setPaymentValueOnlineCredit();
     } else {
