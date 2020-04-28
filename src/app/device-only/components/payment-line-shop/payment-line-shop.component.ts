@@ -54,7 +54,7 @@ export class PaymentLineShopComponent implements OnInit {
       this.isShowQrCode = true;
       this.error.emit(false);
     }
-
+    console.log('AWN', this.isAWN);
     if (this.transaction && this.transaction.data && this.transaction.data.payment) {
       this.payment = this.transaction.data.payment;
       this.defaultPaymentValue();
@@ -108,7 +108,8 @@ export class PaymentLineShopComponent implements OnInit {
         'paymentMethod': '',
         'paymentOnlineCredit': true,
         'paymentQrCodeType': '',
-        'paymentType': ''
+        'paymentType': '',
+        'omisePayment': true,
       }
     };
   }
@@ -117,6 +118,7 @@ export class PaymentLineShopComponent implements OnInit {
     this.paymentValue.payment.paymentOnlineCredit = true;
     this.paymentValue.payment.paymentQrCodeType = '';
     this.paymentValue.payment.paymentType = 'CREDIT';
+    this.paymentValue.payment.omisePayment = true;
     this.completed.emit(this.paymentValue);
     this.error.emit(true);
   }

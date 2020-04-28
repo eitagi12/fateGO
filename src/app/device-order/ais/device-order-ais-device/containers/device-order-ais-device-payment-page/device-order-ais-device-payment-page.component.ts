@@ -9,7 +9,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { HttpClient } from '@angular/common/http';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE } from 'src/app/device-order/constants/wizard.constant';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE, ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE } from 'src/app/device-order/ais/device-order-ais-device/constants/route-path.constant';
+import { ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE, ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE, ROUTE_DEVICE_AIS_DEVICE_OMISE_SUMMARY_PAGE } from 'src/app/device-order/ais/device-order-ais-device/constants/route-path.constant';
 import { Subscription, zip } from 'rxjs';
 import { BsModalService, BsModalRef, isArray } from 'ngx-bootstrap';
 import { BillingAccount } from '../../../device-order-ais-mnp/containers/device-order-ais-mnp-effective-start-date-page/device-order-ais-mnp-effective-start-date-page.component';
@@ -32,7 +32,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
   priceOption: PriceOption;
   transaction: Transaction;
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE;
-  payementDetail: PaymentDetail;
+  paymentDetail: PaymentDetail;
   banks: PaymentDetailBank[];
   paymentDetailValid: boolean;
 
@@ -121,25 +121,35 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
       commercialName += ` สี ${productStock.color}`;
     }
 
-    this.payementDetail = {
-      commercialName: commercialName,
-      promotionPrice: +(trade.promotionPrice || 0),
-      isFullPayment: this.isFullPayment(),
-      advancePay: +(advancePay.amount || 0),
-      qrCode: !!(productStock.company && productStock.company !== 'WDS')
-    };
+    if (this.user.locationCode === '63259') {
+      this.paymentDetail = {
+        commercialName: commercialName,
+        promotionPrice: +(trade.promotionPrice || 0),
+        isFullPayment: this.isFullPayment(),
+        qrCode: true,
+        omisePayment: this.isFullPayment() && this.priceOption.productStock.company === 'AWN'
+      };
+    } else {
+      this.paymentDetail = {
+        commercialName: commercialName,
+        promotionPrice: +(trade.promotionPrice || 0),
+        isFullPayment: this.isFullPayment(),
+        advancePay: +(advancePay.amount || 0),
+        qrCode: !!(productStock.company && productStock.company !== 'WDS')
+      };
 
-    this.banks = trade.banks || [];
+      this.banks = trade.banks || [];
 
-    if (!this.banks.length) {
-      // ถ้าไม่มี bank ให้ get bank จาก location ร้าน
-      this.http.post(`/api/salesportal/banks-promotion`, {
-        location: this.tokenService.getUser().locationCode
-      }).toPromise()
-        .then((resp: any) => {
-          this.banks = resp.data;
-          this.priceOption.trade.banks = resp.data;
-        });
+      if (!this.banks.length) {
+        // ถ้าไม่มี bank ให้ get bank จาก location ร้าน
+        this.http.post(`/api/salesportal/banks-promotion`, {
+          location: this.tokenService.getUser().locationCode
+        }).toPromise()
+          .then((resp: any) => {
+            this.banks = resp.data;
+            this.priceOption.trade.banks = resp.data;
+          });
+      }
     }
     this.createReceiptInfo(customer);
     this.checkBillFormChanged();
@@ -556,7 +566,12 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
         if (resp.data && resp.data.resultCode === 'S') {
           this.transaction.data.order = { soId: resp.data.soId };
           this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-          this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE]);
+          console.log('Transaction', this.transaction);
+         if (this.user.locationCode === '63259') {
+            this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_OMISE_SUMMARY_PAGE]);
+          } else {
+            this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE]);
+          }
         } else {
           const msg = resp.data && resp.data.resultMessage ? resp.data.resultMessage : 'ระบบไม่สามารถทำรายการได้ในขณะนี้';
           this.alertService.error(msg);
