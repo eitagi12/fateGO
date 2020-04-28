@@ -22,6 +22,7 @@ export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, On
   locationCode: string;
   mobileNoForm: FormGroup;
   mobileNoValid: boolean;
+  telNo: string;
 
   constructor(
     private fb: FormBuilder,
@@ -38,6 +39,7 @@ export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, On
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     this.locationCode = this.tokenService.getUser().locationCode;
+    this.telNo = this.transaction.data.receiptInfo.telNo;
   }
   ngOnInit(): void {
     this.createMobileNoform();
@@ -45,7 +47,7 @@ export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, On
 
   createMobileNoform(): void {
     this.mobileNoForm = this.fb.group({
-      mobileNo: ['', [
+      mobileNo: [this.telNo || '', [
         Validators.maxLength(10),
         Validators.minLength(10),
         Validators.pattern('^(0)(6|8|9)[0-9]*$|^((88)(6|8|9)[0-9]*)$')]],
@@ -102,14 +104,20 @@ export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, On
   onNext(): void {
     this.pageLoadingService.openLoading();
     const user = this.tokenService.getUser();
+    const seller = this.transaction.data && this.transaction.data.seller;
     const simCard = this.transaction.data && this.transaction.data.simCard;
     const customer = this.transaction.data && this.transaction.data.customer;
     const priceOption = this.priceOption.productDetail;
     const productStock = this.priceOption.productStock;
     const trade = this.priceOption && this.priceOption.trade;
     const description = trade && trade.advancePay && trade.advancePay.description;
-    this.transaction.data.receiptInfo.telNo = this.mobileNoForm.value.mobileNo;
     console.log('shippingTelNo>>>>>', this.transaction.data.receiptInfo.telNo);
+
+    if (!this.mobileNoForm.value.mobileNo) {
+      this.alertService.warning('กรุณากรอกหมายเลขโทรศัพท์');
+      return;
+    }
+    this.telNo = this.mobileNoForm.value.mobileNo;
     if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment') &&
       this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'advancePayment')) {
       this.orderList = [{
@@ -137,7 +145,7 @@ export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, On
       companyCode: 'AWN',
       companyName: 'บริษัท แอดวานซ์ ไวร์เลส เน็ทเวอร์ค จำกัด',
       locationCode: user.locationCode,
-      locationName: 'สาขาเซ็นทรัลเฟสติวัลภูเก็ต',
+      locationName: seller.locationName,
       mobileNo: simCard.mobileNo,
       customer: customer.firstName + ' ' + customer.lastName,
       orderList: this.orderList,
@@ -165,6 +173,7 @@ export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, On
     }, 0);
   }
 
+  // tslint:disable-next-line: use-life-cycle-interface
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }
@@ -185,6 +194,17 @@ export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, On
       total += +advancePay.amount;
     }
     return total;
+  }
+
+  keyPress(event: any): void {
+    const charCode: number = (event.which) ? event.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      event.preventDefault();
+    }
+  }
+
+  isNext(): boolean {
+    return this.mobileNoValid;
   }
 
 }
