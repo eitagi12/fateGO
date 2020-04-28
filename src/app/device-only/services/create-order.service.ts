@@ -750,7 +750,7 @@ export class CreateOrderService {
     const mobileCarePackage = transaction.data.mobileCarePackage || {};
     const queue: any = transaction.data.queue || {};
     const customAttributes = mobileCarePackage.customAttributes || {};
-    const receiptMobile = this.RECEIPTINFO_MOBILE_NUMBER + this.SPACE + transaction.data.receiptInfo.telNo;
+    const shipMobile = this.RECEIPTINFO_MOBILE_NUMBER + this.SPACE + transaction.data.shippingInfo.telNo;
 
     if ('MC001' === customerGroup.code) {
       customerGroupName = 'New Register';
@@ -767,7 +767,7 @@ export class CreateOrderService {
     message += this.PRIVILEGE_DESC + this.SPACE + (trade.tradeDesc || '') + this.COMMA + this.SPACE;
     message += this.QUEUE_NUMBER + this.SPACE + queue.queueNo;
     if (this.user.locationCode === '63259') {
-      message += this.COMMA + this.SPACE + receiptMobile;
+      message += this.COMMA + this.SPACE + shipMobile;
     }
     return message;
   }
