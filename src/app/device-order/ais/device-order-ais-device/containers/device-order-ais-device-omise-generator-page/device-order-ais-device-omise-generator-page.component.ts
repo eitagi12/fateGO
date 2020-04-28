@@ -31,11 +31,12 @@ export class DeviceOrderAisDeviceOmiseGeneratorPageComponent implements OnInit, 
   countdown: string;
   refreshCount: number = 0;
   totalAmount: number;
-  shortUrlQrCodeStr: string = environment.PREFIX_SHORT_LINK + '?orderId=';
   orderId: string;
+  mobileNoForm: FormGroup;
+  shortUrl: string;
+
   constructor(
     private router: Router,
-    private homeService: HomeService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private pageLoadingService: PageLoadingService,
@@ -52,6 +53,7 @@ export class DeviceOrderAisDeviceOmiseGeneratorPageComponent implements OnInit, 
     this.onGenerateQRCode();
     this.createQueueForm();
     this.orderId += this.transaction.data.omise.orderId;
+    this.shortUrl = this.transaction.data.omise.qrCodeStr;
   }
 
   public createQueueForm(): void {
@@ -173,20 +175,11 @@ export class DeviceOrderAisDeviceOmiseGeneratorPageComponent implements OnInit, 
   getTotalAmount(): number {
     const trade = this.priceOption.trade;
     const payment: any = this.transaction.data.payment || {};
-    //  const advancePayment: any = this.transaction.data.advancePayment || {};
     let total: number = 0;
-    const advancePay = trade.advancePay || {};
-
-    if (trade.advancePay.installmentFlag === 'Y') {
-      return this.summary([+trade.promotionPrice, +advancePay.amount]);
-    }
 
     if (this.qrCodeOmiseService.isPaymentOnlineCredit(this.transaction, 'payment')) {
       total += +trade.promotionPrice;
     }
-    // if (this.qrCodeOmiseService.isPaymentOnlineCredit(this.transaction, 'advancePayment')) {
-    //   total += +advancePay.amount;
-    // }
     return total;
   }
 
@@ -196,49 +189,45 @@ export class DeviceOrderAisDeviceOmiseGeneratorPageComponent implements OnInit, 
     }, 0);
   }
 
-  sendSms(): void {
-    const phoneNo = this.phoneSMSForm.controls['phoneNo'].value;
-
-    const msisdn = `66${phoneNo.substring(1, phoneNo.length)}`;
-    const bodyRequest: any = {
+  sendSMSUrl(params: any): Promise<any> {
+    const requestBody: any = {
       recipient: {
         recipientIdType: '0',
-        recipientIdData: msisdn
+        recipientIdData: (params.mobileNo).replace(/^0+/, '66')
       },
-      content: 'สำหรับการชำระเงินค่าสินค้าผ่านบัตรเครดิตออนไลน์ คลิก ' + this.shortUrlQrCodeStr + this.orderId,
+      content: `สำหรับการชำระเงินค่าสินค้าผ่านบัตรเครดิตออนไลน์ คลิก ${params.urlPayment}`,
       sender: 'AIS'
     };
-    this.http.post('api/customerportal/newregister/send-sms', bodyRequest).toPromise()
-      .then(() => {
-      });
+    return this.http.post('/api/customerportal/newregister/send-sms', requestBody).toPromise()
+    .then(() => {
+    });
   }
 
-  copyShortUrl(shortUrl: string): void {
-    const selBox = document.createElement('textarea');
-    selBox.style.position = 'fixed';
-    selBox.style.left = '0';
-    selBox.style.top = '0';
-    selBox.style.opacity = '0';
-    selBox.value = shortUrl;
-    document.body.appendChild(selBox);
-    selBox.focus();
-    selBox.select();
-    selBox.setSelectionRange(0, 99999);
-    document.execCommand('copy');
-    document.body.removeChild(selBox);
+  generateShortLink(url: string, mobileNo: string): Promise<any>  {
+    let urlLink: string = url;
+    if (environment.ENABLE_SHORT_LINK) {
+      const splitUrl: any = url.split('?');
+      urlLink = `${environment.PREFIX_SHORT_LINK}?${splitUrl[1]}`;
+    }
+    return this.sendSMSUrl({ mobileNo: mobileNo, urlPayment: urlLink }).then(() => {
+      return { shortUrl: urlLink };
+    });
+  }
+
+  onSentSms(): void {
+      const phoneNo = this.phoneSMSForm.controls['phoneNo'].value;
+      const msisdn = `66${phoneNo.substring(1, phoneNo.length)}`;
+      const paymentUrl = this.shortUrl;
+      this.generateShortLink( paymentUrl, msisdn);
   }
 
   onBack(): void {
     this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_OMISE_SUMMARY_PAGE]);
-  }
+}
 
-  onNext(): void {
+onNext(): void {
     this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_OMISE_QUEUE_PAGE]);
-  }
-
-  onHome(): void {
-    this.homeService.goToHome();
-  }
+}
 
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
@@ -249,10 +238,6 @@ export class DeviceOrderAisDeviceOmiseGeneratorPageComponent implements OnInit, 
       this.checkResponseOmiseSubscription.unsubscribe();
     }
     localStorage.removeItem('phoneNoQR');
-  }
-
-  isDeveloperMode(): boolean {
-    return 'LOCAL' === environment.name;
   }
 
 }
