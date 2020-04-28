@@ -137,9 +137,11 @@ export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, On
   onNext(): void {
     this.pageLoadingService.openLoading();
     const user = this.tokenService.getUser();
+    const seller = this.transaction.data && this.transaction.data.seller;
     const simCard = this.transaction.data && this.transaction.data.simCard;
     const customer = this.transaction.data && this.transaction.data.customer;
     const priceOption = this.priceOption.productDetail;
+    console.log('priceOption>>', priceOption);
     const productStock = this.priceOption.productStock;
     const trade = this.priceOption && this.priceOption.trade;
     const description = trade && trade.advancePay && trade.advancePay.description;
@@ -177,7 +179,7 @@ export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, On
       companyCode: 'AWN',
       companyName: 'บริษัท แอดวานซ์ ไวร์เลส เน็ทเวอร์ค จำกัด',
       locationCode: user.locationCode,
-      locationName: this.receiptInfo.branch,
+      locationName: seller.locationName,
       mobileNo: simCard.mobileNo,
       customer: customer.firstName + ' ' + customer.lastName,
       orderList: this.orderList,
@@ -186,12 +188,11 @@ export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, On
       const data = res && res.data;
       this.transaction.data.omise.qrCodeStr = data.redirectUrl;
       this.transaction.data.omise.orderId = data.orderId;
+      this.pageLoadingService.closeLoading();
       this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_OMISE_GENERATOR_PAGE]);
 
     }).catch((err) => {
       this.alertService.error('ระบบไม่สามารถทำรายการได้ขณะนี้ กรุณาทำรายการอีกครั้ง');
-    }).then(() => {
-      this.pageLoadingService.closeLoading();
     });
   }
 
