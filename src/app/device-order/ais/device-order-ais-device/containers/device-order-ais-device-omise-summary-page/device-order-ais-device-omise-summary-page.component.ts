@@ -141,7 +141,6 @@ export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, On
   onNext(): void {
     this.pageLoadingService.openLoading();
     const user = this.tokenService.getUser();
-    const seller = this.transaction.data && this.transaction.data.seller;
     const simCard = this.transaction.data && this.transaction.data.simCard;
     const customer = this.transaction.data && this.transaction.data.customer;
     const priceOption = this.priceOption.productDetail;

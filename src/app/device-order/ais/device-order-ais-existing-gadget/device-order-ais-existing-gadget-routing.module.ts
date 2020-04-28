@@ -24,6 +24,9 @@ import { DeviceOrderAisExistingGadgetEffectiveStartDatePageComponent } from 'src
 import { DeviceOrderAisExistingGadgetSelectPackageOntopPageComponent } from 'src/app/device-order/ais/device-order-ais-existing-gadget/containers/device-order-ais-existing-gadget-select-package-ontop-page/device-order-ais-existing-gadget-select-package-ontop-page.component';
 import { DeviceOrderAisExistingGadgetQrCodeResultPageComponent } from 'src/app/device-order/ais/device-order-ais-existing-gadget/containers/device-order-ais-existing-gadget-qr-code-result-page/device-order-ais-existing-gadget-qr-code-result-page.component';
 import { DeviceOrderAisExistingGadgetEshippingAddressPageComponent } from './containers/device-order-ais-existing-gadget-eshipping-address-page/device-order-ais-existing-gadget-eshipping-address-page.component';
+import { DeviceOrderAisExistingGadgetOmiseSummaryPageComponent } from './containers/device-order-ais-existing-gadget-omise-summary-page/device-order-ais-existing-gadget-omise-summary-page.component';
+import { DeviceOrderAisExistingGadgetOmiseGeneratorPageComponent } from './containers/device-order-ais-existing-gadget-omise-generator-page/device-order-ais-existing-gadget-omise-generator-page.component';
+import { DeviceOrderAisExistingGadgetOmiseQueuePageComponent } from './containers/device-order-ais-existing-gadget-omise-queue-page/device-order-ais-existing-gadget-omise-queue-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'validate-customer', pathMatch: 'full' },
@@ -50,7 +53,10 @@ const routes: Routes = [
   { path: 'aggregate', component: DeviceOrderAisExistingGadgetAggregatePageComponent },
   { path: 'queue', component: DeviceOrderAisExistingGadgetQueuePageComponent },
   { path: 'result', component: DeviceOrderAisExistingGadgetResultPageComponent },
-  { path: 'edit-shipping', component: DeviceOrderAisExistingGadgetEshippingAddressPageComponent }
+  { path: 'edit-shipping', component: DeviceOrderAisExistingGadgetEshippingAddressPageComponent },
+  { path: 'omise-summary', component: DeviceOrderAisExistingGadgetOmiseSummaryPageComponent },
+  { path: 'omise-generator', component: DeviceOrderAisExistingGadgetOmiseGeneratorPageComponent },
+  { path: 'omise-queue', component: DeviceOrderAisExistingGadgetOmiseQueuePageComponent }
 ];
 
 @NgModule({

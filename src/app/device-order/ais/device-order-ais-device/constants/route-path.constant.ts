@@ -11,6 +11,7 @@ export const ROUTE_DEVICE_AIS_DEVICE_QR_CODE_SUMMARY_PAGE = '/device-order/ais/d
 export const ROUTE_DEVICE_AIS_DEVICE_QR_CODE_GENERATOR_PAGE = '/device-order/ais/device/qr-code-generator';
 export const ROUTE_DEVICE_AIS_DEVICE_QR_CODE_QUEUE_PAGE = '/device-order/ais/device/qr-code-queue';
 export const ROUTE_DEVICE_AIS_DEVICE_QR_CODE_RESULT_PAGE = '/device-order/ais/device/qr-code-result';
+
 export const ROUTE_DEVICE_AIS_DEVICE_OMISE_SUMMARY_PAGE = '/device-order/ais/device/omise-summary';
 export const ROUTE_DEVICE_AIS_DEVICE_OMISE_GENERATOR_PAGE = '/device-order/ais/device/omise-generator';
 export const ROUTE_DEVICE_AIS_DEVICE_OMISE_QUEUE_PAGE = '/device-order/ais/device/omise-queue';
