@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HomeService, TokenService, PageLoadingService, AlertService } from 'mychannel-shared-libs';
 import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
@@ -15,7 +15,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   templateUrl: './device-order-ais-device-omise-summary-page.component.html',
   styleUrls: ['./device-order-ais-device-omise-summary-page.component.scss']
 })
-export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit {
+export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, OnDestroy {
   transaction: Transaction;
   priceOption: PriceOption;
   orderList: any;
