@@ -1,12 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, Aggregate } from 'mychannel-shared-libs';
+import { Aggregate } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Transaction, Payment } from 'src/app/shared/models/transaction.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE, ROUTE_DEVICE_AIS_DEVICE_QUEUE_PAGE, ROUTE_DEVICE_AIS_DEVICE_QR_CODE_SUMMARY_PAGE } from 'src/app/device-order/ais/device-order-ais-device/constants/route-path.constant';
+import { ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE, ROUTE_DEVICE_AIS_DEVICE_QUEUE_PAGE, ROUTE_DEVICE_AIS_DEVICE_QR_CODE_SUMMARY_PAGE, ROUTE_DEVICE_AIS_DEVICE_OMISE_SUMMARY_PAGE } from 'src/app/device-order/ais/device-order-ais-device/constants/route-path.constant';
 import { QueuePageService } from 'src/app/device-order/services/queue-page.service';
+import { QrCodeOmisePageService } from 'src/app/device-order/services/qr-code-omise-page.service';
 
 @Component({
   selector: 'app-device-order-ais-device-aggregate-page',
@@ -17,16 +18,18 @@ export class DeviceOrderAisDeviceAggregatePageComponent implements OnInit {
   transaction: Transaction;
   aggregate: Aggregate;
   priceOption: PriceOption;
+  omisePayment: boolean;
 
   constructor(
     private router: Router,
-    private homeService: HomeService,
     private transactionService: TransactionService,
     private queuePageService: QueuePageService,
-    private priceOptionService: PriceOptionService
+    private priceOptionService: PriceOptionService,
+    private qrCodeOmisePageService: QrCodeOmisePageService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
+    this.omisePayment = this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment');
   }
 
   ngOnInit(): void {
@@ -43,10 +46,11 @@ export class DeviceOrderAisDeviceAggregatePageComponent implements OnInit {
     const payment: any = this.transaction.data.payment || {};
     if (payment.paymentType === 'QR_CODE') {
       this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_QR_CODE_SUMMARY_PAGE]);
+    } else if (this.omisePayment) {
+      this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_OMISE_SUMMARY_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_QUEUE_PAGE]);
     }
-
   }
 
   getThumbnail(): string {
