@@ -8,8 +8,6 @@ export const environment = {
   WEB_CONNECT_URL: 'wss://localhost:8088',
   TEST_OTP_MOBILE: null,
   MOBILE_STATUS: ['000', 'active', '377', 'terminate', '378', 'suspend', '379', 'disable'],
-  PREFIX_SHORT_LINK:  'https://m.ais.co.th/mc',
-  ENABLE_SHORT_LINK:  true,
   MPAY_QRCODE: {
     PB_SERVICE_ID: '3000000000026569', RL_SERVICE_ID: '3000000000026571',
     PB_WDS_SERVICE_ID: '3000000000028332', RL_WDS_SERVICE_ID: '3000000000028336',
@@ -25,5 +23,7 @@ export const environment = {
   USERNAME_MOCK: {
     username: null,
     locationCode: null
-  }
+  },
+  PREFIX_SHORT_LINK:  'https://m.ais.co.th/mc',
+  ENABLE_SHORT_LINK:  true,
 };
