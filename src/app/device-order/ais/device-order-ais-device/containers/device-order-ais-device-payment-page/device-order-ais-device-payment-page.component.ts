@@ -121,24 +121,13 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
       commercialName += ` สี ${productStock.color}`;
     }
 
-    if (this.user.locationCode === '63259') {
-      this.payementDetail = {
-        commercialName: commercialName,
-        promotionPrice: +(trade.promotionPrice || 0),
-        isFullPayment: this.isFullPayment(),
-        advancePay: +(advancePay.amount || 0),
-        qrCode: !!(productStock.company && productStock.company !== 'WDS'),
-        omisePayment: this.isFullPayment() && productStock.company !== 'WDS'
-      };
-    } else {
-      this.payementDetail = {
-        commercialName: commercialName,
-        promotionPrice: +(trade.promotionPrice || 0),
-        isFullPayment: this.isFullPayment(),
-        advancePay: +(advancePay.amount || 0),
-        qrCode: !!(productStock.company && productStock.company !== 'WDS'),
-      };
-    }
+    this.payementDetail = {
+      commercialName: commercialName,
+      promotionPrice: +(trade.promotionPrice || 0),
+      isFullPayment: this.isFullPayment(),
+      advancePay: +(advancePay.amount || 0),
+      qrCode: !!(productStock.company && productStock.company !== 'WDS')
+    };
 
     this.banks = trade.banks || [];
 
