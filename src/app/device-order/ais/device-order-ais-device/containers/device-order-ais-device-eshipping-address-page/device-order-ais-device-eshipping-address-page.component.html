@@ -12,6 +12,7 @@
       <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
 
       <mc-customer-address 
+        [title]="'ที่อยู่จัดส่งสินค้า'"
         [customerAddress]="shippingAddress" 
         [allZipCodes]="allZipCodes" 
         [provinces]="getProvinces()"
