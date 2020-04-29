@@ -36,12 +36,12 @@
                       </div>
                   </div>
                   <div class="text-center">
-                      <div class="col-12 col-sm-4 border border-red m-auto text-red">
-                          {{'กรณีลูกค้าไม่ได้รับ SMS ให้ส่ง QRCode ให้ลูกค้าแทน' | translate}}</div>
-                      <h3 [ngClass]="{ 'text-pink': warningTimeOut() }">{{ countdown || '00 : 00' }}</h3>
-                      <div class="col-sm-10 border m-auto">
-                              <input class="form-control-plaintext text-center" value="URL : {{this.shortUrl}}" disabled>
-                      </div>
+                    <h3 [ngClass]="{ 'text-pink': warningTimeOut() }">{{ countdown || '00 : 00' }}</h3>
+                    <div class="col-12 col-sm-4 border border-red m-auto text-red">
+                      {{'กรณีลูกค้าไม่ได้รับ SMS ให้ส่ง QRCode ให้ลูกค้าแทน' | translate}}</div>
+                    <div class="col-sm-10 border m-auto">
+                            <input class="form-control-plaintext text-center" value="URL : {{ this.urlLink }}" disabled>
+                    </div>
                       <div class="row justify-content-center mb-4 mt-2">
                           <label class="mt-2">ระบุเบอร์โทรเพื่อรับ sms ชำระเงิน</label>
                           <form class="col-sm-3" [formGroup]="phoneSMSForm">
