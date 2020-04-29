@@ -4,7 +4,6 @@
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
     <div class="header-icon-right">
-      <!-- <mc-dropdown-language></mc-dropdown-language> -->
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
@@ -190,13 +189,13 @@
                 {{ transaction?.data?.shippingInfo?.lastName }}
               </p>
               <p class="col-12 col-sm-1" *ngIf="!isEditShipCusName">
-                <img class="icon" src="assets/images/icon/icon-edit.png" style="cursor: pointer" (click)="editShipCusName()">
+                <img class="icon" src="assets/images/icon/icon-edit.png" id="lnkEditCustShipping" (click)="editShipCusName()">
               </p>
 
               <form [formGroup]="shipCusNameFormControl" *ngIf="isEditShipCusName" class="col-12 col-sm-8 flex">
                 {{ transaction?.data?.shippingInfo?.titleName }}
-                <input class="form-control col-5 mr-2 ml-2" type="text" formControlName="firstName" id="firstName" maxlength="50" />
-                <input class="form-control col-5" type="text" formControlName="lastName" id="lastName" maxlength="50" />
+                <input class="form-control col-5 mr-2 ml-2" type="text" formControlName="firstName" id="firstName" maxlength="50" (keypress)="_keyPress($event)"/>
+                <input class="form-control col-5" type="text" formControlName="lastName" id="lastName" maxlength="50" (keypress)="_keyPress($event)"/>
               </form>
 
 
@@ -209,7 +208,7 @@
                 {{ shippingAddress }}
               </p>
               <p class="col-12 col-sm-1">
-                <img class="icon" src="assets/images/icon/icon-edit.png" style="cursor: pointer" (click)="editAddressDelivery()">
+                <img class="icon" src="assets/images/icon/icon-edit.png" id="lnkEditCustShipping" (click)="editAddressDelivery()">
               </p>
             </div>
           </div>

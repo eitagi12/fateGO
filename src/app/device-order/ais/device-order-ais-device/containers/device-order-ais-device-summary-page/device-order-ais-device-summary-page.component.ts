@@ -255,4 +255,12 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit, OnDestr
     this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_EDIT_SHIPPING_ADDRESS_PAGE]);
   }
 
+  _keyPress(event: any): any {
+    const charCode = (event.which) ? event.which : event.keyCode;
+    if ((charCode > 31 && charCode < 49) || (charCode > 90 && charCode < 97) || (charCode > 47 && charCode < 65)
+      || (charCode > 122 && charCode < 128) || (charCode > 143 && charCode < 146) || (charCode > 185 && charCode < 223)) {
+      event.preventDefault();
+    }
+  }
+
 }

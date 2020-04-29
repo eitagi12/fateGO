@@ -70,6 +70,7 @@ export class DeviceOrderAisExistingGadgetSummaryPageComponent implements OnInit,
     public summaryPageService: SummaryPageService,
   ) {
     this.user = this.tokenService.getUser();
+    this.warehouse = this.user.locationCode === '63259';
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     this.profileFbb = this.profileFbbService.load();
@@ -87,7 +88,6 @@ export class DeviceOrderAisExistingGadgetSummaryPageComponent implements OnInit,
   }
 
   ngOnInit(): void {
-    this.warehouse = this.user.locationCode !== '63259';
     const customer = this.transaction.data.customer;
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.packageOntopList = this.transaction.data.deleteOntopPackage;
@@ -266,4 +266,13 @@ export class DeviceOrderAisExistingGadgetSummaryPageComponent implements OnInit,
   editAddressDelivery(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_EDIT_SHIPPING_ADDRESS_PAGE]);
   }
+
+  _keyPress(event: any): any {
+    const charCode = (event.which) ? event.which : event.keyCode;
+    if ((charCode > 31 && charCode < 49) || (charCode > 90 && charCode < 97) || (charCode > 47 && charCode < 65)
+      || (charCode > 122 && charCode < 128) || (charCode > 143 && charCode < 146) || (charCode > 185 && charCode < 223)) {
+      event.preventDefault();
+    }
+  }
+
 }
