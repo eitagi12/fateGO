@@ -192,7 +192,7 @@ export class CreateOrderService {
       locationReceipt: this.user.locationCode,
       userId: this.user.username,
       cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
-      soChannelType: 'CSP',
+      soChannelType: this.user.locationCode === '63259' ? 'MC_KIOSK' : 'CSP',
       soDocumentType: 'RESERVED',
       productList: [product],
 
