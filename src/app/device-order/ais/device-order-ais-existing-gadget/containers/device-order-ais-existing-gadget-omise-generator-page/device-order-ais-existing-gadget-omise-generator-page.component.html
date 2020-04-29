@@ -33,8 +33,7 @@
                 <div class="text-center">
                   <h3 [ngClass]="warningTimeOut() ? 'qrpaymenttimeout' : 'font-green-yellow'">{{ countdown || '00 : 00' }}</h3>
                   <div class="qrpaymenttimeout">" {{'กรุณาชำระเงินภายในเวลาที่กำหนด'}} "</div>
-                  <br>
-                  <div class="qrpaymenttimeout">" {{'กรณีลูกค้าไม่ได้รับ SMS ชำระเงินให้ส่ง OR Code ให้ลูกค้าแทน'}} "</div>
+                  <div class="qrpaymenttimeout mt-2">" {{'กรณีลูกค้าไม่ได้รับ SMS ชำระเงินให้ส่ง OR Code ให้ลูกค้าแทน'}} "</div>
                   <div class="col-sm-10 border m-auto">
                     <input class="form-control-plaintext text-center" value="URL : {{ this.urlLink }}" disabled>
                   </div>
@@ -45,7 +44,7 @@
                 <form class="col-sm-3" [formGroup]="phoneSMSForm">
                     <input type="tel" class="form-control text-center" id="mobile" name="mobile" maxlength="10"  formControlName="phoneNo">
                 </form>
-                <button class="btn btn-success" (click)="onSentSms()">ส่ง sms อีกครั้ง</button>
+                <button class="btn btn-success" [disabled]="phoneSMSForm?.controls?.phoneNo?.errors" (click)="onSentSms()">ส่ง sms อีกครั้ง</button>
             </div>
           </div>
       </div>

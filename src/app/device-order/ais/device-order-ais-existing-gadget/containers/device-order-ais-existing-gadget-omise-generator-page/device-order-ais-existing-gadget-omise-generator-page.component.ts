@@ -64,10 +64,10 @@ export class DeviceOrderAisExistingGadgetOmiseGeneratorPageComponent implements 
 
   public createQueueForm(): void {
     this.phoneSMSForm = this.fb.group({
-      phoneNo: (['', Validators.compose([
+      phoneNo: ([this.transaction.data.receiptInfo.telNo || '', Validators.compose([
         Validators.required,
         Validators.minLength(10),
-        Validators.pattern(/([0-9]{10})/)
+        Validators.pattern('^(0)(6|8|9)[0-9]*$|^((88)(6|8|9)[0-9]*)$')
       ])])
     });
     this.phoneSMSForm.valueChanges.subscribe(() => {
