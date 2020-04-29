@@ -28,7 +28,7 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
   user: User;
   isLineShop: boolean = false;
   feedback: string = '*กรุณาระบุเบอร์มือถือ';
-  shortUrlQrCodeStr: string = 'https://stg-m.ais.co.th/mc?orderId=';
+  shortUrlQrCodeStr: string = 'https://m.ais.co.th/mc?orderId=';
   constructor(
     private router: Router,
     private homeService: HomeService,
