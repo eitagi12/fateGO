@@ -1,3 +1,67 @@
-<p>
-  device-order-ais-existing-gadget-omise-queue-page works!
-</p>
+<div class="mc-flex">
+  <mc-header title="{{'ชำระค่าสินค้าเรียบร้อยแล้ว'| translate}}"></mc-header>
+  <div class="mc-flex-wrap">
+    <div class="m-5">
+      <div class="card">
+        <div class="card-body pt-3 text-center">
+          <img src="assets/images/icon/icon-green-check-circle.png" class="icon" />
+          <br />
+          <b>{{ "หมายเลข" | translate }}
+            <span class="text-green">{{
+              transaction?.data?.simCard?.mobileNo | mobileNo
+            }}</span></b>
+          <br />
+          <b>{{ "ชำระค่าสินค้าเรียบร้อยแล้ว" | translate }}</b> <br />
+          <b>{{ "หมายเลขอ้างอิง" | translate }}
+            {{ transaction?.data?.mpayPayment?.tranId }}</b>
+        </div>
+
+        <!-- ชำระ -->
+        <ng-container>
+          <div class="card-body border-top">
+            <p>
+              <b class="text-light-grey">{{
+                "รายการสินค้า (ที่ชำระแล้ว)" | translate
+              }}</b>
+            </p>
+            <ng-container *ngIf="qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'payment')">
+              <div class="text-light-grey">
+                <p>
+                  <i class="fa fa-circle mr-3 text-green"></i>
+                  {{ priceOption?.productDetail?.name }}
+                  <span *ngIf="priceOption?.productStock?.color">
+                    {{
+                      priceOption?.productStock?.color ? ("สี" | translate) : ""
+                    }}
+                    {{ priceOption?.productStock?.color }}
+                  </span>
+                  <span class="pull-right text-green">
+                    ฿ {{ priceOption?.trade?.promotionPrice | number }}
+                  </span>
+                </p>
+              </div>
+            </ng-container>
+
+            <div class="mt-1 text-right">
+              <b>
+                <span class="mr-3">{{
+                  "รวมยอดชำระ (รวม VAT)" | translate
+                }}</span>
+                <span class="text-green">
+                  $ {{ getPaymentBalance() | number: "1.0-0" }}
+                </span>
+              </b>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid my-5">
+    <div class="text-center">
+      <button class="btn btn-success btn-lg" id="button-next" (click)="onAutoQ()">
+        Auto Queue
+      </button>
+    </div>
+  </div>
+</div>
