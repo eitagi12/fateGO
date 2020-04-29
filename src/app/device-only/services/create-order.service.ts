@@ -192,7 +192,7 @@ export class CreateOrderService {
       locationReceipt: this.user.locationCode,
       userId: this.user.username,
       cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
-      soChannelType: 'CSP',
+      soChannelType: this.user.locationCode === '63259' ? 'MC_KIOSK' : 'CSP',
       soDocumentType: 'RESERVED',
       productList: [product],
 
@@ -458,9 +458,9 @@ export class CreateOrderService {
     if (user.locationCode !== '63259') {
       delete data.shipCusName;
       delete data.shipCusAddr;
-      // if (!data.cusMobileNoOrder) {
-      //   data.cusMobileNoOrder = transactionData.receiptInfo.telNo;
-      // }
+      if (!data.cusMobileNoOrder) {
+        data.cusMobileNoOrder = transactionData.receiptInfo.telNo;
+      }
     } else {
       data.cusMobileNoOrder = shippingInfo.telNo;
     }
