@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, Seller } from 'src/app/shared/models/transaction.model';
 import { environment } from 'src/environments/environment';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
@@ -14,6 +14,7 @@ export class DeviceOrderAisDeviceResultPageComponent implements OnInit {
   transaction: Transaction;
   priceOption: PriceOption;
   isSuccess: boolean;
+  seller: Seller;
 
   constructor(
     private transactionService: TransactionService,
@@ -21,6 +22,7 @@ export class DeviceOrderAisDeviceResultPageComponent implements OnInit {
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
+    this.seller = this.transaction.data.seller;
   }
 
   ngOnInit(): void {

@@ -1,5 +1,10 @@
 <div class="mc-flex">
+    <div [hidden]="this.seller.locationCode==='63259'">
     <mc-header title="{{'ซื้อเครื่องเปล่า'| translate}}"></mc-header>
+    </div>
+    <div [hidden]="this.seller.locationCode!=='63259'">
+    <mc-header title="{{'ชำระค่าสินค้าเรียบร้อยแล้ว'| translate}}"></mc-header>
+    </div>
     <div class="mc-flex-wrap bg-white">
       <div class="my-3">
         <div class="container-fluid">
