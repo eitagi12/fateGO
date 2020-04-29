@@ -5,8 +5,9 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_AGREEMENT_SIGN_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QUEUE_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QR_CODE_SUMMARY_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_AGREEMENT_SIGN_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QUEUE_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QR_CODE_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_OMISE_SUMMARY_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 import { QueuePageService } from 'src/app/device-order/services/queue-page.service';
+import { QrCodeOmisePageService } from 'src/app/device-order/services/qr-code-omise-page.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-aggregate-page',
@@ -18,15 +19,18 @@ export class DeviceOrderAisExistingGadgetAggregatePageComponent implements OnIni
   transaction: Transaction;
   deviceSelling: DeviceSelling;
   priceOption: PriceOption;
+  omisePayment: boolean;
 
   constructor(
     private router: Router,
     private queuePageService: QueuePageService,
     private transactionService: TransactionService,
-    private priceOptionService: PriceOptionService
+    private priceOptionService: PriceOptionService,
+    private qrCodeOmisePageService: QrCodeOmisePageService,
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
+    this.omisePayment = this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment');
   }
 
   ngOnInit(): void {
@@ -43,6 +47,8 @@ export class DeviceOrderAisExistingGadgetAggregatePageComponent implements OnIni
   onNext(): void {
     if (this.isQrCodePayment()) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QR_CODE_SUMMARY_PAGE]);
+    } else if (this.omisePayment) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_OMISE_SUMMARY_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QUEUE_PAGE]);
     }
