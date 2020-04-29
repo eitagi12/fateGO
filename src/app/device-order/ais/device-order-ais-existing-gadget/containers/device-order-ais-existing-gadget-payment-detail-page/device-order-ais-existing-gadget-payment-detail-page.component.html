@@ -11,13 +11,17 @@
     <div class="mt-3">
       <mc-shopping-cart [shoppingCart]=shoppingCart></mc-shopping-cart>
       <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
-
-      <mc-payment-detail [paymentDetail]="payementDetail" [banks]="banks" (completed)="onPaymentCompleted($event)"
-        (error)="onPaymentError($event)">
-      </mc-payment-detail>
-
+      <div [hidden]="warehouse">
+        <mc-payment-detail [paymentDetail]="paymentDetail" [banks]="banks" (completed)="onPaymentCompleted($event)"
+          (error)="onPaymentError($event)">
+        </mc-payment-detail>
+      </div>
+      <div [hidden]="!warehouse">
+        <app-payment-line-shop [paymentDetail]="paymentDetail" (completed)="onPaymentCompleted($event)"
+          (error)="onPaymentError($event)"></app-payment-line-shop>
+      </div>
       <mc-receipt-info [receiptInfo]="receiptInfo" (completed)="onReceiptInfoCompleted($event)"
-      (error)="onReceiptInfoError($event)"></mc-receipt-info>
+        (error)="onReceiptInfoError($event)"></mc-receipt-info>
     </div>
   </div>
   <mc-footer>

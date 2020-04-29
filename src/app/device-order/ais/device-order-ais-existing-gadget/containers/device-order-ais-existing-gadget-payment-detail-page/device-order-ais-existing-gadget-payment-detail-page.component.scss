@@ -1,0 +1,30 @@
+.device-only-read-card-progress {
+  margin: 15px;
+  padding: 0 20px;
+  .progress-bg {
+      border: 1px solid #ced4da;
+      height: 15px;
+      width: auto;
+      .progress-precent {
+          background-color: #8dc63f;
+          height: 15px;
+          width: 1%;
+      }
+  }
+}
+
+::placeholder {
+  color: gray;
+}
+
+.img-search {
+  width: 35px;
+}
+
+.read-card-center-btn {
+  text-align: center;
+}
+
+.search-icon{
+  border: 2px solid #ced4da;
+}
