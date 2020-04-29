@@ -20,11 +20,11 @@ export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, On
   transaction: Transaction;
   priceOption: PriceOption;
   orderList: any;
-  locationCode: string;
   mobileNoForm: FormGroup;
   mobileNoValid: boolean;
   receiptInfo: ReceiptInfo;
   user: User;
+  warehouse: boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -43,6 +43,7 @@ export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, On
     this.priceOption = this.priceOptionService.load();
     this.receiptInfo = this.transaction.data.receiptInfo;
     this.user = this.tokenService.getUser();
+    this.warehouse =   this.user.locationCode === '63259';
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
@@ -98,19 +99,13 @@ export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, On
     const company = this.priceOption.productStock.company;
     const trade = this.priceOption.trade;
 
-    let amountDevice: string;
-
-    if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment')) {
-      amountDevice = trade.promotionPrice;
-    }
-
     this.transaction.data.omise = {
       companyStock: company,
       omiseStatus: {
-        amountDevice: amountDevice,
+        amountDevice: trade.promotionPrice,
         amountAirTime: '0',
         amountTotal: String(this.getTotal()),
-        statusDevice: amountDevice ? 'WAITING' : null,
+        statusDevice: 'WAITING',
         statusAirTime: null,
         installmentFlag: 'N'
       }
@@ -127,7 +122,7 @@ export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, On
     const trade = this.priceOption && this.priceOption.trade;
 
     if (!this.mobileNoForm.value.mobileNo) {
-      this.alertService.warning('กรุณากรอกหมายเลขโทรศัพท์');
+      this.alertService.warning('กรุณากรอกหมายเลขโทรศัพท์เพื่อส่ง SMS');
       return;
     }
 

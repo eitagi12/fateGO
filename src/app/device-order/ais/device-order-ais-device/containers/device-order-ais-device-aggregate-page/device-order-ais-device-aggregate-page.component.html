@@ -37,7 +37,7 @@
             </span>
             <p>{{ priceOption?.campaign?.campaignName }}</p>
             <h2 class="text-green">
-              ฿{{ summary([+priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount]) | number :
+              ฿{{ summary([+priceOption?.trade?.promotionPrice, 0]) | number :
               '1.2-2' }}
             </h2>
           </div>
@@ -54,11 +54,8 @@
                   <span *ngIf="priceOption?.productStock?.color">
                     {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }}
                   </span>
-                  <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
-                    (แถมซิม)
-                  </span>
                   <span class="pull-right text-green">
-                    ฿{{ summary([+priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount]) |
+                    ฿{{ summary([+priceOption?.trade?.promotionPrice, 0]) |
                     number : '1.2-2' }}
                   </span>
                 </p>
@@ -67,7 +64,7 @@
               <div class="text-right mt-3">
                 Total
                 <span class="total text-green h2 ml-5">
-                  ฿{{ summary([+priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount]) | number
+                  ฿{{ summary([+priceOption?.trade?.promotionPrice, 0]) | number
                   : '1.2-2' }}</span>
               </div>
             </div>

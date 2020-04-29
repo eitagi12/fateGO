@@ -1,7 +1,6 @@
 <div class="mc-flex">
   <mc-header title="{{ 'ซื้อเครื่องเปล่า' | translate }}">
     <div class="header-icon-right w-25 text-right">
-      <!-- <mc-dropdown-language></mc-dropdown-language> -->
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()" [hidden]="transaction?.data?.omise?.omiseStatus?.statusDevice === 'SUCCESS'"></mc-header-icon>
     </div>
   </mc-header>
@@ -32,18 +31,8 @@
                 <span *ngIf="priceOption?.productStock?.color">
                   {{ priceOption?.productStock?.color? ('สี'| translate) : '' }} {{ priceOption?.productStock?.color }}
                 </span>
-                <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
-                  ({{'แถมซิม' | translate}})
-                </span>
                 <span class="pull-right text-green">
                   ฿ {{ priceOption?.trade?.promotionPrice | number }}
-                </span>
-              </p>
-              <p *ngIf="priceOption?.trade?.advancePay?.amount > 0">
-                <i class="fa fa-circle mr-3 text-green"></i>
-                {{ summaryPageService.advanpayDescription(priceOption?.trade?.advancePay?.description) }}
-                <span class="pull-right text-green">
-                  ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
                 </span>
               </p>
             </div>
@@ -51,7 +40,7 @@
           <div class="card-footer bg-transparent text-right text-light-grey">
             {{'รวมยอดชำระ (รวม VAT)'| translate}}
             <span class="text-green ml-2 h5">
-              ฿ {{ summary([+priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount]) | number }}
+              ฿ {{ summary([+priceOption?.trade?.promotionPrice, 0]) | number }}
             </span>
           </div>
         </div>
@@ -68,9 +57,6 @@
                   {{ priceOption?.productDetail?.name }}
                   <span *ngIf="priceOption?.productStock?.color">
                     {{'สี'| translate}} {{ priceOption?.productStock?.color }}
-                  </span>
-                  <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
-                    ({{'แถมซิม'}| translate})
                   </span>
                   <span *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">: {{'ชำระเต็มจำนวน'| translate}}</span>
                   <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">: {{'ผ่อนชำระบัตรเครดิต'|
@@ -96,27 +82,19 @@
         </div>
       </div>
 
-      <div class="ml-5 mr-5">
+      <div class="ml-5 mr-5" *ngIf="!warehouse">
         <div class="row">
           <div class="col-8">
             <img src="assets/images/icon/phone_qrcode.png" class="mr-2 float-left" width="30" />
             {{'ชำระโดย บัตรเครดิตออนไลน์'| translate}}
             <div class="text-pink mt-2">{{'กรุณาเปิด Application เพื่อสแกน QR Code' | translate}}</div>
           </div>
-          <div class="col-4 text-right">
-            <div *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'THAI_QR' || transaction?.data?.advancePayment?.paymentQrCodeType === 'THAI_QR'">
-              <img class="img-fluid w-75" src="assets/images/icon/Thai_Qr_Payment.png" />
-            </div>
-            <div *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'LINE_QR' || transaction?.data?.advancePayment?.paymentQrCodeType === 'LINE_QR'">
-              <img class="img-fluid w-75" src="assets/images/icon/Rabbit_Line_Pay.png" />
-            </div>
-          </div>
         </div>
       </div>
 
-      <ng-container *ngIf="locationCode === '63259'" >
+      <ng-container *ngIf="warehouse">
         <div class="mr-5 col-12 title-center mt-4">
-          กรุณาระบุเบอร์โทรเพื่อรับ SMS สำหรับการชำระเงิน ผ่าน บัตรเคดิต ออนไลน์
+          กรุณาระบุเบอร์โทรเพื่อรับ SMS สำหรับการชำระเงินผ่าน บัตรเครดิต ออนไลน์
         </div>
         <div class="mr-5 col-12 title-center mt-2">
           <div>

@@ -4,7 +4,6 @@
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
     <div class="header-icon-right">
-      <!-- <mc-dropdown-language></mc-dropdown-language> -->
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
@@ -24,18 +23,8 @@
                 <span *ngIf="priceOption?.productStock?.color">
                   สี {{ priceOption?.productStock?.color }}
                 </span>
-                <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
-                  (แถมซิม)
-                </span>
                 <span class="pull-right text-green">
                   ฿ {{ priceOption?.trade?.promotionPrice | number }}
-                </span>
-              </p>
-              <p *ngIf="priceOption?.trade?.advancePay?.amount > 0">
-                <i class="fa fa-circle mr-3 text-green"></i>
-                {{ priceOption?.trade?.advancePay?.description }}
-                <span class="pull-right text-green">
-                  ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
                 </span>
               </p>
             </div>
@@ -45,7 +34,7 @@
             <span class="text-green ml-2">
               ฿ {{ summary([
               +priceOption?.trade?.promotionPrice,
-              +priceOption?.trade?.advancePay?.amount
+              0
               ]) | number }}
             </span>
           </div>
@@ -70,9 +59,6 @@
                 <span *ngIf="priceOption?.productStock?.color">
                   {{ 'สี' | translate }} {{ priceOption?.productStock?.color }}
                 </span>
-                <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
-                  ({{ 'แถมซิม' | translate }})
-                </span>
                 <span *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">:
                   {{ 'ชำระเต็มจำนวน' | translate }}</span>
                 <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">:
@@ -84,18 +70,6 @@
               <small class="text-muted">
                 ({{ 'ชำระโดย' | translate }}
                 {{ summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) }})
-              </small>
-              <!-- ค่าแพ็กเกจบริการล่วงหน้า -->
-              <p class="mt-3" *ngIf="(+priceOption?.trade?.advancePay?.amount) > 0">
-                <i class="fa fa-circle mr-3 text-green"></i>
-                {{ 'ค่าแพ็กเกจบริการล่วงหน้า' | translate}} : {{ 'ชำระเต็มจำนวน' | translate }}
-                <span class="pull-right text-green">
-                  ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
-                </span>
-              </p>
-              <small class="text-muted" *ngIf="(+priceOption?.trade?.advancePay?.amount) > 0">
-                ({{ 'ชำระโดย' | translate }}
-                {{ summaryPageService.descriptionPayment(transaction?.data?.advancePayment) }})
               </small>
             </ng-container>
 
@@ -149,8 +123,6 @@
                 <input class="form-control col-5 mr-2 ml-2" type="text" formControlName="firstName" id="firstName" maxlength="50" />
                 <input class="form-control col-5" type="text" formControlName="lastName" id="lastName" maxlength="50" />
               </form>
-
-
 
               <p class="col-12 col-sm-4">
                 <i class="fa fa-circle mr-3 text-green"></i>
