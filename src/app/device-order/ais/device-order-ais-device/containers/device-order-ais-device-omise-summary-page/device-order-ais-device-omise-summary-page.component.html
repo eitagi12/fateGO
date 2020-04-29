@@ -1,9 +1,10 @@
 <div class="mc-flex">
-  <mc-header title="{{ 'ซื้อเครื่องเปล่า' | translate }}">
-    <div class="header-icon-right w-25 text-right">
+    <mc-header title="ซื้อเครื่องเปล่า">
+    <div class="header-icon-right text-right ">
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()" [hidden]="transaction?.data?.omise?.omiseStatus?.statusDevice === 'SUCCESS'"></mc-header-icon>
     </div>
   </mc-header>
+
   <div class="mc-flex-wrap bg-white">
     <div class="my-3">
       <div class="ml-5 mr-5">
@@ -103,7 +104,7 @@
           </div>
         </div>
         <form class="mr-5 col-12 title-center mt-2" [formGroup]="mobileNoForm">
-          <input id="mobileNo" type="text" minlength="10" maxlength="10" formControlName="mobileNo" placeholder="ระบุเบอร์" class="col-3 text-center form-control"
+          <input id="mobileNo" type="tel" minlength="10" maxlength="10" formControlName="mobileNo" placeholder="ระบุเบอร์" class="col-3 text-center form-control"
           [ngClass]="{ 'is-invalid' : mobileNoForm.controls.mobileNo.invalid && mobileNoForm.controls.mobileNo.touched }"
           (keypress)="keyPress($event)">
           <small class="form-text invalid-feedback text-center"

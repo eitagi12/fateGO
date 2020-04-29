@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Transaction, ReceiptInfo } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -9,22 +9,23 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { QrCodeOmisePageService } from 'src/app/device-order/services/qr-code-omise-page.service';
 import { HttpClient } from '@angular/common/http';
-import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_AGGREGATE_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_OMISE_GENERATOR_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_OMISE_GENERATOR_PAGE } from '../../constants/route-path.constant';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-omise-summary-page',
   templateUrl: './device-order-ais-existing-gadget-omise-summary-page.component.html',
   styleUrls: ['./device-order-ais-existing-gadget-omise-summary-page.component.scss']
 })
-export class DeviceOrderAisExistingGadgetOmiseSummaryPageComponent implements OnInit {
+export class DeviceOrderAisExistingGadgetOmiseSummaryPageComponent implements OnInit, OnDestroy {
   transaction: Transaction;
   priceOption: PriceOption;
   orderList: any;
-  locationCode: string;
   mobileNoForm: FormGroup;
   mobileNoValid: boolean;
   receiptInfo: ReceiptInfo;
   user: User;
+  warehouse: boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -41,9 +42,9 @@ export class DeviceOrderAisExistingGadgetOmiseSummaryPageComponent implements On
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
-    this.locationCode = this.tokenService.getUser().locationCode;
     this.receiptInfo = this.transaction.data.receiptInfo;
     this.user = this.tokenService.getUser();
+    this.warehouse = this.user.locationCode === '63259';
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
@@ -61,8 +62,12 @@ export class DeviceOrderAisExistingGadgetOmiseSummaryPageComponent implements On
       };
     }
   }
+
   ngOnInit(): void {
     this.createMobileNoform();
+    if (!this.transaction.data.omise) {
+      this.createOmiseStatus();
+    }
   }
 
   createMobileNoform(): void {
@@ -94,91 +99,45 @@ export class DeviceOrderAisExistingGadgetOmiseSummaryPageComponent implements On
   createOmiseStatus(): void {
     const company = this.priceOption.productStock.company;
     const trade = this.priceOption.trade;
-    const advancePay = trade.advancePay || {};
-
-    let amountDevice: string;
-    let amountAirTime: string;
-
-    if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment')) {
-      amountDevice = trade.promotionPrice;
-    }
-    if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'advancePayment')) {
-      amountAirTime = advancePay.amount;
-    }
 
     this.transaction.data.omise = {
       companyStock: company,
       omiseStatus: {
-        amountDevice: amountDevice,
-        amountAirTime: amountAirTime,
+        amountDevice: trade.promotionPrice,
+        amountAirTime: '0',
         amountTotal: String(this.getTotal()),
-        statusDevice: amountDevice ? 'WAITING' : null,
-        statusAirTime: amountAirTime ? 'WAITING' : null,
-        installmentFlag: advancePay.installmentFlag
+        statusDevice: 'WAITING',
+        statusAirTime: null,
+        installmentFlag: 'N'
       }
     };
   }
 
-  getStatusPay(): string {
-    const company = this.priceOption.productStock.company;
-    const omise = this.transaction.data.omise;
-    if (company === 'AWN') {
-      if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment') &&
-        this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'advancePayment')) {
-        return 'DEVICE&AIRTIME';
-      } else {
-        return omise.omiseStatus.statusDevice === 'WAITING' ? 'DEVICE' : 'AIRTIME';
-      }
-    } else {
-      return omise.omiseStatus.statusDevice === 'WAITING' ? 'DEVICE' : 'AIRTIME';
-    }
-  }
-
   onNext(): void {
     this.pageLoadingService.openLoading();
-    const user = this.tokenService.getUser();
-    const simCard = this.transaction.data && this.transaction.data.simCard;
-    const customer = this.transaction.data && this.transaction.data.customer;
+    const seller = this.transaction.data.seller;
+    const shippingInfo = this.transaction.data.shippingInfo;
+    const customer = this.transaction.data.customer;
     const priceOption = this.priceOption.productDetail;
     const productStock = this.priceOption.productStock;
     const trade = this.priceOption && this.priceOption.trade;
-    const description = trade && trade.advancePay && trade.advancePay.description;
-    console.log('this.telNo1>>>>>', this.receiptInfo.telNo);
+
     if (!this.mobileNoForm.value.mobileNo) {
-      this.alertService.warning('กรุณากรอกหมายเลขโทรศัพท์');
+      this.alertService.warning('กรุณากรอกหมายเลขโทรศัพท์เพื่อส่ง SMS');
       return;
     }
-    this.receiptInfo.telNo = this.mobileNoForm.value.mobileNo;
-    console.log('this.telNo2>>>>>', this.receiptInfo.telNo);
-    if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment') &&
-      this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'advancePayment')) {
-      this.orderList = [{
-        name: priceOption.name + 'สี' + productStock.color,
-        price: +trade.promotionPrice
-      }, {
-        name: description,
-        price: +trade.advancePay.amount
-      }];
-    } else if ((this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment')) ||
-      (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'advancePayment'))) {
-      if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment')) {
-        this.orderList = [{
-          name: priceOption.name + 'สี' + productStock.color,
-          price: +trade.promotionPrice
-        }];
-      } else {
-        this.orderList = [{
-          name: description,
-          price: +trade.advancePay.amount
-        }];
-      }
-    }
+    this.transaction.data.receiptInfo.telNo = this.mobileNoForm.value.mobileNo;
+    this.orderList = [{
+      name: priceOption.name + 'สี' + productStock.color,
+      price: +trade.promotionPrice
+    }];
+
     const params: any = {
       companyCode: 'AWN',
       companyName: 'บริษัท แอดวานซ์ ไวร์เลส เน็ทเวอร์ค จำกัด',
-      locationCode: user.locationCode,
-      locationName: this.receiptInfo.branch,
-      mobileNo: simCard.mobileNo,
+      locationCode: seller.locationCode,
+      locationName: seller.locationName,
+      mobileNo: shippingInfo.telNo,
       customer: customer.firstName + ' ' + customer.lastName,
       orderList: this.orderList,
     };
@@ -186,11 +145,13 @@ export class DeviceOrderAisExistingGadgetOmiseSummaryPageComponent implements On
       const data = res && res.data;
       this.transaction.data.omise.qrCodeStr = data.redirectUrl;
       this.transaction.data.omise.orderId = data.orderId;
+      const msisdn = `66${params.mobileNo.substring(1, params.mobileNo.length)}`;
+      const paymentUrl = this.transaction.data.omise.qrCodeStr;
+      this.generateShortLink(paymentUrl, msisdn);
+      this.pageLoadingService.closeLoading();
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_OMISE_GENERATOR_PAGE]);
     }).catch((err) => {
       this.alertService.error('ระบบไม่สามารถทำรายการได้ขณะนี้ กรุณาทำรายการอีกครั้ง');
-    }).then(() => {
-      this.pageLoadingService.closeLoading();
     });
   }
 
@@ -204,7 +165,6 @@ export class DeviceOrderAisExistingGadgetOmiseSummaryPageComponent implements On
     }, 0);
   }
 
-  // tslint:disable-next-line: use-life-cycle-interface
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }
@@ -212,18 +172,15 @@ export class DeviceOrderAisExistingGadgetOmiseSummaryPageComponent implements On
   getTotal(): number {
     const trade = this.priceOption.trade;
     let total: number = 0;
-    const advancePay = trade.advancePay || {};
 
     if (trade.advancePay.installmentFlag === 'Y') {
-      return this.summary([+trade.promotionPrice, +advancePay.amount]);
+      return this.summary([+trade.promotionPrice, 0]);
     }
 
     if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment')) {
       total += +trade.promotionPrice;
     }
-    if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'advancePayment')) {
-      total += +advancePay.amount;
-    }
+
     return total;
   }
 
@@ -232,5 +189,30 @@ export class DeviceOrderAisExistingGadgetOmiseSummaryPageComponent implements On
     if (charCode > 31 && (charCode < 48 || charCode > 57)) {
       event.preventDefault();
     }
+  }
+
+  generateShortLink(url: string, mobileNo: string): Promise<any> {
+    let urlLink: string = url;
+    if (environment.ENABLE_SHORT_LINK) {
+      const splitUrl: any = url.split('?');
+      urlLink = `${environment.PREFIX_SHORT_LINK}?${splitUrl[1]}`;
+      this.transaction.data.omise.shortUrl = urlLink;
+    }
+    return this.sendSMSUrl({ mobileNo: mobileNo, urlPayment: urlLink }).then(() => {
+    });
+  }
+
+  sendSMSUrl(params: any): Promise<any> {
+    const requestBody: any = {
+      recipient: {
+        recipientIdType: '0',
+        recipientIdData: (params.mobileNo).replace(/^0+/, '66')
+      },
+      content: `สำหรับการชำระเงินค่าสินค้าผ่านบัตรเครดิตออนไลน์ คลิก ${params.urlPayment}`,
+      sender: 'AIS'
+    };
+    return this.http.post('/api/customerportal/newregister/send-sms', requestBody).toPromise()
+      .then(() => {
+      });
   }
 }

@@ -121,13 +121,12 @@ export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, On
     const priceOption = this.priceOption.productDetail;
     const productStock = this.priceOption.productStock;
     const trade = this.priceOption && this.priceOption.trade;
-    const omise = this.transaction.data.omise;
 
     if (!this.mobileNoForm.value.mobileNo) {
       this.alertService.warning('กรุณากรอกหมายเลขโทรศัพท์เพื่อส่ง SMS');
       return;
     }
-
+    this.transaction.data.receiptInfo.telNo = this.mobileNoForm.value.mobileNo;
     this.orderList = [{
       name: priceOption.name + 'สี' + productStock.color,
       price: +trade.promotionPrice
@@ -198,7 +197,6 @@ export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, On
       const splitUrl: any = url.split('?');
       urlLink = `${environment.PREFIX_SHORT_LINK}?${splitUrl[1]}`;
       this.transaction.data.omise.shortUrl = urlLink;
-      console.log('this.transaction.data.omise.shortUrl>>>', this.transaction.data.omise.shortUrl);
     }
     return this.sendSMSUrl({ mobileNo: mobileNo, urlPayment: urlLink }).then(() => {
     });
@@ -214,7 +212,7 @@ export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, On
       sender: 'AIS'
     };
     return this.http.post('/api/customerportal/newregister/send-sms', requestBody).toPromise()
-      .then((response) => {
+      .then(() => {
       });
   }
 
