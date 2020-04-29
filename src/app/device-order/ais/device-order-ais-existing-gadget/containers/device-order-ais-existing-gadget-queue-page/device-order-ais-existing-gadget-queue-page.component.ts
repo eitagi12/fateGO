@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { AlertService, PageLoadingService, TokenService, User } from 'mychannel-shared-libs';
+import { PageLoadingService, TokenService, User } from 'mychannel-shared-libs';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { QueuePageService } from 'src/app/device-order/services/queue-page.service';
@@ -29,13 +29,13 @@ export class DeviceOrderAisExistingGadgetQueuePageComponent implements OnInit, O
   inputType: string;
   errorQueue: boolean = false;
   skipQueue: boolean = false;
+  warehouse: boolean;
 
   constructor(
     private router: Router,
     private fb: FormBuilder,
     private http: HttpClient,
     private transactionService: TransactionService,
-    private alertService: AlertService,
     private priceOptionService: PriceOptionService,
     private pageLoadingService: PageLoadingService,
     private tokenService: TokenService,
@@ -45,6 +45,7 @@ export class DeviceOrderAisExistingGadgetQueuePageComponent implements OnInit, O
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     this.user = this.tokenService.getUser();
+    this.warehouse = this.user.locationCode === '63259';
   }
 
   ngOnInit(): void {
@@ -96,7 +97,9 @@ export class DeviceOrderAisExistingGadgetQueuePageComponent implements OnInit, O
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    if (!this.queueType || this.queueType === 'MANUAL' || this.inputType === 'queue') {
+    if (this.warehouse) {
+      this.genQueueL();
+    } else if (!this.queueType || this.queueType === 'MANUAL' || this.inputType === 'queue') {
       this.transaction.data.queue = { queueNo: this.queue };
       this.createOrderAndupdateTransaction();
     } else {
@@ -143,6 +146,17 @@ export class DeviceOrderAisExistingGadgetQueuePageComponent implements OnInit, O
         this.errorQueue = true;
         this.pageLoadingService.closeLoading();
       });
+  }
+
+  genQueueL(): void {
+    this.queuePageService.getQueueL(this.user.locationCode).then((response: any) => {
+      const data = response.data ? response.data : { queue: 'L9999' };
+      this.transaction.data.queue = { queueNo: data.queue };
+      this.createOrderAndupdateTransaction();
+    }).catch(() => {
+      this.transaction.data.queue = { queueNo: 'L9999' };
+      this.createOrderAndupdateTransaction();
+    });
   }
 
   createOrderAndupdateTransaction(): void {
