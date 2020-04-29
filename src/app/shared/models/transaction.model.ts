@@ -122,6 +122,7 @@ export interface Omise {
   qrCodeStr?: string;
   creditCardNo?: string;
   cardExpireDate?: string;
+  shortUrl?: string;
 }
 
 export interface ShippingInfo {

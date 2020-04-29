@@ -10,6 +10,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ROUTE_DEVICE_AIS_DEVICE_OMISE_GENERATOR_PAGE } from '../../constants/route-path.constant';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-device-order-ais-device-omise-summary-page',
@@ -43,7 +44,7 @@ export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, On
     this.priceOption = this.priceOptionService.load();
     this.receiptInfo = this.transaction.data.receiptInfo;
     this.user = this.tokenService.getUser();
-    this.warehouse =   this.user.locationCode === '63259';
+    this.warehouse = this.user.locationCode === '63259';
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
@@ -120,6 +121,7 @@ export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, On
     const priceOption = this.priceOption.productDetail;
     const productStock = this.priceOption.productStock;
     const trade = this.priceOption && this.priceOption.trade;
+    const omise = this.transaction.data.omise;
 
     if (!this.mobileNoForm.value.mobileNo) {
       this.alertService.warning('กรุณากรอกหมายเลขโทรศัพท์เพื่อส่ง SMS');
@@ -144,6 +146,9 @@ export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, On
       const data = res && res.data;
       this.transaction.data.omise.qrCodeStr = data.redirectUrl;
       this.transaction.data.omise.orderId = data.orderId;
+      const msisdn = `66${params.mobileNo.substring(1, params.mobileNo.length)}`;
+      const paymentUrl = this.transaction.data.omise.qrCodeStr;
+      this.generateShortLink(paymentUrl, msisdn);
       this.pageLoadingService.closeLoading();
       this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_OMISE_GENERATOR_PAGE]);
     }).catch((err) => {
@@ -186,4 +191,31 @@ export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, On
       event.preventDefault();
     }
   }
+
+  generateShortLink(url: string, mobileNo: string): Promise<any> {
+    let urlLink: string = url;
+    if (environment.ENABLE_SHORT_LINK) {
+      const splitUrl: any = url.split('?');
+      urlLink = `${environment.PREFIX_SHORT_LINK}?${splitUrl[1]}`;
+      this.transaction.data.omise.shortUrl = urlLink;
+      console.log('this.transaction.data.omise.shortUrl>>>', this.transaction.data.omise.shortUrl);
+    }
+    return this.sendSMSUrl({ mobileNo: mobileNo, urlPayment: urlLink }).then(() => {
+    });
+  }
+
+  sendSMSUrl(params: any): Promise<any> {
+    const requestBody: any = {
+      recipient: {
+        recipientIdType: '0',
+        recipientIdData: (params.mobileNo).replace(/^0+/, '66')
+      },
+      content: `สำหรับการชำระเงินค่าสินค้าผ่านบัตรเครดิตออนไลน์ คลิก ${params.urlPayment}`,
+      sender: 'AIS'
+    };
+    return this.http.post('/api/customerportal/newregister/send-sms', requestBody).toPromise()
+      .then((response) => {
+      });
+  }
+
 }
