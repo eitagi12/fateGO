@@ -34,6 +34,7 @@ import { DeviceOrderAisExistingGadgetEshippingAddressPageComponent } from './con
 import { DeviceOrderAisExistingGadgetOmiseGeneratorPageComponent } from './containers/device-order-ais-existing-gadget-omise-generator-page/device-order-ais-existing-gadget-omise-generator-page.component';
 import { DeviceOrderAisExistingGadgetOmiseQueuePageComponent } from './containers/device-order-ais-existing-gadget-omise-queue-page/device-order-ais-existing-gadget-omise-queue-page.component';
 import { DeviceOrderAisExistingGadgetOmiseSummaryPageComponent } from './containers/device-order-ais-existing-gadget-omise-summary-page/device-order-ais-existing-gadget-omise-summary-page.component';
+import { PaymentLineShopComponent } from 'src/app/device-only/components/payment-line-shop/payment-line-shop.component';
 
 @NgModule({
   imports: [
@@ -72,7 +73,8 @@ import { DeviceOrderAisExistingGadgetOmiseSummaryPageComponent } from './contain
     DeviceOrderAisExistingGadgetEshippingAddressPageComponent,
     DeviceOrderAisExistingGadgetOmiseGeneratorPageComponent,
     DeviceOrderAisExistingGadgetOmiseQueuePageComponent,
-    DeviceOrderAisExistingGadgetOmiseSummaryPageComponent
+    DeviceOrderAisExistingGadgetOmiseSummaryPageComponent,
+    PaymentLineShopComponent,
   ]
 })
 export class DeviceOrderAisExistingGadgetModule { }

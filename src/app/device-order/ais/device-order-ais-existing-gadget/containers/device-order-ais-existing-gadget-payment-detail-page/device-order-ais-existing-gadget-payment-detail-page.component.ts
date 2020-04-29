@@ -26,7 +26,7 @@ export class DeviceOrderAisExistingGadgetPaymentDetailPageComponent implements O
   priceOption: PriceOption;
   transaction: Transaction;
 
-  payementDetail: PaymentDetail;
+  paymentDetail: PaymentDetail;
   banks: PaymentDetailBank[];
   paymentDetailValid: boolean;
 
@@ -85,7 +85,7 @@ export class DeviceOrderAisExistingGadgetPaymentDetailPageComponent implements O
       commercialName += ` สี ${productStock.color}`;
     }
 
-    this.payementDetail = this.mappingPatmentDetail(commercialName, trade, advancePay);
+    this.paymentDetail = this.mappingPatmentDetail(commercialName, trade, advancePay);
     this.banks = trade.banks || [];
     this.receiptInfo = this.mappingReceiptInfo(customer, receiptInfo);
 
@@ -122,7 +122,8 @@ export class DeviceOrderAisExistingGadgetPaymentDetailPageComponent implements O
       isFullPayment: this.isFullPayment(),
       installmentFlag: advancePay.installmentFlag === 'N' && +(advancePay.amount || 0) > 0,
       advancePay: +(advancePay.amount || 0),
-      qrCode: !!(productStock.company && productStock.company !== 'WDS')
+      qrCode: !!(productStock.company && productStock.company !== 'WDS'),
+      omisePayment: this.warehouse ? true : false,
     };
   }
 
