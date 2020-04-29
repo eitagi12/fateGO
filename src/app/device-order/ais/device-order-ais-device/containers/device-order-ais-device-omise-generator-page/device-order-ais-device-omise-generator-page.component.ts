@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, Seller } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-import { HomeService, PageLoadingService, AlertService, TokenService } from 'mychannel-shared-libs';
+import { PageLoadingService, AlertService, TokenService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import * as moment from 'moment';
@@ -34,6 +34,9 @@ export class DeviceOrderAisDeviceOmiseGeneratorPageComponent implements OnInit, 
   orderId: string;
   mobileNoForm: FormGroup;
   shortUrl: string;
+  urlLink: string;
+  seller: Seller;
+  orderList: any;
 
   constructor(
     private router: Router,
@@ -47,13 +50,16 @@ export class DeviceOrderAisDeviceOmiseGeneratorPageComponent implements OnInit, 
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
+    this.seller = this.transaction.data.seller;
   }
 
   ngOnInit(): void {
-    this.onGenerateQRCode();
-    this.createQueueForm();
     this.orderId += this.transaction.data.omise.orderId;
     this.shortUrl = this.transaction.data.omise.qrCodeStr;
+    this.urlLink = this.transaction.data.omise.shortUrl;
+    this.createQueueForm();
+    this.onGenerateQRCode();
+    console.log('transaction' , this.transaction);
   }
 
   public createQueueForm(): void {
@@ -64,7 +70,7 @@ export class DeviceOrderAisDeviceOmiseGeneratorPageComponent implements OnInit, 
         Validators.pattern(/([0-9]{10})/)
       ])])
     });
-    this.phoneSMSForm.valueChanges.subscribe((value) => {
+    this.phoneSMSForm.valueChanges.subscribe(() => {
     });
   }
 
@@ -72,7 +78,6 @@ export class DeviceOrderAisDeviceOmiseGeneratorPageComponent implements OnInit, 
     this.totalAmount = this.getTotalAmount();
     const orderId = this.transaction.data.omise.orderId || '';
     const qrCodeStr = this.transaction.data.omise.qrCodeStr || '';
-
     this.handlerQRCodeMpay(orderId, qrCodeStr);
   }
 
@@ -99,7 +104,7 @@ export class DeviceOrderAisDeviceOmiseGeneratorPageComponent implements OnInit, 
             } else {
               // Refresh generate qrcode
               this.alertService.question('ชำระค่าสินค้าและบริการไม่สำเร็จ กรุณาทำรายการใหม่')
-                .then((dataAlert: any) => {
+                .then(() => {
                   this.onBack();
                 });
             }
@@ -119,7 +124,7 @@ export class DeviceOrderAisDeviceOmiseGeneratorPageComponent implements OnInit, 
               this.checkResponseOmiseSubscription.unsubscribe();
 
               // check Retrive Order
-              this.pageLoadingService.openLoading();
+            //  this.pageLoadingService.openLoading();
               this.qrCodeOmiseService.retriveOrder({ params: { orderId: orderId } }).then(() => {
                 return this.qrCodeOmiseService.queryOrder({
                   params: {
@@ -136,7 +141,7 @@ export class DeviceOrderAisDeviceOmiseGeneratorPageComponent implements OnInit, 
                     this.onNext();
                   } else {
                     this.alertService.question('ชำระค่าสินค้าและบริการไม่สำเร็จ กรุณาทำรายการใหม่')
-                      .then((dataAlert: any) => {
+                      .then(() => {
                         this.onBack();
                       });
                   }
@@ -145,7 +150,7 @@ export class DeviceOrderAisDeviceOmiseGeneratorPageComponent implements OnInit, 
                 const errors: any = error.error && error.error.errors || {};
                 if (errors.code === '0002') {
                   this.alertService.question('สิ้นสุดระยะเวลาชำระเงิน กรุณาทำรายการใหม่')
-                    .then((dataAlert: any) => {
+                    .then(() => {
                       this.onBack();
                     });
                 } else {
@@ -174,7 +179,6 @@ export class DeviceOrderAisDeviceOmiseGeneratorPageComponent implements OnInit, 
 
   getTotalAmount(): number {
     const trade = this.priceOption.trade;
-    const payment: any = this.transaction.data.payment || {};
     let total: number = 0;
 
     if (this.qrCodeOmiseService.isPaymentOnlineCredit(this.transaction, 'payment')) {
@@ -204,21 +208,46 @@ export class DeviceOrderAisDeviceOmiseGeneratorPageComponent implements OnInit, 
   }
 
   generateShortLink(url: string, mobileNo: string): Promise<any>  {
-    let urlLink: string = url;
+    // let urlLink: string = url;
     if (environment.ENABLE_SHORT_LINK) {
       const splitUrl: any = url.split('?');
-      urlLink = `${environment.PREFIX_SHORT_LINK}?${splitUrl[1]}`;
+      this.urlLink = `${environment.PREFIX_SHORT_LINK}?${splitUrl[1]}`;
+      console.log('urlLink', this.urlLink);
     }
-    return this.sendSMSUrl({ mobileNo: mobileNo, urlPayment: urlLink }).then(() => {
-      return { shortUrl: urlLink };
+    return this.sendSMSUrl({ mobileNo: mobileNo, urlPayment: this.urlLink }).then(() => {
+      return { shortUrl: this.urlLink };
     });
   }
 
   onSentSms(): void {
       const phoneNo = this.phoneSMSForm.controls['phoneNo'].value;
       const msisdn = `66${phoneNo.substring(1, phoneNo.length)}`;
-      const paymentUrl = this.shortUrl;
-      this.generateShortLink( paymentUrl, msisdn);
+      const priceOption = this.priceOption.productDetail;
+      const productStock = this.priceOption.productStock;
+      const trade = this.priceOption && this.priceOption.trade;
+       this.orderList = [{
+        name: priceOption.name + 'สี' + productStock.color,
+        price: +trade.promotionPrice
+      }];
+      const params: any = {
+        companyCode: 'AWN',
+        companyName: 'บริษัท แอดวานซ์ ไวร์เลส เน็ทเวอร์ค จำกัด',
+        locationCode: this.seller.locationCode,
+        locationName: this.seller.locationName,
+        mobileNo: this.transaction.data.simCard.mobileNo,
+        customer: this.transaction.data.customer.firstName + ' ' + this.transaction.data.customer.lastName,
+        orderList: this.orderList,
+      };
+
+      this.qrCodeOmiseService.createOrder(params).then((res: any) => {
+        const data = res && res.data;
+        this.transaction.data.omise.qrCodeStr = data.redirectUrl;
+        this.transaction.data.omise.orderId = data.orderId;
+        this.generateShortLink( this.shortUrl , msisdn);
+        console.log('Succes' , this.transaction);
+      }).catch(() => {
+        this.alertService.error('ระบบไม่สามารถทำรายการได้ในขณะนี้้ กรุณาทำรายการอีกครั้ง');
+      });
   }
 
   onBack(): void {
