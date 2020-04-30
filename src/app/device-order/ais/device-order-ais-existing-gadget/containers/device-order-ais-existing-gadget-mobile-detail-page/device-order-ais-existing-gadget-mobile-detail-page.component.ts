@@ -7,7 +7,7 @@ import { Transaction, TransactionAction, BillingAccount } from 'src/app/shared/m
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ProfileFbb } from 'src/app/shared/models/profile-fbb.model';
 
-import { MobileInfo, ShoppingCart, HomeService, PageLoadingService, BillingSystemType, AlertService } from 'mychannel-shared-libs';
+import { MobileInfo, ShoppingCart, HomeService, PageLoadingService, BillingSystemType, AlertService, User, TokenService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { PromotionShelveService } from 'src/app/device-order/services/promotion-shelve.service';
@@ -33,6 +33,7 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
   mobileNo: string;
   disableNextButton: boolean;
   minimumPackage: any;
+  user: User;
 
   constructor(
     private router: Router,
@@ -42,6 +43,7 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private profileFbbService: ProfileFbbService,
+    private tokenService: TokenService,
     private http: HttpClient,
     private shoppingCartService: ShoppingCartService,
     private promotionShelveService: PromotionShelveService,
@@ -50,18 +52,22 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     this.profileFbb = this.profileFbbService.load();
+    this.user = this.tokenService.getUser();
     this.minimumPackage = this.priceOption.trade.minimumPackage;
-    this.homeService.callback = () => {
-      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
-        .then((response: any) => {
-          if (response.value === true) {
-            this.returnStock().then(() => {
-              this.transactionService.remove();
-              window.location.href = '/';
-            });
-          }
-        });
-    };
+    if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      this.homeService.callback = () => {
+        this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+          .then((response: any) => {
+            if (response.value === true) {
+              this.returnStock().then(() => {
+                this.transaction.data.order = {};
+                this.transactionService.remove();
+                window.location.href = '/';
+              });
+            }
+          });
+      };
+    }
   }
 
   ngOnInit(): void {
@@ -74,15 +80,15 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
     this.pageLoadingService.openLoading();
     this.http.get(`/api/customerportal/mobile-detail/${this.mobileNo}`).toPromise()
       .then((response: any) => {
-        console.log('response  : ' , response);
+        console.log('response  : ', response);
         const mobileDetail = response.data;
-        console.log('if : ' , +response.data.package.priceExclVat , this.minimumPackage );
+        console.log('if : ', +response.data.package.priceExclVat, this.minimumPackage);
         this.mappingMobileDetail(mobileDetail);
-        console.log('response.futurePackage.priceExclVat' , response.data.futurePackage);
-        console.log('response.data.package.priceExclVat' , response.data.package.priceExclVat);
+        console.log('response.futurePackage.priceExclVat', response.data.futurePackage);
+        console.log('response.data.package.priceExclVat', response.data.package.priceExclVat);
 
-        if (response.data.futurePackage && +response.data.futurePackage.priceExclVat ) {
-          console.log('+response.futurePackage.priceExclVat : ' , +response.data.futurePackage.priceExclVat);
+        if (response.data.futurePackage && +response.data.futurePackage.priceExclVat) {
+          console.log('+response.futurePackage.priceExclVat : ', +response.data.futurePackage.priceExclVat);
           if (+response.data.futurePackage.priceExclVat >= this.minimumPackage) {
             this.pageLoadingService.closeLoading();
           } else {
@@ -94,7 +100,7 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
             });
           }
         } else if (response.data.package.priceExclVat) {
-          console.log('+response.data.package.priceExclVat : ' , +response.data.package.priceExclVat);
+          console.log('+response.data.package.priceExclVat : ', +response.data.package.priceExclVat);
           if (+response.data.package.priceExclVat >= this.minimumPackage) {
             this.pageLoadingService.closeLoading();
           } else {
@@ -107,12 +113,12 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
           }
         }
       });
-      // .then(() => this.pageLoadingService.closeLoading());
+    // .then(() => this.pageLoadingService.closeLoading());
   }
 
   mappingMobileDetail(mobileDetail: any): any {
     const serviceYear = mobileDetail.serviceYear;
-    const mainPack =  mobileDetail.futurePackage ? mobileDetail.futurePackage : mobileDetail.package;
+    const mainPack = mobileDetail.futurePackage ? mobileDetail.futurePackage : mobileDetail.package;
     this.mobileInfo = this.mappingMobileInfo(mobileDetail, serviceYear, mainPack);
     this.transaction.data.simCard = {
       mobileNo: this.mobileNo,
@@ -326,10 +332,9 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
       const promiseAll = [];
       if (transaction.data) {
         if (transaction.data.order && transaction.data.order.soId) {
-          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
-            location: this.priceOption.productStock.location,
+          const order = this.http.post('/api/salesportal/dt/remove-cart', {
             soId: transaction.data.order.soId,
-            transactionId: transaction.transactionId
+            userId: this.user.username
           }).toPromise().catch(() => Promise.resolve());
           promiseAll.push(order);
         }

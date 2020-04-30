@@ -4,7 +4,7 @@ import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_VALIDATE_CUSTOMER_PAGE, ROUTE_DE
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { ShoppingCart, HomeService, PageLoadingService, AlertService } from 'mychannel-shared-libs';
+import { ShoppingCart, HomeService, PageLoadingService, AlertService, User, TokenService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -24,6 +24,7 @@ export class DeviceOrderAisExistingGadgetChangePackagePageComponent implements O
   transaction: Transaction;
   priceOption: PriceOption;
   shoppingCart: ShoppingCart;
+  user: User;
 
   constructor(
     private router: Router,
@@ -31,6 +32,7 @@ export class DeviceOrderAisExistingGadgetChangePackagePageComponent implements O
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private shoppingCartService: ShoppingCartService,
+    private tokenService: TokenService,
     private pageLoadingService: PageLoadingService,
     private alertService: AlertService,
     private checkChangeService: CheckChangeServiceService,
@@ -39,17 +41,21 @@ export class DeviceOrderAisExistingGadgetChangePackagePageComponent implements O
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
-    this.homeService.callback = () => {
-      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
-        .then((response: any) => {
-          if (response.value === true) {
-            this.returnStock().then(() => {
-              this.transactionService.remove();
-              window.location.href = '/';
-            });
-          }
-        });
-    };
+    this.user = this.tokenService.getUser();
+    if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      this.homeService.callback = () => {
+        this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+          .then((response: any) => {
+            if (response.value === true) {
+              this.returnStock().then(() => {
+                this.transaction.data.order = {};
+                this.transactionService.remove();
+                window.location.href = '/';
+              });
+            }
+          });
+      };
+    }
   }
 
   ngOnInit(): void {
@@ -84,10 +90,9 @@ export class DeviceOrderAisExistingGadgetChangePackagePageComponent implements O
       const promiseAll = [];
       if (transaction.data) {
         if (transaction.data.order && transaction.data.order.soId) {
-          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
-            location: this.priceOption.productStock.location,
+          const order = this.http.post('/api/salesportal/dt/remove-cart', {
             soId: transaction.data.order.soId,
-            transactionId: transaction.transactionId
+            userId: this.user.username
           }).toPromise().catch(() => Promise.resolve());
           promiseAll.push(order);
         }

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_EFFECTIVE_START_DATE_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_SUMMARY_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
-import { PromotionShelve, BillingSystemType, ShoppingCart, HomeService, PageLoadingService, AlertService } from 'mychannel-shared-libs';
+import { PromotionShelve, BillingSystemType, ShoppingCart, HomeService, PageLoadingService, AlertService, User, TokenService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { BsModalRef } from 'ngx-bootstrap';
@@ -33,6 +33,7 @@ export class DeviceOrderAisExistingGadgetSelectPackagePageComponent implements O
   selectCurrentPackage: boolean;
   modalRef: BsModalRef;
   shoppingCart: ShoppingCart;
+  user: User;
   translateSubscription: Subscription;
 
   constructor(
@@ -44,11 +45,13 @@ export class DeviceOrderAisExistingGadgetSelectPackagePageComponent implements O
     private priceOptionService: PriceOptionService,
     private shoppingCartService: ShoppingCartService,
     private promotionShelveService: PromotionShelveService,
+    private tokenService: TokenService,
     private translateService: TranslateService,
     private alertService: AlertService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
+    this.user = this.tokenService.getUser();
 
     if (this.transaction.data.billingInformation) {
       delete this.transaction.data.billingInformation.billCycle;
@@ -60,17 +63,20 @@ export class DeviceOrderAisExistingGadgetSelectPackagePageComponent implements O
         this.checkTranslateLang(lang);
       }
     });
-    this.homeService.callback = () => {
-      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
-        .then((response: any) => {
-          if (response.value === true) {
-            this.returnStock().then(() => {
-              this.transactionService.remove();
-              window.location.href = '/';
-            });
-          }
-        });
-    };
+    if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      this.homeService.callback = () => {
+        this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+          .then((response: any) => {
+            if (response.value === true) {
+              this.returnStock().then(() => {
+                this.transaction.data.order = {};
+                this.transactionService.remove();
+                window.location.href = '/';
+              });
+            }
+          });
+      };
+    }
   }
 
   changePackageTitleLanguage(currentPackage: any = {}): string {
@@ -267,10 +273,9 @@ export class DeviceOrderAisExistingGadgetSelectPackagePageComponent implements O
       const promiseAll = [];
       if (transaction.data) {
         if (transaction.data.order && transaction.data.order.soId) {
-          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
-            location: this.priceOption.productStock.location,
+          const order = this.http.post('/api/salesportal/dt/remove-cart', {
             soId: transaction.data.order.soId,
-            transactionId: transaction.transactionId
+            userId: this.user.username
           }).toPromise().catch(() => Promise.resolve());
           promiseAll.push(order);
         }
