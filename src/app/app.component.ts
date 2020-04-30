@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { TokenService, ErrorsService, AlertService, PageActivityService, HomeService, ChannelType } from 'mychannel-shared-libs';
+import { TokenService, ErrorsService, AlertService, PageActivityService, HomeService, ChannelType, CookieService } from 'mychannel-shared-libs';
 import { setTheme } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
 import { environment } from '../environments/environment';
@@ -28,7 +28,8 @@ export class AppComponent {
     private router: Router,
     private homeService: HomeService,
     private http: HttpClient,
-    private translation: TranslateService
+    private translation: TranslateService,
+    private cookieService: CookieService
   ) {
     this.version = this.getVersion();
 
@@ -76,7 +77,8 @@ export class AppComponent {
 
   errorHandler(): void {
     this.errorsService.getUnauthorized().subscribe((observer) => {
-      this.alertService.error('Unauthorized: Access is denied due to invalid credentials.');
+      this.alertService.error('Unauthorized: Access is denied due to invalid credentials.')
+      .then(() => this.cookieService.deleteAll());
     });
 
     const ONE_SECOND = 1000;

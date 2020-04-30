@@ -3,14 +3,14 @@ import { CommonModule, DecimalPipe } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { JwtModule, JWT_OPTIONS } from '@auth0/angular-jwt';
-import { CookiesStorageService } from 'ngx-store';
+
 const { name: name } = require('../../package.json');
 
 import {
   jwtOptionsFactory,
   ErrorsHandler,
   MyChannelSharedLibsModule,
-  I18nService,
+  CookieService,
   IdCardPipe
 } from 'mychannel-shared-libs';
 import { AppRoutingModule } from './app-routing.module';
@@ -42,7 +42,7 @@ import { TranslateModule } from '@ngx-translate/core';
       jwtOptionsProvider: {
         provide: JWT_OPTIONS,
         useFactory: jwtOptionsFactory,
-        deps: [CookiesStorageService]
+        deps: [CookieService]
       }
     }),
     SharedModule,
