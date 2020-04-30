@@ -6,12 +6,14 @@
   </mc-header>
 
   <div class="mc-flex-wrap">
-      <div class="mb-3 mt-3">
-        <mc-device-selling [deviceSelling]="deviceSelling"></mc-device-selling>
-      </div>
-  
-  <mc-footer>
-    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()">CHECK OUT</button>
-  </mc-footer>
-</div>
+    <div class="mb-3 mt-3">
+      <mc-device-selling [deviceSelling]="deviceSelling"></mc-device-selling>
+    </div>
+
+    <mc-footer>
+      <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+      <button class="btn btn-success" (click)="onNext()">
+        {{ transaction?.data?.payment?.paymentType === 'QR_CODE' || omisePayment ? 'PAYMENT' : 'CHECK OUT'}}
+      </button>
+    </mc-footer>
+  </div>
