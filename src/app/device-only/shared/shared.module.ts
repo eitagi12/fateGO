@@ -16,6 +16,7 @@ import { TabsModule } from 'ngx-bootstrap';
 import { MobileCareAspComponent } from '../components/mobile-care-asp/mobile-care-asp.component';
 import { CustomerAddressDeviceOnlyComponent } from '../components/customer-address-device-only/customer-address-device-only.component';
 import { PaymentDetailComponent } from '../components/payment-detail/payment-detail.component';
+import { PaymentLineShopComponent } from '../components/payment-line-shop/payment-line-shop.component';
 
 @NgModule({
   imports: [
@@ -38,7 +39,8 @@ import { PaymentDetailComponent } from '../components/payment-detail/payment-det
     SummaryPaymentDetailComponent,
     SummaryProductAndServiceComponent,
     SummarySellerCodeComponent,
-    PaymentDetailComponent
+    PaymentDetailComponent,
+    PaymentLineShopComponent
   ],
   exports: [
     BillingAddressComponent,
@@ -52,7 +54,8 @@ import { PaymentDetailComponent } from '../components/payment-detail/payment-det
     SummaryPaymentDetailComponent,
     SummaryProductAndServiceComponent,
     SummarySellerCodeComponent,
-    PaymentDetailComponent
+    PaymentDetailComponent,
+    PaymentLineShopComponent
   ],
   providers: []
 })

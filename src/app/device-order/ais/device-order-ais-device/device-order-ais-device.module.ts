@@ -18,7 +18,7 @@ import { DeviceOrderAisDeviceEshippingAddressPageComponent } from './containers/
 import { DeviceOrderAisDeviceOmiseSummaryPageComponent } from './containers/device-order-ais-device-omise-summary-page/device-order-ais-device-omise-summary-page.component';
 import { DeviceOrderAisDeviceOmiseGeneratorPageComponent } from './containers/device-order-ais-device-omise-generator-page/device-order-ais-device-omise-generator-page.component';
 import { DeviceOrderAisDeviceOmiseQueuePageComponent } from './containers/device-order-ais-device-omise-queue-page/device-order-ais-device-omise-queue-page.component';
-import { PaymentLineShopComponent } from 'src/app/device-only/components/payment-line-shop/payment-line-shop.component';
+import { DeviceOnlySharedModule } from 'src/app/device-only/shared/shared.module';
 
 @NgModule({
   imports: [
@@ -27,7 +27,8 @@ import { PaymentLineShopComponent } from 'src/app/device-only/components/payment
     MyChannelSharedLibsModule,
     FormsModule,
     ReactiveFormsModule,
-    TranslateModule
+    TranslateModule,
+    DeviceOnlySharedModule
   ],
   declarations: [
   DeviceOrderAisDevicePaymentPageComponent,
@@ -43,8 +44,7 @@ import { PaymentLineShopComponent } from 'src/app/device-only/components/payment
   DeviceOrderAisDeviceEshippingAddressPageComponent,
   DeviceOrderAisDeviceOmiseSummaryPageComponent,
   DeviceOrderAisDeviceOmiseGeneratorPageComponent,
-  DeviceOrderAisDeviceOmiseQueuePageComponent,
-  PaymentLineShopComponent
+  DeviceOrderAisDeviceOmiseQueuePageComponent
 ]
 })
 export class DeviceOrderAisDeviceModule { }
