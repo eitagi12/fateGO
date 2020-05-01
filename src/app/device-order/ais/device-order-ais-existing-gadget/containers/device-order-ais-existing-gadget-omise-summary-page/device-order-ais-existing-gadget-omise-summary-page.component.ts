@@ -142,12 +142,10 @@ export class DeviceOrderAisExistingGadgetOmiseSummaryPageComponent implements On
       orderList: this.orderList,
     };
     this.qrCodeOmisePageService.createOrder(params).then((res) => {
-      const data = res && res.data;
+      const data = res && res.data ? res.data : {};
       this.transaction.data.omise.qrCodeStr = data.redirectUrl;
       this.transaction.data.omise.orderId = data.orderId;
-      const msisdn = `66${params.mobileNo.substring(1, params.mobileNo.length)}`;
-      const paymentUrl = this.transaction.data.omise.qrCodeStr;
-      this.generateShortLink(paymentUrl, msisdn);
+      this.generateShortLink((data.redirectUrl || ''), params.mobileNo);
       this.pageLoadingService.closeLoading();
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_OMISE_GENERATOR_PAGE]);
     }).catch((err) => {
