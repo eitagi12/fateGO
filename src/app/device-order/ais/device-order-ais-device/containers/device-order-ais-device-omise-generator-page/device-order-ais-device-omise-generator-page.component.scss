@@ -1,19 +1,13 @@
-@import "~foundation-sites/scss/util/util";
-@import "src/assets/scss/util/color";
-
 .qr-code {
   width: 300px;
   margin: 0 auto;
+  border : 1px solid #dee2e6;
 }
 
 .total {
   width: 100px;
 }
 
-.qrpaymenttimeout{
+.qrpaymenttimeout {
   color: red;
-}
-
-.m-5 {
-  margin-bottom: 5em;
 }

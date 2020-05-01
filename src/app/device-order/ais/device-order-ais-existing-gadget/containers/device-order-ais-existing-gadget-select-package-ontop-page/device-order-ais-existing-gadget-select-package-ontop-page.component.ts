@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, TemplateRef } from '@angular/core';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { CustomerInfo, HomeService, ShoppingCart, PageLoadingService, AlertService } from 'mychannel-shared-libs';
+import { CustomerInfo, HomeService, ShoppingCart, PageLoadingService, AlertService, User, TokenService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -31,6 +31,7 @@ export class DeviceOrderAisExistingGadgetSelectPackageOntopPageComponent impleme
   shoppingCart: ShoppingCart;
   packageOntopList: any[] = [];
   packageOntopForm: FormGroup;
+  user: User;
   effectiveEndDt: any;
   priceOption: PriceOption;
   constructor(
@@ -43,23 +44,28 @@ export class DeviceOrderAisExistingGadgetSelectPackageOntopPageComponent impleme
     private transactionService: TransactionService,
     private modalService: BsModalService,
     private fb: FormBuilder,
+    private tokenService: TokenService,
     private translateService: TranslateService,
     private priceOptionService: PriceOptionService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
+    this.user = this.tokenService.getUser();
     this.createForm();
-    this.homeService.callback = () => {
-      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
-        .then((response: any) => {
-          if (response.value === true) {
-            this.returnStock().then(() => {
-              this.transactionService.remove();
-              window.location.href = '/';
-            });
-          }
-        });
-    };
+    if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      this.homeService.callback = () => {
+        this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+          .then((response: any) => {
+            if (response.value === true) {
+              this.returnStock().then(() => {
+                this.transaction.data.order = {};
+                this.transactionService.remove();
+                window.location.href = '/';
+              });
+            }
+          });
+      };
+    }
   }
 
   ngOnInit(): void {
@@ -124,10 +130,9 @@ export class DeviceOrderAisExistingGadgetSelectPackageOntopPageComponent impleme
       const promiseAll = [];
       if (transaction.data) {
         if (transaction.data.order && transaction.data.order.soId) {
-          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
-            location: this.priceOption.productStock.location,
+          const order = this.http.post('/api/salesportal/dt/remove-cart', {
             soId: transaction.data.order.soId,
-            transactionId: transaction.transactionId
+            userId: this.user.username
           }).toPromise().catch(() => Promise.resolve());
           promiseAll.push(order);
         }

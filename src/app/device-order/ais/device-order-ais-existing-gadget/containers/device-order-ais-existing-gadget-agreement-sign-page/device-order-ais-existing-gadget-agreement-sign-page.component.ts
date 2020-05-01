@@ -25,6 +25,7 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
 
   transaction: Transaction;
   priceOption: PriceOption;
+  user: User;
 
   // captureAndSign
   shoppingCart: ShoppingCart;
@@ -60,6 +61,7 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
+    this.user = this.tokenService.getUser();
     this.signedSubscription = this.aisNativeDeviceService.getSigned().subscribe((signature: string) => {
       this.captureAndSign.imageSignature = signature;
       this.onChangeCaptureAndSign();
@@ -73,17 +75,20 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
         });
     }
 
-    this.homeService.callback = () => {
-      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
-        .then((response: any) => {
-          if (response.value === true) {
-            this.returnStock().then(() => {
-              this.transactionService.remove();
-              window.location.href = '/';
-            });
-          }
-        });
-    };
+    if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      this.homeService.callback = () => {
+        this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+          .then((response: any) => {
+            if (response.value === true) {
+              this.returnStock().then(() => {
+                this.transaction.data.order = {};
+                this.transactionService.remove();
+                window.location.href = '/';
+              });
+            }
+          });
+      };
+    }
   }
 
   ngOnInit(): void {
@@ -154,10 +159,9 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
       const promiseAll = [];
       if (transaction.data) {
         if (transaction.data.order && transaction.data.order.soId) {
-          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
-            location: this.priceOption.productStock.location,
+          const order = this.http.post('/api/salesportal/dt/remove-cart', {
             soId: transaction.data.order.soId,
-            transactionId: transaction.transactionId
+            userId: this.user.username
           }).toPromise().catch(() => Promise.resolve());
           promiseAll.push(order);
         }
