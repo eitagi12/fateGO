@@ -3,7 +3,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-import { HomeService, PageLoadingService, AlertService } from 'mychannel-shared-libs';
+import { HomeService, PageLoadingService, AlertService, User, TokenService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { QrCodeOmiseService } from 'src/app/device-only/services/qr-code-omise.service';
@@ -31,7 +31,9 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
   countdown: string;
   refreshCount: number = 0;
   totalAmount: number;
-  shortUrlQrCodeStr: string = 'https://m.ais.co.th/mc?orderId=';
+  user: User;
+  shortUrl: any;
+  urlLink: any;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -42,6 +44,7 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
     private qrCodeOmiseService: QrCodeOmiseService,
     private http: HttpClient,
     private fb: FormBuilder,
+    private tokenService: TokenService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -50,7 +53,10 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
   ngOnInit(): void {
     this.onGenerateQRCode();
     this.createQueueForm();
-    this.shortUrlQrCodeStr += this.transaction.data.omise.orderId;
+    this.shortUrl = this.transaction.data.omise.qrCodeStr;
+    this.urlLink = this.transaction.data.omise.shortUrl;
+    this.user = this.tokenService.getUser();
+
   }
 
   public createQueueForm(): void {
@@ -196,20 +202,77 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
   }
 
   sendSms(): void {
-    const phoneNo = this.phoneSMSForm.controls['phoneNo'].value;
+    if (this.phoneSMSForm.controls['phoneNo'].valid) {
+      const params = this.createDataGenerateQR();
+      this.pageLoadingService.openLoading();
+      this.qrCodeOmiseService.createOrder(params).then((res: any) => {
+        const data = res && res.data;
+        this.transaction.data.omise = {
+          ...this.transaction.data.omise,
+          qrCodeStr: data.redirectUrl,
+          orderId: data.orderId
+        };
+        this.transactionService.update(this.transaction);
 
-    const msisdn = `66${phoneNo.substring(1, phoneNo.length)}`;
-    const bodyRequest: any = {
+        const phoneNo = this.phoneSMSForm.controls['phoneNo'].value;
+        const msisdn = `66${phoneNo.substring(1, phoneNo.length)}`;
+        const paymentUrl = this.transaction.data.omise.qrCodeStr;
+        this.generateShortLink(paymentUrl, msisdn);
+        this.pageLoadingService.closeLoading();
+      }).catch((err) => {
+        this.alertService.error('ระบบไม่สามารถทำรายการได้ขณะนี้ กรุณาทำรายการอีกครั้ง');
+      });
+    }
+  }
+
+  generateShortLink(url: string, mobileNo: string): Promise<any> {
+    let urlLink: string = url;
+    if (environment.ENABLE_SHORT_LINK) {
+      const splitUrl: any = url.split('?');
+      urlLink = `${environment.PREFIX_SHORT_LINK}?${splitUrl[1]}`;
+      this.transaction.data.omise.shortUrl = urlLink;
+      this.urlLink = urlLink;
+    }
+    return this.sendSMSUrl({ mobileNo: mobileNo, urlPayment: urlLink }).then(() => {
+    });
+  }
+
+  sendSMSUrl(params: any): Promise<any> {
+    const requestBody: any = {
       recipient: {
         recipientIdType: '0',
-        recipientIdData: msisdn
+        recipientIdData: (params.mobileNo).replace(/^0+/, '66')
       },
-      content: 'สำหรับการชำระเงินค่าสินค้าผ่านบัตรเครดิตออนไลน์ คลิก ' + this.shortUrlQrCodeStr,
+      content: `สำหรับการชำระเงินค่าสินค้าผ่านบัตรเครดิตออนไลน์ คลิก ${params.urlPayment}`,
       sender: 'AIS'
     };
-    this.http.post('/api/customerportal/newregister/send-sms', bodyRequest).toPromise()
+    return this.http.post('/api/customerportal/newregister/send-sms', requestBody).toPromise()
       .then(() => {
       });
+  }
+
+  createDataGenerateQR(): any {
+    const shippingInfo = this.transaction.data.shippingInfo;
+    const customer = shippingInfo.firstName + ' ' + shippingInfo.lastName;
+    const productStock = this.priceOption.productStock;
+    const productDetail = this.priceOption.productDetail;
+    const trade = this.priceOption.trade;
+    const phoneNo = this.phoneSMSForm.controls['phoneNo'].value;
+    const color = productStock.colorName || productStock.color;
+    return {
+      companyCode: productStock.company,
+      companyName: 'บริษัท แอดวานซ์ ไวร์เลส เน็ทเวอร์ค จำกัด',
+      locationCode: this.user.locationCode,
+      locationName: this.transaction.data.seller.locationName,
+      mobileNo: phoneNo,
+      customer: customer,
+      orderList: [
+        {
+          name: productDetail.name + 'สี' + color,
+          price: trade.promotionPrice
+        }
+      ]
+    };
   }
 
   copyShortUrl(shortUrl: string): void {
@@ -228,11 +291,11 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
   }
 
   onBack(): void {
-      this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_SUMMARY_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_SUMMARY_PAGE]);
   }
 
   onNext(): void {
-      this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_QUEUE_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_QUEUE_PAGE]);
   }
 
   onHome(): void {
