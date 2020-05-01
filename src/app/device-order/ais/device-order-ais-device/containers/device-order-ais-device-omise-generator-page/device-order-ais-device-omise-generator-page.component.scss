@@ -13,37 +13,6 @@
 .qrpaymenttimeout{
   color: red;
 }
-.white-background{
-  background-color: $mc-white;
-}
-
-@media only screen and (min-width: 401px) and (max-width: 960px) {
-  .qr-code-box {
-      background-color: $mc-white;
-      border-style: solid;
-      border: solid $mc-bright-gray;
-      border-radius: 15px;
-      width: 60%;
-      min-width: 300px;
-      margin: auto;
-      margin-top: 20px;
-      margin-bottom: 20px;
-
-      .qrPaymentHeader {
-          border-style: solid;
-          border: solid $mc-bright-gray;
-          border-radius: 15px;
-          width: 90%;
-          height: 70px;
-          margin-top: 20px;
-      }
-      .qr-code-mini-logo {
-          width:  100px;
-          height: 40px;
-      }
-
-  }
-}
 
 .m-5 {
   margin-bottom: 5em;
