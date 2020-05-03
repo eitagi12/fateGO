@@ -56,7 +56,6 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
     this.homeButtonService.initEventButtonHome();
     this.calculateSummary(this.deposit);
     if (this.user.locationCode === '63259' &&
-      this.transaction.data.payment.paymentForm === 'FULL' &&
       this.transaction.data.payment.paymentOnlineCredit === true &&
       this.transaction.data.payment.paymentType === 'CREDIT') {
       this.isLineShop = true;
@@ -196,17 +195,17 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
     const trade = this.priceOption.trade;
     const phoneNo = this.phoneSMSForm.controls['phoneNo'].value;
     const color = productStock.colorName || productStock.color;
-    // เด๊๋ยวแก้ ค่า return ใหม่
+    const installmentTerm: any = this.transaction.data.payment.paymentMethod.installment.split('%');
     return {
-      orderDesc: 'test', //
-      amount: '3500.00', //
+      orderDesc: productDetail.name + 'สี' + color,
+      amount: trade.promotionPrice,
       currency: 'THB',
       paymentMethod: '13',
       installmentInfo: {
-        issuerBank: 'BAY', ///
-        installmentTerm: '10' ///
+        issuerBank: this.transaction.data.payment.paymentMethod.issuerBank,
+        installmentTerm: +installmentTerm[1].trim()
       },
-      soId: '1234', ///
+      soId: this.transaction.data.order.soId,
       companyCode: productStock.company,
       companyName: 'บริษัท แอดวานซ์ ไวร์เลส เน็ทเวอร์ค จำกัด',
       locationCode: this.user.locationCode,

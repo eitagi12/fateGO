@@ -24,3 +24,29 @@ img.qr-logo:hover {
     height: calc(2.25rem + 4px);
     width: 100px;
 }
+
+.bank {
+    max-width: 90px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 5px;
+    border-radius: 3px;
+    display: block;
+}
+
+.bank-block [type=radio]:checked + label {
+    background: #74a822;
+}
+
+.bank-block input[type=radio] + label:before {
+    content: none;
+    border: 2px solid #8bc34a;
+    display: inline-block;
+    vertical-align: middle;
+    width: 30px;
+    height: 30px;
+    padding: 2px;
+    line-height: 15px;
+    margin-right: 10px;
+    text-align: center;
+}
