@@ -201,56 +201,6 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
     }, 0);
   }
 
-  sendSms(): void {
-    if (this.phoneSMSForm.controls['phoneNo'].valid) {
-      const params = this.createDataGenerateQR();
-      this.pageLoadingService.openLoading();
-      this.qrCodeOmiseService.createOrder(params).then((res: any) => {
-        const data = res && res.data;
-        this.transaction.data.omise = {
-          ...this.transaction.data.omise,
-          qrCodeStr: data.redirectUrl,
-          orderId: data.orderId
-        };
-        this.transactionService.update(this.transaction);
-
-        const phoneNo = this.phoneSMSForm.controls['phoneNo'].value;
-        const msisdn = `66${phoneNo.substring(1, phoneNo.length)}`;
-        const paymentUrl = this.transaction.data.omise.qrCodeStr;
-        this.generateShortLink(paymentUrl, msisdn);
-        this.pageLoadingService.closeLoading();
-      }).catch((err) => {
-        this.alertService.error('ระบบไม่สามารถทำรายการได้ขณะนี้ กรุณาทำรายการอีกครั้ง');
-      });
-    }
-  }
-
-  generateShortLink(url: string, mobileNo: string): Promise<any> {
-    let urlLink: string = url;
-    if (environment.ENABLE_SHORT_LINK) {
-      const splitUrl: any = url.split('?');
-      urlLink = `${environment.PREFIX_SHORT_LINK}?${splitUrl[1]}`;
-      this.transaction.data.omise.shortUrl = urlLink;
-      this.urlLink = urlLink;
-    }
-    return this.sendSMSUrl({ mobileNo: mobileNo, urlPayment: urlLink }).then(() => {
-    });
-  }
-
-  sendSMSUrl(params: any): Promise<any> {
-    const requestBody: any = {
-      recipient: {
-        recipientIdType: '0',
-        recipientIdData: (params.mobileNo).replace(/^0+/, '66')
-      },
-      content: `สำหรับการชำระเงินค่าสินค้าผ่านบัตรเครดิตออนไลน์ คลิก ${params.urlPayment}`,
-      sender: 'AIS'
-    };
-    return this.http.post('/api/customerportal/newregister/send-sms', requestBody).toPromise()
-      .then(() => {
-      });
-  }
-
   createDataGenerateQR(): any {
     const shippingInfo = this.transaction.data.shippingInfo;
     const customer = shippingInfo.firstName + ' ' + shippingInfo.lastName;
