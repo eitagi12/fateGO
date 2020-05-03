@@ -28,7 +28,7 @@
           <div class="text-center">
             <small>ระบุธนาคาร</small>
           </div>
-          <div class="row banks" [ngClass]="{'more': isPaymentDetailCollapsed}">
+          <div class="row banks">
             <ng-container *ngFor="let bank of bankOption">
               <div class="bank-block col-2 p-2">
                 <input style="display: none !important;" type="radio" [attr.id]="bank?.abb" name="paymentBank"
