@@ -29,6 +29,7 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
   user: User;
   isLineShop: boolean = false;
   feedback: string = '*กรุณาระบุเบอร์มือถือ';
+
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -117,12 +118,12 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
             const data = res && res.data;
             this.transaction.data.omise = {
               ...this.transaction.data.omise,
-              qrCodeStr: data.endpointUrl,
+              qrCodeStr: decodeURIComponent(data.endpointUrl),
               orderId: data.orderId,
               saleId: data.saleId
             };
             this.transactionService.update(this.transaction);
-            this.sendSMSUrl({ mobileNo: phoneNo, urlPayment: data.endpointUrl});
+            this.sendSMSUrl({ mobileNo: phoneNo, urlPayment: this.transaction.data.omise.qrCodeStr});
             this.pageLoadingService.closeLoading();
             this.router.navigate([ROUTE_DEVICE_ONLY_AIS_OMISE_GENERATE_PAGE]);
           }).catch((err) => {
