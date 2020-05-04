@@ -162,7 +162,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     });
     this.receiptInfoForm.patchValue({
       taxId: customer.idCardNo || '',
-      telNo: telNo || mobileNo || '',
+      telNo: telNo || (this.utils.isMobileNo(mobileNo) ? mobileNo : ''),
       buyer: `${customer.titleName} ${customer.firstName} ${customer.lastName}` || '',
       buyerAddress: this.utils.getCurrentAddress({
         homeNo: customer.homeNo,
