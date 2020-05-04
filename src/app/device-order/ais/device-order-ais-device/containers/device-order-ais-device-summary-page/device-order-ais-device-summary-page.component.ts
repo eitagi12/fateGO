@@ -81,8 +81,7 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit, OnDestr
     // tslint:disable-next-line:max-line-length
     const customer = this.transaction.data && this.transaction.data.billingInformation && this.transaction.data.billingInformation.billDeliveryAddress ?
       this.transaction.data.billingInformation.billDeliveryAddress : this.transaction.data.customer;
-    const shippingInfo = this.transaction.data && this.transaction.data.shippingInfo ?
-      this.transaction.data.shippingInfo : this.transaction.data.customer;
+    const shippingInfo = this.transaction.data.shippingInfo;
 
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.setCustomerAddress(customer);

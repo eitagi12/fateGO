@@ -347,12 +347,18 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
           if (this.transaction.data && this.transaction.data.customer) {
             delete this.transaction.data.customer;
           }
+          if (this.transaction.data && this.transaction.data.shippingInfo) {
+            delete this.transaction.data.shippingInfo;
+          }
           this.pageLoadingService.closeLoading();
           this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE]);
         }
       }).catch((error: any) => {
         if (this.transaction.data && this.transaction.data.customer) {
           delete this.transaction.data.customer;
+        }
+        if (this.transaction.data && this.transaction.data.shippingInfo) {
+          delete this.transaction.data.shippingInfo;
         }
         this.pageLoadingService.closeLoading();
         this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE]);
@@ -519,9 +525,15 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
     this.transaction.data.receiptInfo = this.receiptInfo;
     this.transaction.data.receiptInfo.telNo = this.receiptInfoForm.value.telNo;
-    if (this.transaction.data.simCard.mobileNo !== this.oldMobileNo) {
+    if (this.transaction.data.shippingInfo && this.transaction.data.shippingInfo.firstName
+      && this.transaction.data.simCard.mobileNo === this.oldMobileNo) {
+      this.transaction.data.shippingInfo = {
+        ...this.transaction.data.shippingInfo
+      };
+    } else {
       this.setShippingInfo(this.transaction.data.customer);
     }
+    this.transaction.data.shippingInfo.telNo = this.receiptInfoForm.value.telNo;
     this.returnStock().then(() => {
       this.addDeviceSellingCart(this.transaction);
     });
@@ -544,7 +556,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
       amphur: customer.amphur,
       province: customer.province,
       zipCode: customer.zipCode,
-      telNo: this.receiptInfoForm.value.telNo
+      telNo: ''
     };
   }
 

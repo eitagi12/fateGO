@@ -83,7 +83,7 @@ export class QueuePageService {
 
   getQueueL(locationCode: any): Promise<any> {
     return this.http.get('/api/salesportal/device-sell/gen-queue-with-prefix', {
-    params: { locationCode: locationCode, prefix: 'L' }
+      params: { locationCode: locationCode, prefix: 'L' }
     }).toPromise();
   }
 
@@ -178,7 +178,7 @@ export class QueuePageService {
       depositAmt: prebooking ? prebooking.depositAmt : '',
       convertToNetwotkType: '',
       shipCusName: warehouse ? `คุณ${shippingInfo.firstName} ${shippingInfo.lastName}` : '',
-      shipCusAddr: warehouse ? this.mapShipCusAddr(shippingInfo) : '' ,
+      shipCusAddr: warehouse ? this.mapShipCusAddr(shippingInfo) : '',
       storeName: '',
       shipLocation: '',
       remarkReceipt: '',
@@ -207,7 +207,8 @@ export class QueuePageService {
       data.soChannelType = 'MC_KIOSK';
       data.clearingType = 'MPAY';
       data.qrOrderId = omise.orderId;
-      data.creditCardNo = omise.creditCardNo ? omise.creditCardNo.substring(omise.creditCardNo.length - 16) : '';
+      data.creditCardNo = omise.creditCardNo ? omise.creditCardNo.substring(omise.creditCardNo.length - 16) :
+        warehouse ? 'XXXXXXXXXXXXXXXX​' : '';
       data.cardExpireDate = omise.cardExpireDate || '12/30';
 
       // omise for device

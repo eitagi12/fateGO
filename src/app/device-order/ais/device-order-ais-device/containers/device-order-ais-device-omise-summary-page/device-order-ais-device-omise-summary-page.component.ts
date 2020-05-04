@@ -126,7 +126,6 @@ export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, On
       this.alertService.warning('กรุณากรอกหมายเลขโทรศัพท์เพื่อส่ง SMS');
       return;
     }
-    this.transaction.data.receiptInfo.telNo = this.mobileNoForm.value.mobileNo;
     this.orderList = [{
       name: priceOption.name + 'สี' + productStock.color,
       price: +trade.promotionPrice
@@ -137,7 +136,7 @@ export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, On
       companyName: 'บริษัท แอดวานซ์ ไวร์เลส เน็ทเวอร์ค จำกัด',
       locationCode: seller.locationCode,
       locationName: seller.locationName,
-      mobileNo: shippingInfo.telNo,
+      mobileNo: shippingInfo.telNo || this.receiptInfo.telNo,
       customer: customer.firstName + ' ' + customer.lastName,
       orderList: this.orderList,
     };
