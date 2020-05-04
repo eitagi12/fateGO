@@ -32,7 +32,6 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
   refreshCount: number = 0;
   totalAmount: number;
   user: User;
-  shortUrl: any;
   urlLink: any;
   constructor(
     private router: Router,
@@ -53,10 +52,12 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
   ngOnInit(): void {
     this.onGenerateQRCode();
     this.createQueueForm();
-    this.shortUrl = this.transaction.data.omise.qrCodeStr;
-    this.urlLink = this.transaction.data.omise.shortUrl;
+    if (this.transaction.data.payment.paymentForm === 'FULL') {
+      this.urlLink = this.transaction.data.omise.shortUrl;
+    } else {
+      this.urlLink = this.transaction.data.omise.qrCodeStr;
+    }
     this.user = this.tokenService.getUser();
-
   }
 
   public createQueueForm(): void {
