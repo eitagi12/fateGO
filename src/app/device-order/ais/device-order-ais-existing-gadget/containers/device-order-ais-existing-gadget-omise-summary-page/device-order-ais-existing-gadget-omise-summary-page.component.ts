@@ -121,6 +121,7 @@ export class DeviceOrderAisExistingGadgetOmiseSummaryPageComponent implements On
     const priceOption = this.priceOption.productDetail;
     const productStock = this.priceOption.productStock;
     const trade = this.priceOption && this.priceOption.trade;
+    const order = this.transaction.data.order;
 
     if (!this.mobileNoForm.value.mobileNo) {
       this.alertService.warning('กรุณากรอกหมายเลขโทรศัพท์เพื่อส่ง SMS');
@@ -139,6 +140,7 @@ export class DeviceOrderAisExistingGadgetOmiseSummaryPageComponent implements On
       mobileNo: shippingInfo.telNo || this.receiptInfo.telNo,
       customer: customer.firstName + ' ' + customer.lastName,
       orderList: this.orderList,
+      soId: order.soId
     };
     this.qrCodeOmisePageService.createOrder(params).then((res) => {
       const data = res && res.data ? res.data : {};
