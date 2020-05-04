@@ -347,12 +347,18 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
           if (this.transaction.data && this.transaction.data.customer) {
             delete this.transaction.data.customer;
           }
+          if (this.transaction.data && this.transaction.data.shippingInfo) {
+            delete this.transaction.data.shippingInfo;
+          }
           this.pageLoadingService.closeLoading();
           this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE]);
         }
       }).catch((error: any) => {
         if (this.transaction.data && this.transaction.data.customer) {
           delete this.transaction.data.customer;
+        }
+        if (this.transaction.data && this.transaction.data.shippingInfo) {
+          delete this.transaction.data.shippingInfo;
         }
         this.pageLoadingService.closeLoading();
         this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE]);
