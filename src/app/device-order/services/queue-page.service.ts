@@ -589,8 +589,9 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
           message += `${this.CASH_PAYMENT}${this.COMMA}${this.SPACE}`;
         } else {
           message += `${this.CREDIT_CARD_PAYMENT}${this.COMMA}${this.SPACE}`;
-          message += `${this.BANK}${payment.paymentMethod.abb || payment.paymentBank.abb}${this.COMMA}${this.SPACE}`;
-          // message += `${this.INSTALLMENT}0%${this.SPACE}0`;
+          if (payment.paymentMethod.abb || payment.paymentBank.abb) {
+            message += `${this.BANK}${payment.paymentMethod.abb || payment.paymentBank.abb}${this.COMMA}${this.SPACE}`;
+          }
         }
       }
     }
