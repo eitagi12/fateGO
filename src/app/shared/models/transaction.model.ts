@@ -123,6 +123,7 @@ export interface Omise {
   creditCardNo?: string;
   cardExpireDate?: string;
   shortUrl?: string;
+  saleId?: string;
 }
 
 export interface ShippingInfo {

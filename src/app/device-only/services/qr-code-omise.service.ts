@@ -17,6 +17,10 @@ export class QrCodeOmiseService {
     return this.http.post('/api/payments/super-duper/create-order', params).toPromise();
   }
 
+  createOrderInstallment(params: Object): Promise<any> {
+    return this.http.post('/api/payments/super-duper/create-order-installment', params).toPromise();
+  }
+
   queryOrder(params: Object): Promise<any> {
     return this.http.get('/api/payments/super-duper/query-order', params).toPromise();
   }

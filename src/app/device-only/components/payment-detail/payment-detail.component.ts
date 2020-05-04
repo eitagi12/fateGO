@@ -1,6 +1,9 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { HttpClient } from '@angular/common/http';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
 
 @Component({
   selector: 'app-payment-detail',
@@ -18,6 +21,13 @@ export class PaymentDetailComponent implements OnInit {
   @Input()
   paymentDetail: any;
 
+  @Input()
+  installmentBanks: any;
+
+  @Input()
+  banks: any;
+
+  public priceOption: PriceOption;
   paymentValue: any;
   isShowCreditOnline: boolean = true;
   isShowQrCode: boolean;
@@ -25,28 +35,52 @@ export class PaymentDetailComponent implements OnInit {
   isAWN: boolean;
   transaction: Transaction;
   payment: any;
+  omiseInstallmentBanks: any[];
+  bankOption: any[];
+  installments: any[];
+  bankSelected: any;
+  isShowPercentAndTerm: boolean = false;
+  defaultBankSelected: any;
+  defaultPercentAndTermSelected: any;
 
   constructor(
     private transactionService: TransactionService,
+    private priceOptionService: PriceOptionService,
+    private http: HttpClient
   ) {
     this.transaction = this.transactionService.load();
+    this.priceOption = this.priceOptionService.load();
   }
 
   ngOnInit(): void {
-    this.checkQrCodeSelected();
     this.setPaymentValue();
-    if (this.paymentDetail && this.paymentDetail.omisePayment) {
-      this.isAWN = true;
-      this.setPaymentValueOnlineCredit();
+    if (this.paymentDetail && this.paymentDetail.isFullPayment) {
+      this.checkQrCodeSelected();
+      if (this.paymentDetail.omisePayment) {
+        this.isAWN = true;
+        this.setPaymentValueOnlineCredit();
+      } else {
+        this.isAWN = false;
+        this.isShowQrCode = true;
+        this.error.emit(false);
+      }
     } else {
-      this.isAWN = false;
-      this.isShowQrCode = true;
-      this.error.emit(false);
+      this.mapBanks();
     }
 
     if (this.transaction && this.transaction.data && this.transaction.data.payment) {
       this.payment = this.transaction.data.payment;
-      this.defaultPaymentValue();
+      if (this.paymentDetail.isFullPayment) {
+        this.defaultFullPaymentValue();
+      } else {
+        this.paymentValue = {
+          payment: this.transaction.data.payment
+        };
+        this.isShowPercentAndTerm = true;
+        this.defaultBankSelected = this.transaction.data.payment.paymentMethod.abb;
+        this.completed.emit(this.paymentValue);
+        this.error.emit(true);
+      }
     }
   }
 
@@ -93,7 +127,7 @@ export class PaymentDetailComponent implements OnInit {
     this.paymentValue = {
       payment: {
         'paymentBank': '',
-        'paymentForm': 'FULL',
+        'paymentForm': this.paymentDetail.isFullPayment ? 'FULL' : 'INSTALLMENT',
         'paymentMethod': '',
         'paymentOnlineCredit': true,
         'paymentQrCodeType': '',
@@ -126,7 +160,7 @@ export class PaymentDetailComponent implements OnInit {
     this.error.emit(true);
   }
 
-  defaultPaymentValue(): void {
+  defaultFullPaymentValue(): void {
     if (this.payment) {
       if (this.payment.paymentType === 'QR_CODE') {
         this.paymentQrCodeType = this.payment.paymentType;
@@ -157,6 +191,87 @@ export class PaymentDetailComponent implements OnInit {
       const paymentType = this.isAWN ? 'CREDIT' : 'QR_CODE';
       return paymentType;
     }
+  }
+
+  mapBanks(): any {
+    const trade = this.priceOption.trade;
+    this.http.get(`/api/payments/get-bank-installment?price=${trade.promotionPrice}`).toPromise()
+      .then((res: any) => {
+        const data = res.data || [];
+        this.installmentBanks = data;
+      }).then(() => {
+        const banks_mapDb = [];
+        const result = (this.banks || []).filter((bank: any) => {
+          this.installmentBanks.forEach((installment_bank: any) => {
+            if (bank.abb === installment_bank.bankabb) {
+              installment_bank.installment.forEach((_installment: any) => {
+                const installment_str = _installment.percent + '% ' + _installment.month;
+                if (bank.installment === installment_str) {
+                  bank = {
+                    ...bank,
+                    issuerBank: installment_bank.bankomise
+                  };
+                  banks_mapDb.push(bank);
+                  return bank;
+                }
+              });
+            }
+          });
+        });
+        this.omiseInstallmentBanks = banks_mapDb;
+        this.bankOption = (this.omiseInstallmentBanks || []).reduce((prev, curr) => {
+          const exists = prev.find(p => p.abb === curr.abb);
+          if (!exists) {
+            prev.push(curr);
+          }
+          return prev;
+        }, []);
+
+        if (this.transaction.data) {
+          const bankAbb = this.transaction.data.payment.paymentMethod.abb;
+          const bankInstallment = this.transaction.data.payment.paymentMethod.installment;
+          this.onSelectBank(bankAbb);
+          this.defaultPercentAndTermSelected = bankAbb + bankInstallment;
+          this.error.emit(true);
+        }
+      });
+  }
+
+  onSelectBank(value: any): void {
+    this.bankSelected = value;
+    const installment = [];
+    this.omiseInstallmentBanks.filter((bank: any) => {
+      if (bank.abb === value) {
+        installment.push(bank);
+      }
+    });
+    this.installments = installment;
+    this.isShowPercentAndTerm = true;
+    this.defaultPercentAndTermSelected = '';
+    this.error.emit(false);
+  }
+
+  onInstallmentChange(value: any): void {
+    let bankIsSelect: any;
+    bankIsSelect = this.omiseInstallmentBanks.find((bank: any) => {
+      if (bank.abb === this.bankSelected && bank.installment === value) {
+        return bank;
+      }
+    });
+
+    this.paymentValue = {
+      payment: {
+        'paymentBank': bankIsSelect,
+        'paymentForm': this.paymentDetail.isFullPayment ? 'FULL' : 'INSTALLMENT',
+        'paymentMethod': bankIsSelect,
+        'paymentOnlineCredit': true,
+        'paymentQrCodeType': '',
+        'paymentType': 'CREDIT'
+      }
+    };
+
+    this.completed.emit(this.paymentValue);
+    this.error.emit(true);
   }
 
 }
