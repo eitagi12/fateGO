@@ -104,9 +104,7 @@ export class SharedTransactionService {
         },
         billing_information: {},
         knoxguard: {},
-        receipt_information: {
-          telNo: !!data.receiptInfo ? data.receiptInfo.telNo : ''
-        },
+        receipt_information: {},
         mobile_care_package: {},
         air_time: {},
         on_top_package: transaction.data.onTopPackage || {},
@@ -138,6 +136,10 @@ export class SharedTransactionService {
 
     if (data.shippingInfo) {
       params.data.shipping_information = data.shippingInfo;
+    }
+
+    if (data.receiptInfo) {
+      params.data.receipt_information = data.receiptInfo;
     }
 
     if (data.preBooking) {
