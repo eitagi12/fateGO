@@ -55,6 +55,7 @@ export class DeviceOrderAisExistingGadgetPaymentDetailPageComponent implements O
     this.user = this.tokenService.getUser();
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
+    this.warehouse = this.user.locationCode === '63259';
     if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
       this.homeService.callback = () => {
         this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
@@ -72,7 +73,6 @@ export class DeviceOrderAisExistingGadgetPaymentDetailPageComponent implements O
   }
 
   ngOnInit(): void {
-    this.warehouse = this.user.locationCode === '63259';
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
 
     const productDetail = this.priceOption.productDetail || {};

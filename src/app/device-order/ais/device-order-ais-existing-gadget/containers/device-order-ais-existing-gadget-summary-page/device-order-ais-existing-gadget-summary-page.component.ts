@@ -196,9 +196,8 @@ export class DeviceOrderAisExistingGadgetSummaryPageComponent implements OnInit,
       checkSeller: ['', Validators.compose([Validators.required, Validators.pattern(/^[0-9]+$/)])]
     });
 
-    const seller =  this.transaction.data.seller && this.transaction.data.seller.sellerNo ? this.transaction.data.seller.sellerNo : '';
-    if (this.sellerCode || seller) {
-      this.checkSellerForm.patchValue({ checkSeller: this.sellerCode || seller });
+    if (this.sellerCode) {
+      this.checkSellerForm.patchValue({ checkSeller: this.sellerCode });
     }
 
     this.checkSellerForm.valueChanges.subscribe((value) => {
