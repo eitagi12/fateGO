@@ -463,6 +463,9 @@ export class CreateOrderService {
       }
     } else {
       data.cusMobileNoOrder = shippingInfo.telNo;
+      if (payment && payment.paymentForm === 'INSTALLMENT') {
+        data.creditCardNo = 'XXXXXXXXXXXXXXXX';
+      }
     }
 
     // ผ่อนชำระ

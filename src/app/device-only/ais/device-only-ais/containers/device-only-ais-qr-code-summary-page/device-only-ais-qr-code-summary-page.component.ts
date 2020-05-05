@@ -196,7 +196,7 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
     const trade = this.priceOption.trade;
     const phoneNo = this.phoneSMSForm.controls['phoneNo'].value;
     const color = productStock.colorName || productStock.color;
-    const installmentTerm: any = this.transaction.data.payment.paymentMethod.installment.split('%');
+
     return {
       orderDesc: productDetail.name + 'สี' + color,
       amount: trade.promotionPrice,
@@ -204,7 +204,7 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
       paymentMethod: '13',
       installmentInfo: {
         issuerBank: this.transaction.data.payment.paymentMethod.issuerBank,
-        installmentTerm: +installmentTerm[1].trim()
+        installmentTerm: this.transaction.data.payment.paymentMethod.month
       },
       soId: this.transaction.data.order.soId,
       companyCode: productStock.company,
@@ -212,7 +212,11 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
       locationCode: this.user.locationCode,
       locationName: this.transaction.data.seller.locationName,
       mobileNo: phoneNo,
-      customer: customer
+      customer: customer,
+      orderList: [{
+        price: trade.promotionPrice,
+        name: productDetail.name + 'สี' + color
+      }]
     };
   }
 
