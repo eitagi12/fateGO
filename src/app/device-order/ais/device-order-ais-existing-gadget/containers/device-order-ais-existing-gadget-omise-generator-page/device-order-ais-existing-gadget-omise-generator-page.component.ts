@@ -9,6 +9,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { QrCodeOmiseService } from 'src/app/device-only/services/qr-code-omise.service';
 import * as moment from 'moment';
 import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_OMISE_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_OMISE_QUEUE_PAGE } from '../../constants/route-path.constant';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-omise-generator-page',
@@ -51,7 +52,9 @@ export class DeviceOrderAisExistingGadgetOmiseGeneratorPageComponent implements 
 
   ngOnInit(): void {
     this.onGenerateQRCode();
-    this.urlLink = this.payment.paymentForm === 'FULL' ? this.omise.shortUrl : '';
+    if (environment.name !== 'PROD') {
+      this.urlLink = this.omise.shortUrl ? this.omise.shortUrl : this.omise.qrCodeStr;
+    }
   }
 
   onGenerateQRCode(): void {
