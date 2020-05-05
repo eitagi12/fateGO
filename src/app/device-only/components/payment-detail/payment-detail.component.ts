@@ -209,7 +209,10 @@ export class PaymentDetailComponent implements OnInit {
                 if (bank.installment === installment_str) {
                   bank = {
                     ...bank,
-                    issuerBank: installment_bank.bankomise
+                    issuerBank: installment_bank.bankomise,
+                    name: installment_bank.bankname,
+                    month: _installment.month,
+                    percentage: _installment.percent
                   };
                   banks_mapDb.push(bank);
                   return bank;
