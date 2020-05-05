@@ -40,8 +40,8 @@ export class DeviceOrderAisDeviceOmiseQueuePageComponent implements OnInit, OnDe
   }
 
   onAutoQ(): void {
+    this.pageLoadingService.openLoading();
     this.queuePageService.getQueueL(this.user.locationCode).then((respQueue: any) => {
-      this.pageLoadingService.openLoading();
       const data = respQueue.data ? respQueue.data : {};
       this.transaction.data.queue = { queueNo: data.queue };
       this.createOrderAndupdateTransaction();
