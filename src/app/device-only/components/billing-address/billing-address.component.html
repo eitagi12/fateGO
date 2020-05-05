@@ -57,7 +57,7 @@
             <label for="homeNo" id="txtHomeNo">{{ 'บ้านเลขที่' | translate }}
               <span class="text-red"> *</span>
             </label>
-            <input type="text" autocomplete="off" class="form-control" id="inputHomeNo" maxlength="10" formControlName="homeNo"
+            <input type="text" autocomplete="off" class="form-control" id="inputHomeNo" maxlength="20" formControlName="homeNo"
               [ngClass]="{'is-invalid': !customerAddressForm.controls['homeNo'].valid && customerAddressForm.controls['homeNo'].dirty }">
           </div>
 

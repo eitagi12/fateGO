@@ -93,6 +93,7 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   callServiceEmployee(): void {
+    this.pageLoadingService.openLoading();
     const user = this.tokenService.getUser();
     this.http.get(`/api/salesportal/location-by-code?code=${user.locationCode}`).toPromise().then((response: any) => {
       this.seller = {
@@ -103,12 +104,14 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit, OnDestroy {
       this.transaction.data.seller = this.seller;
       return this.http.get(`/api/customerportal/newRegister/getEmployeeDetail/username/${user.username}`).toPromise()
         .then((emResponse: any) => {
+          this.pageLoadingService.closeLoading();
           if (emResponse && emResponse.data) {
             const emId = emResponse.data.pin;
             this.sellerCode = emId;
           }
         }).catch(() => {
           this.sellerCode = '';
+          this.pageLoadingService.closeLoading();
         });
     });
   }
