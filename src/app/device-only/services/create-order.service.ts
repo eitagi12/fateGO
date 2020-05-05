@@ -463,7 +463,7 @@ export class CreateOrderService {
       }
     } else {
       data.cusMobileNoOrder = shippingInfo.telNo;
-      if (payment && payment.paymentForm === 'INSTALLMENT') {
+      if (payment && payment.paymentOnlineCredit === true && payment.paymentForm === 'INSTALLMENT') {
         data.creditCardNo = 'XXXXXXXXXXXXXXXX';
       }
     }

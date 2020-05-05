@@ -107,6 +107,12 @@ export class CustomerInformationService {
   }
 
   convertBillingAddressToString(billDeliveryAddress: Customer): string {
+    let amphur = 'อำเภอ';
+    let tumbol = 'ตำบล';
+    if (billDeliveryAddress.province === 'กรุงเทพ') {
+      amphur = 'เขต';
+      tumbol = 'แขวง';
+    }
     const addressCus: any = {
       homeNo: billDeliveryAddress.homeNo || '',
       moo: billDeliveryAddress.moo ? 'หมู่ ' + billDeliveryAddress.moo : '',
@@ -116,8 +122,8 @@ export class CustomerInformationService {
       room: billDeliveryAddress.room || '',
       street: billDeliveryAddress.street ? 'ถนน ' + billDeliveryAddress.street : '',
       soi: billDeliveryAddress.soi ? 'ซอย ' + billDeliveryAddress.soi : '',
-      tumbol: billDeliveryAddress.tumbol ? 'ตำบล' + billDeliveryAddress.tumbol : '',
-      amphur: billDeliveryAddress.amphur ? 'อำเภอ' + billDeliveryAddress.amphur : '',
+      tumbol: billDeliveryAddress.tumbol ? tumbol + billDeliveryAddress.tumbol : '',
+      amphur: billDeliveryAddress.amphur ? amphur + billDeliveryAddress.amphur : '',
       province: billDeliveryAddress.province || billDeliveryAddress.provinceName || '',
       // tslint:disable-next-line: max-line-length
       zipCode: billDeliveryAddress.zipCode || billDeliveryAddress.portalCode ? billDeliveryAddress.zipCode || billDeliveryAddress.portalCode : '',

@@ -224,7 +224,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       titleName: ['', [Validators.required]],
       firstName: ['', [Validators.required, this.validateCharacter(), this.validateSpace()]],
       lastName: ['', [Validators.required, this.validateCharacter(), this.validateSpace()]],
-      homeNo: ['', [Validators.required, Validators.pattern(/^[0-9^/]*$/)]],
+      homeNo: ['', [Validators.required, Validators.pattern(/^[0-9^/-]*$/)]],
       moo: [''],
       mooBan: [''],
       room: [''],
