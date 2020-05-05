@@ -68,6 +68,8 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
   packageDetailService: Promise<any>;
   isAdvancePay: boolean;
 
+  warehouse: boolean;
+
   constructor(private fb: FormBuilder,
     private modalService: BsModalService,
     private router: Router,
@@ -85,6 +87,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     this.transaction = {};
     this.priceOptionService.remove();
     this.user = this.tokenService.getUser();
+    this.warehouse = this.user.locationCode === '63259';
   }
 
   ngOnInit(): void {
@@ -456,10 +459,17 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
   onTradeSelected(privilege: any, trade: any): void {
     this.priceOption.privilege = privilege;
     this.priceOption.trade = trade;
-    this.flowService.nextUrl(this.priceOption)
-      .then((nextUrl: string) => {
-        this.router.navigate([nextUrl]);
-      });
+
+    const insallment = (trade.banks || []).find((bank: any) => bank.installment);
+    if (this.warehouse && !!insallment) {
+      this.alertService.warning('ช่องทางการชำระที่เลือก ไม่สามารถผ่อนชำระด้วย บัตรเครดิต ออนไลน์ ได้');
+    } else {
+      this.flowService.nextUrl(this.priceOption)
+        .then((nextUrl: string) => {
+          this.router.navigate([nextUrl]);
+        });
+    }
+
   }
 
   /* product stock */

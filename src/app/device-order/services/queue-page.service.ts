@@ -633,7 +633,7 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
     message += this.PRIVILEGE_DESC + this.SPACE + (privilegeDesc || '') + this.COMMA + this.SPACE;
     message += this.QUEUE_NUMBER + this.SPACE + queue.queueNo;
     if (receiptInfo.telNo) {
-      message += + this.COMMA + this.SPACE + this.REMARK + this.SPACE + receiptInfo.telNo;
+      message += this.COMMA + this.SPACE + this.REMARK + this.SPACE + receiptInfo.telNo;
     }
     return message;
   }

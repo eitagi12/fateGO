@@ -53,8 +53,10 @@ export class DeviceOrderAisDeviceOmiseGeneratorPageComponent implements OnInit, 
   }
 
   ngOnInit(): void {
-    this.urlLink = this.payment.paymentForm === 'FULL' ? this.omise.shortUrl : '';
     this.onGenerateQRCode();
+    if (environment.name !== 'PROD') {
+      this.urlLink = this.omise.shortUrl ? this.omise.shortUrl : this.omise.qrCodeStr;
+    }
   }
 
   onGenerateQRCode(): void {
