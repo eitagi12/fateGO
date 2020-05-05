@@ -138,6 +138,7 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit, OnDestr
           if (emResponse && emResponse.data) {
             const emId = emResponse.data.pin;
             this.sellerCode = emId;
+            this.employeeDetailForm.patchValue({ ascCode: this.sellerCode });
           }
           this.pageLoadingService.closeLoading();
         }).catch(() => {
@@ -151,17 +152,6 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit, OnDestr
   createEmployeeForm(): void {
     this.employeeDetailForm = this.fb.group({
       ascCode: ['', Validators.compose([Validators.required, Validators.pattern(/^[0-9]+$/)])]
-    });
-
-    const seller =  this.transaction.data.seller && this.transaction.data.seller.sellerNo ? this.transaction.data.seller.sellerNo : '';
-    if (this.sellerCode || seller) {
-      this.employeeDetailForm.patchValue({ ascCode: this.sellerCode || seller });
-    }
-
-    this.employeeDetailForm.valueChanges.subscribe((value) => {
-      if (value.ascCode) {
-        this.sellerCode = value.ascCode;
-      }
     });
   }
 

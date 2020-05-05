@@ -11,12 +11,12 @@
     <div class="mt-3">
       <mc-shopping-cart [shoppingCart]=shoppingCart></mc-shopping-cart>
       <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
-      <div [hidden]="warehouse">
+      <div *ngIf="warehouse">
         <mc-payment-detail [paymentDetail]="paymentDetail" [banks]="banks" (completed)="onPaymentCompleted($event)"
           (error)="onPaymentError($event)">
         </mc-payment-detail>
       </div>
-      <div [hidden]="!warehouse">
+      <div *ngIf="!warehouse">
         <app-payment-line-shop [paymentDetail]="paymentDetail" (completed)="onPaymentCompleted($event)"
           (error)="onPaymentError($event)"></app-payment-line-shop>
       </div>
