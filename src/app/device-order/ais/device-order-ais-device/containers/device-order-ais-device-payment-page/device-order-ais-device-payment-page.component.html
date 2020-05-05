@@ -10,12 +10,12 @@
   <div class="mc-flex-wrap">
     <div class="my-3">
       <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
-      <div *ngIf="warehouse">
+      <div *ngIf="!warehouse">
       <mc-payment-detail [paymentDetail]="paymentDetail" [banks]="banks" (completed)="onPaymentCompleted($event)"
         (error)="onPaymentError($event)">
       </mc-payment-detail>
     </div>
-      <div *ngIf="!warehouse">
+      <div *ngIf="warehouse">
         <app-payment-line-shop [paymentDetail]="paymentDetail" (completed)="onPaymentCompleted($event)"
             (error)="onPaymentError($event)"></app-payment-line-shop>
       </div>
