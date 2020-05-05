@@ -73,7 +73,8 @@
                               {{ priceOption?.productStock?.colorName?'สี': '' }} {{ priceOption?.productStock?.colorName }}
                             </span>
                             <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'"> : ชำระเต็มจำนวน</span>
-                            <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'"> : ผ่อนชำระบัตรเครดิต</span>
+                            <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT' && transaction?.data?.payment?.paymentOnlineCredit === true"> : ผ่อนชำระบัตรเครดิตออนไลน์</span>
+                            <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT' && transaction?.data?.payment?.paymentOnlineCredit === false"> : ผ่อนชำระบัตรเครดิต</span>
                             <span class="pull-right text-green" id="text-normal-price-payment">
                               ฿ {{ price | number }}
                             </span>

@@ -16,9 +16,9 @@
                     <span id="text-mobile-no">{{ transaction?.data?.receiptInfo?.telNo | mobileNo }}</span></p>
                   <p class="text-green">รายการสั่งซื้อของท่านได้เข้าสู่ระบบเรียบร้อยแล้ว</p> 
                   <!-- กรณี จ่ายด้วย Rabbit -->
-                  <div *ngIf="transaction?.data?.mpayPayment?.tranId">
+                  <div *ngIf="transaction?.data?.mpayPayment?.tranId || transaction?.data?.omise?.tranId">
                   <p class="text-green">หมายเลขอ้างอิง
-                  <span id="text-transaction-no">{{ transaction?.data?.mpayPayment?.tranId}}</span></p>
+                  <span id="text-transaction-no">{{ transaction?.data?.mpayPayment?.tranId || transaction?.data?.omise?.tranId}}</span></p>
                   </div>
                 </div>
             </div>
