@@ -151,7 +151,7 @@ export class QueuePageService {
       grandTotalAmt: (+this.getGrandTotalAmt(trade, prebooking)).toFixed(2),
       saleCode: this.tokenService.isAisUser() ? (seller.sellerNo || '') : (seller.sellerNo || user.ascCode),
       taxCardId: customer.idCardNo || '',
-      cusMobileNoOrder: warehouse ? receiptInfo.telNo : (simCard.mobileNo || ''),
+      cusMobileNoOrder: simCard.mobileNo ? simCard.mobileNo : '',
       customerAddress: {
         addrNo: customer.homeNo,
         room: customer.room,
@@ -281,10 +281,10 @@ export class QueuePageService {
       queueNo: transaction.data.queue.queueNo,
       cusNameOrder: transaction.data.customer.firstName + ' ' + transaction.data.customer.lastName,
       taxCardId: transaction.data.customer.idCardNo,
-      cusMobileNoOrder: simCard && simCard.mobileNo || '',
+      cusMobileNoOrder: simCard && simCard.mobileNo ? simCard.mobileNo : '',
       customerAddress: this.mapCusAddress(transaction.data.customer),
       tradeNo: priceOption.trade.tradeNo,
-      ussdCode: priceOption.trade && priceOption.trade.ussdCode || '',
+      ussdCode: priceOption.trade && priceOption.trade.ussdCode ? priceOption.trade.ussdCode : '',
       returnCode: transaction.data.customer.privilegeCode || '',
       cashBackFlg: '',
       matAirTime: '',
@@ -611,6 +611,7 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
     const simCard = transaction.data.simCard;
     const customer: any = transaction.data.customer || {};
     const queue: any = transaction.data.queue || {};
+    const receiptInfo: ReceiptInfo = transaction.data.receiptInfo;
 
     let customerGroupName = '';
     if ('MC001' === customerGroup.code) {
@@ -631,6 +632,9 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
     message += this.MOBILE_CARE + this.SPACE + (customAttributes.shortNameThai || '') + this.COMMA + this.SPACE;
     message += this.PRIVILEGE_DESC + this.SPACE + (privilegeDesc || '') + this.COMMA + this.SPACE;
     message += this.QUEUE_NUMBER + this.SPACE + queue.queueNo;
+    if (receiptInfo.telNo) {
+      message += + this.COMMA + this.SPACE + this.REMARK + this.SPACE + receiptInfo.telNo;
+    }
     return message;
   }
 
