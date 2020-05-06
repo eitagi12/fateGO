@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { CustomerGroup } from 'src/app/buy-product/services/flow.service';
 import { QrCodeOmisePageService } from 'src/app/device-order/services/qr-code-omise-page.service';
 import { map } from 'rxjs/operators';
-
+import * as moment from 'moment';
 @Injectable({
   providedIn: 'root'
 })
@@ -82,8 +82,10 @@ export class QueuePageService {
   }
 
   getQueueL(locationCode: any): Promise<any> {
+    const day: any = moment().format('DD');
+    const prefix = `L${day}`;
     return this.http.get('/api/salesportal/device-sell/gen-queue-with-prefix', {
-      params: { locationCode: locationCode, prefix: 'L' }
+      params: { locationCode: locationCode, prefix: prefix }
     }).toPromise();
   }
 
