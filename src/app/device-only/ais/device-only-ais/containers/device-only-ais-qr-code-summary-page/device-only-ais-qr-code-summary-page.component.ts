@@ -90,8 +90,8 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
   }
 
   onNext(): void {
-    this.pageLoadingService.openLoading();
     if (this.isLineShop) {
+      this.pageLoadingService.openLoading();
       if (this.phoneSMSForm.controls['phoneNo'].valid) {
         const phoneNo = this.phoneSMSForm.controls['phoneNo'].value;
         // const msisdn = `66${phoneNo.substring(1, phoneNo.length)}`;
