@@ -158,7 +158,7 @@ export class DeviceOrderAisExistingGadgetQrCodeGeneratorPageComponent implements
             this.onNext();
           });
 
-        this.timeCounterSubscription = this.qrCodePageService.getTimeCounter(300)
+        this.timeCounterSubscription = this.qrCodePageService.getTimeCounter(1200)
           .subscribe(obs => {
             if (obs) {
               this.countdown = moment.utc(obs).format('mm : ss');
