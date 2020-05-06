@@ -126,7 +126,22 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
 
               // check Retrive Order
               this.pageLoadingService.openLoading();
-              this.qrCodeOmiseService.retriveOrder({ params: { orderId: orderId } }).then(() => {
+              let paramsReq: {};
+              if (this.transaction.data.payment.paymentForm === 'FULL') {
+                paramsReq = {
+                  params: {
+                    orderId: orderId
+                  }
+                };
+              } else {
+                paramsReq = {
+                  params: {
+                    orderId: orderId,
+                    company: 'AWN'
+                  }
+                };
+              }
+              this.qrCodeOmiseService.retriveOrder(paramsReq).then(() => {
                 return this.qrCodeOmiseService.queryOrder({
                   params: {
                     orderId: orderId,
