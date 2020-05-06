@@ -12,6 +12,7 @@ import * as moment from 'moment';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ROUTE_DEVICE_ONLY_AIS_QR_CODE_QUEUE_PAGE, ROUTE_DEVICE_ONLY_AIS_QR_CODE_SUMMARY_PAGE } from '../../constants/route-path.constant';
+import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
 
 @Component({
   selector: 'app-device-only-ais-omise-generator-page',
@@ -43,7 +44,8 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
     private qrCodeOmiseService: QrCodeOmiseService,
     private http: HttpClient,
     private fb: FormBuilder,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private customerInformationService: CustomerInformationService,
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -124,7 +126,22 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
 
               // check Retrive Order
               this.pageLoadingService.openLoading();
-              this.qrCodeOmiseService.retriveOrder({ params: { orderId: orderId } }).then(() => {
+              let paramsReq: {};
+              if (this.transaction.data.payment.paymentForm === 'FULL') {
+                paramsReq = {
+                  params: {
+                    orderId: orderId
+                  }
+                };
+              } else {
+                paramsReq = {
+                  params: {
+                    orderId: orderId,
+                    company: 'AWN'
+                  }
+                };
+              }
+              this.qrCodeOmiseService.retriveOrder(paramsReq).then(() => {
                 return this.qrCodeOmiseService.queryOrder({
                   params: {
                     orderId: orderId,
@@ -148,10 +165,11 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
               }).catch((error: any) => {
                 const errors: any = error.error && error.error.errors || {};
                 if (errors.code === '0002') {
-                  this.alertService.question('สิ้นสุดระยะเวลาชำระเงิน กรุณาทำรายการใหม่')
-                    .then((dataAlert: any) => {
-                      this.onBack();
-                    });
+                  this.showPopupMessage('สิ้นสุดระยะเวลาชำระเงิน กรุณาทำรายการใหม่');
+                  // this.alertService.question('สิ้นสุดระยะเวลาชำระเงิน กรุณาทำรายการใหม่')
+                  //   .then((dataAlert: any) => {
+                  //     this.onBack();
+                  //   });
                 } else {
                   return Promise.reject(error);
                 }
@@ -202,13 +220,79 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
     }, 0);
   }
 
+  showPopupMessage(message: string): void {
+    this.alertService.notify({
+      type: 'question',
+      showConfirmButton: true,
+      confirmButtonText: 'REFRESH',
+      cancelButtonText: 'CANCEL',
+      showCancelButton: true,
+      reverseButtons: true,
+      allowEscapeKey: false,
+      text: message,
+      timer: 180000
+    }).then(btn => {
+      if (btn.value) { // refresh
+        this.refreshCreateOrder();
+      } else { // cancel
+        this.onBack();
+      }
+    });
+  }
+
+  refreshCreateOrder(): void {
+    this.pageLoadingService.openLoading();
+    const mobileNoSms = this.customerInformationService.getMobileNoSms();
+    if (this.transaction.data.payment.paymentForm === 'FULL') {
+      const params = this.createDataGenerateQR();
+      this.qrCodeOmiseService.createOrder(params).then((res: any) => {
+        const data = res && res.data;
+        this.transaction.data.omise = {
+          ...this.transaction.data.omise,
+          qrCodeStr: data.redirectUrl,
+          orderId: data.orderId
+        };
+        this.transactionService.update(this.transaction);
+        const paymentUrl = this.transaction.data.omise.qrCodeStr;
+        this.generateShortLink(paymentUrl, mobileNoSms);
+        this.urlLink = this.transaction.data.omise.shortUrl;
+        this.pageLoadingService.closeLoading();
+        const orderId = this.transaction.data.omise.orderId || '';
+        const qrCodeStr = this.transaction.data.omise.qrCodeStr || '';
+        this.handlerQRCodeMpay(orderId, qrCodeStr);
+      }).catch((err) => {
+        this.alertService.error('ระบบไม่สามารถทำรายการได้ขณะนี้ กรุณาทำรายการอีกครั้ง');
+      });
+    } else {
+      const params = this.createDataInstallment();
+      this.qrCodeOmiseService.createOrderInstallment(params).then((res: any) => {
+        const data = res && res.data;
+        this.transaction.data.omise = {
+          ...this.transaction.data.omise,
+          qrCodeStr: decodeURIComponent(data.endpointUrl),
+          orderId: data.orderId,
+          saleId: data.saleId
+        };
+        this.transactionService.update(this.transaction);
+        this.urlLink = this.transaction.data.omise.qrCodeStr;
+        this.sendSMSUrl({ mobileNo: mobileNoSms, urlPayment: this.transaction.data.omise.qrCodeStr });
+        this.pageLoadingService.closeLoading();
+        const orderId = this.transaction.data.omise.orderId || '';
+        const qrCodeStr = this.transaction.data.omise.qrCodeStr || '';
+        this.handlerQRCodeMpay(orderId, qrCodeStr);
+      }).catch((err) => {
+        this.alertService.error('ระบบไม่สามารถทำรายการได้ขณะนี้ กรุณาทำรายการอีกครั้ง');
+      });
+    }
+  }
+
   createDataGenerateQR(): any {
     const shippingInfo = this.transaction.data.shippingInfo;
     const customer = shippingInfo.firstName + ' ' + shippingInfo.lastName;
     const productStock = this.priceOption.productStock;
     const productDetail = this.priceOption.productDetail;
     const trade = this.priceOption.trade;
-    const phoneNo = this.phoneSMSForm.controls['phoneNo'].value;
+    const phoneNo = this.customerInformationService.getMobileNoSms();
     const color = productStock.colorName || productStock.color;
     return {
       companyCode: productStock.company,
@@ -226,19 +310,62 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
     };
   }
 
-  copyShortUrl(shortUrl: string): void {
-    const selBox = document.createElement('textarea');
-    selBox.style.position = 'fixed';
-    selBox.style.left = '0';
-    selBox.style.top = '0';
-    selBox.style.opacity = '0';
-    selBox.value = shortUrl;
-    document.body.appendChild(selBox);
-    selBox.focus();
-    selBox.select();
-    selBox.setSelectionRange(0, 99999);
-    document.execCommand('copy');
-    document.body.removeChild(selBox);
+  createDataInstallment(): any {
+    const shippingInfo = this.transaction.data.shippingInfo;
+    const customer = shippingInfo.firstName + ' ' + shippingInfo.lastName;
+    const productStock = this.priceOption.productStock;
+    const productDetail = this.priceOption.productDetail;
+    const trade = this.priceOption.trade;
+    const phoneNo = this.customerInformationService.getMobileNoSms();
+    const color = productStock.colorName || productStock.color;
+
+    return {
+      orderDesc: productDetail.name + 'สี' + color,
+      amount: trade.promotionPrice,
+      currency: 'THB',
+      paymentMethod: '13',
+      installmentInfo: {
+        issuerBank: this.transaction.data.payment.paymentMethod.issuerBank,
+        installmentTerm: this.transaction.data.payment.paymentMethod.month
+      },
+      soId: this.transaction.data.order.soId,
+      companyCode: productStock.company,
+      companyName: 'บริษัท แอดวานซ์ ไวร์เลส เน็ทเวอร์ค จำกัด',
+      locationCode: this.user.locationCode,
+      locationName: this.transaction.data.seller.locationName,
+      mobileNo: phoneNo,
+      customer: customer,
+      orderList: [{
+        price: trade.promotionPrice,
+        name: productDetail.name + 'สี' + color
+      }]
+    };
+  }
+
+  generateShortLink(url: string, mobileNo: string): Promise<any> {
+    let urlLink: string = url;
+    if (environment.ENABLE_SHORT_LINK) {
+      const splitUrl: any = url.split('?');
+      urlLink = `${environment.PREFIX_SHORT_LINK}?${splitUrl[1]}`;
+      this.transaction.data.omise.shortUrl = urlLink;
+      this.transactionService.update(this.transaction);
+    }
+    return this.sendSMSUrl({ mobileNo: mobileNo, urlPayment: urlLink }).then(() => {
+    });
+  }
+
+  sendSMSUrl(params: any): Promise<any> {
+    const requestBody: any = {
+      recipient: {
+        recipientIdType: '0',
+        recipientIdData: (params.mobileNo).replace(/^0+/, '66')
+      },
+      content: `สำหรับการชำระเงินค่าสินค้าผ่านบัตรเครดิตออนไลน์ คลิก ${params.urlPayment}`,
+      sender: 'AIS'
+    };
+    return this.http.post('/api/customerportal/newregister/send-sms', requestBody).toPromise()
+      .then(() => {
+      });
   }
 
   onBack(): void {

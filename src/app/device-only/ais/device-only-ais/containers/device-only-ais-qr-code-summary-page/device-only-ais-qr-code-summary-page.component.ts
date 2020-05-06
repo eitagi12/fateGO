@@ -12,6 +12,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { QrCodeOmiseService } from 'src/app/device-only/services/qr-code-omise.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
 
 @Component({
   selector: 'app-device-only-ais-qr-code-summary-page',
@@ -42,7 +43,8 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
     private tokenService: TokenService,
     private http: HttpClient,
     private pageLoadingService: PageLoadingService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private customerInformationService: CustomerInformationService,
   ) {
     this.user = this.tokenService.getUser();
     this.transaction = this.transactionService.load();
@@ -94,7 +96,7 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
       this.pageLoadingService.openLoading();
       if (this.phoneSMSForm.controls['phoneNo'].valid) {
         const phoneNo = this.phoneSMSForm.controls['phoneNo'].value;
-        // const msisdn = `66${phoneNo.substring(1, phoneNo.length)}`;
+        this.customerInformationService.setMobileNoSms(phoneNo);
         if (this.transaction.data.payment.paymentForm === 'FULL') {
           const params = this.createDataGenerateQR();
           this.qrCodeOmiseService.createOrder(params).then((res: any) => {
@@ -130,8 +132,6 @@ export class DeviceOnlyAisQrCodeSummaryPageComponent implements OnInit {
             this.alertService.error('ระบบไม่สามารถทำรายการได้ขณะนี้ กรุณาทำรายการอีกครั้ง');
           });
         }
-        // const phoneNo = this.phoneSMSForm.controls['phoneNo'].value;
-        // const msisdn = `66${phoneNo.substring(1, phoneNo.length)}`;
       }
     } else {
       this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE]);
