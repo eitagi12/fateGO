@@ -95,6 +95,7 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit, OnDestr
     this.customerAddress = this.utils.getCurrentAddress({
       homeNo: customer.homeNo,
       moo: customer.moo,
+      mooBan: customer.mooBan,
       room: customer.room,
       floor: customer.floor,
       buildingName: customer.buildingName,
@@ -111,6 +112,7 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit, OnDestr
     this.shippingAddress = this.utils.getCurrentAddress({
       homeNo: shippingInfo.homeNo,
       moo: shippingInfo.moo,
+      mooBan: shippingInfo.mooBan,
       room: shippingInfo.room,
       floor: shippingInfo.floor,
       buildingName: shippingInfo.buildingName,
