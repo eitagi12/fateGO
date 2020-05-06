@@ -11,6 +11,7 @@ import { SharedTransactionService } from 'src/app/shared/services/shared-transac
 import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
 import { CreateOrderService } from 'src/app/device-only/services/create-order.service';
 import { QueueService } from 'src/app/device-only/services/queue.service';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-device-only-ais-queue-page',
@@ -100,8 +101,11 @@ export class DeviceOnlyAisQueuePageComponent implements OnInit, OnDestroy {
   }
 
   onSkip(): void {
+    this.pageLoadingService.openLoading();
     if (this.user.locationCode === '63259') {
-      this.queueService.getQueueL(this.user.locationCode).then((respQueue: any) => {
+      const currentDate  = new Date();
+      const day = formatDate(currentDate, 'dd', 'en-US');
+      this.queueService.getQueueL(this.user.locationCode, day).then((respQueue: any) => {
         const data = respQueue.data ? respQueue.data : {};
         this.transaction.data.queue = { queueNo: data.queue };
         this.skipQueue = true;
