@@ -16,6 +16,7 @@ export class CustomerInformationService {
   private _isAddressReadCard: boolean;
   private chargeType: string;
   private mobileNoStatus: string;
+  private mobileNoSms: string;
 
   constructor(
     private http: HttpClient
@@ -78,6 +79,14 @@ export class CustomerInformationService {
 
   getSelectedMobileNo(): string {
     return this.selectedMobileNo;
+  }
+
+  setMobileNoSms(mobileNo: string): void {
+    this.mobileNoSms = mobileNo;
+  }
+
+  getMobileNoSms(): string {
+    return this.mobileNoSms;
   }
 
   mapAttributeFromGetBill(billingAddress: any): Customer {
