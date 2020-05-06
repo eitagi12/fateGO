@@ -43,7 +43,8 @@ export class DeviceOrderAisDeviceOmiseGeneratorPageComponent implements OnInit, 
     private priceOptionService: PriceOptionService,
     private pageLoadingService: PageLoadingService,
     private alertService: AlertService,
-    private qrCodeOmiseService: QrCodeOmiseService
+    private qrCodeOmiseService: QrCodeOmiseService,
+    private http: HttpClient
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -54,6 +55,10 @@ export class DeviceOrderAisDeviceOmiseGeneratorPageComponent implements OnInit, 
 
   ngOnInit(): void {
     this.onGenerateQRCode();
+    this.setUrlLink();
+  }
+
+  private setUrlLink(): void {
     if (environment.name !== 'PROD') {
       this.urlLink = this.omise.shortUrl ? this.omise.shortUrl : this.omise.qrCodeStr;
     }
@@ -134,9 +139,13 @@ export class DeviceOrderAisDeviceOmiseGeneratorPageComponent implements OnInit, 
               }).catch((error: any) => {
                 const errors: any = error.error && error.error.errors || {};
                 if (errors.code === '0002') {
-                  this.alertService.question('สิ้นสุดระยะเวลาชำระเงิน กรุณาทำรายการใหม่')
-                    .then(() => {
-                      this.onBack();
+                  this.alertService.question('สิ้นสุดระยะเวลาชำระเงิน กรุณาทำรายการใหม่', 'REFRESH', 'CANCEL')
+                    .then((response) => {
+                      if (response.value) {
+                        this.createOrderOmiseFull();
+                      } else {
+                        this.onBack();
+                      }
                     });
                 } else {
                   return Promise.reject(error);
@@ -194,6 +203,68 @@ export class DeviceOrderAisDeviceOmiseGeneratorPageComponent implements OnInit, 
     if (this.checkResponseOmiseSubscription) {
       this.checkResponseOmiseSubscription.unsubscribe();
     }
+  }
+
+  createOrderOmiseFull(): void {
+    this.pageLoadingService.openLoading();
+    const shippingInfo = this.transaction.data.shippingInfo;
+    const customer = this.transaction.data.customer;
+    const { name } = this.priceOption.productDetail;
+    const { color } = this.priceOption.productStock;
+    const { promotionPrice } = this.priceOption.trade;
+    const { soId } = this.transaction.data.order;
+
+    this.orderList = [{
+      name: name + 'สี' + color,
+      price: +promotionPrice
+    }];
+
+    const params: any = {
+      companyCode: 'AWN',
+      companyName: 'บริษัท แอดวานซ์ ไวร์เลส เน็ทเวอร์ค จำกัด',
+      locationCode: this.seller.locationCode,
+      locationName: this.seller.locationName,
+      mobileNo: shippingInfo.telNo,
+      customer: customer.firstName + ' ' + customer.lastName,
+      orderList: this.orderList,
+      soId: soId
+    };
+    this.qrCodeOmiseService.createOrder(params).then((res) => {
+      const data = res && res.data ? res.data : {};
+      this.transaction.data.omise.qrCodeStr = data.redirectUrl;
+      this.transaction.data.omise.orderId = data.orderId;
+      this.generateShortLink((data.redirectUrl || ''), params.mobileNo);
+      this.pageLoadingService.closeLoading();
+      this.handlerQRCodeMpay(data.orderId, data.redirectUrl);
+    }).catch((err) => {
+      this.alertService.error('ระบบไม่สามารถทำรายการได้ขณะนี้ กรุณาทำรายการอีกครั้ง');
+    });
+  }
+
+  generateShortLink(url: string, mobileNo: string): Promise<any> {
+    let urlLink: string = url;
+    if (environment.ENABLE_SHORT_LINK) {
+      const splitUrl: any = url.split('?');
+      urlLink = `${environment.PREFIX_SHORT_LINK}?${splitUrl[1]}`;
+      this.transaction.data.omise.shortUrl = urlLink;
+    }
+    this.setUrlLink();
+    return this.sendSMSUrl({ mobileNo: mobileNo, urlPayment: urlLink }).then(() => {
+    });
+  }
+
+  sendSMSUrl(params: any): Promise<any> {
+    const requestBody: any = {
+      recipient: {
+        recipientIdType: '0',
+        recipientIdData: (params.mobileNo).replace(/^0+/, '66')
+      },
+      content: `สำหรับการชำระเงินค่าสินค้าผ่านบัตรเครดิตออนไลน์ คลิก ${params.urlPayment}`,
+      sender: 'AIS'
+    };
+    return this.http.post('/api/customerportal/newregister/send-sms', requestBody).toPromise()
+      .then(() => {
+      });
   }
 
 }
