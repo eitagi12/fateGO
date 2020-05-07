@@ -31,7 +31,7 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
   profileFbb: ProfileFbb;
   shoppingCart: ShoppingCart;
   mobileNo: string;
-  disableNextButton: boolean;
+  disableNextButton: boolean = true;
   minimumPackage: any;
   user: User;
 
@@ -80,40 +80,40 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
     this.pageLoadingService.openLoading();
     this.http.get(`/api/customerportal/mobile-detail/${this.mobileNo}`).toPromise()
       .then((response: any) => {
-        console.log('response  : ', response);
         const mobileDetail = response.data;
-        console.log('if : ', +response.data.package.priceExclVat, this.minimumPackage);
+        this.checkMiniMumPack(mobileDetail);
         this.mappingMobileDetail(mobileDetail);
-        console.log('response.futurePackage.priceExclVat', response.data.futurePackage);
-        console.log('response.data.package.priceExclVat', response.data.package.priceExclVat);
-
-        if (response.data.futurePackage && +response.data.futurePackage.priceExclVat) {
-          console.log('+response.futurePackage.priceExclVat : ', +response.data.futurePackage.priceExclVat);
-          if (+response.data.futurePackage.priceExclVat >= this.minimumPackage) {
-            this.pageLoadingService.closeLoading();
-          } else {
-            const text = `เบอร์ ${this.mobileNo} ไม่สามารถรับสิทธิ์โครงการนี้ได้ `;
-            this.alertService.notify({
-              type: 'warning',
-              text,
-              onClose: () => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_VALIDATE_CUSTOMER_PAGE])
-            });
-          }
-        } else if (response.data.package.priceExclVat) {
-          console.log('+response.data.package.priceExclVat : ', +response.data.package.priceExclVat);
-          if (+response.data.package.priceExclVat >= this.minimumPackage) {
-            this.pageLoadingService.closeLoading();
-          } else {
-            const text = `เบอร์ ${this.mobileNo} ไม่สามารถรับสิทธิ์โครงการนี้ได้ `;
-            this.alertService.notify({
-              type: 'warning',
-              text,
-              onClose: () => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_VALIDATE_CUSTOMER_PAGE])
-            });
-          }
-        }
       });
-    // .then(() => this.pageLoadingService.closeLoading());
+  }
+
+  checkMiniMumPack(mobileDetail: any): void {
+    if (mobileDetail.futurePackage && +mobileDetail.futurePackage.priceExclVat) {
+      if (+mobileDetail.futurePackage.priceExclVat >= this.minimumPackage) {
+        this.pageLoadingService.closeLoading();
+      } else {
+        this.alertService.notify({
+          type: 'warning',
+          text: `เบอร์ ${this.mobileNo} ไม่สามารถรับสิทธิ์โครงการนี้ได้`,
+          onClose: () => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_VALIDATE_CUSTOMER_PAGE])
+        });
+      }
+    } else if (mobileDetail.package && +mobileDetail.package.priceExclVat) {
+      if (+mobileDetail.package.priceExclVat >= this.minimumPackage) {
+        this.pageLoadingService.closeLoading();
+      } else {
+        this.alertService.notify({
+          type: 'warning',
+          text: `เบอร์ ${this.mobileNo} ไม่สามารถรับสิทธิ์โครงการนี้ได้`,
+          onClose: () => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_VALIDATE_CUSTOMER_PAGE])
+        });
+      }
+    } else {
+      this.alertService.notify({
+        type: 'warning',
+        text: `เบอร์ ${this.mobileNo} ไม่สามารถรับสิทธิ์โครงการนี้ได้`,
+        onClose: () => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_VALIDATE_CUSTOMER_PAGE])
+      });
+    }
   }
 
   mappingMobileDetail(mobileDetail: any): any {
@@ -141,12 +141,8 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
       status: mobileDetail.mobileStatus,
       sagment: mobileDetail.mobileSegment,
       serviceYear: this.serviceYearWording(serviceYear.year, serviceYear.month, serviceYear.day),
-      mainPackage: this.changeMainPackageLangauge(mainPack)
+      mainPackage: mainPack && mainPack.title ? mainPack.title : ''
     };
-  }
-
-  changeMainPackageLangauge(mainPack: any = {}): string {
-    return (this.translateService.currentLang === 'EN') ? mainPack.titleEng : mainPack.title;
   }
 
   mapChargeType(chargeType: string): any {

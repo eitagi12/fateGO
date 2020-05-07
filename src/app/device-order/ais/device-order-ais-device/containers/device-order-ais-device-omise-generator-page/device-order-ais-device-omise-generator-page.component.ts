@@ -59,9 +59,7 @@ export class DeviceOrderAisDeviceOmiseGeneratorPageComponent implements OnInit, 
   }
 
   private setUrlLink(): void {
-    if (environment.name !== 'PROD') {
       this.urlLink = this.omise.shortUrl ? this.omise.shortUrl : this.omise.qrCodeStr;
-    }
   }
 
   onGenerateQRCode(): void {
