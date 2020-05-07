@@ -104,10 +104,11 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
               this.onNext();
             } else {
               // Refresh generate qrcode
-              this.alertService.question('ชำระค่าสินค้าและบริการไม่สำเร็จ กรุณาทำรายการใหม่')
-                .then((dataAlert: any) => {
-                  this.onBack();
-                });
+              // this.alertService.question('ชำระค่าสินค้าและบริการไม่สำเร็จ กรุณาทำรายการใหม่')
+              //   .then((dataAlert: any) => {
+              //     this.onBack();
+              //   });
+              this.showPopupMessageFail('ชำระค่าสินค้าและบริการไม่สำเร็จ กรุณาทำรายการใหม่');
             }
           });
 
@@ -156,11 +157,11 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
                     this.pageLoadingService.closeLoading();
                     this.onNext();
                   } else {
-                    this.showPopupMessage('สิ้นสุดระยะเวลาชำระเงิน กรุณาทำรายการใหม่');
                     // this.alertService.question('ชำระค่าสินค้าและบริการไม่สำเร็จ กรุณาทำรายการใหม่')
                     //   .then((dataAlert: any) => {
                     //     this.onBack();
                     //   });
+                    this.showPopupMessageFail('ชำระค่าสินค้าและบริการไม่สำเร็จ กรุณาทำรายการใหม่');
                   }
                 });
               }).catch((error: any) => {
@@ -236,6 +237,24 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
       if (btn.value) { // refresh
         this.refreshCreateOrder();
       } else { // cancel
+        this.onBack();
+      }
+    });
+  }
+
+  showPopupMessageFail(message: string): void {
+    this.alertService.notify({
+      // type: 'question',
+      showConfirmButton: true,
+      confirmButtonText: 'BACK',
+      // cancelButtonText: 'CANCEL',
+      // showCancelButton: true,
+      reverseButtons: true,
+      allowEscapeKey: false,
+      text: message,
+      timer: 180000
+    }).then(btn => {
+      if (btn.value) { // back
         this.onBack();
       }
     });
