@@ -116,7 +116,7 @@ export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, On
   onNext(): void {
     this.pageLoadingService.openLoading();
     const seller = this.transaction.data.seller;
-    const shippingInfo = this.transaction.data.shippingInfo;
+    const { mobileNo } = this.transaction.data.simCard;
     const customer = this.transaction.data.customer;
     const priceOption = this.priceOption.productDetail;
     const productStock = this.priceOption.productStock;
@@ -127,6 +127,8 @@ export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, On
       this.alertService.warning('กรุณากรอกหมายเลขโทรศัพท์เพื่อส่ง SMS');
       return;
     }
+
+    this.transaction.data.shippingInfo.sms = this.mobileNoForm.value.mobileNo;
     this.orderList = [{
       name: priceOption.name + 'สี' + productStock.color,
       price: +trade.promotionPrice
@@ -137,7 +139,7 @@ export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, On
       companyName: 'บริษัท แอดวานซ์ ไวร์เลส เน็ทเวอร์ค จำกัด',
       locationCode: seller.locationCode,
       locationName: seller.locationName,
-      mobileNo: shippingInfo.telNo || this.receiptInfo.telNo,
+      mobileNo: mobileNo,
       customer: customer.firstName + ' ' + customer.lastName,
       orderList: this.orderList,
       soId: order.soId
@@ -146,7 +148,7 @@ export class DeviceOrderAisDeviceOmiseSummaryPageComponent implements OnInit, On
       const data = res && res.data ? res.data : {};
       this.transaction.data.omise.qrCodeStr = data.redirectUrl;
       this.transaction.data.omise.orderId = data.orderId;
-      this.generateShortLink((data.redirectUrl || ''), params.mobileNo);
+      this.generateShortLink((data.redirectUrl || ''), this.mobileNoForm.value.mobileNo);
       this.pageLoadingService.closeLoading();
       this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_OMISE_GENERATOR_PAGE]);
     }).catch((err) => {

@@ -142,6 +142,7 @@ export interface ShippingInfo {
   province?: string;
   zipCode?: string;
   telNo?: string;
+  sms?: string;
 }
 
 export interface HandsetSim5G {

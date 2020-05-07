@@ -204,6 +204,7 @@ export class DeviceOrderAisExistingGadgetOmiseGeneratorPageComponent implements 
 
   createOrderOmiseFull(): void {
     this.pageLoadingService.openLoading();
+    const { mobileNo } = this.transaction.data.simCard;
     const shippingInfo = this.transaction.data.shippingInfo;
     const customer = this.transaction.data.customer;
     const { name } = this.priceOption.productDetail;
@@ -221,7 +222,7 @@ export class DeviceOrderAisExistingGadgetOmiseGeneratorPageComponent implements 
       companyName: 'บริษัท แอดวานซ์ ไวร์เลส เน็ทเวอร์ค จำกัด',
       locationCode: this.seller.locationCode,
       locationName: this.seller.locationName,
-      mobileNo: shippingInfo.telNo,
+      mobileNo: mobileNo,
       customer: customer.firstName + ' ' + customer.lastName,
       orderList: this.orderList,
       soId: soId
@@ -230,7 +231,7 @@ export class DeviceOrderAisExistingGadgetOmiseGeneratorPageComponent implements 
       const data = res && res.data ? res.data : {};
       this.transaction.data.omise.qrCodeStr = data.redirectUrl;
       this.transaction.data.omise.orderId = data.orderId;
-      this.generateShortLink((data.redirectUrl || ''), params.mobileNo);
+      this.generateShortLink((data.redirectUrl || ''), shippingInfo.sms);
       this.pageLoadingService.closeLoading();
       this.handlerQRCodeMpay(data.orderId, data.redirectUrl);
     }).catch((err) => {
