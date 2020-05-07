@@ -31,7 +31,7 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
   profileFbb: ProfileFbb;
   shoppingCart: ShoppingCart;
   mobileNo: string;
-  disableNextButton: boolean;
+  disableNextButton: boolean = true;
   minimumPackage: any;
   user: User;
 
@@ -141,12 +141,8 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
       status: mobileDetail.mobileStatus,
       sagment: mobileDetail.mobileSegment,
       serviceYear: this.serviceYearWording(serviceYear.year, serviceYear.month, serviceYear.day),
-      mainPackage: this.changeMainPackageLangauge(mainPack)
+      mainPackage: mainPack && mainPack.title ? mainPack.title : ''
     };
-  }
-
-  changeMainPackageLangauge(mainPack: any = {}): string {
-    return (this.translateService.currentLang === 'EN') ? mainPack.titleEng : mainPack.title;
   }
 
   mapChargeType(chargeType: string): any {
