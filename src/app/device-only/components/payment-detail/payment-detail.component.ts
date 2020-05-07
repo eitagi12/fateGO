@@ -42,6 +42,7 @@ export class PaymentDetailComponent implements OnInit {
   isShowPercentAndTerm: boolean = false;
   defaultBankSelected: any;
   defaultPercentAndTermSelected: any;
+  isBanks: boolean;
 
   constructor(
     private transactionService: TransactionService,
@@ -77,6 +78,7 @@ export class PaymentDetailComponent implements OnInit {
           payment: this.transaction.data.payment
         };
         this.isShowPercentAndTerm = true;
+        this.isBanks = true;
         this.defaultBankSelected = this.transaction.data.payment.paymentMethod.abb;
         this.completed.emit(this.paymentValue);
         this.error.emit(true);
@@ -222,6 +224,7 @@ export class PaymentDetailComponent implements OnInit {
           });
         });
         this.omiseInstallmentBanks = banks_mapDb;
+        this.isBanks = this.omiseInstallmentBanks.length !== 0 ? true : false;
         this.bankOption = (this.omiseInstallmentBanks || []).reduce((prev, curr) => {
           const exists = prev.find(p => p.abb === curr.abb);
           if (!exists) {

@@ -23,7 +23,7 @@
           </div>
         </div>
       </div>
-      <div class="card-body py-2 border-top bg-transparent">
+      <div *ngIf="isBanks" class="card-body py-2 border-top bg-transparent">
         <div class="card-body py-2">
           <div class="text-center">
             <small>ระบุธนาคาร</small>
@@ -39,6 +39,14 @@
                 </label>
               </div>
             </ng-container>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="!isBanks" class="card-body py-2 border-top bg-transparent">
+        <div class="card-body py-2">
+          <div class="text-center text-red mt-3">
+            <p>ธนาคารที่ร่วมโครงการไม่อยู่ในธนาคารที่สามารถชำระได้ด้วยบัตรเครดิตออนไลน์</p>
+            <p>หรือไม่สามารถเลือกผ่อนชำระได้เนื่องจากยอดที่ชำระน้อยกว่าขั้นต่่ำที่กำหนด</p>
           </div>
         </div>
       </div>
