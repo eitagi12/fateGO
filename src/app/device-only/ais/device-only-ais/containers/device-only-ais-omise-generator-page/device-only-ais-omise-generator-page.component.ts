@@ -156,10 +156,11 @@ export class DeviceOnlyAisOmiseGeneratorPageComponent implements OnInit, OnDestr
                     this.pageLoadingService.closeLoading();
                     this.onNext();
                   } else {
-                    this.alertService.question('ชำระค่าสินค้าและบริการไม่สำเร็จ กรุณาทำรายการใหม่')
-                      .then((dataAlert: any) => {
-                        this.onBack();
-                      });
+                    this.showPopupMessage('สิ้นสุดระยะเวลาชำระเงิน กรุณาทำรายการใหม่');
+                    // this.alertService.question('ชำระค่าสินค้าและบริการไม่สำเร็จ กรุณาทำรายการใหม่')
+                    //   .then((dataAlert: any) => {
+                    //     this.onBack();
+                    //   });
                   }
                 });
               }).catch((error: any) => {
