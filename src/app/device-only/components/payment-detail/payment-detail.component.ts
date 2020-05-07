@@ -78,6 +78,7 @@ export class PaymentDetailComponent implements OnInit {
           payment: this.transaction.data.payment
         };
         this.isShowPercentAndTerm = true;
+        this.isBanks = true;
         this.defaultBankSelected = this.transaction.data.payment.paymentMethod.abb;
         this.completed.emit(this.paymentValue);
         this.error.emit(true);

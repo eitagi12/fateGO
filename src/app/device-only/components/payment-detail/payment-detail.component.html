@@ -23,7 +23,7 @@
           </div>
         </div>
       </div>
-      <div [hidden]="!isBanks" class="card-body py-2 border-top bg-transparent">
+      <div *ngIf="isBanks" class="card-body py-2 border-top bg-transparent">
         <div class="card-body py-2">
           <div class="text-center">
             <small>ระบุธนาคาร</small>
@@ -42,7 +42,7 @@
           </div>
         </div>
       </div>
-      <div [hidden]="isBanks" class="card-body py-2 border-top bg-transparent">
+      <div *ngIf="!isBanks" class="card-body py-2 border-top bg-transparent">
         <div class="card-body py-2">
           <div class="text-center text-red mt-3">
             <p>ไม่สามารถเลือกผ่อนชำระได้เนื่องจากยอดที่ชำระน้อยกว่าขั้นต่่ำที่กำหนด</p>
