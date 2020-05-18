@@ -109,7 +109,6 @@ export class QueuePageService {
     const mpayPayment: any = transactionData.mpayPayment || {};
     const advancePayment = transactionData.advancePayment;
     const omise: Omise = transactionData.omise || {};
-    const receiptInfo: ReceiptInfo = transactionData.receiptInfo;
     const shippingInfo: ShippingInfo = transactionData.shippingInfo || {};
     const warehouse: boolean = user.locationCode === '63259';
 
@@ -634,7 +633,7 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
     message += this.MOBILE_CARE + this.SPACE + (customAttributes.shortNameThai || '') + this.COMMA + this.SPACE;
     message += this.PRIVILEGE_DESC + this.SPACE + (privilegeDesc || '') + this.COMMA + this.SPACE;
     message += this.QUEUE_NUMBER + this.SPACE + queue.queueNo;
-    if (receiptInfo.telNo) {
+    if (receiptInfo && receiptInfo.telNo) {
       message += this.COMMA + this.SPACE + this.REMARK + this.SPACE + receiptInfo.telNo;
     }
     return message;
